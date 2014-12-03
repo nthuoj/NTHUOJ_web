@@ -3,7 +3,7 @@
 
 ##License
 ---
-Please refer to MIT license with our license file.
+Please refer to MIT license with [our license file](https://github.com/bruce3557/NTHUOJ_web/blob/master/LICENSE).
 
 ##Install Guide
 ---
