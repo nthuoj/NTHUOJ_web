@@ -4,7 +4,7 @@ NTHUOJ-WEB
 ##Install Guide
 ---
 ###Get our project:
-    git clone https://bitbucket.org/bruce3557/nthuoj_web
+   git@github.com:bruce3557/NTHUOJ_web.git 
 ---
 ####Dependencies: 
 * python2.7 
