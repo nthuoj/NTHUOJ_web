@@ -9,7 +9,9 @@ Please refer to MIT license with [our license file](https://github.com/bruce3557
 ---
 
 ###Get our project
-    ```git clone git@github.com:bruce3557/NTHUOJ\_web.git``` 
+    ```
+    git clone git@github.com:bruce3557/NTHUOJ\_web.git
+    ```
 
 ####Dependencies: 
 * python2.7 
@@ -18,6 +20,8 @@ Please refer to MIT license with [our license file](https://github.com/bruce3557
 
 ###Installation:
 * Execute install.py to set database ip, username and password.
-    ```python install.py```
+    ```
+    python install.py
+    ```
 
 * After installing, you can modify `'<project/root>/nthuoj.ini'` if the database setting are modified.
