@@ -1,10 +1,10 @@
-NTHUOJ-WEB
+NTHUOJ\_WEB
 =======
 
 ##Install Guide
 ---
 ###Get our project:
-   git@github.com:bruce3557/NTHUOJ_web.git 
+   git clone git@github.com:bruce3557/NTHUOJ\_web.git 
 ---
 ####Dependencies: 
 * python2.7 
