@@ -10,7 +10,7 @@ Please refer to MIT license with [our license file](https://github.com/bruce3557
 
 ###Get our project
     ```
-    git clone git@github.com:bruce3557/NTHUOJ\_web.git
+    git clone git@github.com:bruce3557/NTHUOJ_web.git
     ```
 
 ####Dependencies: 
