@@ -1,0 +1,106 @@
+<table>
+    <tr>
+        <th colspan="3">Testcase Number</th>
+        <th>Time Limit</th>
+        <th>Memory Limit</th>
+        <th></th>
+    </tr>
+    <tr>
+        <script>
+        $("#edit").tooltip('hide');
+        </script>
+        <td>
+            <span id='inFileTooltip' data-toggle="tooltip" data-placement="top" title="Edit">
+                <a data-toggle='modal' data-target='#editInputFile'>1.in</a>
+            </span>
+        </td>
+        <td>
+            <span id='outFileTooltip' data-toggle="tooltip" data-placement="top" title="Edit">
+                <a data-toggle='modal' data-target='#editOutputFile'>1.out</a>
+            </span>
+        </td>
+        <script>
+        $("#inFileTooltip").tooltip('hide');
+        $("#outFileTooltip").tooltip('hide');
+        </script>
+        <td>
+            <input type="number" value="1">
+        </td>
+        <td>
+            <input type="number" value="32">
+        </td>
+        <td>
+            <button class="btn btn-primary" onclick="return false">Update</button>
+        </td>
+        <td>
+            <button class="btn btn-primary" onclick="return false">Delete</button>
+        </td>
+    </tr>
+</table>
+
+<table>
+    <tr>
+        <th>Input</th>
+        <th>Output</th>
+        <th>Time Limit</th>
+        <th>Memory Limit</th>
+        <th></th>
+    </tr>
+    <tr>
+        <td>
+            <input type="file">
+        </td>
+        <td>
+            <input type="file">
+        </td>
+        <td>
+            <input type="number" value="1">
+        </td>
+        <td>
+            <input type="number" value="32">
+        </td>
+        <td>
+            <button class="btn btn-primary" onclick="return false">Add</button>
+        </td>
+    </tr>
+</table>
+
+<div class='modal fade' id='editInputFile'>
+    <div class='modal-dialog modal-sm'>
+        <div class='modal-content'>
+            <div class='modal-header'>
+                <button type='button' class='close' data-dismiss='modal'>
+                    <span aria-hidden='true'>&times;</span>
+                    <span class='sr-only'>Close</span>
+                </button>
+                <h4 class='modal-title'>Edit Input File</h4>
+            </div>
+            <div class='modal-body'>
+                <input type='file'>
+            </div>
+            <div class='modal-footer'>
+                <button class='btn btn-info' data-dismiss='modal'>Save changes</button</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class='modal fade' id='editOutputFile'>
+    <div class='modal-dialog modal-sm'>
+        <div class='modal-content'>
+            <div class='modal-header'>
+                <button type='button' class='close' data-dismiss='modal'>
+                    <span aria-hidden='true'>&times;</span>
+                    <span class='sr-only'>Close</span>
+                </button>
+                <h4 class='modal-title'>Edit output File</h4>
+            </div>
+            <div class='modal-body'>
+                <input type='file'>
+            </div>
+            <div class='modal-footer'>
+                <button class='btn btn-info' data-dismiss='modal'>Save changes</button</button>
+            </div>
+        </div>
+    </div>
+</div>
