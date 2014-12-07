@@ -1,94 +1,93 @@
 {% load static %}
-    <div style='height:90px;' class='panel panel-default'>
-        <div style='padding-left:10px;padding-right:10px'>
-            <div style='float:left;width:60%;'>
-                <h2>A Simple Problem &nbsp;&nbsp;<a href="{% url 'problem.views.edit' pid%}">EDIT</a>
+<div style='height:90px;' class='panel panel-default'>
+  <div style='padding-left:10px;padding-right:10px'>
+    <div style='float:left;width:60%;'>
+      <h2>A Simple Problem &nbsp;&nbsp;<a href="{% url 'problem.views.edit' pid%}">EDIT</a>
                 </h2>
-            </div>
-            <div style="float:right;">
-                <h5><a>Status</a> &nbsp;|&nbsp; <a>Printable </a> &nbsp;|&nbsp; <a>Rank</a> &nbsp;|&nbsp;
+    </div>
+    <div style="float:right;">
+      <h5><a>Status</a> &nbsp;|&nbsp; <a>Printable </a> &nbsp;|&nbsp; <a>Rank</a> &nbsp;|&nbsp;
                     <a data-toggle='modal' data-target='#myModal'>Limits</a>
                 </h5>
-                <button class="btn btn-primary btn-lg" style='float:right'>Submit</button>
-            </div>
-        </div>
+      <button class="btn btn-primary btn-lg" style='float:right'>Submit</button>
     </div>
+  </div>
+</div>
 
-    <div class='modal fade' id='myModal'>
-        <div class='modal-dialog modal-sm'>
-            <div class='modal-content'>
-                <div class='modal-header'>
-                    <button type='button' class='close' data-dismiss='modal'>
-                        <span aria-hidden='true'>&times;</span>
-                        <span class='sr-only'>Close</span>
-                    </button>
-                    <h4 class='modal-title'>Limits</h4>
-                </div>
-                <div class='modal-body'>
-                    <table class='table'>
-                        <tbody>
-                            <tr>
-                                <td></td>
-                                <th>Time</th>
-                                <th>Memory</th>
-				{% for t in testcase %}
-                                <tr>
-                                    <th>Case {{t.num}}</th>
-                                    <td>{{t.time}} sec</td>
-                                    <td>{{t.memory}} MB</td>
-                                </tr>
-				{% endfor %}
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
+<div class='modal fade' id='myModal'>
+  <div class='modal-dialog modal-sm'>
+    <div class='modal-content'>
+      <div class='modal-header'>
+        <button type='button' class='close' data-dismiss='modal'>
+          <span aria-hidden='true'>&times;</span>
+          <span class='sr-only'>Close</span>
+        </button>
+        <h4 class='modal-title'>Limits</h4>
+      </div>
+      <div class='modal-body'>
+        <table class='table'>
+          <tbody>
+            <tr>
+              <td></td>
+              <th>Time</th>
+              <th>Memory</th>
+              {% for t in testcase %}
+              <tr>
+                <th>Case {{t.num}}</th>
+                <td>{{t.time}} sec</td>
+                <td>{{t.memory}} MB</td>
+              </tr>
+              {% endfor %}
+          </tbody>
+        </table>
+      </div>
     </div>
+  </div>
+</div>
 
-    <div style="width:75%; float:left">
-        <h3>Description</h3>
-        <p>{{description}}</p>
-        <h3>Input</h3>
-        <p>{{input}}</p>
-        <h3>Output</h3>
-        <p>{{output}}</p>
-        <h3>Sample Input</h3>
-        <div class='panel panel-default'>
-            <div class='panel-body'>
-                <samp id='sampinText'>{{samp_input|linebreaksbr}}</samp>
-                <br>
-                <span class='label label-danger'>EOF</span>
-            </div>
-        </div>
-        <h3>Sample Output</h3>
-        <div class='panel panel-default'>
-            <div class='panel-body'>
-                <samp id='sampoutText' name='sampoutText'>{{samp_output|linebreaksbr}}</samp>
-                <br>
-                <span class='label label-danger'>EOF</span>
-            </div>
-        </div>
-        <h3>Tags</h3>
-        <div id='tags' style='float:left;width:60%'>
-	{% for t in tag %}
-            <span class='label label-info'>{{t}}</span>
-	{% endfor %}
-        </div>
-        <div class='input-group' style='float:right;width:30%'>
-            <input type='text' id='newTag' class='form-control' width='25%'>
-            <span class='input-group-btn'>
+<div style="width:75%; float:left">
+  <h3>Description</h3>
+  <p>{{description}}</p>
+  <h3>Input</h3>
+  <p>{{input}}</p>
+  <h3>Output</h3>
+  <p>{{output}}</p>
+  <h3>Sample Input</h3>
+  <div class='panel panel-default'>
+    <div class='panel-body'>
+      <samp id='sampinText'>{{samp_input|linebreaksbr}}</samp>
+      <br>
+      <span class='label label-danger'>EOF</span>
+    </div>
+  </div>
+  <h3>Sample Output</h3>
+  <div class='panel panel-default'>
+    <div class='panel-body'>
+      <samp id='sampoutText' name='sampoutText'>{{samp_output|linebreaksbr}}</samp>
+      <br>
+      <span class='label label-danger'>EOF</span>
+    </div>
+  </div>
+  <h3>Tags</h3>
+  <div id='tags' style='float:left;width:60%'>
+    {% for t in tag %}
+    <span class='label label-info'>{{t}}</span> {% endfor %}
+  </div>
+  <div class='input-group' style='float:right;width:30%'>
+    <input type='text' id='newTag' class='form-control' width='25%'>
+    <span class='input-group-btn'>
                 <button id='addTagButton' onclick="return addTag()" class='btn btn-default'>Add Tag</button>
             </span>
-        </div>
+  </div>
 
-        <br>
-        <br>
-        <br>
-        <h4><a onclick="alert('Discuss not open yet')">Discuss</a>
+  <br>
+  <br>
+  <br>
+  <h4><a onclick="alert('Discuss not open yet')">Discuss</a>
         </h4>
-        <br>
-        <br>
-        <br>
-    </div>
+  <br>
+  <br>
+  <br>
+</div>
 </body>
 <script src="{% static 'problem/js/problem.js' %}"></script>
