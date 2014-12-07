@@ -1,7 +1,5 @@
 function escapeHTML(str) {
-	var div = document.createElement('div');
-	div.appendChild(document.createTextNode(str));
-	return div.innerHTML;
+	return $('<div/>').text(str).html();
 }
 
 function addTag() {
