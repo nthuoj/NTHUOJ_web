@@ -1,0 +1,150 @@
+{% extends 'users/base.html' %} {% load static %} {% block body_block %}
+
+<script language="javascript" type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/flot/0.8.2/jquery.flot.min.js"></script>
+<script language="javascript" type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/flot/0.8.2/jquery.flot.pie.min.js"></script>
+
+<!-- conform password modal -->
+<div class="modal fade" id="passwd-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span>
+        </button>
+        <h4 class="modal-title" id="myModalLabel">Please Enter Your Current Password</h4>
+      </div>
+      <div class="modal-body">
+        <form class="form-horizontal">
+          <div class="form-group">
+            <label class="control-label">Current Password</label>
+            <input class="form-control input-sm" type="password" placeholder="Account">
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary">Save changes</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src={% static "js/piechartsettings.js"%}></script>
+<div class="bs-docs-section">
+  <div class="row">
+    <div class="col-lg-12">
+
+    </div>
+  </div>
+  <div class='row'>
+    <div class='col-lg-5' style="margin-left:1%;width:49%;height:70%;float:left;">
+      <div class="well bs-component">
+        <form class="form-horizontal" style='width:40%; padding: 5px;'>
+          <fieldset>
+            <legend>Statistics</legend>
+            <div id="placeholder" style="width:500px;height:400px;padding: 0px; position: relative; margin: 0 auto;"></div>
+            <br>
+            <br>
+            <br>
+            <div id='hoverdiv'></div>
+          </fieldset>
+        </form>
+      </div>
+    </div>
+
+    <div class='col-lg-6' style="margin-right:1%;width:49%;height:70%;float:right;">
+      {% block profile_field_block %}
+      <div class="well bs-component container-fulid">
+        <form class="form-horizontal" style='width:60%; padding: 5px;'>
+          <fieldset>
+            <legend>Profile</legend>
+            <div class="form-group">
+              <label class="col-lg-4 control-label">User ID</label>
+              <div class="col-lg-8">
+                <input type="text" class="form-control" value="boss" disabled="">
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="col-lg-4 control-label">Nickname</label>
+              <div class="col-lg-8">
+                <input type="text" class="form-control" value="boss">
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="col-lg-4 control-label">Email</label>
+              <div class="col-lg-8">
+                <input type="text" class="form-control" value="boss@boss.com">
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="col-lg-4 control-label">New Password</label>
+              <div class="col-lg-8">
+                <input type="password" class="form-control" placeholder="Password">
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="col-lg-4 control-label">Conform Password</label>
+              <div class="col-lg-8">
+                <input type="password" class="form-control" placeholder="Password">
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="col-lg-4 control-label">Class Participatd</label>
+              <div class="col-lg-8 col-lg-offset-4" style='margin-bottom:2px'>
+                <input type="text" class="form-control" value="CS135501_I2P2014" disabled="">
+              </div>
+              <div class="col-lg-8 col-lg-offset-4" style='margin-bottom:2px'>
+                <input type="text" class="form-control" value="岱洋神的TPC中階班" disabled="">
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="col-lg-4 control-label">Team Participatd</label>
+              <div class="col-lg-8 col-lg-offset-4" style='margin-bottom:2px'>
+                <input type="text" class="form-control" value="QAQ" disabled="">
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="col-lg-4 control-label">Registration Date</label>
+              <div class="col-lg-8">
+                <input type="text" class="form-control" value="2014-11-09 02:13:20" disabled="">
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="select" class="col-lg-4 control-label">User Level</label>
+              <div class="col-lg-8">
+                <select class="form-control" id="select">
+                  <option>1</option>
+                  <option>2</option>
+                  <option>3</option>
+                  <option>4</option>
+                  <option>5</option>
+                </select>
+              </div>
+            </div>
+            <legend>OJ Settings</legend>
+            <div class="form-group">
+              <label for="select" class="col-lg-4 control-label">Theme</label>
+              <div class="col-lg-8">
+                <select class="form-control" id="select">
+                  <option>Default</option>
+                  <option>Simplex</option>
+                </select>
+              </div>
+            </div>
+            <hr>
+            <div class="form-group">
+              <div class="col-lg-10">
+                <a href="#passwd-popup" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#passwd-modal">Update</a>
+                <span class="help-block">To update, it requires your current password.</span>
+              </div>
+            </div>
+          </fieldset>
+
+        </form>
+      </div>
+      {% endblock profile_field_block %}
+    </div>
+  </div>
+</div>
+
+{% endblock body_block %}
