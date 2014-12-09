@@ -10,13 +10,13 @@
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span>
         </button>
-        <h4 class="modal-title" id="myModalLabel">Please Enter Your Current Password</h4>
+        <h4 class="modal-title">Please Enter Your Current Password</h4>
       </div>
       <div class="modal-body">
         <form class="form-horizontal">
           <div class="form-group">
             <label class="control-label">Current Password</label>
-            <input class="form-control input-sm" type="password" placeholder="Account">
+            <input class="form-control input-sm" type="password">
           </div>
         </form>
       </div>
@@ -30,18 +30,13 @@
 
 <script src={% static "js/piechartsettings.js"%}></script>
 <div class="bs-docs-section">
-  <div class="row">
-    <div class="col-lg-12">
-
-    </div>
-  </div>
   <div class='row'>
-    <div class='col-lg-5' style="margin-left:1%;width:49%;height:70%;float:left;">
-      <div class="well bs-component">
+    <div class='col-lg-6' style="margin-left:1%;width:49%;height:70%;float:left;">
+      <div class="well bs-component container-fulid">
         <form class="form-horizontal" style='width:40%; padding: 5px;'>
           <fieldset>
             <legend>Statistics</legend>
-            <div id="placeholder" style="width:500px;height:400px;padding: 0px; position: relative; margin: 0 auto;"></div>
+            <div id="placeholder" style="width:500px; height:400px; padding:0px; position:relative; margin:0 auto;"></div>
             <br>
             <br>
             <br>
@@ -126,8 +121,11 @@
               <label for="select" class="col-lg-4 control-label">Theme</label>
               <div class="col-lg-8">
                 <select class="form-control" id="select">
+                  <option>Paper</option>
+                  <option>Readable</option>
+                  <option>Cosmo</option>
                   <option>Default</option>
-                  <option>Simplex</option>
+                  <option>Lumen</option>
                 </select>
               </div>
             </div>
