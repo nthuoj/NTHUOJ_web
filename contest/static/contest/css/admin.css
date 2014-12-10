@@ -1,0 +1,11 @@
+#i.container {
+  padding-top: 60px;
+  width: 90%;
+}
+a {
+  color: black;
+}
+tr.past, tr.past>td>a {
+  color: #d8d8d8;
+  background-color: #f8f8f8;
+}

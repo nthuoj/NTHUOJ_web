@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="../bootstrap/favicon.ico">
+
+    <title>Starter Template for Bootstrap</title>
+
+    <!-- Bootstrap core CSS -->
+    {% load staticfiles %}
+    <link href="{% static 'oj/bootstrap/dist/css/bootstrap.min.css' %}" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="starter-template.css" rel="stylesheet">
+
+    <!-- Just for debugging purposes. Don't actually copy these 2 lines! -->
+    <!--[if lt IE 9]><script src="../../assets/js/ie8-responsive-file-warning.js"></script><![endif]-->
+    <script src="../bootstrap/assets/js/ie-emulation-modes-warning.js"></script>
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+</head>
+
+<body>
+
+    <style>
+    #i.container {
+        padding-top: 50px;
+        width: 85%;
+    }
+    a {
+        color: black;
+    }
+    tr.past,
+    tr.past>td>a {
+        color: #d8d8d8;
+        background-color: #f8f8f8;
+    }
+    </style>
+    {% include "oj/navbar.html" %}
+    <div class="container" id="i">
+        <h1>Contest</h1>
+        <button type="button" class="btn btn-default"><a href="admin/">Admin</a>
+        </button>
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th></th>
+                    <th>#</th>
+                    <th>Contest</th>
+                    <th>Start time</th>
+                    <th>End time</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>
+                        <button type="button" class="btn btn-info btn-xs">
+                            <span class="glyphicon glyphicon-plus"></span>
+                        </button>
+                    </td>
+                    <td>1</td>
+                    <td><a href="contest.php?cid=1">test</a>
+                    </td>
+                    <td>2014-10-10</td>
+                    <td>2014-10-29</td>
+                </tr>
+                <tr class="danger">
+                    <td>
+
+                    </td>
+                    <td>2</td>
+                    <td><a href="contest.php?cid=2">test2</a>
+                    </td>
+                    <td>2014-10-04</td>
+                    <td>2014-10-06</td>
+                </tr>
+                <tr class="past">
+                    <td>
+
+                    </td>
+                    <td>3</td>
+                    <td><a href="contest.php?cid=3">test3</a>
+                    </td>
+                    <td>2014-10-04</td>
+                    <td>2014-10-06</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <!-- /.container -->
+
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    <script src="{% static 'oj/bootstrap/dist/js/bootstrap.min.js' %}"></script>
+    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+    <script src="../bootstrap/assets/js/ie10-viewport-bug-workaround.js"></script>
+</body>
+
+</html>

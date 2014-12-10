@@ -1,0 +1,27 @@
+<script>
+$(document).ready(function() {
+  $("a").tooltip({
+    placement: 'top'
+  });
+});
+</script>
+<style>
+ul.center {
+  float: right;
+}
+</style>
+<div>
+  <ul class="pagination center">
+    {% for problem in problem_list %}
+    <li><a href="#" data-toggle="tooltip" title="{{ problem.name }}">{{ problem.id }}</a>
+    </li>
+    {% endfor %}
+  </ul>
+</div>
+<!-- include problem -->
+<h3>Hard Problem</h3>
+<button type="button" class="btn btn-primary">Submit</button>
+<hr>
+<p>jfdskljkljfdksjfljsd</p>
+<p>dsfjkjdskljflkwermknrweqkhiweqjokdv'slnx,knkhreiowjqweok</p>
+<p>efnwoinvmkmojfeiowdkopirue90u83jopk0-32ijoifrmhiklmsd</p>

@@ -1,0 +1,39 @@
+<h1>Scoreboard</h1>
+<div style="float:right">
+  <button type="button" class="btn btn-default">
+    <span class="glyphicon glyphicon-download"></span>
+  </button>
+</div>
+<h3>{{ contest.name }}</h3>
+
+{% load staticfiles %}
+<script src="{% static 'oj/js/scoreboard.js' %}"></script>
+<link href="{% static 'oj/css/scoreboard.css' %}" rel="stylesheet">
+
+<table class="table" style="table-layout:fixed">
+  <thead>
+    <tr>
+      <th>Rank</th>
+      <th>User</th>
+      {% for problem in problem_list%}
+      <th><b data-toggle="tooltip" title="{{ problem.name }}">{{ problem.id }}</b>
+      </th>
+      {% endfor %}
+      <th>Solved</th>
+      <th>Penalty</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for ppl in contestant_list %}
+    <tr>
+      <td>{{ forloop.counter }}</td>
+      <td>{{ ppl.name }}</td>
+      {% for score in ppl.score %}
+      <td>{{ score }}</td>
+      {% endfor %}
+      <td>{{ ppl.solved }}</td>
+      <td>{{ ppl.panalty }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>

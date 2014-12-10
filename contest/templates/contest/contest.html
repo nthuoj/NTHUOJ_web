@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="">
+  <meta name="author" content="">
+  <link rel="icon" href="../bootstrap/favicon.ico">
+
+  <title>Starter Template for Bootstrap</title>
+
+  <!-- Bootstrap core CSS -->
+  {% load staticfiles %}
+  <link href="{% static 'oj/bootstrap/dist/css/bootstrap.min.css' %}" rel="stylesheet">
+
+
+  <!-- Just for debugging purposes. Don't actually copy these 2 lines! -->
+  <!--[if lt IE 9]><script src="../../assets/js/ie8-responsive-file-warning.js"></script><![endif]-->
+
+  <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+  <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+  <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+</head>
+
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+<link href="{% static 'oj/css/contest.css' %}" rel="stylesheet">
+
+<body onload="getRestTime()">
+
+  {% include "oj/navbar.html" %}
+  <div class="container">
+    <!--Title-->
+    <div class="well">
+      <h1>{{ contest.name }}</h1>
+      <a style="text-align:center;" id="right-panel-link" href="#right-panel">
+        <button type="button" class="btn btn-info">
+          <span class="glyphicon glyphicon-question-sign" aria-hidden="true"></span>Clarification</button>
+      </a>
+    </div>
+    <div class="panel panel-info">
+      <div class="panel-heading">
+        <h1 class="panel-title" style="text-align:center;">Time</h1>
+      </div>
+      <div class="panel-body inline">
+        <table style="width:100%;text-align:center;">
+          <tr>
+            <td id="start" style="text-align:left;">{{ contest.start_time }}</td>
+            <td id="clock"></td>
+            <td id="end" style="text-align:right;">{{ contest.end_time }}</td>
+          </tr>
+        </table>
+      </div>
+      <div class="progress" style="margin-left:5%;width:90%;">
+        <div id="timeline" class="progress-bar progress-bar-info" role="progressbar" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100" style="width:20%">
+          <span class="sr-only"></span>
+        </div>
+      </div>
+    </div>
+    <!-- Left panel -->
+    <div id="right-panel" class="panelsidebar">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Problem Name</th>
+            <th>Asker</th>
+            <th>Clarification</th>
+            <th>Reply</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for clarification in contest.clarification_list %}
+          <tr>
+            <td>{{ clarification.id }}</td>
+            <td>{{ clarification.name }}</td>
+            <td>{{ clarification.asker }}</td>
+            <td>{{ clarification.content }}</td>
+            <td>{{ clarification.reply }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      <div align="center">
+        <button type="button" class="btn btn-default btn-lg" data-toggle="modal" data-target="#myModal">Clarify</button>
+      </div>
+    </div>
+    <hr>
+    <!--contest detail-->
+    <div id="detail">
+      <ul class="nav nav-tabs" role="tablist" id="myTab">
+        <li class="active"><a href="#overview" role="tab" data-toggle="tab">Overview</a>
+        </li>
+        <li><a href="#problem" role="tab" data-toggle="tab">Problem</a>
+        </li>
+        <li><a href="#scoreboard" role="tab" data-toggle="tab">Scoreboard</a>
+        </li>
+        <li><a href="#status" role="tab" data-toggle="tab">Status</a>
+        </li>
+      </ul>
+      <div class="tab-content" id="content">
+        <div class="tab-pane active" id="overview">
+          {% include "oj/overview.html" %}
+        </div>
+        <div class="tab-pane" id="problem">
+          {% include "oj/problem.html" %}
+        </div>
+        <div class="tab-pane" id="scoreboard">
+          {% include "oj/scoreboard.html" %}
+        </div>
+        <div class="tab-pane" id="status">4</div>
+      </div>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal">
+              <span aria-hidden="true">&times;</span>
+              <span class="sr-only">Close</span>
+            </button>
+            <h4 class="modal-title" id="myModalLabel">提問</h4>
+          </div>
+          <div class="modal-body">
+            <form role="form">
+              <label for="pid">題號</label>
+              <div id="pid" class="form-group">
+                <select class="form-control">
+                  {% for problem in contest.problem_list %}
+                  <option>{{ problem.name }}</option>
+                  {% endfor %}
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="exampleInputPassword1">描述</label>
+                <textarea type="text" class="form-control" id="exampleInputPassword1" placeholder="問題描述"></textarea>
+              </div>
+              <div class="checkbox">
+                <label>
+                  <input type="checkbox">僅限發問者觀看結果
+                </label>
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-primary">Send</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  </div>
+
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+  <script src="{% static 'oj/js/jquery.panelslider.min.js' %}"></script>
+
+
+  <!-- Bootstrap core JavaScript
+    ================================================== -->
+  <script src="{%static 'oj/js/contest.js'%}"></script>
+  <!-- Placed at the end of the document so the pages load faster -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+  <script src="{% static 'oj/bootstrap/dist/js/bootstrap.min.js' %}"></script>
+  <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+
+</body>
+
+</html>
