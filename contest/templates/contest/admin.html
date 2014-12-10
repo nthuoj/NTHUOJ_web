@@ -13,7 +13,7 @@
 
   <!-- Bootstrap core CSS -->
   {% load staticfiles %}
-  <link href="{% static 'oj/bootstrap/dist/css/bootstrap.min.css' %}" rel="stylesheet">
+  <link href="{% static 'contest/bootstrap/dist/css/bootstrap.min.css' %}" rel="stylesheet">
 
   <!-- Custom styles for this template -->
 
@@ -28,7 +28,7 @@
 </head>
 
 <body>
-  <link href="{% static 'oj/css/admin.css' %}" rel="stylesheet">{% include "oj/navbar.html" %}
+  <link href="{% static 'contest/css/admin.css' %}" rel="stylesheet">{% include "contest/navbar.html" %}
   <div class="container" id="i">
 
     <!--title-->
@@ -274,12 +274,12 @@
     </div>
   </div>
   {% endfor %}
-  <script src="{% static 'oj/js/admin.js' %}"></script>
+  <script src="{% static 'contest/js/admin.js' %}"></script>
   <!-- Bootstrap core JavaScript
     ================================================== -->
   <!-- Placed at the end of the document so the pages load faster -->
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
-  <script src="{% static 'oj/bootstrap/dist/js/bootstrap.min.js' %}"></script>
+  <script src="{% static 'contest/bootstrap/dist/js/bootstrap.min.js' %}"></script>
   <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
 
 </body>

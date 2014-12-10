@@ -13,7 +13,7 @@
 
   <!-- Bootstrap core CSS -->
   {% load staticfiles %}
-  <link href="{% static 'oj/bootstrap/dist/css/bootstrap.min.css' %}" rel="stylesheet">
+  <link href="{% static 'contest/bootstrap/dist/css/bootstrap.min.css' %}" rel="stylesheet">
 
 
   <!-- Just for debugging purposes. Don't actually copy these 2 lines! -->
@@ -29,11 +29,11 @@
 </head>
 
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
-<link href="{% static 'oj/css/contest.css' %}" rel="stylesheet">
+<link href="{% static 'contest/css/contest.css' %}" rel="stylesheet">
 
 <body onload="getRestTime()">
 
-  {% include "oj/navbar.html" %}
+  {% include "contest/navbar.html" %}
   <div class="container">
     <!--Title-->
     <div class="well">
@@ -105,13 +105,13 @@
       </ul>
       <div class="tab-content" id="content">
         <div class="tab-pane active" id="overview">
-          {% include "oj/overview.html" %}
+          {% include "contest/overview.html" %}
         </div>
         <div class="tab-pane" id="problem">
-          {% include "oj/problem.html" %}
+          {% include "contest/problem.html" %}
         </div>
         <div class="tab-pane" id="scoreboard">
-          {% include "oj/scoreboard.html" %}
+          {% include "contest/scoreboard.html" %}
         </div>
         <div class="tab-pane" id="status">4</div>
       </div>
@@ -160,15 +160,15 @@
   </div>
 
   <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
-  <script src="{% static 'oj/js/jquery.panelslider.min.js' %}"></script>
+  <script src="{% static 'contest/js/jquery.panelslider.min.js' %}"></script>
 
 
   <!-- Bootstrap core JavaScript
     ================================================== -->
-  <script src="{%static 'oj/js/contest.js'%}"></script>
+  <script src="{%static 'contest/js/contest.js'%}"></script>
   <!-- Placed at the end of the document so the pages load faster -->
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
-  <script src="{% static 'oj/bootstrap/dist/js/bootstrap.min.js' %}"></script>
+  <script src="{% static 'contest/bootstrap/dist/js/bootstrap.min.js' %}"></script>
   <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
 
 </body>
