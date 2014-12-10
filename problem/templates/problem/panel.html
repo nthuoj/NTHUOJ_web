@@ -1,40 +1,48 @@
 {% extends 'problem/nav.html' %} {% block Body %}
 <div id="Body">
 
-  <h2>Problem Panel</h2>
-  <a style='float:left' class="btn btn-primary" href="{% url 'problem.views.new' %}">Add Problem</a>
-  <span class='btn-group' role='group' style='float:right'>
-        <button type='button' class='btn btn-default' id='my_problem' onclick="switch_problem('my')">my problem</button>
-        <button type='button' class='btn btn-default' id='all_problem' onclick="switch_problem('all')">all problem</button>
-    </span>
-  <br>
-  <br>
-  <div id='all-problem'>
-    {% include 'problem/problem_list.html' with problem=all_problem %}
-  </div>
-  <div id='my-problem'>
-    {% include 'problem/problem_list.html' with problem=my_problem %}
-  </div>
-  <nav>
-    <ul class='pager'>
-      <li class='previous'><a href='#'>&larr; Previous</a>
-      </li>
-      <li class='next'><a href='#'>next &rarr;</a>
-      </li>
-  </nav>
+    <h2>Problem Panel</h2>
+    <div>
+        <a style='float:left' class="btn btn-primary" href="{% url 'problem.views.new' %}">Add Problem</a>
+        <div style='float:right'>
+            <div class="input-group">
+                <input type="text" class="form-control" placeholder="Search" />
+                <span class="input-group-addon">@</span>
+            </div>
+        </div>
+    </div>
+    <div style='padding-top: 50px;'>
+        <span class='btn-group' role='group'>
+              <button type='button' class='btn btn-default' id='my_problem' onclick="switch_problem('my')">my problem</button>
+              <button type='button' class='btn btn-default' id='all_problem' onclick="switch_problem('all')">all problem</button>
+          </span>
+        <div id='all-problem'>
+            {% include 'problem/problem_list.html' with problem=all_problem %}
+        </div>
+        <div id='my-problem'>
+            {% include 'problem/problem_list.html' with problem=my_problem %}
+        </div>
+    </div>
+    <nav>
+        <ul class='pager'>
+            <li class='previous'><a href='#'>&larr; Previous</a>
+            </li>
+            <li class='next'><a href='#'>next &rarr;</a>
+            </li>
+    </nav>
 </div>
 <script>
 $('#my-problem').hide();
 $('#all_problem').focus();
 
 function switch_problem(s) {
-  if (s == 'my') {
-    $('#my-problem').show();
-    $('#all-problem').hide();
-  } else {
-    $('#my-problem').hide();
-    $('#all-problem').show();
-  }
+    if (s == 'my') {
+        $('#my-problem').show();
+        $('#all-problem').hide();
+    } else {
+        $('#my-problem').hide();
+        $('#all-problem').show();
+    }
 }
 </script>
 
