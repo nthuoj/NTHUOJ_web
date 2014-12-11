@@ -1,83 +1,83 @@
 function switchTab(t) {
-    $("a[role='tab']").parent().removeClass("active");
-    $(t).parent().addClass("active");
-    $(".tab-pane").removeClass("active");
-    $($(t).attr("href")).addClass("active");
+  $("a[role='tab']").parent().removeClass("active");
+  $(t).parent().addClass("active");
+  $(".tab-pane").removeClass("active");
+  $($(t).attr("href")).addClass("active");
 }
 
 var tags = [];
 
 function escapeHTML(str) {
-    return $('<div/>').text(str).html();
+  return $('<div/>').text(str).html();
 }
 
 $(document).ready(function() {
-    $("a[role='tab']").click(function(e) {
-        e.preventDefault()
-        switchTab(this);
-    });
+  $("a[role='tab']").click(function(e) {
+    e.preventDefault()
+    switchTab(this);
+  });
 
-    $('#merge_tag').click(function() {
-        var n = $('input:checked').length;
-        for (var i = 1; i < n; i++) {
-            var d = $('input:checked').eq(i).attr('data-target');
-            delete_tag(d);
-        }
+  $('#merge_tag').click(function() {
+    var n = $('input:checked').length;
+    for (var i = 1; i < n; i++) {
+      var d = $('input:checked').eq(i).attr('data-target');
+      delete_tag(d);
+    }
+    return false;
+  });
+
+  $('#add_tag_button').click(function() {
+    var newTag = escapeHTML($('#newTag').val());
+    if (newTag.trim() == "") {
+      alert('empty');
+      return false;
+    }
+    if ($.inArray(newTag.trim().toLowerCase(), tags) != -1) {
+      alert('tag repeated');
+      return false;
+    }
+    $('#newTag').val("");
+
+    var $delete_button = $("<button>", {
+        id: "delete_button",
+        class: "btn btn-primary"
+      })
+      .attr('data-target', newTag).html("Delete")
+      .click(function() {
+        delete_tag($(this).attr('data-target'));
         return false;
-    });
+      });
+    var $checkbox = $("<input>", {
+      type: "checkbox"
+    }).attr('data-target', newTag);
 
-    $('#add_tag_button').click(function() {
-        var newTag = escapeHTML($('#newTag').val());
-        if (newTag.trim() == "") {
-            alert('empty');
-            return false;
-        }
-        if ($.inArray(newTag.trim().toLowerCase(), tags) != -1) {
-            alert('tag repeated');
-            return false;
-        }
-        $('#newTag').val("");
+    var $new_row = $("<tr>", {
+        id: newTag
+      })
+      .append($("<td>", {
+        id: "checkbox_td"
+      }).append($checkbox))
+      .append("<td>" + newTag + "</td>")
+      .append($("<td>").append($delete_button));
 
-        var $delete_button = $("<button>", {
-                id: "delete_button",
-                class: "btn btn-primary"
-            })
-            .attr('data-target', newTag).html("Delete")
-            .click(function() {
-                delete_tag($(this).attr('data-target'));
-                return false;
-            });
-        var $checkbox = $("<input>", {
-            type: "checkbox"
-        }).attr('data-target', newTag);
+    $('#tagTable').append($new_row);
 
-        var $new_row = $("<tr>", {
-                id: newTag
-            })
-            .append($("<td>", {
-                id: "checkbox_td"
-            }).append($checkbox))
-            .append("<td>" + newTag + "</td>")
-            .append($("<td>").append($delete_button));
+    tags[tags.length] = newTag.toLowerCase();
 
-        $('#tagTable').append($new_row);
-
-        tags[tags.length] = newTag.toLowerCase();
-
-        return false;
-    });
+    return false;
+  });
 
 });
 
 function delete_tag(tag_name) {
-    $("tr[id='" + tag_name + "']").hide();
-    tags.splice(tags.indexOf(tag_name), 1);
+  $("tr[id='" + tag_name + "']").hide();
+  tags.splice(tags.indexOf(tag_name), 1);
 }
 
 function submitTag() {
-    var len = tags.length;
-    for (var i = 0; i < len; i++) {
-        $("form").append("<input type='hidden' name='tag" + i + "' value='" + tags[i] + "'>");
-    }
-    return false;
+  var len = tags.length;
+  for (var i = 0; i < len; i++) {
+    $("form").append("<input type='hidden' name='tag" + i + "' value='" + tags[i] + "'>");
+  }
+  return false;
 }
