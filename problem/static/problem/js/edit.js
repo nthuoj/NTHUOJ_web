@@ -18,6 +18,12 @@ $(document).ready(function() {
     });
 
     $('#merge_tag').click(function() {
+        var n = $('input:checked').length;
+        for (var i = 1; i < n; i++) {
+            var d = $('input:checked').eq(i).attr('data-target');
+            delete_tag(d);
+        }
+        return false;
     });
 
     $('#add_tag_button').click(function() {
