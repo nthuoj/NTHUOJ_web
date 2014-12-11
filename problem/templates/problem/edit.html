@@ -12,10 +12,6 @@
                 </li>
                 <li><a href="#description" role="tab" data-toggle="tab">Description</a>
                 </li>
-                <li><a href="#in" role="tab" data-toggle="tab">Input</a>
-                </li>
-                <li><a href="#out" role="tab" data-toggle="tab">Output</a>
-                </li>
                 <li><a href="#sampio" role="tab" data-toggle="tab">Sample IO</a>
                 </li>
                 <li><a href="#testcase" role="tab" data-toggle="tab">TestCase</a>
@@ -35,22 +31,18 @@
                     {% include 'problem/editTab/tag.html' %}
                 </div>
                 <div class="tab-pane" id="description">
-                    <textarea cols="80" rows="20" id="des" name="description"></textarea>
-                    <script>
-                    CKEDITOR.replace('des')
-                    </script>
-                </div>
-                <div class="tab-pane" id="in">
-                    <textarea cols="80" rows="20" id="inText" name="input"></textarea>
-                    <script>
-                    CKEDITOR.replace('inText')
-                    </script>
-                </div>
-                <div class="tab-pane" id="out">
-                    <textarea cols="80" rows="20" id="outText" name="output"></textarea>
-                    <script>
-                    CKEDITOR.replace('outText')
-                    </script>
+                  <strong>Description</strong>
+                  <textarea cols="80" rows="20" id="des" name="description"></textarea>
+                  <br><strong>Input</strong>
+                  <textarea cols="80" rows="20" id="inText" name="input"></textarea>
+                  <br><strong>Output</strong>
+                  <textarea cols="80" rows="20" id="outText" name="output"></textarea>
+
+                  <script>
+                  CKEDITOR.replace('des')
+                  CKEDITOR.replace('inText')
+                  CKEDITOR.replace('outText')
+                  </script>
                 </div>
                 <div class="tab-pane" id="sampio">
                     <div class='panel panel-default' style='float:left;width:47%'>
