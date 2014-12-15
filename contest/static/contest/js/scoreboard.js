@@ -1,5 +1,5 @@
 $(document).ready(function() {
-    $("b").tooltip({
-        placement: 'top'
-    });
+  $("b").tooltip({
+    placement: 'top'
+  });
 });

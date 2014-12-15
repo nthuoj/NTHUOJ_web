@@ -30,22 +30,7 @@
 </head>
 
 <body>
-
-  <style>
-  #i.container {
-    padding-top: 50px;
-    width: 85%;
-  }
-  a {
-    color: black;
-  }
-  tr.past,
-  tr.past>td>a {
-    color: #d8d8d8;
-    background-color: #f8f8f8;
-  }
-  </style>
-  {% include "contest/navbar.html" %}
+  <link href="{% static 'contest/css/admin.css' %}" rel="stylesheet">{% include "contest/navbar.html" %}
   <div class="container" id="i">
     <h1>Contest</h1>
     <button type="button" class="btn btn-default"><a href="admin/">Admin</a>
