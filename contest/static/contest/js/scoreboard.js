@@ -21,4 +21,7 @@ $(document).ready(function() {
   $("b").tooltip({
     placement: 'top'
   });
+  $('[data-toggle="tooltip"]').tooltip({
+    'placement': 'top'
+  });
 });

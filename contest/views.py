@@ -22,9 +22,6 @@ from django.http import HttpResponse
 from django.shortcuts import render,get_object_or_404
 
 def index(request):
-    return render(request, 'contest/index.html')
-
-def admin(request):
     
     problem1 = {'id':1,'name':'First Problem','ppl_pass':2,'ppl_not_pass':4}
     problem2 = {'id':2,'name':'Second Problem','ppl_pass':1,'ppl_not_pass':8}
@@ -41,7 +38,7 @@ def admin(request):
 
     coowner_list = [ppl3,ppl4]  
 
-    contest1 = {'id':1,'name':'first contest','start_time':'2014/11/29 10:11:22','end_time':'2014/12/05 02:12:50',
+    contest1 = {'id':1,'name':'First contest','start_time':'2014/11/29 10:11:22','end_time':'2014/12/05 02:12:50',
                 'contestant_number':200,'owner':'ma in joe','problem_list':problem_list,'contestant_list':contestant_list,
                 'coowner_list':coowner_list}
 
@@ -51,7 +48,7 @@ def admin(request):
     #problem_list = Problem.objects.all()
     #contestant_list = {1:'naruto',2:'obama'}
     #coowner_list = {1:'teemo',2:'lux',3:'jinx'}
-    return render(request, 'contest/admin.html',{'contest_list':contest_list})
+    return render(request, 'contest/index.html',{'contest_list':contest_list})
 
 def contest(request,contest_id):
 
@@ -69,7 +66,7 @@ def contest(request,contest_id):
 
     clarification_list = [clarification1]
 
-    contest1 = {'name':'first contest','start_time':'2014/11/29 10:11:22','end_time':'2014/12/05 02:12:50',
+    contest1 = {'name':'First contest','start_time':'2014/11/29 10:11:22','end_time':'2014/12/05 02:12:50',
                     'contest_contestant':200,'contest_owner':'ma in joe','problem_list':problem_list,'contestant_list':contestant_list
                     ,'clarification_list':clarification_list}
 
