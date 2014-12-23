@@ -56,6 +56,12 @@ SOFTWARE.
 </div>
 
 <script src={% static "js/piechartsettings.js"%}></script>
+<script type="text/javascript">
+    $(function() {
+        plot_piechart({{piechart_data|safe}});
+    });
+</script>
+
 <div class="bs-docs-section">
   <div class="row">
     <div class="col-lg-6" style="width:49%;height:70%;float:left;">
@@ -78,19 +84,19 @@ SOFTWARE.
             <div class="form-group">
               <label class="col-lg-4 control-label">User ID</label>
               <div class="col-lg-8">
-                <input type="text" class="form-control" value="boss" disabled>
+                <input type="text" class="form-control" value="" disabled>
               </div>
             </div>
             <div class="form-group">
               <label class="col-lg-4 control-label">Nickname</label>
               <div class="col-lg-8">
-                <input type="text" class="form-control" value="boss">
+                <input type="text" class="form-control" value="">
               </div>
             </div>
             <div class="form-group">
               <label class="col-lg-4 control-label">Email</label>
               <div class="col-lg-8">
-                <input type="text" class="form-control" value="boss@boss.com">
+                <input type="text" class="form-control" value="">
               </div>
             </div>
 
@@ -109,22 +115,22 @@ SOFTWARE.
             <div class="form-group">
               <label class="col-lg-4 control-label">Class Participatd</label>
               <div class="col-lg-8 col-lg-offset-4" style="margin-bottom:2px">
-                <input type="text" class="form-control" value="CS135501_I2P2014" disabled>
+                <input type="text" class="form-control" value="" disabled>
               </div>
               <div class="col-lg-8 col-lg-offset-4" style="margin-bottom:2px">
-                <input type="text" class="form-control" value="岱洋神的TPC中階班" disabled>
+                <input type="text" class="form-control" value="" disabled>
               </div>
             </div>
             <div class="form-group">
               <label class="col-lg-4 control-label">Team Participatd</label>
               <div class="col-lg-8 col-lg-offset-4" style="margin-bottom:2px">
-                <input type="text" class="form-control" value="QAQ" disabled="">
+                <input type="text" class="form-control" value="" disabled="">
               </div>
             </div>
             <div class="form-group">
               <label class="col-lg-4 control-label">Registration Date</label>
               <div class="col-lg-8">
-                <input type="text" class="form-control" value="2014-11-09 02:13:20" disabled>
+                <input type="text" class="form-control" value="" disabled>
               </div>
             </div>
             <div class="form-group">
