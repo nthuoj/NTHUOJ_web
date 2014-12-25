@@ -1,0 +1,91 @@
+/* overlay at start */
+
+.mfp-fade.mfp-bg {
+  opacity: 0;
+  -webkit-transition: all 1s ease-out;
+  -moz-transition: all 1s ease-out;
+  transition: all 1s ease-out;
+}
+/* overlay animate in */
+
+.mfp-fade.mfp-bg.mfp-ready {
+  opacity: 0.4;
+}
+/* overlay animate out */
+
+.mfp-fade.mfp-bg.mfp-removing {
+  opacity: 0;
+}
+/* content at start */
+
+.mfp-fade.mfp-wrap .mfp-content {
+  opacity: 0;
+  -webkit-transition: all 0.5s ease-out;
+  -moz-transition: all 0.5s ease-out;
+  transition: all 0.5s ease-out;
+  top:-20%;
+  width:40%;
+}
+/* content animate it */
+
+.mfp-fade.mfp-wrap.mfp-ready .mfp-content {
+  opacity: 1;
+  top:0%;
+  width:40%;
+}
+/* content animate out */
+
+.mfp-fade.mfp-wrap.mfp-removing .mfp-content {
+  opacity: 0;
+  top:-20%;
+  width:40%;
+}
+
+.jumbotron{
+  width:100%;
+  border-radius: 10px;
+  padding-top: 20px;
+}
+
+/* overlay at start */
+
+.mmfp-fade.mfp-bg {
+  opacity: 0;
+  -webkit-transition: all 1s ease-out;
+  -moz-transition: all 1s ease-out;
+  transition: all 1s ease-out;
+}
+/* overlay animate in */
+
+.mmfp-fade.mfp-bg.mfp-ready {
+  opacity: 0.4;
+}
+/* overlay animate out */
+
+.mmfp-fade.mfp-bg.mfp-removing {
+  opacity: 0;
+}
+/* content at start */
+
+.mmfp-fade.mfp-wrap .mfp-content {
+  opacity: 0;
+  -webkit-transition: all 0.5s ease-out;
+  -moz-transition: all 0.5s ease-out;
+  transition: all 0.5s ease-out;
+  top:-20%;
+  width:40%;
+}
+/* content animate it */
+
+.mmfp-fade.mfp-wrap.mfp-ready .mfp-content {
+  opacity: 1;
+  top:0%;
+  width:80%;
+}
+/* content animate out */
+
+.mmfp-fade.mfp-wrap.mfp-removing .mfp-content {
+  opacity: 0;
+  top:-20%;
+  width:40%;
+}
