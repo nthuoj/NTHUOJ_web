@@ -18,10 +18,10 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 $(document).ready(function() {
-  $("b").tooltip({
-    placement: 'top'
-  });
-  $('[data-toggle="tooltip"]').tooltip({
-    'placement': 'top'
-  });
+    $("b").tooltip({
+        placement: 'top'
+    });
+    $('[data-toggle="tooltip"]').tooltip({
+        'placement': 'top'
+    });
 });

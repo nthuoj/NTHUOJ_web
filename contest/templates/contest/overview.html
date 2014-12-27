@@ -32,10 +32,12 @@ SOFTWARE.
       <td><a href="#">{{ problem.name }}</td>
         <td>
           <div class="progress">
-            <div name="pass" class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="30" aria-valuemin="0" aria-valuemax="100" style="width: 50%;">
+            <div name="pass" class="progress-bar progress-bar-success" role="progressbar" 
+            aria-valuenow="30" aria-valuemin="0" aria-valuemax="100" style="width: 50%;">
               <span name="pass_ratio">{{ problem.ppl_pass }} / {{ problem.ppl_not_pass|add:problem.ppl_pass }}</span>
             </div>
-            <div name="not_pass" class="progress-bar progress-bar-danger" role="progressbar" aria-valuenow="30" aria-valuemin="0" aria-valuemax="100" style="width: 50%;">
+            <div name="not_pass" class="progress-bar progress-bar-danger" role="progressbar"
+             aria-valuenow="30" aria-valuemin="0" aria-valuemax="100" style="width: 50%;">
             </div>
           </div>
         </td>

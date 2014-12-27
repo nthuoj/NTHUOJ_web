@@ -20,6 +20,7 @@
 
 from django.http import HttpResponse
 from django.shortcuts import render,get_object_or_404
+from datetime import datetime
 
 def index(request):
     
@@ -48,9 +49,11 @@ def index(request):
     #problem_list = Problem.objects.all()
     #contestant_list = {1:'naruto',2:'obama'}
     #coowner_list = {1:'teemo',2:'lux',3:'jinx'}
-    return render(request, 'contest/index.html',{'contest_list':contest_list})
+    return render(request, 'contest/index.html',{'contest_list':contest_list,'admin':1})
 
 def contest(request,contest_id):
+
+    server_time = datetime.now().strftime('%Y/%m/%d %H:%M:%S')
 
     problem1 = {'id':1,'name':'First Problem','ppl_pass':2,'ppl_not_pass':4}
     problem2 = {'id':2,'name':'Second Problem','ppl_pass':1,'ppl_not_pass':8}
@@ -66,14 +69,12 @@ def contest(request,contest_id):
 
     clarification_list = [clarification1]
 
-    contest1 = {'name':'First contest','start_time':'2014/11/29 10:11:22','end_time':'2014/12/05 02:12:50',
+    contest1 = {'name':'First contest','start_time':'2014/12/27 15:30:00','end_time':'2014/12/27 16:00:00',
                     'contest_contestant':200,'contest_owner':'ma in joe','problem_list':problem_list,'contestant_list':contestant_list
                     ,'clarification_list':clarification_list}
 
-    #contest_info = get_object_or_404(Contest,pk=contest_id)
-    #problem_list = Problem.objects.order_by()
-    #contestant_list = {1:{'name':'naruto','score':{1:'0/3',2:'1/2',3:'1/4'},'solved':'2','panalty':'833'},2:{'name':'obama','score':{1:'0/2',2:'1/5',3:'1/3'},'solved':'2','panalty':'83'}}
-    return render(request, 'contest/contest.html',{'contest':contest1,'problem_list':problem_list,'contestant_list':contestant_list})
+    return render(request, 'contest/contest.html',{'contest':contest1,'problem_list':problem_list,
+        'contestant_list':contestant_list,'server_time':server_time})
 
 def navbar(request):
     return render(request, 'contest/navbar.html')
