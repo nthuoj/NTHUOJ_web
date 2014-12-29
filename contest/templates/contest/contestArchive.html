@@ -26,8 +26,7 @@ SOFTWARE.
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description" content="">
   <meta name="author" content="">
-  <link rel="icon" href="../bootstrap/favicon.ico">
-  <title>Starter Template for Bootstrap</title>
+  <title>Contest</title>
   <!-- Bootstrap core CSS -->{% load staticfiles %}
   <link href="{% static 'contest/bootstrap/dist/css/bootstrap.min.css' %}" rel="stylesheet">
   <!-- Custom styles for this template -->
@@ -43,7 +42,7 @@ SOFTWARE.
 </head>
 
 <body>
-  <link href="{% static 'contest/css/admin.css' %}" rel="stylesheet">
+  <link href="{% static 'contest/css/contestArchive.css' %}" rel="stylesheet">
   <div class="container" id="i">
     <!--title-->
     <div class="well">
@@ -311,7 +310,7 @@ SOFTWARE.
     </div>
   </div>
   {% endfor %}
-  <script src="{% static 'contest/js/admin.js' %}"></script>
+  <script src="{% static 'contest/js/contestArchive.js' %}"></script>
   <!-- Bootstrap core JavaScript
     ================================================== -->
   <!-- Placed at the end of the document so the pages load faster -->
