@@ -75,6 +75,3 @@ def contest(request,contest_id):
 
     return render(request, 'contest/contest.html',{'contest':contest1,'problem_list':problemList,
         'contestant_list':contestantList,'server_time':serverTime})
-
-def navbar(request):
-    return render(request, 'contest/navbar.html')
