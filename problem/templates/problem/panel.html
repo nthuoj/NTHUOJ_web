@@ -4,22 +4,22 @@
   <h2>Problem Panel</h2>
   <div>
     <a style='float:left' class="btn btn-primary" href="{% url 'problem.views.new' %}">Add Problem</a>
-    <div style='float:right'>
+    <div style='float:right; width:50%'>
       <div class="input-group">
         <input type="text" class="form-control" placeholder="Search" />
         <span class="input-group-btn">
-        <button class="btn btn-default" type="button">
+          <button class="btn btn-default" type="button">
             <span class='glyphicon glyphicon-search'></span>
-        </button>
+          </button>
         </span>
       </div>
     </div>
   </div>
   <div style='padding-top: 50px;'>
     <span class='btn-group' role='group'>
-              <button type='button' class='btn btn-default' id='my_problem' onclick="switch_problem('my')">my problem</button>
-              <button type='button' class='btn btn-default' id='all_problem' onclick="switch_problem('all')">all problem</button>
-          </span>
+      <button type='button' class='btn btn-default' id='my_problem' onclick="switch_problem('my')">my problem</button>
+      <button type='button' class='btn btn-default' id='all_problem' onclick="switch_problem('all')">all problem</button>
+    </span>
     <div id='all-problem'>
       {% include 'problem/problem_list.html' with problem=all_problem %}
     </div>
@@ -29,9 +29,11 @@
   </div>
   <nav>
     <ul class='pager'>
-      <li class='previous'><a href='#'>&larr; Previous</a>
+      <li class='previous'>
+        <a href='#'>&larr; Previous</a>
       </li>
-      <li class='next'><a href='#'>next &rarr;</a>
+      <li class='next'>
+        <a href='#'>next &rarr;</a>
       </li>
   </nav>
 </div>

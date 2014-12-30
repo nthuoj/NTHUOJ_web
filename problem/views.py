@@ -8,13 +8,13 @@ def problem(request):
 
 def detail(request, problem_id):
     p = {
-      'pid': 1,
-      'description': 'this is a simple prblem',
-      'input': 'input description',
-      'output': 'output description',
-      'samp_input': '1 2 3',
-      'samp_output': 'A\nB\nC\n',
-      'tag': ['dfs', 'bfs'],
+      'pid': problem_id,
+      'description': 'Given a, b, output a+b.',
+      'input': 'a, b <= 100000000',
+      'output': 'a+b',
+      'samp_input': '1 2\n4 5',
+      'samp_output': '3\n9\n',
+      'tag': [''],
       'testcase': [{'num': 1, 'time': 1, 'memory': 32}, {'num': 2, 'time': 3, 'memory': 100}],
     }
     return render(request, 'problem/detail.html', p)
