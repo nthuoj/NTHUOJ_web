@@ -26,7 +26,7 @@ SOFTWARE.
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description" content="">
   <meta name="author" content="">
-  <title>Contest</title>
+  <title>Contest Archive</title>
   <!-- Bootstrap core CSS -->{% load staticfiles %}
   <link href="{% static 'contest/bootstrap/dist/css/bootstrap.min.css' %}" rel="stylesheet">
   <!-- Custom styles for this template -->
@@ -46,7 +46,7 @@ SOFTWARE.
   <div class="container" id="i">
     <!--title-->
     <div class="well">
-      <h1>Contest</h1>
+      <h1>Contest Archive</h1>
     </div>
     <!--contest filter-->
     <div class="btn-group" role="group">
@@ -65,7 +65,8 @@ SOFTWARE.
         <tr>
           <th>
             {% if admin %}
-            <button type="button" class="btn btn-success btn-xs" data-toggle="modal" data-target="#contestInfo"> <span class="glyphicon glyphicon-plus"></span>
+            <button type="button" class="btn btn-success btn-xs" data-toggle="modal" data-target="#contestInfo">
+              <span class="glyphicon glyphicon-plus"></span>
             </button>
             {% endif %}
           </th>
@@ -84,19 +85,26 @@ SOFTWARE.
             {% if admin %}
             <button type="button" class="btn btn-danger btn-xs"> <span class="glyphicon glyphicon-remove"></span>
             </button>
-            <button type="button" class="btn btn-info btn-xs" data-toggle="modal" data-target="#contestInfo{{ contest.id }}"> <span class="glyphicon glyphicon-pencil"></span>
-            </button>
-            {% else %}
-            <button type="button" class="btn btn-success btn-xs" data-toggle="tooltip" data-placement="top" title="Start Virtual Contest"> <span class="glyphicon glyphicon-play"></span>
-            </button>
-            <button type="button" class="btn btn-info btn-xs" data-toggle="modal" data-target="#contestInfo{{ contest.id }}"> <span class="glyphicon glyphicon-info-sign"></span>
-              <script>
-              $('[data-toggle="tooltip"]').tooltip({
-                'placement': 'top'
-              });
 
-              </script>
-              {% endif %}
+            <button type="button" class="btn btn-info btn-xs" data-toggle="modal" data-target="#contestInfo{{ contest.id }}">
+              <span class="glyphicon glyphicon-pencil"></span>
+            </button>
+
+            {% else %}
+            <button type="button" class="btn btn-success btn-xs" data-toggle="tooltip" data-placement="top" title="Start Virtual Contest">
+              <span class="glyphicon glyphicon-play"></span>
+            </button>
+
+            <button type="button" class="btn btn-info btn-xs" data-toggle="modal" data-target="#contestInfo{{ contest.id }}">
+              <span class="glyphicon glyphicon-info-sign"></span>
+            </button>
+            <script>
+            $('[data-toggle="tooltip"]').tooltip({
+              'placement': 'top'
+            });
+
+            </script>
+            {% endif %}
           </td>
           <td>{{ contest.id }}</td>
           <td><a href="{{ contest.id }}">{{ contest.name }}</a>
@@ -179,7 +187,9 @@ SOFTWARE.
                     <td>{{ problem.id }}</td>
                     <td>{{ problem.name }}</td>
                   </tr>
-                  {% endfor %} {% if admin %}
+                  {% endfor %}
+                  <!-- -->
+                  {% if admin %}
                   <tr>
                     <td style="width:10%">
                       <button type="button" class="btn btn-success btn-xs"> <span class="glyphicon glyphicon-plus"></span>
@@ -205,7 +215,8 @@ SOFTWARE.
                     <th style="text-align:center">Contestant</th>
                   </tr>
                 </thead>
-                <tbody>{% for ppl in contest.contestant_list %}
+                <tbody>
+                  {% for ppl in contest.contestant_list %}
                   <tr>
                     {% if admin %}
                     <td>
@@ -242,16 +253,22 @@ SOFTWARE.
                   <td>Start Time</td>
                   <td>
                     {% if admin %}
-                    <input class="form-control" value="{{ contest.start_time }}"> {% else %}
-                    <h3>{{ contest.start_time }}</h3> {% endif %}
+                    <input class="form-control" value="{{ contest.start_time }}"></input>
+                    {% else %}
+                    <h3>{{ contest.start_time }}</h3>
+                    <!-- -->
+                    {% endif %}
                   </td>
                 </tr>
                 <tr>
                   <td>End Time</td>
                   <td>
                     {% if admin %}
-                    <input class="form-control" value="{{ contest.end_time }}"> {% else %}
-                    <h3>{{ contest.end_time }}</h3> {% endif %}
+                    <input class="form-control" value="{{ contest.end_time }}"></input>
+                    {% else %}
+                    <h3>{{ contest.end_time }}</h3>
+                    <!-- -->
+                    {% endif %}
                   </td>
                 </tr>
               </table>
@@ -267,7 +284,8 @@ SOFTWARE.
                     <th style="text-align:center">Coowner</th>
                   </tr>
                 </thead>
-                <tbody>{% for ppl in contest.coowner_list %}
+                <tbody>
+                  {% for ppl in contest.coowner_list %}
                   <tr>
                     {% if admin %}
                     <td>
@@ -277,9 +295,10 @@ SOFTWARE.
                     <td>{{ forloop.counter }}</td>
                     <td>{{ ppl.name }}</td>
                   </tr>
-                  {% endfor %} {% if admin %}
+                  {% endfor %}
+                  <!-- -->
+                  {% if admin %}
                   <tr>
-
                     <td style="width:10%">
                       <button type="button" class="btn btn-success btn-xs"> <span class="glyphicon glyphicon-plus"></span>
                       </button>
