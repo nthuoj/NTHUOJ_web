@@ -21,32 +21,32 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
-var displayinfo=false;
-var logininfo=false;
+var displayInfo = false;
+var loginInfo = false;
 
 window.onload = function() {
     alert("You have new messages!");
 }
 function info() {
-    if(displayinfo==false){	
-        document.getElementById("information").style.display="block";
-        displayinfo=!displayinfo;
+    if(displayInfo == false){	
+        document.getElementById("information").style.display = "block";
+        displayInfo = !displayInfo;
     }
     else{
-        document.getElementById("information").style.display="none";	
-        displayinfo=!displayinfo;
+        document.getElementById("information").style.display = "none";	
+        displayInfo = !displayInfo;
     }
 }
 function sendinfo() {
-    var text=document.getElementById("txt").value;
-    var orgintext=document.getElementById("information").innerHTML;
-    document.getElementById("information").innerHTML=orgintext+'<li class="divider">'+text+'</li>'
+    var text = document.getElementById("txt").value;
+    var orgintext = document.getElementById("information").innerHTML;
+    document.getElementById("information").innerHTML = orgintext + '<li class="divider">' + text + '</li>'
     //alert(orgintext);
-    alert("You have new messages!"+text);
+    alert("You have new messages!" + text);
 }
 function log_in() {
     //alert('1');	
-    document.getElementById("notlogin").style.display="none";	
+    document.getElementById("notlogin").style.display = "none";	
     //document.getElementById("notlogin").innerHTML
     //document.getElementById("notlogin").style.display="none";	
 }
