@@ -29,7 +29,7 @@ import datetime
 def home(request):
     t = time.time()
     tstr = datetime.datetime.fromtimestamp(t).strftime('%Y-%m-%d %H:%M:%S')
-    return render(request, 'newindex.html', { 'tstr':tstr, 'info1':123, 'info2':123456789, 'Column_content':'Column content', 'contest1':'DS', 'contest2':'junior', 'contest3':'senior', 'contest4':'ABCDEFG', 'contest5':'GGGGGG', 'rtime1':'100 days', 'rtime2':'1 seconds', 'rtime3':'0 seconds', 'utime1':'?????', 'utime2':'@@', 'people':'123' })
+    return render(request, 'index.html', { 'tstr':tstr, 'info1':123, 'info2':123456789, 'Column_content':'Column content', 'contest1':'DS', 'contest2':'junior', 'contest3':'senior', 'contest4':'ABCDEFG', 'contest5':'GGGGGG', 'rtime1':'100 days', 'rtime2':'1 seconds', 'rtime3':'0 seconds', 'utime1':'?????', 'utime2':'@@', 'people':'123' })
 
 def base(request):
     t = time.time()
