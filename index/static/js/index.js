@@ -28,27 +28,23 @@ window.onload = function() {
     alert("You have new messages!");
 }
 function info() {
-    if(displayInfo == false){	
+    if(displayInfo == false){
         document.getElementById("information").style.display = "block";
         displayInfo = !displayInfo;
     }
     else{
-        document.getElementById("information").style.display = "none";	
+        document.getElementById("information").style.display = "none";
         displayInfo = !displayInfo;
     }
 }
 function sendinfo() {
     var text = document.getElementById("txt").value;
     var orgintext = document.getElementById("information").innerHTML;
-    document.getElementById("information").innerHTML = orgintext + '<li class="divider">' + text + '</li>'
-    //alert(orgintext);
+    document.getElementById("information").innerHTML = orgintext + '<li class="divider">' + text + '</li>';
     alert("You have new messages!" + text);
 }
 function log_in() {
-    //alert('1');	
-    document.getElementById("notlogin").style.display = "none";	
-    //document.getElementById("notlogin").innerHTML
-    //document.getElementById("notlogin").style.display="none";	
+    document.getElementById("notlogin").style.display = "none";
 }
 $(function() {
     setInterval(function() {
