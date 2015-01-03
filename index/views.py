@@ -45,13 +45,13 @@ def get_time(request):
     return HttpResponse(tstr)
 
 def submit(request):
-    return render(request, 'submit.html', {'people':'123'})
+    return render(request, 'submit.html', {'people':'123', 'info1':123, 'info2':123456789})
 
 def status(request):
-    return render(request, 'status.html', {'people':'123'})
+    return render(request, 'status.html', {'people':'123', 'info1':123, 'info2':123456789})
 
 def group_list(request):
-    return render(request, 'group_list.html', {'people':'123'})
+    return render(request, 'group_list.html', {'people':'123', 'info1':123, 'info2':123456789})
 
 def team_list(request):
-    return render(request, 'team_list.html', {'people':'123'})
+    return render(request, 'team_list.html', {'people':'123', 'info1':123, 'info2':123456789})

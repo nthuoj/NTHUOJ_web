@@ -296,3 +296,10 @@ textarea#inputSmall {
   color: black;
   margin-bottom: 0px;
 }
+#time {
+  margin-bottom: 0px;
+  display:inline;
+}
+.p10 {
+  display:inline;
+}
