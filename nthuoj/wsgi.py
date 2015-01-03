@@ -1,5 +1,5 @@
 """
-WSGI config for haha project.
+WSGI config for nthuoj project.
 
 It exposes the WSGI callable as a module-level variable named ``application``.
 
