@@ -1,0 +1,177 @@
+<!--
+The MIT License (MIT)
+
+Copyright (c) 2014 NTHUOJ team
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+-->
+{% extends "users/base.html" %}
+{% load static %}
+{% block body_block %}
+
+<script language="javascript" type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/flot/0.8.2/jquery.flot.min.js"></script>
+<script language="javascript" type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/flot/0.8.2/jquery.flot.pie.min.js"></script>
+
+<!-- conform password modal -->
+<div class="modal fade" id="passwd-modal" role="dialog" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">
+          <span aria-hidden="true">&times;</span>
+          <span class="sr-only">Close</span>
+        </button>
+        <h4 class="modal-title">Please Enter Your Current Password</h4>
+      </div>
+      <div class="modal-body">
+        <form class="form-horizontal">
+          <div class="form-group">
+            <label class="control-label">Current Password</label>
+            <input class="form-control input-sm" type="password">
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-default" data-dismiss="modal">Close</button>
+        <button class="btn btn-primary">Save changes</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src={% static "js/piechartsettings.js"%}></script>
+<script type="text/javascript">
+    $(function() {
+        plot_piechart({{piechart_data|safe}});
+    });
+</script>
+
+<div class="bs-docs-section">
+  <div class="row">
+    <div class="col-lg-6" style="width:49%;height:70%;float:left;">
+      <div class="well bs-component container-fulid">
+        <form class="form-horizontal" style="width:40%;padding:5px;">
+          <fieldset>
+            <legend>Statistics</legend>
+            <div id="piechart" style="width:500px;height:400px;"></div>
+          </fieldset>
+        </form>
+      </div>
+    </div>
+
+    <div class="col-lg-6" style="width:49%;height:70%;float:right;">
+      {% block profile_field_block %}
+      <div class="well bs-component container-fulid">
+        <form class="form-horizontal" style="width:60%; padding: 5px;">
+          <fieldset>
+            <legend>Profile</legend>
+            <div class="form-group">
+              <label class="col-lg-4 control-label">User ID</label>
+              <div class="col-lg-8">
+                <input type="text" class="form-control" value="" disabled>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="col-lg-4 control-label">Nickname</label>
+              <div class="col-lg-8">
+                <input type="text" class="form-control" value="">
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="col-lg-4 control-label">Email</label>
+              <div class="col-lg-8">
+                <input type="text" class="form-control" value="">
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="col-lg-4 control-label">New Password</label>
+              <div class="col-lg-8">
+                <input type="password" class="form-control" placeholder="Password">
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="col-lg-4 control-label">Conform Password</label>
+              <div class="col-lg-8">
+                <input type="password" class="form-control" placeholder="Password">
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="col-lg-4 control-label">Class Participatd</label>
+              <div class="col-lg-8 col-lg-offset-4" style="margin-bottom:2px">
+                <input type="text" class="form-control" value="" disabled>
+              </div>
+              <div class="col-lg-8 col-lg-offset-4" style="margin-bottom:2px">
+                <input type="text" class="form-control" value="" disabled>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="col-lg-4 control-label">Team Participatd</label>
+              <div class="col-lg-8 col-lg-offset-4" style="margin-bottom:2px">
+                <input type="text" class="form-control" value="" disabled="">
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="col-lg-4 control-label">Registration Date</label>
+              <div class="col-lg-8">
+                <input type="text" class="form-control" value="" disabled>
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="select" class="col-lg-4 control-label">User Level</label>
+              <div class="col-lg-8">
+                <select class="form-control" id="select">
+                  <option>admin</option>
+                  <option>judge</option>
+                  <option>sub-judge</option>
+                  <option>user</option>
+                </select>
+              </div>
+            </div>
+            <legend>OJ Settings</legend>
+            <div class="form-group">
+              <label for="select" class="col-lg-4 control-label">Theme</label>
+              <div class="col-lg-8">
+                <select class="form-control" id="select">
+                  <option>Paper</option>
+                  <option>Readable</option>
+                  <option>Cosmo</option>
+                  <option>Default</option>
+                  <option>Lumen</option>
+                </select>
+              </div>
+            </div>
+            <hr>
+            <div class="form-group">
+              <div class="col-lg-10">
+                <a href="#passwd-popup" class="btn btn-primary btn-lg" 
+                data-toggle="modal" data-target="#passwd-modal">Update</a>
+                <span class="help-block">To update, it requires your current password.</span>
+              </div>
+            </div>
+          </fieldset>
+
+        </form>
+      </div>
+      {% endblock profile_field_block %}
+    </div>
+  </div>
+</div>
+
+{% endblock body_block %}
