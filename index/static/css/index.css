@@ -22,7 +22,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 body{
-  padding-top:0px;
+  padding-top: 0px;
 }
 
 .gray {
@@ -298,8 +298,8 @@ textarea#inputSmall {
 }
 #time {
   margin-bottom: 0px;
-  display:inline;
+  display: inline;
 }
 .p10 {
-  display:inline;
+  display: inline;
 }
