@@ -32,10 +32,14 @@ SOFTWARE.
 {% endblock import_source %}
 {% block body_block %}
 {% include "clock.html" %}
-  <div style="position:relative;bottom:0px;"><p style="text-align:center" class="err1" >4&nbsp0&nbsp4</p></div>
+  <div style="position:relative;bottom:0px;">
+    <p style="text-align:center" class="err1" >4&nbsp0&nbsp4</p>
+  </div>
   <p style="text-align:center" class="err2">Page Not Found</p>
   <p style="text-align:center" class="err2">{{ error_message }}</p>
-  <p style="text-align:center" class="err3">Sorry , the page you are looking for seems to be missing.</p>
+  <p style="text-align:center" class="err3">
+    Sorry , the page you are looking for seems to be missing.
+  </p>
 
   <hr class="hr1" style="position:relative;top:40px;">
   <br><br><br><br><br><br><br><br><br><br>

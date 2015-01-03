@@ -40,10 +40,6 @@ SOFTWARE.
   <script src="//cdnjs.cloudflare.com/ajax/libs/magnific-popup.js/0.9.9/jquery.magnific-popup.min.js"></script>
   <link rel="stylesheet" href={% static "./css/mfp-fade.css"%}>
   <script src={% static "./js/popup-setting.js"%}></script>
-  <!--
-  <link rel="stylesheet" href={% static "./css/magnific-popup.css"%}>
-  <script src={% static "./js/jquery.magnific-popup.js"%}></script>
-  -->
   <script src={% static "./js/index.js"%}></script>
   <link rel="stylesheet" href={% static "./css/index.css"%} media="screen">
   {% block import_source %}
@@ -72,12 +68,16 @@ SOFTWARE.
         <div class="modal-footer">
           <br>
           <div class="poptxt_login">
-            Don't have an account? You can <a href="#register-popup" class="open-popup-link">
-            <p class="p6">register here</p></a>
+            Don't have an account? You can 
+            <a href="#register-popup" class="open-popup-link">
+              <p class="p6">register here</p>
+            </a>
           </div>
             <div class="poptxt_sm">
               <br>
-              <a href="" class="btn btn-default btn1" onclick="log_in();">Submit</a>
+              <a href="" class="btn btn-default btn1" onclick="log_in();">
+                Submit
+              </a>
             </div>
         </div>
       </form>
@@ -90,11 +90,13 @@ SOFTWARE.
       <h2><p class="poptitle"><b>Feedback</b></p></h2>
       <form class="form-horizontal feedback">
         <div class="form-group">
-
-          <textarea class="form-control input-sm" type="text" id="inputSmall" ></textarea>
-
+          <textarea class="form-control input-sm" type="text" id="inputSmall" >
+          </textarea>
           <div class="poptxt_sm">
-            <br><a href="" class="btn btn-default btn1">Submit</a>
+            <br>
+            <a href="" class="btn btn-default btn1">
+              Submit
+            </a>
           </div>
         </div>
       </form>
@@ -107,13 +109,21 @@ SOFTWARE.
       <h2><p class="poptitle"><b>Register</b></p></h2>
         <form class="form-horizontal register">
           <div class="form-group">
-            <label class="control-label" for="inputSmall">Account</label>
+            <label class="control-label" for="inputSmall">
+              Account
+            </label>
             <input class="form-control input-sm" type="text" id="inputSmall" placeholder="Account">
-            <label class="control-label" for="inputSmall">Password</label>
-            <input class="form-control input-sm" type="text" id="inputSmall" placeholder="Password">      
-            <label class="control-label" for="inputSmall">Reenter Password</label>
+            <label class="control-label" for="inputSmall">
+              Password
+            </label>
+            <input class="form-control input-sm" type="text" id="inputSmall" placeholder="Password">
+            <label class="control-label" for="inputSmall">
+              Reenter Password
+            </label>
             <input class="form-control input-sm" type="text" id="inputSmall" placeholder="Reenter Password">
-            <label class="control-label" for="inputSmall">Email</label>
+            <label class="control-label" for="inputSmall">
+              Email
+            </label>
             <input class="form-control input-sm" type="text" id="inputSmall" placeholder="Email">
 
           <div class="poptxt_sm">
@@ -131,14 +141,18 @@ SOFTWARE.
       <form class="form-horizontal forget">
         <div class="form-group">
 
-          <label class="control-label" for="inputSmall">Enter your account and email, and we will help you !</label><br>
+          <label class="control-label" for="inputSmall">
+            Enter your account and email, and we will help you !
+          </label>
+          <br>
           <label class="control-label" for="inputSmall">Account</label>
           <input class="form-control input-sm" type="text" id="inputSmall" placeholder="Account">
           <label class="control-label" for="inputSmall">Email</label>
           <input class="form-control input-sm" type="text" id="inputSmall" placeholder="Email">
 
           <div class="poptxt_sm">
-            <br><a href="" class="btn btn-default btn1">Submit</a>
+            <br>
+            <a href="" class="btn btn-default btn1">Submit</a>
           </div>
         </div>
       </form>
@@ -162,12 +176,7 @@ SOFTWARE.
     <div id="mwt_slider_content">feedback</div>
 
     <div id="mwt_fb_tab2">
-      <span>{{ people }}</span>
-      <!--
-      <span>2</span>
-      <span>3</span>
-      <span>4</span>
-      -->
+      <span>{{ people }}</span>      
     </div>
     <div id="mwt_slider_content">feedback</div>
   </div>
@@ -218,9 +227,13 @@ SOFTWARE.
         <li><a href="#"><p class="p2">User Rank</p></a></li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
-        <li ><img src={% static "./images/14.png "%} height="50" width="50" onclick="info();" class="ring"></li>
+        <li >
+          <img src={% static "./images/14.png "%} height="50" width="50" onclick="info();" class="ring">
+        </li>
         <li id="notlogin" >
-          <a href="#login-popup" class="open-popup-link"><p class="p3">Login</p></a>
+          <a href="#login-popup" class="open-popup-link">
+            <p class="p3">Login</p>
+          </a>
         </li>
       </ul>
     </div>
@@ -240,8 +253,10 @@ SOFTWARE.
   {% endblock body_block %}
   <!-- footer -->
   <div class="footer fooe" style="height: 40px">
-    <a href="" class="p11"  style="position:relative;left:30px;">Contact us</a>       
-    <p class="p10" style="position:relative;float: right;right:15px;top:5px">© NTHU Online Judge 2014, Templates are from Bootstrap Project</p>
+    <a href="" class="p11"  style="position:relative;left:30px;">Contact us</a>
+    <p class="p10" style="position:relative;float: right;right:15px;top:5px">
+      © NTHU Online Judge 2014, Templates are from Bootstrap Project
+    </p>
   </div>
 
 </body>
