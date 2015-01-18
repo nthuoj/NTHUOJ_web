@@ -40,8 +40,10 @@ SOFTWARE.
   </div>
   <div style='padding-top: 50px;'>
     <span class='btn-group' role='group'>
-      <button type='button' class='btn btn-default' id='my_problem' onclick="switch_problem('my')">my problem</button>
-      <button type='button' class='btn btn-default' id='all_problem' onclick="switch_problem('all')">all problem</button>
+      <button type='button' class='btn btn-default' 
+      id='my_problem' onclick="switch_problem('my')">my problem</button>
+      <button type='button' class='btn btn-default' 
+      id='all_problem' onclick="switch_problem('all')">all problem</button>
     </span>
     <div id='all-problem'>
       {% include 'problem/problem_list.html' with problem=all_problem %}
