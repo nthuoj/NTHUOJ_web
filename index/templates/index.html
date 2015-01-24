@@ -32,7 +32,7 @@ SOFTWARE.
 {% endblock import_source %}
 
 {% block body_block %}
-  <!-- clock -->  
+  <!-- clock -->
   <div class="gray">
   </div>
 
@@ -69,46 +69,11 @@ SOFTWARE.
         <th>#</th>
         <th>Contest name</th>
         <th>remaining time</th>
-        <th>upcoming(1 day)</th>
+        <th>upcoming</th>
       </tr>
     </thead>
-    <tbody class="line" >
-      <tr>
-        <td>1</td>
-        <td>{{ Column_content }}</td>
-        <td>{{ Column_content }}</td>
-        <td>{{ Column_content }}</td>
-      </tr>
-      <tr>
-        <td>2</td>
-        <td>{{ contest1 }}</td>
-        <td>{{ rtime1 }}</td>
-        <td></td>
-      </tr>
-      <tr class="info">
-        <td>3</td>
-        <td>{{ contest2 }}</td>
-        <td>{{ rtime2 }}</td>
-        <td></td>
-      </tr>
-      <tr class="success">
-        <td>4</td>
-        <td>{{ contest3 }}</td>
-        <td>{{ rtime3 }}</td>
-        <td></td>
-      </tr>
-      <tr class="danger">
-        <td>5</td>
-        <td>{{ contest4 }}</td>
-        <td></td>
-        <td>{{ utime1 }}</td>
-      </tr>
-      <tr class="warning">
-        <td>6</td>
-        <td>{{ contest5 }}</td>
-        <td></td>
-        <td>{{ utime2 }}</td>
-      </tr>
+    <tbody class="line" id="contest_content">
+      <tr><td>{{ contest_num }}#{{ contest }}#{{ ctime }}</td></tr>
     </tbody>
   </table>
 {% endblock body_block %}

@@ -25,24 +25,28 @@ from django.shortcuts import render
 from django.http import HttpResponse
 import time
 import datetime
+import random
 # Create your views here.
 def home(request):
     t = time.time()
     tstr = datetime.datetime.fromtimestamp(t).strftime('%Y-%m-%d %H:%M:%S')
+    vol = 0
+    vol = random.randint(1,10)
+    contest_num = 0
+    contest_num = random.randint(2,4)
+    contest = ['DS', 'senior', 'junior', 'ABC']
+    ctime = ['seconds', 'minutes', 'hours', 'days']
     return render(request, 'index.html', 
-                { 'tstr':tstr, 'info1':123, 'info2':1234567, 
-                'Column_content':'Column content', 'contest1':'DS',
-                'contest2':'junior', 'contest3':'senior', 'contest4':'ABCDEFG',
-                'contest5':'GGGGGG', 'rtime1':'100 days', 'rtime2':'1 seconds',
-                'rtime3':'0 seconds', 'utime1':'?????', 'utime2':'@@',
-                'people':'123' })
+                { 'tstr':tstr, 'info1':123, 'info2':1234567,
+                'people':'123', 'vol': vol, 'contest_num':contest_num, 
+                'contest':contest, 'ctime':ctime})
 
 def base(request):
     t = time.time()
     tstr = datetime.datetime.fromtimestamp(t).strftime('%Y-%m-%d %H:%M:%S')
     return render(request, 'base.html', 
                             { 'tstr':tstr, 'info1':123, 'info2':1234567, 
-                            'people':'123' })
+                            'people':'123'})
 
 def broken(request):
     return render(request, 'brokenpage.html', 
