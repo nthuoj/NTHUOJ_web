@@ -57,7 +57,7 @@ def team_list(request):
 
     return render(
         request,
-        'team/team_list.html',
+        'team/teamList.html',
         {'team_list': teams})
 
 
@@ -79,7 +79,7 @@ def team_profile(request):
 
     return render(
         request,
-        'team/team_profile.html',
+        'team/teamProfile.html',
         {
             'piechart_data': json.dumps(piechart_data),
             'team_stat': team_stat,
