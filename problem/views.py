@@ -32,6 +32,7 @@ def problem(request):
 def detail(request, problem_id):
     p = {
       'pid': problem_id,
+      'title': 'A a+b problem',
       'description': 'Given a, b, output a+b.',
       'input': 'a, b <= 100000000',
       'output': 'a+b',
