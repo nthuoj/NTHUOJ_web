@@ -36,15 +36,9 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-<<<<<<< HEAD
-<<<<<<< HEAD
     'index',
-=======
-=======
     'contest',
->>>>>>> e415e994c11a12bae43f6c9c8b0342a95b3a600d
     'users',
->>>>>>> 654949c4f754f18ef1967c591d509451e6a99545
 )
 
 MIDDLEWARE_CLASSES = (

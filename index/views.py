@@ -36,21 +36,27 @@ def home(request):
     contest_num = random.randint(2,4)
     contest = ['DS', 'senior', 'junior', 'ABC']
     ctime = ['seconds', 'minutes', 'hours', 'days']
+    people = 0
+    people = random.randint(100,999)
     return render(request, 'index.html', 
                 { 'tstr':tstr, 'info1':123, 'info2':1234567,
-                'people':'123', 'vol': vol, 'contest_num':contest_num, 
+                'people':people, 'vol': vol, 'contest_num':contest_num, 
                 'contest':contest, 'ctime':ctime})
 
 def base(request):
     t = time.time()
     tstr = datetime.datetime.fromtimestamp(t).strftime('%Y-%m-%d %H:%M:%S')
+    people = 0
+    people = random.randint(100,999)
     return render(request, 'base.html', 
                             { 'tstr':tstr, 'info1':123, 'info2':1234567, 
-                            'people':'123'})
+                            'people':people})
 
 def broken(request):
+    people = 0
+    people = random.randint(100,999)
     return render(request, 'brokenpage.html', 
-                            {'error_message':'error message', 'people':'123', 
+                            {'error_message':'error message', 'people':people, 
                             'info1':123, 'info2':1234567})
 
 def get_time(request):
@@ -59,17 +65,25 @@ def get_time(request):
     return HttpResponse(tstr)
 
 def submit(request):
+    people = 0
+    people = random.randint(100,999)
     return render(request, 'submit.html', 
-                            {'people':'123', 'info1':123, 'info2':1234567})
+                            {'people':people, 'info1':123, 'info2':1234567})
 
 def status(request):
+    people = 0
+    people = random.randint(100,999)
     return render(request, 'status.html', 
-                            {'people':'123', 'info1':123, 'info2':1234567})
+                            {'people':people, 'info1':123, 'info2':1234567})
 
 def group_list(request):
+    people = 0
+    people = random.randint(100,999)
     return render(request, 'group_list.html', 
-                            {'people':'123', 'info1':123, 'info2':1234567})
+                            {'people':people, 'info1':123, 'info2':1234567})
 
 def team_list(request):
+    people = 0
+    people = random.randint(100,999)
     return render(request, 'team_list.html', 
-                            {'people':'123', 'info1':123, 'info2':1234567})
+                            {'people':people, 'info1':123, 'info2':1234567})
