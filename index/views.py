@@ -23,67 +23,52 @@ SOFTWARE.
 '''
 from django.shortcuts import render
 from django.http import HttpResponse
+from django.template import RequestContext
 import time
 import datetime
 import random
 # Create your views here.
 def index(request):
-    t = time.time()
-    tstr = datetime.datetime.fromtimestamp(t).strftime('%Y-%m-%d %H:%M:%S')
-    vol = 0
-    vol = random.randint(1,10)
     contest_num = 0
     contest_num = random.randint(2,4)
     contest = ['DS', 'senior', 'junior', 'ABC']
     ctime = ['seconds', 'minutes', 'hours', 'days']
-    people = 0
-    people = random.randint(100,999)
     return render(request, 'index/index.html', 
-                { 'tstr':tstr, 'info1':123, 'info2':1234567,
-                'people':people, 'vol': vol, 'contest_num':contest_num, 
-                'contest':contest, 'ctime':ctime})
+                {'contest_num':contest_num, 'contest':contest, 'ctime':ctime}, 
+                context_instance = RequestContext(request, processors = [custom_proc]))
 
 def base(request):
-    t = time.time()
-    tstr = datetime.datetime.fromtimestamp(t).strftime('%Y-%m-%d %H:%M:%S')
-    people = 0
-    people = random.randint(100,999)
-    return render(request, 'index/base.html', 
-                            { 'tstr':tstr, 'info1':123, 'info2':1234567, 
-                            'people':people})
+    return render(request, 'index/base.html',{},
+                context_instance = RequestContext(request, processors = [custom_proc]))
 
 def broken(request):
-    people = 0
-    people = random.randint(100,999)
-    return render(request, 'index/brokenpage.html', 
-                            {'error_message':'error message', 'people':people, 
-                            'info1':123, 'info2':1234567})
+    return render(request, 'index/brokenpage.html',
+                {'error_message':'error message'},
+                context_instance = RequestContext(request, processors = [custom_proc]))
 
 def get_time(request):
     t = time.time()
     tstr = datetime.datetime.fromtimestamp(t).strftime('%Y-%m-%d %H:%M:%S')
     return HttpResponse(tstr)
 
-def submit(request):
-    people = 0
-    people = random.randint(100,999)
-    return render(request, 'index/submit.html', 
-                            {'people':people, 'info1':123, 'info2':1234567})
-
 def status(request):
-    people = 0
-    people = random.randint(100,999)
-    return render(request, 'index/status.html', 
-                            {'people':people, 'info1':123, 'info2':1234567})
-
+    return render(request, 'index/status.html',{},
+                context_instance = RequestContext(request, processors = [custom_proc]))
 def group_list(request):
-    people = 0
-    people = random.randint(100,999)
-    return render(request, 'index/group_list.html', 
-                            {'people':people, 'info1':123, 'info2':1234567})
+    return render(request, 'index/group_list.html',{},
+                context_instance = RequestContext(request, processors = [custom_proc]))
 
-def team_list(request):
+def custom_proc(request):    
+    vol = 0    
+    vol = random.randint(1,10)
+    t = time.time()
+    tstr = datetime.datetime.fromtimestamp(t).strftime('%Y-%m-%d %H:%M:%S')
     people = 0
     people = random.randint(100,999)
-    return render(request, 'index/team_list.html', 
-                            {'people':people, 'info1':123, 'info2':1234567})
+    return {
+        'vol': vol,
+        'tstr': tstr,
+        'people': people,
+        'info1': 123,
+        'info2': 1234567
+    }

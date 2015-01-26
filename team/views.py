@@ -26,8 +26,9 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 import json
 import random
 import datetime
+from index.views import custom_proc
+from django.template import RequestContext
 # Create your views here.
-
 
 def team_list(request):
     team_profile = {
@@ -58,7 +59,8 @@ def team_list(request):
     return render(
         request,
         'team/teamList.html',
-        {'team_list': teams})
+        {'team_list': teams},
+        context_instance = RequestContext(request, processors = [custom_proc]))
 
 
 def team_profile(request):
@@ -84,4 +86,4 @@ def team_profile(request):
             'piechart_data': json.dumps(piechart_data),
             'team_stat': team_stat,
             'team_profile': team_profile
-        })
+        },context_instance = RequestContext(request, processors = [custom_proc]))

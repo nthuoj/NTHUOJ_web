@@ -24,11 +24,14 @@ SOFTWARE.
 from django.shortcuts import render
 import json
 import random
+from index.views import custom_proc
+from django.template import RequestContext
 # Create your views here.
 
 
 def submit(request):
-    return render(request, 'users/submit.html', {})
+    return render(request, 'users/submit.html', {},
+                context_instance = RequestContext(request, processors = [custom_proc]))
 
 
 def profile(request):
@@ -38,4 +41,5 @@ def profile(request):
     return render(
         request,
         'users/profile.html',
-        {'piechart_data': json.dumps(piechart_data)})
+        {'piechart_data': json.dumps(piechart_data)},
+        context_instance = RequestContext(request, processors = [custom_proc]))
