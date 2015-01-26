@@ -26,7 +26,5 @@ urlpatterns = patterns('',
     url(r'^broken/', views.broken),
     url(r'^get_time/', views.get_time),
     url(r'^status/', views.status),
-    url(r'^submit/', views.submit),
     url(r'^group_list/', views.group_list),
-    url(r'^team_list/', views.team_list),
 )
