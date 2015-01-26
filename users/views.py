@@ -26,11 +26,16 @@ import json
 import random
 # Create your views here.
 
+
 def submit(request):
     return render(request, 'users/submit.html', {})
+
 
 def profile(request):
     piechart_data = []
     for l in ['WA', 'AC', 'RE', 'TLE', 'MLE', 'OLE', 'Others']:
-        piechart_data += [{'label': l, 'data': random.randint(50,100)}]
-    return render(request, 'users/profile.html', {'piechart_data': json.dumps(piechart_data)})
+        piechart_data += [{'label': l, 'data': random.randint(50, 100)}]
+    return render(
+        request,
+        'users/profile.html',
+        {'piechart_data': json.dumps(piechart_data)})
