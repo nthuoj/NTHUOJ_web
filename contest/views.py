@@ -21,6 +21,8 @@
 from django.http import HttpResponse
 from django.shortcuts import render,get_object_or_404
 from datetime import datetime
+from index.views import custom_proc
+from django.template import RequestContext
 
 def index(request):
     
@@ -49,7 +51,8 @@ def index(request):
     #problem_list = Problem.objects.all()
     #contestant_list = {1:'naruto',2:'obama'}
     #coowner_list = {1:'teemo',2:'lux',3:'jinx'}
-    return render(request, 'contest/contestArchive.html',{'contest_list':contestList,'admin':1})
+    return render(request, 'contest/contestArchive.html',{'contest_list':contestList,'admin':1},
+                context_instance = RequestContext(request, processors = [custom_proc]))
 
 def contest(request,contest_id):
 
@@ -74,4 +77,5 @@ def contest(request,contest_id):
                     ,'clarification_list':clarificationList}
 
     return render(request, 'contest/contest.html',{'contest':contest1,'problem_list':problemList,
-        'contestant_list':contestantList,'server_time':serverTime})
+        'contestant_list':contestantList,'server_time':serverTime},
+        context_instance = RequestContext(request, processors = [custom_proc]))
