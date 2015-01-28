@@ -1,4 +1,4 @@
-'''
+/*
 The MIT License (MIT)
 
 Copyright (c) 2014 NTHUOJ team
@@ -20,25 +20,43 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
-'''
+*/
+var editor;
 
-import getpass
+$(function() {
+    editor = CodeMirror.fromTextArea(document.getElementById('code_editor'), {
+        lineNumbers: true,
+        styleActiveLine: true,
+        matchBrackets: true,
+        mode: 'text/x-csrc',
+        lineWrapping: true,
+        tab: 4,
+        indentUnit: 4,
+        matchBrackets: true,
+        theme: 'solarized light'
+    });
 
-# Setting nthuoj.ini
-host = raw_input("Mysql host: ")
-db = raw_input("Mysql database: ")
-user = raw_input("Please input your mysql user: ")
-pwd = getpass.getpass()
+    $('input[type=file]').bootstrapFileInput();
+    $('.file-inputs').bootstrapFileInput();
 
-# Re-write nthuoj.ini file
-iniFile = open("nthuoj.ini", "w")
-iniFile.write("[client]\n")
-iniFile.write("host = %s\n" % host)
-iniFile.write("database = %s\n" % db)
-iniFile.write("user = %s\n" % user)
-iniFile.write("password = %s\n" % pwd)
-iniFile.write("default-character-set = utf8\n")
-iniFile.close()
+    $('#fileinput').change(function(evt) {
+        //Retrieve the first (and only!) File from the FileList object
+        var f = evt.target.files[0];
 
+        if (f) {
+            var r = new FileReader();
+            r.onload = function(e) {
+                var contents = e.target.result;
+                editor.value = contents;
+                try {
+                    editor.getDoc().setValue(contents);
+                } catch (e) {
 
-# Install needed library
+                }
+            }
+            r.readAsText(f);
+        } else {
+            alert('Failed to load file');
+        }
+    })
+})
