@@ -21,24 +21,25 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 '''
-
-import getpass
-
-# Setting nthuoj.ini
-host = raw_input("Mysql host: ")
-db = raw_input("Mysql database: ")
-user = raw_input("Please input your mysql user: ")
-pwd = getpass.getpass()
-
-# Re-write nthuoj.ini file
-iniFile = open("nthuoj.ini", "w")
-iniFile.write("[client]\n")
-iniFile.write("host = %s\n" % host)
-iniFile.write("database = %s\n" % db)
-iniFile.write("user = %s\n" % user)
-iniFile.write("password = %s\n" % pwd)
-iniFile.write("default-character-set = utf8\n")
-iniFile.close()
+from django.shortcuts import render
+import json
+import random
+from index.views import custom_proc
+from django.template import RequestContext
+# Create your views here.
 
 
-# Install needed library
+def submit(request):
+    return render(request, 'users/submit.html', {},
+                context_instance = RequestContext(request, processors = [custom_proc]))
+
+
+def profile(request):
+    piechart_data = []
+    for l in ['WA', 'AC', 'RE', 'TLE', 'MLE', 'OLE', 'Others']:
+        piechart_data += [{'label': l, 'data': random.randint(50, 100)}]
+    return render(
+        request,
+        'users/profile.html',
+        {'piechart_data': json.dumps(piechart_data)},
+        context_instance = RequestContext(request, processors = [custom_proc]))
