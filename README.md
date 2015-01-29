@@ -17,6 +17,7 @@ git clone git@github.com:bruce3557/NTHUOJ_web.git
 * python2.7 
 * django1.7
 * mysql-server
+* python-mysqldb
 
 ###Installation:
 * Execute install.py to set database ip, username and password.
@@ -24,4 +25,10 @@ git clone git@github.com:bruce3557/NTHUOJ_web.git
     python install.py
     ```
 
-* After installing, you can modify `'<project/root>/nthuoj.ini'` if the database setting are modified.
+* After installing, you can modify `'<project/root>/nthuoj.ini'` if your database setting is modified.
+
+* Run database migration
+  ```
+  python manage.py migrate
+  ```
+

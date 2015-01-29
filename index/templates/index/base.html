@@ -1,0 +1,272 @@
+<!--
+The MIT License (MIT)
+
+Copyright (c) 2014 NTHUOJ team
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+-->
+<!DOCTYPE html>
+{% load static %}
+
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  {% block title_name %}
+  {% endblock title_name %}
+  <!-- necessarily jQeuery -->
+  <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js">
+  </script>
+  <!-- bootstrap, bootwatch JS & CSS -->
+  <link rel="stylesheet" 
+            href="http://bootswatch.com/paper/bootstrap.css" media="screen">
+  <link rel="stylesheet" 
+            href="http://bootswatch.com/assets/css/bootswatch.min.css">
+  <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js">
+  </script>
+  <!-- Magnific Popup core JS & CSS -->
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/magnific-popup.js/0.9.9/magnific-popup.css">
+  <script src="//cdnjs.cloudflare.com/ajax/libs/magnific-popup.js/0.9.9/jquery.magnific-popup.min.js">
+  </script>
+  <link rel="stylesheet" href={% static "./css/mfp-fade.css"%}>
+  <script src={% static "./js/popup-setting.js"%}></script>
+  <script src={% static "./js/index.js"%}></script>
+  <link rel="stylesheet" href={% static "./css/index.css"%} media="screen">
+  {% block import_source %}
+  {% endblock import_source %}
+</head>
+<body>
+
+  <!-- login popup -->
+  <div id="login-popup" class="mfp-hide">
+    <div class="jumbotron popdiv">
+      <h2><p class="poptitle"><b>Login</b></p></h2>
+
+      <form class="form-horizontal login">
+        <div class="form-group">
+          <label class="control-label" for="inputSmall">Account</label>
+          <input class="txtbd form-control input-sm" type="text" 
+                 id="inputSmall" placeholder="Account">
+        </div>
+        <div class="form-group">
+          <label class="control-label" for="inputSmall">Password</label>
+          <input class="txtbd form-control input-sm" type="text" 
+                 id="inputSmall " placeholder="Password">
+          <a href="#forget-popup" class="open-popup-link">
+            <p class="p6">forget password?</p>
+          </a>
+        </div>
+
+        <div class="modal-footer">
+          <br>
+          <div class="poptxt_login">
+            Don't have an account? You can 
+            <a href="#register-popup" class="open-popup-link">
+              <p class="p6">register here</p>
+            </a>
+          </div>
+            <div class="poptxt_sm">
+              <br>
+              <a href="" class="btn btn-default btn1" onclick="log_in();">
+                Submit
+              </a>
+            </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- feedback-popup -->
+  <div id="feedback-popup" class="mfp-hide">
+    <div class="jumbotron popdiv">
+      <h2><p class="poptitle"><b>Feedback</b></p></h2>
+      <form class="form-horizontal feedback">
+        <div class="form-group">
+          <textarea class="form-control input-sm" type="text" id="inputSmall" >
+          </textarea>
+          <div class="poptxt_sm">
+            <br>
+            <a href="" class="btn btn-default btn1">
+              Submit
+            </a>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- register-popup -->
+  <div id="register-popup" class="mfp-hide">
+    <div class="jumbotron popdiv">
+      <h2><p class="poptitle"><b>Register</b></p></h2>
+        <form class="form-horizontal register">
+          <div class="form-group">
+            <label class="control-label" for="inputSmall">
+              Account
+            </label>
+            <input class="form-control input-sm" type="text" 
+                   id="inputSmall" placeholder="Account">
+            <label class="control-label" for="inputSmall">
+              Password
+            </label>
+            <input class="form-control input-sm" type="text" 
+                   id="inputSmall" placeholder="Password">
+            <label class="control-label" for="inputSmall">
+              Reenter Password
+            </label>
+            <input class="form-control input-sm" type="text" 
+                   id="inputSmall" placeholder="Reenter Password">
+            <label class="control-label" for="inputSmall">
+              Email
+            </label>
+            <input class="form-control input-sm" type="text" 
+                   id="inputSmall" placeholder="Email">
+
+          <div class="poptxt_sm">
+            <br><a href="" class="btn btn-default btn1">Submit</a>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- forget_password popup -->
+  <div id="forget-popup" class="mfp-hide">
+    <div class="jumbotron popdiv">
+      <h2><p class="poptitle"><b>Forget Password</b></p></h2>
+      <form class="form-horizontal forget">
+        <div class="form-group">
+
+          <label class="control-label" for="inputSmall">
+            Enter your account and email, and we will help you !
+          </label>
+          <br>
+          <label class="control-label" for="inputSmall">Account</label>
+          <input class="form-control input-sm" type="text" 
+                 id="inputSmall" placeholder="Account">
+          <label class="control-label" for="inputSmall">Email</label>
+          <input class="form-control input-sm" type="text" 
+                 id="inputSmall" placeholder="Email">
+
+          <div class="poptxt_sm">
+            <br>
+            <a href="" class="btn btn-default btn1">Submit</a>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- sidebar -->
+  <div id="mwt_mwt_slider_scroll">
+    <div id="mwt_fb_tab">
+      <a href="#feedback-popup" class="open-popup-link sidebar_color">
+        <span>F</span>
+        <span>e</span>
+        <span>e</span>
+        <span>d</span>
+        <span>b</span>
+        <span>a</span>
+        <span>c</span>
+        <span>k</span>
+      </a>  
+    </div>
+    <div id="mwt_slider_content">feedback</div>
+
+    <div id="mwt_fb_tab2">
+      <span>{{ people }}</span>      
+    </div>
+    <div id="mwt_slider_content">feedback</div>
+  </div>
+
+  <!-- navbar -->
+  <div class="navbar navbar-default newbar">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" 
+              data-target=".navbar-responsive-collapse">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a href="/index/" class="navbar-brand">
+        <p class="p3">NTHU Online Judge</p>
+      </a>
+    </div>
+    <div class="navbar-collapse collapse navbar-responsive-collapse">
+      <ul class="nav navbar-nav">
+        <li class="dropdown">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+            <p class="p2">Contest<b class="caret"></b></p>
+          </a>
+          <ul class="dropdown-menu">
+            <li><a href="/contest/">contest archive</a></li>
+            <li><a href="#">running contest</a></li>
+          </ul>
+        </li>
+        <li class="dropdown">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+            <p class="p2">Problem<b class="caret"></b></p>
+          </a>
+          <ul class="dropdown-menu" id="volume_num">{{ vol }}</ul>
+        </li>
+        <li><a href="/users/submit"><p class="p2">Submit</p></a></li>
+        <li><a href="/index/status"><p class="p2">Status</p></a></li>
+        <li><a href="/index/group_list"><p class="p2">Group</p></a></li>
+        <li><a href="/team/list"><p class="p2">Team</p></a></li>
+        <li><a href="#"><p class="p2">Personal</p></a></li>
+        <li><a href="#"><p class="p2">User Rank</p></a></li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li >
+          <img src={% static "./images/14.png "%} height="50" width="50" 
+               onclick="info();" class="ring">
+        </li>
+        <li id="notlogin" >
+          <a href="#login-popup" class="open-popup-link">
+            <p class="p3">Login</p>
+          </a>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <!--information-->
+  <div class="information" id="information" style="display:none";>
+    <li class="divider">{{ info1 }}</li>
+    <li class="divider">{{ info2 }}</li>
+  </div>
+  <div class="temp"  >
+    <input type="text" id='txt' style="width:150px";>
+    <input type="button" style="cursor: pointer;" value="send" 
+           onclick="sendinfo();">
+  </div>  
+  {% block body_block %}
+  {% endblock body_block %}
+  <!-- footer -->
+  <div class="footer fooe" style="height: 35px">
+    <a href="" class="p11" style="position:relative;left:30px;">Contact us</a>
+    <p class="p10" style="position:relative;left:400px;">
+      © NTHU Online Judge 2014, Templates are from Bootstrap Project</p> 
+    <p id='time' 
+          style="font-size: 18px;color:white;position:relative;float:right;right:30px;">
+      {{ tstr }}
+    </p>
+  </div>
+
+</body>
+</html>
