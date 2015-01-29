@@ -39,8 +39,8 @@ class Problem(models.Model):
     sample_in = models.TextField(blank=True)
     sample_out = models.TextField(blank=True)
     visible = models.BooleanField(default=False)
-    error_torrence = models.DecimalField(decimal_places=15, max_digits=17, blank=True)
-    other_judge_id = models.IntegerField(blank=True)
+    error_torrence = models.DecimalField(decimal_places=15, max_digits=17, default=0)
+    other_judge_id = models.IntegerField(blank=True, null=True)
 
     LOCAL = 'L'
     SPECIAL = 'S'
@@ -68,14 +68,14 @@ class Testcase(models.Model):
     memory_limit = models.IntegerField(default=32)
 
     def __unicode__(self):
-        return str(self.id)
+        return self.problem.pname + ': ' + self.description
 
 
 class Submission(models.Model):
 
     problem = models.ForeignKey(Problem)
     user = models.ForeignKey(User)
-    team = models.ForeignKey(Team, blank=True)
+    team = models.ForeignKey(Team, blank=True, null=True)
     submit_time = models.DateTimeField(default=datetime.now)
     error_msg = models.TextField(blank=True)
 
@@ -132,11 +132,11 @@ class SubmissionDetail(models.Model):
         (RE, 'Runtime Error'),
         (PE, 'Presentation Error'),
     )
-    virdect = models.CharField(max_length=3, default='')
+    virdect = models.CharField(max_length=3, choices=VIRDECT_CHOICE, default='')
 
     class Meta:
         unique_together = (('tid', 'sid'),)
 
     def __unicode__(self):
-        return sid + ' to ' + tid
+        return 'sid ' + str(self.sid.id) + ', tid ' + str(self.tid.id)
 

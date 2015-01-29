@@ -30,7 +30,7 @@ from users.models import User
 
 class Team(models.Model):
 
-    team_name = models.CharField(max_length=15, default='')
+    team_name = models.CharField(max_length=15, default='', unique=True)
     leader = models.ForeignKey(User)
     description = models.TextField(blank=True)
     note = models.TextField(blank=True)
@@ -56,5 +56,5 @@ class TeamMember(models.Model):
         unique_together = (('team', 'member'),)
     
     def __unicode__(self):
-        return member + ' in ' + team
+        return self.member.username + ' in ' + self.team.team_name
 
