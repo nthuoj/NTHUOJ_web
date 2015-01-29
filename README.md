@@ -20,7 +20,7 @@ git clone git@github.com:bruce3557/NTHUOJ_web.git
 * python-mysqldb
 
 ###Installation:
-* Execute install.py to set database ip, username and password.
+* Execute install.py for initial setting.
     ```
     python install.py
     ```
