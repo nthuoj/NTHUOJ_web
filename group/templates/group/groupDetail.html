@@ -122,8 +122,14 @@ SOFTWARE.
                 {% endfor %}
               </tbody>
             </table>
+            <script language="javascript">
+            function loadContestData() {
+              $.get('/group/get_time/', function(data) {};
+            }
+            </script>
             <a href="" class="btn btn-sm btn-default" data-toggle="modal" 
-               data-target="#viewAllContestModal" style="float:right">view all</a>
+               data-target="#viewAllContestModal" style="float:right"
+               onclick="loadContestData()">view all</a>
           </div>
         </div>
       </div>
@@ -154,9 +160,9 @@ SOFTWARE.
             <a href="" class="btn btn-sm btn-default" data-toggle="modal" 
                data-target="#viewAllArchiveModal" style="float:right">view all</a>
           </div>
-    </div>
         </div>
       </div>
+    </div>
   </div>
   {% endblock contest_block %}
   <hr> 

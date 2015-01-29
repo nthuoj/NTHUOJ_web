@@ -22,7 +22,29 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.'''
 from django.http import HttpResponse
 from django.shortcuts import render_to_response, render
-
+def get_time(request):
+        contest_data = [
+            {'name':'11111', 'time':'20111010'},
+            {'name':'22222', 'time':'20140505'},
+            {'name':'33333', 'time':'20122222'},
+            {'name':'44444', 'time':'20133333'},
+            {'name':'55555', 'time':'20144444'},
+            {'name':'66666', 'time':'20166666'},
+            {'name':'33333', 'time':'20122222'},
+            {'name':'44444', 'time':'20133333'},
+            {'name':'55555', 'time':'20144444'},
+            {'name':'66666', 'time':'20166666'},
+            {'name':'33333', 'time':'20122222'},
+            {'name':'44444', 'time':'20133333'},
+            {'name':'55555', 'time':'20144444'},
+            {'name':'66666', 'time':'20166666'},
+            {'name':'77777', 'time':'20177777'}
+        ] 
+        return render(
+            request, 'group/groupDetail.html', {
+                'C_data': contest_data, 
+            })
+    
 def detail(request,group_id):
     contest_data = [
         {'name':'11111', 'time':'20111010'},
@@ -119,8 +141,7 @@ def detail(request,group_id):
 
     return render(
         request, 'group/groupDetail.html', {
-            'c_data': contest_list,
-            'C_data': contest_data, 
+            'c_data': contest_list, 
             'a_data': archive_list,
             'A_data': archive_data,
             'an_data': annowence_list,
