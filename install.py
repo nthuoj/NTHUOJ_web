@@ -51,4 +51,9 @@ for app in apps:
 
 os.system('python ./manage.py migrate')
 
+
+# Create super user
+os.system('python ./manage.py createsuperuser')
+
+
 # Install needed library
