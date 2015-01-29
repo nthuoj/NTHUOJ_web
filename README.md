@@ -27,8 +27,4 @@ git clone git@github.com:bruce3557/NTHUOJ_web.git
 
 * After installing, you can modify `'<project/root>/nthuoj.ini'` if your database setting is modified.
 
-* Run database migration
-  ```
-  python manage.py migrate
-  ```
 

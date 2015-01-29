@@ -23,22 +23,32 @@ SOFTWARE.
 '''
 
 import getpass
+import os.path
+import os
 
-# Setting nthuoj.ini
-host = raw_input("Mysql host: ")
-db = raw_input("Mysql database: ")
-user = raw_input("Please input your mysql user: ")
-pwd = getpass.getpass()
+if not os.path.isfile('nthuoj.ini'):
+    # Setting nthuoj.ini
+    host = raw_input('Mysql host: ')
+    db = raw_input('Mysql database: ')
+    user = raw_input('Please input your mysql user: ')
+    pwd = getpass.getpass()
 
-# Re-write nthuoj.ini file
-iniFile = open("nthuoj.ini", "w")
-iniFile.write("[client]\n")
-iniFile.write("host = %s\n" % host)
-iniFile.write("database = %s\n" % db)
-iniFile.write("user = %s\n" % user)
-iniFile.write("password = %s\n" % pwd)
-iniFile.write("default-character-set = utf8\n")
-iniFile.close()
+    # Re-write nthuoj.ini file
+    iniFile = open('nthuoj.ini', 'w')
+    iniFile.write('[client]\n')
+    iniFile.write('host = %s\n' % host)
+    iniFile.write('database = %s\n' % db)
+    iniFile.write('user = %s\n' % user)
+    iniFile.write('password = %s\n' % pwd)
+    iniFile.write('default-character-set = utf8\n')
+    iniFile.close()
 
+
+# Database Migratinos
+apps = ['index', 'problem', 'users', 'contest', 'team']
+for app in apps:
+    os.system('python ./manage.py makemigrations ' + app)
+
+os.system('python ./manage.py migrate')
 
 # Install needed library
