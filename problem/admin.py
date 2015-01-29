@@ -23,7 +23,7 @@ SOFTWARE.
 '''
 
 from django.contrib import admin
-from problem.models import Problem, Testcase, Submission, SubmissionDetail
+from problem.models import Problem, Testcase, Submission, SubmissionDetail, Tag
 
 # Register your models here.
 
@@ -31,4 +31,5 @@ admin.site.register(Problem)
 admin.site.register(Testcase)
 admin.site.register(Submission)
 admin.site.register(SubmissionDetail)
+admin.site.register(Tag)
 

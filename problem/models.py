@@ -29,6 +29,14 @@ from datetime import datetime
 
 # Create your models here.
 
+class Tag(models.Model):
+    
+    tag_name = models.CharField(max_length=20, default='')
+
+    def __unicode__(self):
+        retrun self.tag_name
+
+
 class Problem(models.Model):
 
     pname = models.CharField(max_length=50, default='')
@@ -41,6 +49,7 @@ class Problem(models.Model):
     visible = models.BooleanField(default=False)
     error_torrence = models.DecimalField(decimal_places=15, max_digits=17, default=0)
     other_judge_id = models.IntegerField(blank=True, null=True)
+    tags = models.ManyToManyField(Tag, blank=True, null=True)
 
     LOCAL = 'L'
     SPECIAL = 'S'
