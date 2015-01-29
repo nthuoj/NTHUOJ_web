@@ -19,5 +19,53 @@
     '''
 
 from django.db import models
+from users.models import User
+from problem.models import Problem
+from team.models import Team
+from datetime import datetime
 
 # Create your models here.
+
+class Contest(models.Model):
+
+    cname = models.CharField(max_length=50, default='')
+    owner = models.ForeignKey(User, related_name='owner')
+    coowner = models.ManyToManyField(User, related_name='coowner')
+    start_time = models.DateTimeField(default=datetime.now)
+    end_time = models.DateTimeField(default=datetime.now)
+    freeze_time = models.IntegerField(default=0)
+    problem = models.ManyToManyField(Problem)
+    is_homework = models.BooleanField(default=False)
+    open_register = models.BooleanField(default=True)
+    creation_time = models.DateTimeField(default=datetime.now, auto_now_add=True)
+
+
+class Contestant(models.Model):
+
+    contest = models.ForeignKey(Contest)
+    user = models.ForeignKey(User)
+    team = models.ForeignKey(Team)
+
+    class Meta:
+        unique_together = (('contest', 'user'),)
+
+    def __unicode__(self):
+        return user + ' in ' + contest
+
+
+class Clarification(models.Model):
+
+    default_response = 'No Response. Please read the problem statement'
+
+    contest = models.ForeignKey(Contest)
+    problem = models.ForeignKey(Problem, blank=True)
+    content = models.CharField(max_length=500, default='')
+    reply = models.CharField(max_length=500, default=default_response)
+    asker = models.ForeignKey(User, related_name='asker')
+    replyer = models.ForeignKey(User, related_name='replyer')
+    ask_time = models.DateTimeField(default=datetime.now, auto_now=True)
+    reply_time = models.DateTimeField(blank=True)
+    realy_all = models.BooleanField(default=False)
+
+    def __unicode__(self):
+        return str(self.id)   
