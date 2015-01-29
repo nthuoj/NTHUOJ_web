@@ -32,7 +32,7 @@ class User(models.Model):
     username = models.CharField(max_length=15, primary_key=True, default='')
     password = models.CharField(max_length=20, blank=True)
     email = models.CharField(max_length=100, default='')
-    register_date = models.DateField(default=date.today)
+    register_date = models.DateField(default=date.today, auto_now_add=True)
     active = models.BooleanField(default=False)
 
     ADMIN = 'A'
