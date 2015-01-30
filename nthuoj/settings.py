@@ -39,6 +39,8 @@ INSTALLED_APPS = (
     'contest',
     'users',
     'team',
+    'status',
+    'index'
 )
 
 MIDDLEWARE_CLASSES = (
