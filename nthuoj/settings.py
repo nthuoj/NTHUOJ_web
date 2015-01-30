@@ -42,7 +42,6 @@ INSTALLED_APPS = (
     'users',
     'team',
     'status',
-    'index'
 )
 
 MIDDLEWARE_CLASSES = (
