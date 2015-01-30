@@ -23,22 +23,34 @@ SOFTWARE.
 '''
 
 import getpass
+import os.path
 
-# Setting nthuoj.ini
-host = raw_input("Mysql host: ")
-db = raw_input("Mysql database: ")
-user = raw_input("Please input your mysql user: ")
-pwd = getpass.getpass()
+if not os.path.isfile('nthuoj.ini'):
+    # Setting nthuoj.ini
+    host = raw_input('Mysql host: ')
+    db = raw_input('Mysql database: ')
+    user = raw_input('Please input your mysql user: ')
+    pwd = getpass.getpass()
 
-# Re-write nthuoj.ini file
-iniFile = open("nthuoj.ini", "w")
-iniFile.write("[client]\n")
-iniFile.write("host = %s\n" % host)
-iniFile.write("database = %s\n" % db)
-iniFile.write("user = %s\n" % user)
-iniFile.write("password = %s\n" % pwd)
-iniFile.write("default-character-set = utf8\n")
-iniFile.close()
+    # Re-write nthuoj.ini file
+    iniFile = open('nthuoj.ini', 'w')
+    iniFile.write('[client]\n')
+    iniFile.write('host = %s\n' % host)
+    iniFile.write('database = %s\n' % db)
+    iniFile.write('user = %s\n' % user)
+    iniFile.write('password = %s\n' % pwd)
+    iniFile.write('default-character-set = utf8\n')
+    iniFile.close()
+
+
+# Database Migratinos
+os.system('python ./dbMigrate.py')
+
+
+# Create super user
+ans = raw_input('Create super user?[Y/n] ')
+if ans == '' or ans == 'y' or ans == 'Y':
+    os.system('python ./manage.py createsuperuser')
 
 
 # Install needed library

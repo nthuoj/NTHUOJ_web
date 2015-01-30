@@ -22,39 +22,11 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 '''
 
-from django.db import models
-from datetime import date
-from users.models import User
+import os
 
-# Create your models here.
+apps = ['index', 'problem', 'users', 'contest', 'team']
+for app in apps:
+    os.system('python ./manage.py makemigrations ' + app)
 
-class Team(models.Model):
-
-    team_name = models.CharField(max_length=15, default='', unique=True)
-    leader = models.ForeignKey(User)
-    description = models.TextField(blank=True)
-    note = models.TextField(blank=True)
-    creation_time = models.DateTimeField(default=date.today, auto_now_add=True)
-
-    def __unicode__(self):
-        return self.team_name
-
-class TeamMember(models.Model):
-
-    team = models.ForeignKey(Team)
-    member = models.ForeignKey(User)
-
-    VALID = 'V'
-    INVITED = 'I'
-    APPLY = 'A'
-    MEMBER_STATUS_CHOICE = (
-        (VALID, 'Valid'), (INVITED, 'Invited'), (APPLY, 'Apply'),
-    )
-    status = models.CharField(max_length=1, choices=MEMBER_STATUS_CHOICE, default='')
-    
-    class Meta:
-        unique_together = (('team', 'member'),)
-    
-    def __unicode__(self):
-        return self.member.username + ' in ' + self.team.team_name
+os.system('python ./manage.py migrate')
 
