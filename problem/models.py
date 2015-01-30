@@ -34,7 +34,7 @@ class Tag(models.Model):
     tag_name = models.CharField(max_length=20, default='')
 
     def __unicode__(self):
-        retrun self.tag_name
+        return self.tag_name
 
 
 class Problem(models.Model):
