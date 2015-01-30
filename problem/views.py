@@ -22,24 +22,32 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 '''
 from django.shortcuts import render
-import json
-import random
-from index.views import custom_proc
-from django.template import RequestContext
+
 # Create your views here.
+def problem(request):
+    a = {'name': 'my_problem', 'pid': 1, 'pass': 60, 'not_pass': 40}
+    b = {'name': 'all_problem', 'pid': 1, 'pass': 60, 'not_pass': 40}
+    return render(request, 'problem/panel.html', {'my_problem':[a,a,a], 'all_problem':[a,a,a,b,b,b]})
 
+def detail(request, problem_id):
+    p = {
+      'pid': problem_id,
+      'title': 'A a+b problem',
+      'description': 'Given a, b, output a+b.',
+      'input': 'a, b <= 100000000',
+      'output': 'a+b',
+      'samp_input': '1 2\n4 5',
+      'samp_output': '3\n9\n',
+      'tag': [''],
+      'testcase': [{'num': 1, 'time': 1, 'memory': 32}, {'num': 2, 'time': 3, 'memory': 100}],
+    }
+    return render(request, 'problem/detail.html', p)
 
-def submit(request):
-    return render(request, 'users/submit.html', {},
-                context_instance = RequestContext(request, processors = [custom_proc]))
+def edit(request, problem_id):
+    return render(request, 'problem/edit.html')
 
+def new(request):
+    return render(request, 'problem/edit.html')
 
-def profile(request):
-    piechart_data = []
-    for l in ['WA', 'AC', 'RE', 'TLE', 'MLE', 'OLE', 'Others']:
-        piechart_data += [{'label': l, 'data': random.randint(50, 100)}]
-    return render(
-        request,
-        'users/profile.html',
-        {'piechart_data': json.dumps(piechart_data)},
-        context_instance = RequestContext(request, processors = [custom_proc]))
+def preview(request):
+    return render(request, 'problem/preview.html')

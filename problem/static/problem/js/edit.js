@@ -1,4 +1,4 @@
-'''
+/*
 The MIT License (MIT)
 
 Copyright (c) 2014 NTHUOJ team
@@ -20,26 +20,19 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
-'''
-from django.shortcuts import render
-import json
-import random
-from index.views import custom_proc
-from django.template import RequestContext
-# Create your views here.
+*/
+function switchTab(t) {
+    $("a[role='tab']").parent().removeClass("active");
+    $(t).parent().addClass("active");
+    $(".tab-pane").removeClass("active");
+    $($(t).attr("href")).addClass("active");
+}
 
+var tags = [];
 
-def submit(request):
-    return render(request, 'users/submit.html', {},
-                context_instance = RequestContext(request, processors = [custom_proc]))
+$(document).ready(function() {
+    $("a[role='tab']").click(function(e) {
+        e.preventDefault()
+        switchTab(this);
+    });
 
-
-def profile(request):
-    piechart_data = []
-    for l in ['WA', 'AC', 'RE', 'TLE', 'MLE', 'OLE', 'Others']:
-        piechart_data += [{'label': l, 'data': random.randint(50, 100)}]
-    return render(
-        request,
-        'users/profile.html',
-        {'piechart_data': json.dumps(piechart_data)},
-        context_instance = RequestContext(request, processors = [custom_proc]))

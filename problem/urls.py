@@ -21,25 +21,13 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 '''
-from django.shortcuts import render
-import json
-import random
-from index.views import custom_proc
-from django.template import RequestContext
-# Create your views here.
+from django.conf.urls import patterns, include, url
+from problem import views
 
-
-def submit(request):
-    return render(request, 'users/submit.html', {},
-                context_instance = RequestContext(request, processors = [custom_proc]))
-
-
-def profile(request):
-    piechart_data = []
-    for l in ['WA', 'AC', 'RE', 'TLE', 'MLE', 'OLE', 'Others']:
-        piechart_data += [{'label': l, 'data': random.randint(50, 100)}]
-    return render(
-        request,
-        'users/profile.html',
-        {'piechart_data': json.dumps(piechart_data)},
-        context_instance = RequestContext(request, processors = [custom_proc]))
+urlpatterns = patterns('',
+    url(r'^$', views.problem, name='problem'),  # /problem  : problem panel
+    url(r'^(?P<problem_id>)\d+/$', views.detail, name='detail'),   # /problem/10 : detail of problem 10
+    url(r'^(?P<problem_id>)\d+/edit/$', views.edit, name='edit'),  # /problem/10/edit : edit problem 10
+    url(r'^new/$', views.new, name='new'), # /problem/new : create new problem
+    url(r'^preview/$', views.preview, name='new'),  # /problem/preview  :  preview problem when editting
+)

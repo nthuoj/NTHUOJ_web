@@ -1,4 +1,4 @@
-'''
+<!--
 The MIT License (MIT)
 
 Copyright (c) 2014 NTHUOJ team
@@ -20,26 +20,26 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
-'''
-from django.shortcuts import render
-import json
-import random
-from index.views import custom_proc
-from django.template import RequestContext
-# Create your views here.
-
-
-def submit(request):
-    return render(request, 'users/submit.html', {},
-                context_instance = RequestContext(request, processors = [custom_proc]))
-
-
-def profile(request):
-    piechart_data = []
-    for l in ['WA', 'AC', 'RE', 'TLE', 'MLE', 'OLE', 'Others']:
-        piechart_data += [{'label': l, 'data': random.randint(50, 100)}]
-    return render(
-        request,
-        'users/profile.html',
-        {'piechart_data': json.dumps(piechart_data)},
-        context_instance = RequestContext(request, processors = [custom_proc]))
+-->
+<br>
+<strong>Current Tags</strong>
+<button id='merge_tag' class='btn btn-default'>Merge tags</button>
+<table>
+  <tbody id="tagTable">
+  </tbody>
+</table>
+<br>
+<br>
+<table>
+  <tr>
+    <th>Add Tag</th>
+    <td>
+      <div class='input-group'>
+        <input type='text' id='newTag' class='form-control' width='25%'>
+        <span class='input-group-btn'>
+          <button id='add_tag_button' class='btn btn-default'>Add</button>
+        </span>
+      </div>
+    </td>
+  </tr>
+</table>
