@@ -17,7 +17,9 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 -->
-{% extends "index/base.html" %} {% load staticfiles %} 
+{% extends "index/base.html" %} 
+{% load staticfiles %} 
+
 {% block title_name %}
 <title>Contest Archive</title>
 {% endblock title_name %} 
@@ -73,16 +75,19 @@ SOFTWARE.
             <span class="glyphicon glyphicon-remove"></span>
           </button>
 
-          <button type="button" class="btn btn-info btn-xs" data-toggle="modal" data-target="#contestInfo{{ contest.id }}">
+          <button type="button" class="btn btn-info btn-xs" data-toggle="modal" 
+          data-target="#contestInfo{{ contest.id }}">
             <span class="glyphicon glyphicon-pencil"></span>
           </button>
 
           {% else %}
-          <button type="button" class="btn btn-success btn-xs" data-toggle="tooltip" data-placement="top" title="Start Virtual Contest">
+          <button type="button" class="btn btn-success btn-xs" data-toggle="tooltip" 
+          data-placement="top" title="Start Virtual Contest">
             <span class="glyphicon glyphicon-play"></span>
           </button>
 
-          <button type="button" class="btn btn-info btn-xs" data-toggle="modal" data-target="#contestInfo{{ contest.id }}">
+          <button type="button" class="btn btn-info btn-xs" data-toggle="modal" 
+          data-target="#contestInfo{{ contest.id }}">
             <span class="glyphicon glyphicon-info-sign"></span>
           </button>
           <script>
@@ -111,11 +116,13 @@ SOFTWARE.
 <!-- /.container -->
 <!-- Contest detail info-->
 {% for contest in contest_list %}
-<div class="modal fade" id="contestInfo{{ contest.id }}" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+<div class="modal fade" id="contestInfo{{ contest.id }}" tabindex="-1" 
+role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal"> <span aria-hidden="true">&times;</span>
+        <button type="button" class="close" data-dismiss="modal"> 
+          <span aria-hidden="true">&times;</span>
           <span class="sr-only">Close</span>
         </button>
         <h2 class="modal-title" id="myModalLabel">
@@ -137,7 +144,8 @@ SOFTWARE.
       </div>
       <div class="modal-body">
         <ul class="nav nav-tabs" role="tablist" id="infoTab">
-          <li role="presentation" class="active"><a href="#problem" data-toggle="tab">Problem</a>
+          <li role="presentation" class="active"><a href="#problem" 
+            data-toggle="tab">Problem</a>
           </li>
           <li role="presentation"><a href="#contestant" data-toggle="tab">Contestant</a>
           </li>
