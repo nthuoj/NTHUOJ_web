@@ -51,11 +51,11 @@ class Problem(models.Model):
     other_judge_id = models.IntegerField(blank=True, null=True)
     tags = models.ManyToManyField(Tag, blank=True, null=True)
 
-    LOCAL = 'L'
-    SPECIAL = 'S'
-    ERROR_TORRENT = 'E'
-    PARTIAL = 'P'
-    OTHER = 'O'
+    LOCAL = 'LOCAL'
+    SPECIAL = 'SPECIAL'
+    ERROR_TORRENT = 'ERR_TORRENT'
+    PARTIAL = 'PARTIAL'
+    OTHER = 'OTHER'
     JUDGE_TYPE_CHOICE = (
         (LOCAL, 'Local Judge'),
         (SPECIAL, 'Special Judge'),
@@ -63,7 +63,7 @@ class Problem(models.Model):
         (PARTIAL, 'Partial Judge'),
         (OTHER, 'Use Other Judge'),
     )
-    judge_source = models.CharField(max_length=1, choices=JUDGE_TYPE_CHOICE, default=LOCAL)
+    judge_source = models.CharField(max_length=11, choices=JUDGE_TYPE_CHOICE, default=LOCAL)
 
     def __unicode__(self):
         return self.pname
@@ -88,8 +88,8 @@ class Submission(models.Model):
     submit_time = models.DateTimeField(default=datetime.now)
     error_msg = models.TextField(blank=True)
 
-    WAIT = 'W'
-    JUDGING = 'J'
+    WAIT = 'WAIT'
+    JUDGING = 'JUDGING'
     ACCEPTED = 'AC'
     NOT_ACCEPTED = 'NA'
     COMPILE_ERROR = 'CE'
@@ -104,17 +104,17 @@ class Submission(models.Model):
         (RESTRICTED_FUNCTION, 'Restricted Function'),
         (JUDGE_ERROR, 'Judge Error'),
     )
-    status = models.CharField(max_length=2, choices=STATUS_CHOICE, default=WAIT)
+    status = models.CharField(max_length=7, choices=STATUS_CHOICE, default=WAIT)
 
     C = 'C'
-    CPP = 'CP'
-    CPP11 = '11'
+    CPP = 'CPP'
+    CPP11 = 'CPP11'
     LANGUAGE_CHOICE = (
         (C, 'C'),
         (CPP, 'C++'),
         (CPP11, 'C++11'),
     )
-    language = models.CharField(max_length=2, choices=LANGUAGE_CHOICE, default=C)
+    language = models.CharField(max_length=5, choices=LANGUAGE_CHOICE, default=C)
 
     def __unicode__(self):
         return str(self.id)
