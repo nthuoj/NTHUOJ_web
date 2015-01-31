@@ -3,7 +3,9 @@ from django.contrib import admin
 import views
 
 urlpatterns = patterns('',
-	url(r'^get_time/', views.get_time),
+	url(r'^viewall_contest/$', views.viewall_contest, name='viewall_contest'),
+	url(r'^viewall_archive/$', views.viewall_archive, name='viewall_archive'),
+	url(r'^viewall_announce/$', views.viewall_announce, name='viewall_announce'),
     url(r'^list/$', views.list, name='list'),
     url(r'^detail/(?P<group_id>[0-9]+)/$', views.detail, name='detail'),
 )

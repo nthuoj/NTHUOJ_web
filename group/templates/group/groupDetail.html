@@ -92,7 +92,7 @@ SOFTWARE.
   <hr> 
   {% block contest_block %}
   <div class="contest">
-    <p style="border-bottom:1px solid; padding:2px;  float:left; font-family:sans-serif">Contest</p>
+    <p style="border-bottom:1px solid; padding:2px; float:left; font-family:sans-serif">Contest</p>
     <a href="" class="btn btn-sm btn-default" data-toggle="modal" 
        data-target="#addContestModal" style="float:right">Add contest</a>
     <br>
@@ -122,14 +122,8 @@ SOFTWARE.
                 {% endfor %}
               </tbody>
             </table>
-            <script language="javascript">
-            function loadContestData() {
-              $.get('/group/get_time/', function(data) {};
-            }
-            </script>
-            <a href="" class="btn btn-sm btn-default" data-toggle="modal" 
-               data-target="#viewAllContestModal" style="float:right"
-               onclick="loadContestData()">view all</a>
+            <a class="btn btn-sm btn-default" style="float:right"
+               onclick="window.open('{% url 'viewall_contest' %}', '', config='height=500,width=500');">view all</a>
           </div>
         </div>
       </div>
@@ -157,8 +151,8 @@ SOFTWARE.
                 {% endfor %}
               </tbody>
             </table>
-            <a href="" class="btn btn-sm btn-default" data-toggle="modal" 
-               data-target="#viewAllArchiveModal" style="float:right">view all</a>
+            <a class="btn btn-sm btn-default" style="float:right"
+               onclick="window.open('{% url 'viewall_archive' %}', '', config='height=500,width=500');">view all</a>
           </div>
         </div>
       </div>
@@ -167,10 +161,10 @@ SOFTWARE.
   {% endblock contest_block %}
   <hr> 
   {% block annowence_block %}
-  <div class="annowence">
+  <div class="announce">
     <p style="border-bottom:1px solid; padding:2px; float:left; font-family:sans-serif">Announce</p>
     <a href="" class="btn btn-sm btn-default" data-toggle="modal" 
-       data-target="#addAnnowenceModal" style="float:right">Add annowence</a>
+       data-target="#addAnnowenceModal" style="float:right">Add announce</a>
     <table class="table table-hover">
       <thead>
         <tr>
@@ -194,8 +188,8 @@ SOFTWARE.
         {% endfor %}
       </tbody>
     </table>
-    <a href="" class="btn btn-sm btn-default" data-toggle="modal" 
-       data-target="#viewAllAnnowenceModal" style="float:right">view all</a>
+    <a class="btn btn-sm btn-default" style="float:right"
+       onclick="window.open('{% url 'viewall_announce' %}', '', config='height=500,width=500');">view all</a>
     <br>
   </div>
   {% endblock annowence_block %}
@@ -406,115 +400,6 @@ SOFTWARE.
         <div class="modal-footer">
           <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
           <button type="button" class="btn btn-primary"> Confirm </button>
-        </div>
-      </div>
-    </div>
-  </div>
-  <!--7. Modal for View All Contest-->
-  <div class="modal fade" id="viewAllContestModal" tabindex="-1" role="dialog" 
-       aria-labelledby="myModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <button type="btn-default" class="close" data-dismiss="modal" aria-hidden="true">
-            &times; 
-          </button>
-          <h4 class="modal-title" id="myModalLabel">All running contest</h4>
-        </div>
-        <div class="modal-body">
-          <div class="input-group">
-            <span class="input-group-addon">search contest by cid</span>
-            <input type="text" class="form-control">
-            <span class="input-group-btn">
-              <button class="btn btn-default btn-sm" type="button">search</button>
-            </span>
-          </div>
-          <br>
-          <table class="table table-hover">
-            <thead>
-              <th>Contest Title</th>
-              <th>Time</th>
-            </thead>
-            <tbody>
-              {% for contest in C_data %}
-              <tr>
-                <td>{{ contest.name }}</td>
-                <td>{{ contest.time }}</td>
-              </tr>
-              {% endfor %}
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </div>
-  </div>
-  <!--8. Modal for View All Archive-->
-  <div class="modal fade" id="viewAllArchiveModal" tabindex="-1" role="dialog" 
-       aria-labelledby="myModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <button type="btn-default" class="close" data-dismiss="modal" aria-hidden="true">
-            &times; 
-          </button>
-          <h4 class="modal-title" id="myModalLabel">All archive</h4>
-        </div>
-        <div class="modal-body">
-          <div class="input-group">
-            <span class="input-group-addon">search contest by cid</span>
-            <input type="text" class="form-control">
-            <span class="input-group-btn">
-              <button class="btn btn-default btn-sm" type="button">search</button>
-            </span>
-          </div>
-          <br>
-          <table class="table table-hover">
-            <thead>
-              <th>Contest Title</th>
-              <th>Time</th>
-            </thead>
-            <tbody>
-              {% for archive in A_data %}
-              <tr>
-                <td>{{ archive.name }}</td>
-                <td>{{ archive.time }}</td>
-              </tr>
-              {% endfor %}
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </div>
-  </div>
-  <!--9. Modal for View All Annowence-->
-  <div class="modal fade" id="viewAllAnnowenceModal" tabindex="-1" role="dialog" 
-       aria-labelledby="myModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <button type="btn-default" class="close" data-dismiss="modal" aria-hidden="true">
-            &times; 
-          </button>
-          <h4 class="modal-title" id="myModalLabel">All annowence</h4>
-        </div>
-        <div class="modal-body">
-          <br>
-          <table class="table table-hover">
-            <thead>
-              <th>Annowence Title</th>
-              <th>Original Post</th>
-              <th>Time</th>
-            </thead>
-            <tbody>
-              {% for annowence in AN_data %}
-              <tr>
-                <td>{{ annowence.name }}</td>
-                <td>{{ annowence.op }}</td>
-                <td>{{ annowence.time }}</td>
-              </tr>
-              {% endfor %}
-            </tbody>
-          </table>
         </div>
       </div>
     </div>
