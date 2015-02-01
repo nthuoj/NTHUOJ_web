@@ -105,10 +105,6 @@ class Submission(models.Model):
         (JUDGE_ERROR, 'Judge Error'),
     )
     status = models.CharField(max_length=7, choices=STATUS_CHOICE, default=WAIT)
-    def status_full(self):
-        for choice in self.STATUS_CHOICE:
-            if choice[0] == self.status:
-                return choice[1]
 
     C = 'C'
     CPP = 'CPP'
@@ -120,12 +116,7 @@ class Submission(models.Model):
     )
 
     language = models.CharField(max_length=5, choices=LANGUAGE_CHOICE, default=C)
-    def language_full(self):
-        for choice in self.LANGUAGE_CHOICE:
-            if choice[0] == self.language:
-                return choice[1]
          
-
     def __unicode__(self):
         return str(self.id)
  
@@ -152,10 +143,7 @@ class SubmissionDetail(models.Model):
         (PE, 'Presentation Error'),
     )
     virdect = models.CharField(max_length=3, choices=VIRDECT_CHOICE, default='')
-    def virdect_full(self):
-        for choice in self.VIRDECT_CHOICE:
-            if choice[0] == self.virdect:
-                return choice[1]
+
     class Meta:
         unique_together = (('tid', 'sid'),)
 

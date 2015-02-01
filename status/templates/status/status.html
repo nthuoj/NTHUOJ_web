@@ -55,7 +55,7 @@ SOFTWARE.
         <tr title="
           <ol style='margin:15px'>
             {% for detail in submission.list %}
-              <li class='row'>{{ detail.virdect_full }} CPU: {{ detail.cpu}}</li>
+              <li class='row'>{{ detail.get_virdect_display }} CPU: {{ detail.cpu }}</li>
             {% endfor %}
           </ol>"
           class={% if submission.grouper.status == "AC" %} 
@@ -68,13 +68,13 @@ SOFTWARE.
           <th>
             {% if submission.grouper.status == "CE" or submission.grouper.status == "RF" %}
               <a class="ajax-popup-link" href={% url "error_message" submission.grouper.id %}>
-                {{ submission.grouper.status_full }}
+                {{ submission.grouper.get_status_display }}
               </a>
             {% else %}
-              {{ submission.grouper.status_full }}
+              {{ submission.grouper.get_status_display }}
             {% endif %}
           </th>
-          <th>{{ submission.grouper.language_full }}</th>
+          <th>{{ submission.grouper.get_language_display }}</th>
         </tr>
       {% endfor %}
     </tbody>
