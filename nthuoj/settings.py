@@ -24,7 +24,7 @@ DEBUG = True
 
 TEMPLATE_DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -36,7 +36,11 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'problem',
+    'index',
+    'contest',
     'users',
+    'team',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -61,7 +65,7 @@ INI_PATH = os.path.join(BASE_DIR, 'nthuoj.ini')
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'OPTIONS':{
+        'OPTIONS': {
             'read_default_file': INI_PATH,
         },
     }

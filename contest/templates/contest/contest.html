@@ -1,0 +1,162 @@
+<!--
+The MIT License (MIT)
+Copyright (c) 2014 NTHUOJ team
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+-->
+{% extends "index/base.html" %} {% load staticfiles %} 
+
+{% block title_name %}
+<title>Contest</title>
+{% endblock title_name %} 
+
+{% block import_source %}
+<link href="{% static 'contest/css/contest.css' %}" rel="stylesheet">
+<script src="{%static 'contest/js/contest.js'%}"></script>
+{% endblock import_source %} 
+
+{% block body_block %}
+<body onload="getRestTime()">
+  <div class="container">
+    <!--Title-->
+    <div class="well">
+      <h1>{{ contest.name }}</h1>
+    </div>
+    <div class="panel panel-info">
+      <div class="panel-heading">
+        <h1 class="panel-title" style="text-align:center;">Time</h1>
+      </div>
+      <div class="panel-body inline">
+        <a id="server_time" hidden>{{ server_time }}</a>
+        <table style="width:100%;text-align:center;">
+          <tr>
+            <td id="start" style="text-align:left;">{{ contest.start_time }}</td>
+            <td id="clock"></td>
+            <td id="end" style="text-align:right;">{{ contest.end_time }}</td>
+          </tr>
+        </table>
+      </div>
+      <div class="progress" style="margin-left:5%;width:90%;">
+        <div id="timeline" class="progress-bar progress-bar-info" role="progressbar" 
+        aria-valuenow="20" aria-valuemin="0" aria-valuemax="100" style="width:20%">
+          <span class="sr-only"></span>
+        </div>
+      </div>
+    </div>
+    <!-- clarification -->
+    <div class="panel panel-primary">
+      <div class="panel-heading">
+        <h1 class="panel-title" style="text-align:center;">Clarification</h1>
+      </div>
+      <div id="contest_clarification">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Problem Name</th>
+              <th>Asker</th>
+              <th>Clarification</th>
+              <th>Reply</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for clarification in contest.clarification_list %}
+            <tr>
+              <td>{{ clarification.id }}</td>
+              <td>{{ clarification.name }}</td>
+              <td>{{ clarification.asker }}</td>
+              <td>{{ clarification.content }}</td>
+              <td>{{ clarification.reply }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+        <div align="center">
+          <button type="button" class="btn btn-primary btn-lg" data-toggle="modal" 
+          data-target="#myModal">Clarify</button>
+        </div>
+      </div>
+    </div>
+    <hr>
+    <!--contest detail-->
+    <div id="detail">
+      <ul class="nav nav-tabs" role="tablist" id="myTab">
+        <li class="active"><a href="#overview" role="tab" data-toggle="tab">Overview</a>
+        </li>
+        <li><a href="#problem" role="tab" data-toggle="tab">Problem</a>
+        </li>
+        <li><a href="#scoreboard" role="tab" data-toggle="tab">Scoreboard</a>
+        </li>
+        <li><a href="#status" role="tab" data-toggle="tab">Status</a>
+        </li>
+      </ul>
+      <div class="tab-content" id="content">
+        <div class="tab-pane active" id="overview">
+          {% include "contest/overview.html" %}
+        </div>
+        <div class="tab-pane" id="problem">
+          {% include "contest/problem.html" %}
+        </div>
+        <div class="tab-pane" id="scoreboard">
+          {% include "contest/scoreboard.html" %}
+        </div>
+        <div class="tab-pane" id="status">4</div>
+      </div>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="myModal" tabindex="-1" 
+    role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal">
+              <span aria-hidden="true">&times;</span>
+              <span class="sr-only">Close</span>
+            </button>
+            <h4 class="modal-title" id="myModalLabel">Ask Question</h4>
+          </div>
+          <div class="modal-body">
+            <form role="form">
+              <label for="pid">Problem name</label>
+              <div id="pid" class="form-group">
+                <select class="form-control">
+                  {% for problem in contest.problem_list %}
+                  <option>{{ problem.name }}</option>
+                  {% endfor %}
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="exampleInputPassword1">Description</label>
+                <textarea type="text" class="form-control" id="exampleInputPassword1" placeholder="Problem Description"></textarea>
+              </div>
+              <div class="checkbox">
+                <label>
+                  <input type="checkbox">For All Teams
+                </label>
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-primary">Send</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+{% endblock body_block %}

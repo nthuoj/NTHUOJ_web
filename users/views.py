@@ -24,13 +24,22 @@ SOFTWARE.
 from django.shortcuts import render
 import json
 import random
+from index.views import custom_proc
+from django.template import RequestContext
 # Create your views here.
 
+
 def submit(request):
-    return render(request, 'users/submit.html', {})
+    return render(request, 'users/submit.html', {},
+                context_instance = RequestContext(request, processors = [custom_proc]))
+
 
 def profile(request):
     piechart_data = []
     for l in ['WA', 'AC', 'RE', 'TLE', 'MLE', 'OLE', 'Others']:
-        piechart_data += [{'label': l, 'data': random.randint(50,100)}]
-    return render(request, 'users/profile.html', {'piechart_data': json.dumps(piechart_data)})
+        piechart_data += [{'label': l, 'data': random.randint(50, 100)}]
+    return render(
+        request,
+        'users/profile.html',
+        {'piechart_data': json.dumps(piechart_data)},
+        context_instance = RequestContext(request, processors = [custom_proc]))
