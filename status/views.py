@@ -21,7 +21,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 '''
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse
 from django.template import RequestContext
 
@@ -41,7 +41,7 @@ def status(request):
 
 
 def error_message(request, sid):
-    submission = Submission.objects.filter(id=sid).first()
+    submission = get_object_or_404(Submission, id=sid)
     error_msg = submission.error_msg
 
     return render(
