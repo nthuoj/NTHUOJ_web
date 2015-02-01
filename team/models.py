@@ -44,13 +44,13 @@ class TeamMember(models.Model):
     team = models.ForeignKey(Team)
     member = models.ForeignKey(User)
 
-    VALID = 'V'
-    INVITED = 'I'
-    APPLY = 'A'
+    VALID = 'VALID'
+    INVITED = 'INVITED'
+    APPLY = 'APPLY'
     MEMBER_STATUS_CHOICE = (
         (VALID, 'Valid'), (INVITED, 'Invited'), (APPLY, 'Apply'),
     )
-    status = models.CharField(max_length=1, choices=MEMBER_STATUS_CHOICE, default='')
+    status = models.CharField(max_length=7, choices=MEMBER_STATUS_CHOICE, default='')
     
     class Meta:
         unique_together = (('team', 'member'),)

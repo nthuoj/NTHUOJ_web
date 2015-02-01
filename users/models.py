@@ -35,23 +35,23 @@ class User(models.Model):
     register_date = models.DateField(default=date.today, auto_now_add=True)
     active = models.BooleanField(default=False)
 
-    ADMIN = 'A'
-    JUDGE = 'J'
-    SUB_JUDGE = 'S'
-    USER = 'U'
+    ADMIN = 'ADMIN'
+    JUDGE = 'JUDGE'
+    SUB_JUDGE = 'SUB_JUDGE'
+    USER = 'USER'
     USER_LEVEL_CHOICE = (
         (ADMIN, 'Admin'),
         (JUDGE, 'Judge'),
         (SUB_JUDGE, 'Sub-judge'),
         (USER, 'User'),
     )
-    user_level = models.CharField(max_length=1, choices=USER_LEVEL_CHOICE, default=USER)
+    user_level = models.CharField(max_length=9, choices=USER_LEVEL_CHOICE, default=USER)
 
-    PAPER = 'P'
-    READABLE = 'R'
-    COSMO = 'C'
-    DEFAULT = 'D'
-    LUMEN = 'L'
+    PAPER = 'PAPER'
+    READABLE = 'READABLE'
+    COSMO = 'COSMO'
+    DEFAULT = 'DEFAULT'
+    LUMEN = 'LUMEN'
     THEME_CHOICE = (
         (PAPER, 'Paper'),
         (READABLE, 'Readable'),
@@ -59,7 +59,7 @@ class User(models.Model):
         (DEFAULT, 'Default'),
         (LUMEN, 'Lumen'),
     )
-    theme = models.CharField(max_length=1, choices=THEME_CHOICE, default=PAPER)
+    theme = models.CharField(max_length=8, choices=THEME_CHOICE, default=PAPER)
 
     def __unicode__(self):
         return self.username

@@ -24,9 +24,24 @@ SOFTWARE.
 
 import os
 
-apps = ['index', 'problem', 'users', 'contest', 'team']
-for app in apps:
-    os.system('python ./manage.py makemigrations ' + app)
 
-os.system('python ./manage.py migrate')
+def write_ini_file(host, db, user, pwd):
+    ini_file = open('nthuoj.ini', 'w')
+    ini_file.write('[client]\n')
+    ini_file.write('host = %s\n' % host)
+    ini_file.write('database = %s\n' % db)
+    ini_file.write('user = %s\n' % user)
+    ini_file.write('password = %s\n' % pwd)
+    ini_file.write('default-character-set = utf8\n')
+    ini_file.close()
+
+def django_manage(args):
+    cmd = 'python ./manage.py ' + args
+    os.system(cmd)
+
+def db_migrate():
+    apps = ['index', 'problem', 'users', 'contest', 'team']
+    for app in apps:
+        django_manage('makemigrations ' + app)
+    django_manage('migrate')
 
