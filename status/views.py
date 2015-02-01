@@ -31,8 +31,7 @@ from index.views import custom_proc
 
 
 def status(request):
-    submission_details = SubmissionDetail.objects.all()
-    submission_details = submission_details.extra(order_by=['-sid'])
+    submission_details = SubmissionDetail.objects.order_by('-sid')[0:5]
 
     return render(
         request,
