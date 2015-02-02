@@ -26,15 +26,6 @@ var loginInfo = false;
 
 window.onload = function() {
 
-    var volume = document.getElementById("volume_num").innerHTML;
-    volume = Number(volume);    
-    document.getElementById("volume_num").innerHTML = "";
-    for (i=1;i<=volume;i++){
-        var origin = document.getElementById("volume_num").innerHTML;
-        document.getElementById("volume_num").innerHTML = 
-        origin + '<li><a href="#">' + 'volume ' + i + '</a></li>';
-    }
-
     var contest_content = document.getElementById("contest_content").innerHTML;
     contest_content = contest_content.replace(/<td>/,'');
     contest_content = contest_content.replace(/<\/td>/,'');
@@ -105,5 +96,5 @@ $(function() {
         $.get('/get_time/', function(data) {
             $('#time').html(data);
         });
-    }, 450);
+    }, 1000*60);
 })

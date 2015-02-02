@@ -58,9 +58,11 @@ def group_list(request):
     return render(request, 'index/group_list.html',{},
                 context_instance = RequestContext(request, processors = [custom_proc]))
 
-def custom_proc(request):    
-    vol = 0    
-    vol = random.randint(1,10)
+def custom_proc(request):
+    vol = []
+    for i in range(1,11):
+        vol.append(i)
+    
     t = time.time()
     tstr = datetime.datetime.fromtimestamp(t).strftime('%Y-%m-%d %H:%M:%S')
     people = 0
