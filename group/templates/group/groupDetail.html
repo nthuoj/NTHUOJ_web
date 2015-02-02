@@ -92,7 +92,7 @@ SOFTWARE.
   <hr> 
   {% block contest_block %}
   <div class="contest">
-    <p style="border-bottom:1px solid; padding:2px; float:left; font-family:sans-serif">Contest</p>
+    <p style="border-bottom:1px solid; padding:2px; float:left; font-family:sans-serif">  contest</p>
     <a href="" class="btn btn-sm btn-default" data-toggle="modal" 
        data-target="#addContestModal" style="float:right">Add contest</a>
     <br>
@@ -110,14 +110,16 @@ SOFTWARE.
               <thead>
                 <tr>
                   <th class='col-md-2'>Title</th>
-                  <th class='col-md-4'>Time</th>
+                  <th class='col-md-4'>Start Time</th>
+                  <th class='col-md-4'>End Time</th>
                 </tr>
               </thead>
               <tbody>
                 {% for running_contest in rc_list %}
                 <tr>
                   <td>{{ running_contest.name }}</td>
-                  <td>{{ running_contest.time }}</td>
+                  <td>{{ running_contest.s_time }}</td>
+                  <td>{{ running_contest.e_time }}</td>
                 </tr>
                 {% endfor %}
               </tbody>
@@ -162,7 +164,8 @@ SOFTWARE.
   <hr> 
   {% block annowence_block %}
   <div class="announce">
-    <p style="border-bottom:1px solid; padding:2px; float:left; font-family:sans-serif">Announce</p>
+    <p style="border-bottom:1px solid; padding:2px; float:left; font-family:sans-serif">
+      Announce</p>
     <a href="" class="btn btn-sm btn-default" data-toggle="modal" 
        data-target="#addAnnowenceModal" style="float:right">Add announce</a>
     <table class="table table-hover">
@@ -182,29 +185,31 @@ SOFTWARE.
           <td>{{ annowence.time }}</td>
           <td>
             <a href="" class="btn btn-sm btn-default" data-toggle="modal" 
-               data-target="#annowenceContentModal{{annowence.id}}" style="float:right">Detail</a>
+               data-target="#annowenceContentModal{{annowence.id}}" 
+               style="float:right">Detail</a>
             <!--1. Modal for Edit Annowence button-->
-            <div class="modal fade" id="annowenceContentModal{{annowence.id}}" tabindex="-1" role="dialog" 
-                 aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal fade" id="annowenceContentModal{{annowence.id}}" 
+                 tabindex="-1" role="dialog" aria-labelledby="myModalLabel" 
+                 aria-hidden="true">
               <div class="modal-dialog">
                 <div class="modal-content">
                   <div class="modal-header">
-                    <button type="btn-default" class="close" data-dismiss="modal" aria-hidden="true">
-                      &times;
-                    </button>
-                    <h4 class="modal-title" id="myModalLabel">Edit Annowence</h4>
+                    <button type="btn-default" class="close" data-dismiss="modal" 
+                            aria-hidden="true">&times;</button>
+                    <h4 class="modal-title">Edit Annowence</h4>
                   </div>
                   <div class="modal-body">
                     <div class="input-group">
                       <span class="input-group-addon">Title</span>
-                      <input type="text" class="form-control" value="{{ annowence.name }}">
+                      <input type="text" class="form-control" value="{{annowence.name}}">
                     </div>
-                    <textarea class="form-control input-sm" type="text" id="inputSmall" style="height:200px;">
+                    <textarea class="form-control input-sm" type="text" style="height:200px;">
                     {{ annowence.content }}</textarea>
                   </div>
                   <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-                    <button type="button" class="btn btn-primary"> Confirm </button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">
+                      Cancel</button>
+                    <button type="button" class="btn btn-primary">Confirm</button>
                   </div>
                 </div>
               </div>
@@ -222,7 +227,7 @@ SOFTWARE.
   <hr> 
   {% block member_block %}
   <div class="member">
-    <p style="border-bottom:1px solid; padding:2px; float:left; font-family:sans-serif">Member</p>
+    <p style="border-bottom:1px solid; padding:2px; float:left; font-family:sans-serif">  Member</p>
     <div class="btn-group" style="float:right">
       <a href="#" class="btn btn-default btn-sm">+</a>
       <a href="#" class="btn btn-defalut dropdown-toggle btn-sm" data-toggle="dropdown">
@@ -244,8 +249,8 @@ SOFTWARE.
     <br>
     <br>
     <form action="#" class="navbar-search pull-left" method="get">
-      <input type="text" name="q" class="search-query span10" value="" placeholder="Search..."
-             style="float:left">
+      <input type="text" name="q" class="search-query span10" value="" 
+             placeholder="Search..."style="float:left">
     </form>
     <br>
     <table class="table table-hover">
@@ -268,29 +273,28 @@ SOFTWARE.
   {% endblock member_block %}
   <hr>
   <!--Modal Section-->
-  
   <!--2. Modal for Adding Annowence button-->
   <div class="modal fade" id="addAnnowenceModal" tabindex="-1" role="dialog" 
        aria-labelledby="myModalLabel" aria-hidden="true">
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
-          <button type="btn-default" class="close" data-dismiss="modal" aria-hidden="true">
-            &times; 
-          </button>
-          <h4 class="modal-title" id="myModalLabel">Add Annowence</h4>
+          <button type="btn-default" class="close" data-dismiss="modal" 
+                  aria-hidden="true">&times;</button>
+          <h4 class="modal-title">Add Annowence</h4>
         </div>
         <div class="modal-body">
           <div class="input-group">
             <span class="input-group-addon">Title</span>
             <input type="text" class="form-control">
           </div>
-          <textarea class="form-control input-sm" type="text" id="inputSmall" style="height:200px;">
+          <textarea class="form-control input-sm" type="text" style="height:200px;">
           </textarea>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-          <button type="button" class="btn btn-primary"> Confirm </button>
+          <button type="button" class="btn btn-default" data-dismiss="modal">
+            Cancel</button>
+          <button type="button" class="btn btn-primary">Confirm</button>
         </div>
       </div>
     </div>
@@ -301,10 +305,9 @@ SOFTWARE.
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
-          <button type="btn-default" class="close" data-dismiss="modal" aria-hidden="true">
-            &times; 
-          </button>
-          <h4 class="modal-title" id="myModalLabel">Add/Trace new contest</h4>
+          <button type="btn-default" class="close" data-dismiss="modal" 
+                  aria-hidden="true">&times;</button>
+          <h4 class="modal-title">Add/Trace new contest</h4>
         </div>
         <div class="modal-body">
           <div class="input-group">
@@ -313,8 +316,9 @@ SOFTWARE.
           </div>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-          <button type="button" class="btn btn-primary"> Confirm </button>
+          <button type="button" class="btn btn-default" data-dismiss="modal">
+            Cancel</button>
+          <button type="button" class="btn btn-primary">Confirm</button>
         </div>
       </div>
     </div>
@@ -325,10 +329,9 @@ SOFTWARE.
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
-          <button type="btn-default" class="close" data-dismiss="modal" aria-hidden="true">
-            &times; 
-          </button>
-          <h4 class="modal-title" id="myModalLabel">Add/Delete Coowner</h4>
+          <button type="btn-default" class="close" data-dismiss="modal" 
+                  aria-hidden="true">&times;</button>
+          <h4 class="modal-title">Add/Delete Coowner</h4>
         </div>
         <div class="modal-body">
           <div class="input-group">
@@ -368,18 +371,18 @@ SOFTWARE.
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
-          <button type="btn-default" class="close" data-dismiss="modal" aria-hidden="true">
-            &times; 
-          </button>
-          <h4 class="modal-title" id="myModalLabel"> Edit about group</h4>
+          <button type="btn-default" class="close" data-dismiss="modal" 
+                  aria-hidden="true">&times;</button>
+          <h4 class="modal-title"> Edit about group</h4>
         </div>
         <div class="modal-body">
-          <textarea class="form-control input-sm" type="text" id="inputSmall" style="height:200px;">{{ group_description }}
-          </textarea>
+          <textarea class="form-control input-sm" type="text" style="height:200px;">
+            {{ group_description }}</textarea>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-          <button type="button" class="btn btn-primary"> Confirm </button>
+          <button type="button" class="btn btn-default" data-dismiss="modal">
+            Cancel</button>
+          <button type="button" class="btn btn-primary">Confirm</button>
         </div>
       </div>
     </div>
@@ -390,17 +393,17 @@ SOFTWARE.
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
-          <button type="btn-default" class="close" data-dismiss="modal" aria-hidden="true">
-            &times; 
-          </button>
-          <h4 class="modal-title" id="myModalLabel">Download data</h4>
+          <button type="btn-default" class="close" data-dismiss="modal" 
+                  aria-hidden="true">&times;</button>
+          <h4 class="modal-title">Download data</h4>
         </div>
         <div class="modal-body">
           <p>do something</p>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-          <button type="button" class="btn btn-primary"> Confirm </button>
+          <button type="button" class="btn btn-default" data-dismiss="modal">
+            Cancel</button>
+          <button type="button" class="btn btn-primary">Confirm</button>
         </div>
       </div>
     </div>

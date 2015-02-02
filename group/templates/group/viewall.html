@@ -55,17 +55,36 @@ SOFTWARE.
     <table class="table table-hover">
       <thead>
         <th>{{ title }} title</th>
+        {% if list_type == "announce" %}
+        <th>oringinal post</th>
+        {% endif %}
+        {% if list_type == "runContest" %}
+        <th>start time</th>
+        <th>end time</th>
+        {% endif %}
+        {% if list_type != "runContest" %}
         <th>time</th>
+        {% endif %}
       </thead>
       <tbody>
-        {% for archive in C_list %}
+        {% for archive in data_list %}
         <tr>
           <td>{{ archive.name }}</td>
+          {% if list_type == "announce" %}
+          <td>{{ archive.op }}</td>
+          {% endif %}
+          {% if list_type == "runContest" %}
+          <td>{{ archive.s_time }}</td>
+          <td>{{ archive.e_time }}</td>
+          {% endif %}
+          {% if list_type != "runContest" %}
           <td>{{ archive.time }}</td>
-          {% if var == "1" %}
+          {% endif %}
+          {% if list_type == "announce" %}
           <td>
             <a href="" class="btn btn-sm btn-default" data-toggle="modal" 
-               data-target="#annowenceContentModal{{archive.id}}" style="float:right">Detail</a>
+               data-target="#annowenceContentModal{{archive.id}}" style="float:right">
+              Detail</a>
             <!--1. Modal for Edit Annowence button-->
             <div class="modal fade" id="annowenceContentModal{{archive.id}}" tabindex="-1" role="dialog" 
                  aria-labelledby="myModalLabel" aria-hidden="true">
@@ -75,14 +94,14 @@ SOFTWARE.
                     <button type="btn-default" class="close" data-dismiss="modal" aria-hidden="true">
                       &times;
                     </button>
-                    <h4 class="modal-title" id="myModalLabel">Edit Annowence</h4>
+                    <h4 class="modal-title">Edit Annowence</h4>
                   </div>
                   <div class="modal-body">
                     <div class="input-group">
                       <span class="input-group-addon">Title</span>
                       <input type="text" class="form-control" value="{{ archive.name }}">
                     </div>
-                    <textarea class="form-control input-sm" type="text" id="inputSmall" style="height:200px;">
+                    <textarea class="form-control input-sm" type="text" style="height:200px;">
                     {{ archive.content }}</textarea>
                   </div>
                   <div class="modal-footer">
