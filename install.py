@@ -22,23 +22,31 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 '''
 
+
 import getpass
+import os.path
 
-# Setting nthuoj.ini
-host = raw_input("Mysql host: ")
-db = raw_input("Mysql database: ")
-user = raw_input("Please input your mysql user: ")
-pwd = getpass.getpass()
+from func import *
 
-# Re-write nthuoj.ini file
-iniFile = open("nthuoj.ini", "w")
-iniFile.write("[client]\n")
-iniFile.write("host = %s\n" % host)
-iniFile.write("database = %s\n" % db)
-iniFile.write("user = %s\n" % user)
-iniFile.write("password = %s\n" % pwd)
-iniFile.write("default-character-set = utf8\n")
-iniFile.close()
+
+if not os.path.isfile('nthuoj.ini'):
+    # Setting nthuoj.ini
+    host = raw_input('Mysql host: ')
+    db = raw_input('Mysql database: ')
+    user = raw_input('Please input your mysql user: ')
+    pwd = getpass.getpass()
+    write_ini_file(host, db, user, pwd)
+
+
+# Database Migratinos
+db_migrate()
+
+
+# Create super user
+ans = raw_input('Create super user?[Y/n] ')
+if ans == '' or ans == 'y' or ans == 'Y':
+    django_manage('createsuperuser')
 
 
 # Install needed library
+

@@ -19,5 +19,11 @@
     '''
 
 from django.contrib import admin
+from contest.models import Contest, Contestant, Clarification
 
 # Register your models here.
+
+admin.site.register(Contest)
+admin.site.register(Contestant)
+admin.site.register(Clarification)
+
