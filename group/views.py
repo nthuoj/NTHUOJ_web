@@ -22,8 +22,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.'''
 from django.http import HttpResponse
 from django.shortcuts import render_to_response, render
-def viewall_contest(request):
-        allData = [
+def get_running_contest(request):
+        all_running_contest = [
             {'name':'contest', 'time':'20111010'},
             {'name':'contest', 'time':'20140505'},
             {'name':'contest', 'time':'20122222'},
@@ -42,12 +42,12 @@ def viewall_contest(request):
         ] 
         return render(
             request, 'group/viewall.html', {
-                'C_data': allData, 
+                'C_data': all_running_contest, 
                 'Title': 'contest',
             })
 
-def viewall_archive(request):
-        allData = [
+def get_contest_archive(request):
+        all_contest_archive = [
             {'name':'archive', 'time':'20111010'},
             {'name':'archive', 'time':'20140505'},
             {'name':'archive', 'time':'20122222'},
@@ -63,12 +63,12 @@ def viewall_archive(request):
         ] 
         return render(
             request, 'group/viewall.html', {
-                'C_data': allData, 
+                'C_data': all_contest_archive, 
                 'Title': 'archive',
             })
 
-def viewall_announce(request):
-        allData = [
+def get_all_announce(request):
+        all_announce = [
             {'name':'announce', 'time':'20111010'},
             {'name':'announce', 'time':'20140505'},
             {'name':'announce', 'time':'20122222'},
@@ -86,7 +86,7 @@ def viewall_announce(request):
         ] 
         return render(
             request, 'group/viewall.html', {
-                'C_data': allData, 
+                'C_data': all_announce, 
                 'Title': 'announce',
             })
 
