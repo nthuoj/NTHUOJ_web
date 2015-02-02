@@ -22,7 +22,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 '''
 from django.shortcuts import render, get_object_or_404
-from django.http import HttpResponse
+from django.http import HttpResponse, Http404
 from django.template import RequestContext
 
 from problem.models import Submission, SubmissionDetail
@@ -31,7 +31,10 @@ from index.views import custom_proc
 
 
 def status(request):
-    submission_details = SubmissionDetail.objects.order_by('-sid')[0:50]
+    submissions = Submission.objects.order_by('-id')[0:50]
+    submissions_id = map(lambda submission: submission.id, submissions)
+    submission_details = SubmissionDetail.objects.
+        filter(sid__in=submissions_id).order_by('-sid')
 
     return render(
         request,
@@ -41,10 +44,16 @@ def status(request):
 
 
 def error_message(request, sid):
-    submission = get_object_or_404(Submission, id=sid)
-    error_msg = submission.error_msg
+    try:
+        submission = Submission.objects.get(id=sid)
+        error_msg = submission.error_msg
+        return render(
+            request,
+            'status/error_message.html',
+            {'error_message': error_msg})
 
-    return render(
-        request,
-        'status/error_message.html',
-        {'error_message': error_msg})
+    except Submission.DoesNotExist:
+        return render(
+            request,
+            'index/brokenpage.html',
+            {'error_message': 'SID %s Not Found!' % sid})
