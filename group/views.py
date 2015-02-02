@@ -98,27 +98,7 @@ def detail(request,group_id):
         {'name':'33333', 'time':'20122222'},
         {'name':'44444', 'time':'20133333'},
         {'name':'55555', 'time':'20144444'},
-        {'name':'66666', 'time':'20166666'},
-        {'name':'33333', 'time':'20122222'},
-        {'name':'44444', 'time':'20133333'},
-        {'name':'55555', 'time':'20144444'},
-        {'name':'66666', 'time':'20166666'},
-        {'name':'33333', 'time':'20122222'},
-        {'name':'44444', 'time':'20133333'},
-        {'name':'55555', 'time':'20144444'},
-        {'name':'66666', 'time':'20166666'},
-        {'name':'77777', 'time':'20177777'}
     ]
-    if len(contest_data)>5 :
-        contest_list = [ 
-            contest_data[0],
-            contest_data[1],
-            contest_data[2],
-            contest_data[3],
-            contest_data[4]
-        ]
-    else :
-        contest_list = contest_data
 
     archive_data = [
         {'name':'aaaaa', 'time':'20111010'},
@@ -126,54 +106,12 @@ def detail(request,group_id):
         {'name':'ccccc', 'time':'20122222'},
         {'name':'ddddd', 'time':'20133333'},
         {'name':'eeeee', 'time':'20144444'},
-        {'name':'fffff', 'time':'20166666'},
-        {'name':'ccccc', 'time':'20122222'},
-        {'name':'ddddd', 'time':'20133333'},
-        {'name':'eeeee', 'time':'20144444'},
-        {'name':'fffff', 'time':'20166666'},
-        {'name':'ccccc', 'time':'20122222'},
-        {'name':'ddddd', 'time':'20133333'},
-        {'name':'eeeee', 'time':'20144444'},
-        {'name':'fffff', 'time':'20166666'},
-        {'name':'ccccc', 'time':'20122222'},
-        {'name':'ddddd', 'time':'20133333'},
-        {'name':'eeeee', 'time':'20144444'},
-        {'name':'fffff', 'time':'20166666'},
-        {'name':'ggggg', 'time':'20177777'}
-    ]
-    if len(archive_data)>5 :
-        archive_list = [ 
-            archive_data[0],
-            archive_data[1],
-            archive_data[2],
-            archive_data[3],
-            archive_data[4]
-        ]
-    else :
-        archive_list = archive_data
-
-    ta_list = [
-        {'name': 'drowsy'},
-        {'name': 'henry'}
     ]
 
     annowence_data = [
         {'name':'annowence_1','op':'drowsy', 'time':'20111010'},
         {'name':'annowence_2','op':'drowsy', 'time':'20140505'},
-        {'name':'annowence_3','op':'henry', 'time':'20122222'},
-        {'name':'annowence_4','op':'drowsy', 'time':'20133333'},
-        {'name':'annowence_5','op':'henry', 'time':'20144444'},
-        {'name':'annowence_6','op':'henry', 'time':'20166666'},
-        {'name':'annowence_7','op':'drowsy', 'time':'20177777'}
     ]
-    if len(annowence_data)>3 :
-        annowence_list = [ 
-            annowence_data[0],
-            annowence_data[1],
-            annowence_data[2],
-        ]
-    else :
-        annowence_list = annowece_data
 
     student_data =[
         {'name': 'Tom', 'time': '2014/1/2 23:00'},
@@ -185,14 +123,17 @@ def detail(request,group_id):
         {'name': 'Lily', 'time': '2014/1/2 23:00'}
     ]
 
+    ta_data =[
+        {'name': 'Tom'},
+        {'name': 'Amy'},
+    ]
+
     return render(
         request, 'group/groupDetail.html', {
-            'c_data': contest_list, 
-            'a_data': archive_list,
-            'A_data': archive_data,
-            'an_data': annowence_list,
-            'AN_data': annowence_data,
-            'ta_name': ta_list,
+            'c_data': contest_data, 
+            'a_data': archive_data,
+            'an_data': annowence_data,
+            'ta_name': ta_data,
             's_data': student_data,
             'group_name': 'GGgroup', 
             'group_description': 'blablabla, this is a description',
