@@ -23,7 +23,7 @@ SOFTWARE.'''
 from django.http import HttpResponse
 from django.shortcuts import render_to_response, render
 def get_running_contest(request):
-        all_running_contest = [
+        all_running_contest_list = [
             {'name':'contest', 'time':'20111010'},
             {'name':'contest', 'time':'20140505'},
             {'name':'contest', 'time':'20122222'},
@@ -42,12 +42,12 @@ def get_running_contest(request):
         ] 
         return render(
             request, 'group/viewall.html', {
-                'C_data': all_running_contest, 
-                'Title': 'contest',
+                'C_data': all_running_contest_list, 
+                'Title': 'running contest',
             })
 
 def get_ended_contest(request):
-        all_ended_contest = [
+        all_ended_contest_list = [
             {'name':'archive', 'time':'20111010'},
             {'name':'archive', 'time':'20140505'},
             {'name':'archive', 'time':'20122222'},
@@ -63,12 +63,12 @@ def get_ended_contest(request):
         ] 
         return render(
             request, 'group/viewall.html', {
-                'C_data': all_ended_contest, 
-                'Title': 'archive',
+                'C_data': all_ended_contest_list, 
+                'Title': 'ended contest',
             })
 
 def get_all_announce(request):
-        all_announce = [
+        all_announce_list = [
             {'name':'announce', 'time':'20111010'},
             {'name':'announce', 'time':'20140505'},
             {'name':'announce', 'time':'20122222'},
@@ -86,13 +86,13 @@ def get_all_announce(request):
         ] 
         return render(
             request, 'group/viewall.html', {
-                'C_data': all_announce, 
+                'C_data': all_announce_list, 
                 'Title': 'announce',
             })
 
     
 def detail(request,group_id):
-    contest_data = [
+    running_contest_list = [
         {'name':'11111', 'time':'20111010'},
         {'name':'22222', 'time':'20140505'},
         {'name':'33333', 'time':'20122222'},
@@ -100,7 +100,7 @@ def detail(request,group_id):
         {'name':'55555', 'time':'20144444'},
     ]
 
-    archive_data = [
+    ended_contest_list = [
         {'name':'aaaaa', 'time':'20111010'},
         {'name':'bbbbb', 'time':'20140505'},
         {'name':'ccccc', 'time':'20122222'},
@@ -108,12 +108,12 @@ def detail(request,group_id):
         {'name':'eeeee', 'time':'20144444'},
     ]
 
-    annowence_data = [
+    annowence_list = [
         {'name':'annowence_1','op':'drowsy', 'time':'20111010'},
         {'name':'annowence_2','op':'drowsy', 'time':'20140505'},
     ]
 
-    student_data =[
+    student_list =[
         {'name': 'Tom', 'time': '2014/1/2 23:00'},
         {'name': 'Amy', 'time': '2014/1/2 23:00'},
         {'name': 'Jess', 'time': '2014/1/2 23:00'},
@@ -123,18 +123,18 @@ def detail(request,group_id):
         {'name': 'Lily', 'time': '2014/1/2 23:00'}
     ]
 
-    ta_data =[
-        {'name': 'Tom'},
-        {'name': 'Amy'},
+    ta_list =[
+        {'name': 'drowsy'},
+        {'name': 'henry'},
     ]
 
     return render(
         request, 'group/groupDetail.html', {
-            'c_data': contest_data, 
-            'a_data': archive_data,
-            'an_data': annowence_data,
-            'ta_name': ta_data,
-            's_data': student_data,
+            'rc_list': running_contest_list, 
+            'ec_list': ended_contest_list,
+            'an_list': annowence_list,
+            'ta_list': ta_list,
+            's_list': student_list,
             'group_name': 'GGgroup', 
             'group_description': 'blablabla, this is a description',
         })

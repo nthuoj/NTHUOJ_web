@@ -68,7 +68,7 @@ SOFTWARE.
               <button class="btn btn-default btn-sm" data-toggle="modal" 
                       data-target="#setOwnerModal" style="float:right">+</button>
               <h2>
-                {% for ta in ta_name %}
+                {% for ta in ta_list %}
                   {{ ta.name }}
                 {% endfor %} 
               </h2>
@@ -114,10 +114,10 @@ SOFTWARE.
                 </tr>
               </thead>
               <tbody>
-                {% for contest in c_data %}
+                {% for running_contest in rc_list %}
                 <tr>
-                  <td>{{ contest.name }}</td>
-                  <td>{{ contest.time }}</td>
+                  <td>{{ running_contest.name }}</td>
+                  <td>{{ running_contest.time }}</td>
                 </tr>
                 {% endfor %}
               </tbody>
@@ -130,7 +130,7 @@ SOFTWARE.
       <div class="panel panel-default">
         <div class="panel-heading">
           <h4 class="panel-title">
-            <a data-toggle="collapse" data-parent="#accordion" href="#collapseTwo">Archive</a>
+            <a data-toggle="collapse" data-parent="#accordion" href="#collapseTwo">Ended Contest</a>
           </h4>
         </div>
         <div id="collapseTwo" class="panel-collapse collapse">
@@ -143,10 +143,10 @@ SOFTWARE.
                 </tr>
               </thead>
               <tbody>
-                {% for archive in a_data %}
+                {% for ended_contest in ec_list %}
                 <tr>
-                  <td>{{ archive.name }}</td>
-                  <td>{{ archive.time }}</td>
+                  <td>{{ ended_contest.name }}</td>
+                  <td>{{ ended_contest.time }}</td>
                 </tr>
                 {% endfor %}
               </tbody>
@@ -175,7 +175,7 @@ SOFTWARE.
         </tr>
       </thead>
       <tbody>
-        {% for annowence in an_data %}
+        {% for annowence in an_list %}
         <tr>
           <td>{{ annowence.name }}</td>
           <td>{{ annowence.op }}</td>
@@ -230,7 +230,7 @@ SOFTWARE.
         </tr>
       </thead>
       <tbody>
-        {% for student in s_data %}
+        {% for student in s_list %}
         <tr>
           <td>{{ student.name }}</td>
           <td>{{ student.time }}</td>
