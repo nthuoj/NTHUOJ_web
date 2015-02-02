@@ -22,6 +22,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.'''
 from django.http import HttpResponse
 from django.shortcuts import render_to_response, render
+
 def get_running_contest(request):
         all_running_contest_list = [
             {'name':'contest', 'time':'20111010'},
@@ -42,8 +43,9 @@ def get_running_contest(request):
         ] 
         return render(
             request, 'group/viewall.html', {
-                'C_data': all_running_contest_list, 
+                'C_list': all_running_contest_list, 
                 'title': 'running contest',
+                'var': '0',
             })
 
 def get_ended_contest(request):
@@ -63,31 +65,33 @@ def get_ended_contest(request):
         ] 
         return render(
             request, 'group/viewall.html', {
-                'C_data': all_ended_contest_list, 
+                'C_list': all_ended_contest_list, 
                 'title': 'ended contest',
+                'var': '0',
             })
 
 def get_all_announce(request):
         all_announce_list = [
-            {'name':'announce', 'time':'20111010'},
-            {'name':'announce', 'time':'20140505'},
-            {'name':'announce', 'time':'20122222'},
-            {'name':'announce', 'time':'20133333'},
-            {'name':'announce', 'time':'20144444'},
-            {'name':'announce', 'time':'20166666'},
-            {'name':'announce', 'time':'20122222'},
-            {'name':'announce', 'time':'20111010'},
-            {'name':'announce', 'time':'20140505'},
-            {'name':'announce', 'time':'20122222'},
-            {'name':'announce', 'time':'20133333'},
-            {'name':'announce', 'time':'20144444'},
-            {'name':'announce', 'time':'20166666'},
-            {'name':'announce', 'time':'20122222'},
+            {'id':'1', 'name':'announce', 'time':'20111010', 'content':'111'},
+            {'id':'2', 'name':'announce', 'time':'20140505', 'content':'222'},
+            {'id':'3', 'name':'announce', 'time':'20122222', 'content':'333'},
+            {'id':'4', 'name':'announce', 'time':'20133333', 'content':'444'},
+            {'id':'5', 'name':'announce', 'time':'20144444', 'content':'555'},
+            {'id':'6', 'name':'announce', 'time':'20166666', 'content':'666'},
+            {'id':'7', 'name':'announce', 'time':'20122222', 'content':'777'},
+            {'id':'8', 'name':'announce', 'time':'20111010', 'content':'888'},
+            {'id':'9', 'name':'announce', 'time':'20140505', 'content':'999'},
+            {'id':'10', 'name':'announce', 'time':'20122222', 'content':'aaa'},
+            {'id':'11', 'name':'announce', 'time':'20133333', 'content':'bbb'},
+            {'id':'12', 'name':'announce', 'time':'20144444', 'content':'ccc'},
+            {'id':'13', 'name':'announce', 'time':'20166666', 'content':'ddd'},
+            {'id':'14', 'name':'announce', 'time':'20122222', 'content':'eee'},
         ] 
         return render(
             request, 'group/viewall.html', {
-                'C_data': all_announce_list, 
+                'C_list': all_announce_list, 
                 'title': 'announce',
+                'var': '1',
             })
 
     
@@ -109,8 +113,8 @@ def detail(request,group_id):
     ]
 
     annowence_list = [
-        {'name':'annowence_1','op':'drowsy', 'time':'20111010'},
-        {'name':'annowence_2','op':'drowsy', 'time':'20140505'},
+        {'id':'1', 'name':'annowence_1', 'op':'drowsy', 'time':'20111010', 'content':'asdasd'},
+        {'id':'2', 'name':'annowence_2', 'op':'drowsy', 'time':'20140505', 'content':'qwefad'},
     ]
 
     student_list =[

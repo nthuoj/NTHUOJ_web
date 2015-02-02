@@ -182,7 +182,33 @@ SOFTWARE.
           <td>{{ annowence.time }}</td>
           <td>
             <a href="" class="btn btn-sm btn-default" data-toggle="modal" 
-               data-target="#editAnnowenceModal" style="float:right">Edit&raquo;</a>
+               data-target="#annowenceContentModal{{annowence.id}}" style="float:right">Detail</a>
+            <!--1. Modal for Edit Annowence button-->
+            <div class="modal fade" id="annowenceContentModal{{annowence.id}}" tabindex="-1" role="dialog" 
+                 aria-labelledby="myModalLabel" aria-hidden="true">
+              <div class="modal-dialog">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <button type="btn-default" class="close" data-dismiss="modal" aria-hidden="true">
+                      &times;
+                    </button>
+                    <h4 class="modal-title" id="myModalLabel">Edit Annowence</h4>
+                  </div>
+                  <div class="modal-body">
+                    <div class="input-group">
+                      <span class="input-group-addon">Title</span>
+                      <input type="text" class="form-control" value="{{ annowence.name }}">
+                    </div>
+                    <textarea class="form-control input-sm" type="text" id="inputSmall" style="height:200px;">
+                    {{ annowence.content }}</textarea>
+                  </div>
+                  <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary"> Confirm </button>
+                  </div>
+                </div>
+              </div>
+            </div>
           </td>
         </tr>
         {% endfor %}
@@ -242,32 +268,7 @@ SOFTWARE.
   {% endblock member_block %}
   <hr>
   <!--Modal Section-->
-  <!--1. Modal for Edit Annowence button-->
-  <div class="modal fade" id="editAnnowenceModal" tabindex="-1" role="dialog" 
-       aria-labelledby="myModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <button type="btn-default" class="close" data-dismiss="modal" aria-hidden="true">
-            &times;
-          </button>
-          <h4 class="modal-title" id="myModalLabel">Edit Annowence</h4>
-        </div>
-        <div class="modal-body">
-          <div class="input-group">
-            <span class="input-group-addon">Title</span>
-            <input type="text" class="form-control">
-          </div>
-          <textarea class="form-control input-sm" type="text" id="inputSmall" style="height:200px;">
-          </textarea>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-          <button type="button" class="btn btn-primary"> Confirm </button>
-        </div>
-      </div>
-    </div>
-  </div>
+  
   <!--2. Modal for Adding Annowence button-->
   <div class="modal fade" id="addAnnowenceModal" tabindex="-1" role="dialog" 
        aria-labelledby="myModalLabel" aria-hidden="true">

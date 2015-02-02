@@ -58,10 +58,42 @@ SOFTWARE.
         <th>time</th>
       </thead>
       <tbody>
-        {% for archive in C_data %}
+        {% for archive in C_list %}
         <tr>
           <td>{{ archive.name }}</td>
           <td>{{ archive.time }}</td>
+          {% if var == "1" %}
+          <td>
+            <a href="" class="btn btn-sm btn-default" data-toggle="modal" 
+               data-target="#annowenceContentModal{{archive.id}}" style="float:right">Detail</a>
+            <!--1. Modal for Edit Annowence button-->
+            <div class="modal fade" id="annowenceContentModal{{archive.id}}" tabindex="-1" role="dialog" 
+                 aria-labelledby="myModalLabel" aria-hidden="true">
+              <div class="modal-dialog">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <button type="btn-default" class="close" data-dismiss="modal" aria-hidden="true">
+                      &times;
+                    </button>
+                    <h4 class="modal-title" id="myModalLabel">Edit Annowence</h4>
+                  </div>
+                  <div class="modal-body">
+                    <div class="input-group">
+                      <span class="input-group-addon">Title</span>
+                      <input type="text" class="form-control" value="{{ archive.name }}">
+                    </div>
+                    <textarea class="form-control input-sm" type="text" id="inputSmall" style="height:200px;">
+                    {{ archive.content }}</textarea>
+                  </div>
+                  <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary"> Confirm </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </td>
+          {% endif %}
         </tr>
         {% endfor %}
       </tbody>
