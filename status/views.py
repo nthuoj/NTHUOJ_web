@@ -21,16 +21,16 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 '''
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render
 from django.template import RequestContext
 import logging
 
 from problem.models import Submission, SubmissionDetail
 from index.views import custom_proc
-from general_tools.log import getLogger
+from general_tools.log import get_logger
 # Create your views here.
 
-logger = getLogger()
+logger = get_logger()
 
 
 def status(request):
@@ -56,7 +56,7 @@ def error_message(request, sid):
             {'error_message': error_msg})
 
     except Submission.DoesNotExist:
-        logger.error('SID %s Not Found!' % sid)
+        logger.warning('SID %s Not Found!' % sid)
         return render(
             request,
             'index/brokenpage.html',

@@ -24,7 +24,7 @@ SOFTWARE.
 import logging
 
 
-def getLogger(name='NTHU OJ'):
+def get_logger(name='NTHU OJ'):
     '''Return a logger with specified settings
 
     Args:
