@@ -35,7 +35,6 @@ logger = getLogger()
 
 def status(request):
     submissions = Submission.objects.order_by('-id')[0:50]
-    logger.info('fetching latest 50 submissions from Submission')
     submissions_id = map(lambda submission: submission.id, submissions)
     submission_details = SubmissionDetail. \
         objects.filter(sid__in=submissions_id).order_by('-sid')
@@ -50,7 +49,6 @@ def status(request):
 def error_message(request, sid):
     try:
         submission = Submission.objects.get(id=sid)
-        logger.info('fetching id=%s from Submission' % sid)
         error_msg = submission.error_msg
         return render(
             request,
