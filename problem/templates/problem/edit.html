@@ -21,10 +21,10 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 -->
-{% extends 'problem/nav.html' %} {% block Body %} {% load static %}
+{% extends 'problem/base.html' %} {% block body_block %} {% load staticfiles %}
 <script src='http://cdn.ckeditor.com/4.4.6/standard/ckeditor.js'></script>
 <script src="{% static 'problem/js/edit.js' %}"></script>
-<div id="Body">
+<div class="container" id="Body">
   <form method="POST" action=''>
     {% csrf_token %}
     <div style="width:80%; float:left;">

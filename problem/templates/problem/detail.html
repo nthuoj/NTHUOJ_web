@@ -21,8 +21,8 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 -->
-{% extends 'problem/nav.html' %} {% block Body %}
-<div id="Body">
+{% extends 'problem/base.html' %} {% block body_block %}
+<div class="container" id="Body">
   {% include 'problem/problem.html' %}
 </div>
 {% endblock %}
