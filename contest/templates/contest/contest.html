@@ -17,47 +17,23 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 -->
-<!DOCTYPE html>
-<html lang="en">
+{% extends "index/base.html" %} {% load staticfiles %} 
 
-<head>
-  <meta charset="utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="">
-  <meta name="author" content="">
+{% block title_name %}
+<title>Contest</title>
+{% endblock title_name %} 
 
-  <title>Contest</title>
-
-  <!-- Bootstrap core CSS -->
-  {% load staticfiles %}
-  <link href="{% static 'contest/bootstrap/dist/css/bootstrap.min.css' %}" rel="stylesheet">
-
-
-  <!-- Just for debugging purposes. Don't actually copy these 2 lines! -->
-  <!--[if lt IE 9]><script src="../../assets/js/ie8-responsive-file-warning.js"></script><![endif]-->
-
-  <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
-  <!--[if lt IE 9]>
-      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
-      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
-    <![endif]-->
-  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
-  <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
-</head>
-
-<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+{% block import_source %}
 <link href="{% static 'contest/css/contest.css' %}" rel="stylesheet">
+<script src="{%static 'contest/js/contest.js'%}"></script>
+{% endblock import_source %} 
 
+{% block body_block %}
 <body onload="getRestTime()">
   <div class="container">
     <!--Title-->
     <div class="well">
       <h1>{{ contest.name }}</h1>
-      <a style="text-align:center;" id="right-panel-link" href="#right-panel">
-        <button type="button" class="btn btn-info">
-          <span class="glyphicon glyphicon-question-sign" aria-hidden="true"></span>Clarification</button>
-      </a>
     </div>
     <div class="panel panel-info">
       <div class="panel-heading">
@@ -74,37 +50,44 @@ SOFTWARE.
         </table>
       </div>
       <div class="progress" style="margin-left:5%;width:90%;">
-        <div id="timeline" class="progress-bar progress-bar-info" role="progressbar" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100" style="width:20%">
+        <div id="timeline" class="progress-bar progress-bar-info" role="progressbar" 
+        aria-valuenow="20" aria-valuemin="0" aria-valuemax="100" style="width:20%">
           <span class="sr-only"></span>
         </div>
       </div>
     </div>
-    <!-- Left panel -->
-    <div id="right-panel" class="panelsidebar">
-      <table class="table">
-        <thead>
-          <tr>
-            <th>#</th>
-            <th>Problem Name</th>
-            <th>Asker</th>
-            <th>Clarification</th>
-            <th>Reply</th>
-          </tr>
-        </thead>
-        <tbody>
-          {% for clarification in contest.clarification_list %}
-          <tr>
-            <td>{{ clarification.id }}</td>
-            <td>{{ clarification.name }}</td>
-            <td>{{ clarification.asker }}</td>
-            <td>{{ clarification.content }}</td>
-            <td>{{ clarification.reply }}</td>
-          </tr>
-          {% endfor %}
-        </tbody>
-      </table>
-      <div align="center">
-        <button type="button" class="btn btn-default btn-lg" data-toggle="modal" data-target="#myModal">Clarify</button>
+    <!-- clarification -->
+    <div class="panel panel-primary">
+      <div class="panel-heading">
+        <h1 class="panel-title" style="text-align:center;">Clarification</h1>
+      </div>
+      <div id="contest_clarification">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Problem Name</th>
+              <th>Asker</th>
+              <th>Clarification</th>
+              <th>Reply</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for clarification in contest.clarification_list %}
+            <tr>
+              <td>{{ clarification.id }}</td>
+              <td>{{ clarification.name }}</td>
+              <td>{{ clarification.asker }}</td>
+              <td>{{ clarification.content }}</td>
+              <td>{{ clarification.reply }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+        <div align="center">
+          <button type="button" class="btn btn-primary btn-lg" data-toggle="modal" 
+          data-target="#myModal">Clarify</button>
+        </div>
       </div>
     </div>
     <hr>
@@ -135,7 +118,8 @@ SOFTWARE.
     </div>
 
     <!-- Modal -->
-    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal fade" id="myModal" tabindex="-1" 
+    role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
       <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-header">
@@ -174,20 +158,5 @@ SOFTWARE.
       </div>
     </div>
   </div>
-  </div>
-
-  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
-  <script src="{% static 'contest/js/jquery.panelslider.min.js' %}"></script>
-
-
-  <!-- Bootstrap core JavaScript
-    ================================================== -->
-  <script src="{%static 'contest/js/contest.js'%}"></script>
-  <!-- Placed at the end of the document so the pages load faster -->
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
-  <script src="{% static 'contest/bootstrap/dist/js/bootstrap.min.js' %}"></script>
-  <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
-
 </body>
-
-</html>
+{% endblock body_block %}
