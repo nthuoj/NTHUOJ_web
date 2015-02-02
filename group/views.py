@@ -43,7 +43,7 @@ def get_running_contest(request):
         return render(
             request, 'group/viewall.html', {
                 'C_data': all_running_contest_list, 
-                'Title': 'running contest',
+                'title': 'running contest',
             })
 
 def get_ended_contest(request):
@@ -64,7 +64,7 @@ def get_ended_contest(request):
         return render(
             request, 'group/viewall.html', {
                 'C_data': all_ended_contest_list, 
-                'Title': 'ended contest',
+                'title': 'ended contest',
             })
 
 def get_all_announce(request):
@@ -87,7 +87,7 @@ def get_all_announce(request):
         return render(
             request, 'group/viewall.html', {
                 'C_data': all_announce_list, 
-                'Title': 'announce',
+                'title': 'announce',
             })
 
     
