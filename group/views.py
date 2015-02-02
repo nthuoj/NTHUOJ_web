@@ -46,8 +46,8 @@ def get_running_contest(request):
                 'Title': 'contest',
             })
 
-def get_contest_archive(request):
-        all_contest_archive = [
+def get_ended_contest(request):
+        all_ended_contest = [
             {'name':'archive', 'time':'20111010'},
             {'name':'archive', 'time':'20140505'},
             {'name':'archive', 'time':'20122222'},
@@ -63,7 +63,7 @@ def get_contest_archive(request):
         ] 
         return render(
             request, 'group/viewall.html', {
-                'C_data': all_contest_archive, 
+                'C_data': all_ended_contest, 
                 'Title': 'archive',
             })
 
