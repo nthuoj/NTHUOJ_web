@@ -33,8 +33,8 @@ from index.views import custom_proc
 def status(request):
     submissions = Submission.objects.order_by('-id')[0:50]
     submissions_id = map(lambda submission: submission.id, submissions)
-    submission_details = SubmissionDetail.objects.
-        filter(sid__in=submissions_id).order_by('-sid')
+    submission_details = SubmissionDetail. \
+        objects.filter(sid__in=submissions_id).order_by('-sid')
 
     return render(
         request,
