@@ -1,4 +1,4 @@
-/*
+'''
 The MIT License (MIT)
 
 Copyright (c) 2014 NTHUOJ team
@@ -20,42 +20,33 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
-*/
-var editor;
+'''
+import logging
 
-$(function () {
-    editor = CodeMirror.fromTextArea(document.getElementById('code_editor'), {
-        lineNumbers: true,
-        styleActiveLine: true,
-        matchBrackets: true,
-        mode: 'text/x-csrc',
-        lineWrapping: true,
-        tab: 4,
-        indentUnit: 4,
-        theme: 'solarized light'
-    });
 
-    $('input[type=file]').bootstrapFileInput();
-    $('.file-inputs').bootstrapFileInput();
+def get_logger(name='NTHU OJ'):
+    '''Return a logger with specified settings
 
-    $('#fileinput').change(function(evt) {
-        //Retrieve the first (and only!) File from the FileList object
-        var f = evt.target.files[0];
+    Args:
+        name: the name of the module.
+    Returns:
+        the logger with specified format.
+    '''
+    # create logger
+    logger = logging.getLogger(name)
+    logger.setLevel(logging.DEBUG)
 
-        if (f) {
-            var r = new FileReader();
-            r.onload = function(e) {
-                var contents = e.target.result;
-                editor.value = contents;
-                try {
-                    editor.getDoc().setValue(contents);
-                } catch (e) {
+    # create console handler and set level to debug
+    ch = logging.StreamHandler()
+    ch.setLevel(logging.DEBUG)
 
-                }
-            };
-            r.readAsText(f);
-        } else {
-            alert('Failed to load file');
-        }
-    })
-})
+    # create formatter
+    formatter = logging.Formatter('[%(asctime)s] %(levelname)s: %(message)s')
+
+    # add formatter to ch
+    ch.setFormatter(formatter)
+
+    # add ch to logger
+    logger.addHandler(ch)
+
+    return logger
