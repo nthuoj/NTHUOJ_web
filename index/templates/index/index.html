@@ -75,7 +75,7 @@ SOFTWARE.
       {% for cRunning in cRunnings %}
         <tr>
           <td>{{ cRunning.cname }}</td>
-          <td>{{ cRunning.get_time }}</td>
+          <td>{{ cRunning.time_diff }}</td>
           <td></td>
         </tr>
       {% endfor %}
@@ -83,7 +83,7 @@ SOFTWARE.
         <tr>
           <td>{{ cUpcoming.cname }}</td>
           <td></td>
-          <td>{{ cUpcoming.get_time }}</td>
+          <td>{{ cUpcoming.time_diff }}</td>
         </tr>
       {% endfor %}
     </tbody>

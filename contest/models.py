@@ -40,7 +40,7 @@ class Contest(models.Model):
     open_register = models.BooleanField(default=True)
     creation_time = models.DateTimeField(default=datetime.now, auto_now_add=True)
 
-    def get_time(self):
+    def time_diff(self):
         present = timezone.now()
         if self.start_time < present:
             deltatime = self.end_time  - present
