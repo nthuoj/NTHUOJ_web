@@ -28,6 +28,8 @@ from contest.models import Contest
 from contest.models import Contestant
 from contest.models import Clarification
 
+from problem.models import Submission
+
 def archive(request):
     #to store contest basic info and contestants
     contest_list = []
@@ -64,7 +66,22 @@ def contest(request,contest_cname):
                     ,'clarification_list':clarificationList}
     '''
     contest = get_object_or_404(Contest,cname = contest_cname)
-    clarification = Clarification.objects.filter(contest = contest)
+    clarification_list = Clarification.objects.filter(contest = contest)
+    contestant_list = Contestant.objects.filter(contest = contest)
 
-    return render(request, 'contest/contest.html',{'contest':contest,'clarification':clarification,'server_time':serverTime},
+    
+    submission_list = []
+    for contestant in contestant_list:
+        contestant_submission_list = []
+        for problem in contest.problem.all():
+            submission = Submission.objects.filter(problem = problem , submit_time = contest.end_time , user = contestant.user)
+            contestant_submission_list.append({'submission':submission})
+        
+        submission_list.append({'contestant_submission_list':contestant_submission_list})
+    #for contestant_submission_list in submission_list:
+        #for submission in contestant_submission_list:
+    
+
+    return render(request, 'contest/contest.html',{'contest':contest,'clarification_list':clarification_list,
+        'contestant_list':contestant_list,'contestant_submission_list':contestant_submission_list,'server_time':serverTime},
         context_instance = RequestContext(request, processors = [custom_proc]))
