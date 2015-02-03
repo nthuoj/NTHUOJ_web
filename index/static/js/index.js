@@ -48,9 +48,10 @@ function log_in() {
     document.getElementById("notlogin").style.display = "none";
 }
 $(function() {
+    var one_minute = 60*1000;
     setInterval(function() {
         $.get('/get_time/', function(data) {
             $('#time').html(data);
         });
-    }, 1000*60);
+    }, one_minute);
 })
