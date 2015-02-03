@@ -89,7 +89,7 @@ SOFTWARE.
           </button>
 
           <button type="button" class="btn btn-info btn-xs" data-toggle="modal" 
-          data-target="#contestInfo{{ contest.cname }}">
+          data-target="#contestInfo{{ contest.contest.cname }}">
             <span class="glyphicon glyphicon-info-sign"></span>
           </button>
           <script>
@@ -105,10 +105,6 @@ SOFTWARE.
         </td>
         <td>{{ contest.contest.start_time }}</td>
         <td>{{ contest.contest.end_time }}</td>
-        <!--
-          <td>{{ contest.start_time|date:"Y/m/d h:m:s" }}</td>
-          <td>{{ contest.end_time|date:"Y/m/d h:m:s" }}</td> 
-        <td>{{ contest.contestant_number }}</td> -->
         <td>{{ contest.contest.owner }}</td>
       </tr>
       {% endfor %}

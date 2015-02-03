@@ -17,7 +17,7 @@
     OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
     SOFTWARE.
     '''
-    
+
 from django.http import HttpResponseRedirect
 from django.shortcuts import render,get_object_or_404
 from datetime import datetime
@@ -54,8 +54,8 @@ def contest(request,contest_cname):
 
     
     submission_list = []
+    contestant_submission_list = []
     for contestant in contestant_list:
-        contestant_submission_list = []
         for problem in contest.problem.all():
             submission = Submission.objects.filter(problem = problem , submit_time = contest.end_time , user = contestant.user)
             contestant_submission_list.append({'submission':submission})
@@ -69,7 +69,7 @@ def contest(request,contest_cname):
         'contestant_list':contestant_list,'contestant_submission_list':contestant_submission_list,'server_time':serverTime},
         context_instance = RequestContext(request, processors = [custom_proc]))
 
-def newContest(request):
+def new(request):
     if request.method == 'GET':
         form = ContestForm()
     if request.method == 'POST':
@@ -77,4 +77,5 @@ def newContest(request):
         if form.is_valid():
             form.save()
             return HttpResponseRedirect('/contest/')
-    return render(request,'contest/newContest.html',{'form':form})
+    return render(request,'contest/editContest.html',{'form':form})
+
