@@ -223,7 +223,7 @@ SOFTWARE.
             <p class="p2">Problem<b class="caret"></b></p>
           </a>
           <ul class="dropdown-menu" id="volume_num">
-            {% for i in vol %}
+            {% for i in volumes %}
               <li><a href="#">volume {{ i }}</a></li>
             {% endfor %}
           </ul>
@@ -258,7 +258,7 @@ SOFTWARE.
     <input type="text" id='txt' style="width:150px;display:none;";>
     <input type="button" style="cursor: pointer;display:none;" value="send" 
            onclick="sendinfo();">
-  </div>  
+  </div>
   {% block body_block %}
   {% endblock body_block %}
   <!-- footer -->

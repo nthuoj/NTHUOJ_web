@@ -29,6 +29,7 @@ import datetime
 from django.utils import timezone
 import random
 from contest.models import Contest
+from problem.models import Problem
 
 # Create your views here.
 def index(request):
@@ -70,16 +71,19 @@ def group_list(request):
                 context_instance = RequestContext(request, processors = [custom_proc]))
 
 def custom_proc(request):
-    vol = []
-    for i in range(1,11):
-        vol.append(i)
+    volumes = []
+    problems = Problem.objects.all()
+    ids = map(lambda problem: problem.id, problems)
+    volume_number = ids[-1] // 1000
+    for i in range(1,volume_number + 2):
+        volumes.append(i)
 
     t = time.time()
     tstr = datetime.datetime.fromtimestamp(t).strftime('%Y-%m-%d %H:%M:%S')
     people = 0
     people = random.randint(100,999)
     return {
-        'vol': vol,
+        'volumes': volumes,
         'tstr': tstr,
         'people': people,
         'info1': 123,
