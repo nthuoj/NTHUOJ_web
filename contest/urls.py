@@ -22,6 +22,6 @@ from django.conf.urls import patterns, url
 from contest import views
 
 urlpatterns = patterns('',
-    url(r'^$',views.index,name='index'),
-    url(r'^(?P<contest_id>\d+)/$',views.contest,name='contest'),
-    )
+    url(r'^$',views.archive,name='archive'),
+    url(r'^(?P<contest_cname>\w+)/$',views.contest,name='contest'),
+)

@@ -28,7 +28,7 @@ from contest.models import Contest
 from contest.models import Contestant
 from contest.models import Clarification
 
-def index(request):
+def archive(request):
     #to store contest basic info and contestants
     contest_list = []
     #store contest basic info only
@@ -41,10 +41,10 @@ def index(request):
         {'contest_list':contest_list,'admin':1},
         context_instance = RequestContext(request, processors = [custom_proc]))
 
-def contest(request,contest_id):
+def contest(request,contest_cname):
 
     serverTime = datetime.now().strftime('%Y/%m/%d %H:%M:%S')
-
+    '''
     problem1 = {'id':1,'name':'First Problem','ppl_pass':2,'ppl_not_pass':4}
     problem2 = {'id':2,'name':'Second Problem','ppl_pass':1,'ppl_not_pass':8}
     problem3 = {'id':3,'name':'third Problem','ppl_pass':5,'ppl_not_pass':1}
@@ -62,7 +62,9 @@ def contest(request,contest_id):
     contest1 = {'name':'First contest','start_time':'2014/12/27 15:30:00','end_time':'2014/12/27 16:00:00',
                     'contest_contestant':200,'contest_owner':'ma in joe','problem_list':problemList,'contestant_list':contestantList
                     ,'clarification_list':clarificationList}
+    '''
+    contest = get_object_or_404(Contest,cname = contest_cname)
+    clarification = Clarification.objects.filter(contest = contest)
 
-    return render(request, 'contest/contest.html',{'contest':contest1,'problem_list':problemList,
-        'contestant_list':contestantList,'server_time':serverTime},
+    return render(request, 'contest/contest.html',{'contest':contest,'clarification':clarification,'server_time':serverTime},
         context_instance = RequestContext(request, processors = [custom_proc]))
