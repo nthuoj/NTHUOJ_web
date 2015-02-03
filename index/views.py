@@ -26,15 +26,25 @@ from django.http import HttpResponse
 from django.template import RequestContext
 import time
 import datetime
+from django.utils import timezone
 import random
+from contest.models import Contest
 # Create your views here.
 def index(request):
-    contest_num = 0
-    contest_num = random.randint(2,4)
-    contest = ['DS', 'senior', 'junior', 'ABC']
-    ctime = ['seconds', 'minutes', 'hours', 'days']
+    present = timezone.now()
+    contests = Contest.objects.all()
+    start_times = map(lambda contest: contest.start_time, contests)
+    end_times = map(lambda contest: contest.end_time, contests)
+
+    notFisnished = endcontest_filter(end_times, present)
+    isRunning = isRunning_filter(start_times, end_times, present)
+    isUpcoming = isUpcoming_filter(notFisnished, isRunning)
+
+    cRunnings = Contest.objects.filter(end_time__in=isRunning)
+    cUpcomings = Contest.objects.filter(end_time__in=isUpcoming)
+
     return render(request, 'index/index.html', 
-                {'contest_num':contest_num, 'contest':contest, 'ctime':ctime}, 
+                {'cRunnings':cRunnings, 'cUpcomings':cUpcomings}, 
                 context_instance = RequestContext(request, processors = [custom_proc]))
 
 def base(request):
@@ -62,7 +72,7 @@ def custom_proc(request):
     vol = []
     for i in range(1,11):
         vol.append(i)
-    
+
     t = time.time()
     tstr = datetime.datetime.fromtimestamp(t).strftime('%Y-%m-%d %H:%M:%S')
     people = 0
@@ -74,3 +84,24 @@ def custom_proc(request):
         'info1': 123,
         'info2': 1234567
     }
+
+def endcontest_filter(endlists, present):
+    notFishied = []
+    for i in endlists:
+        if i > present:
+            notFishied.append(i)
+    return notFishied
+
+def isRunning_filter(startlists, endlists, present):
+    isRunning = []
+    for i, j in enumerate(startlists):
+        if j < present and endlists[i] > present:
+            isRunning.append(endlists[i])
+    return isRunning
+
+def isUpcoming_filter(notFisnished, isRunning):
+    isUpcoming = []
+    for i in notFisnished:
+        if i not in isRunning:
+            isUpcoming.append(i)
+    return isUpcoming

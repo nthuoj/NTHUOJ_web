@@ -32,6 +32,7 @@ SOFTWARE.
 {% endblock import_source %}
 
 {% block body_block %}
+
   <!-- clock -->
   <div class="gray">
   </div>
@@ -66,14 +67,26 @@ SOFTWARE.
     </thead>
     <thead style="background-color: #E5E5E5">
       <tr>
-        <th>#</th>
         <th>Contest name</th>
         <th>remaining time</th>
         <th>upcoming</th>
       </tr>
     </thead>
     <tbody class="line" id="contest_content">
-      <tr><td>{{ contest_num }}#{{ contest }}#{{ ctime }}</td></tr>
+      {% for cRunning in cRunnings %}
+        <tr>
+          <td>{{ cRunning.cname }}</td>
+          <td>{{ cRunning.get_time }}</td>
+          <td></td>
+        </tr>
+      {% endfor %}
+      {% for cUpcoming in cUpcomings %}
+        <tr>
+          <td>{{ cUpcoming.cname }}</td>
+          <td></td>
+          <td>{{ cUpcoming.get_time }}</td>
+        </tr>
+      {% endfor %}
     </tbody>
   </table>
 {% endblock body_block %}

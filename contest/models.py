@@ -23,6 +23,7 @@ from users.models import User
 from problem.models import Problem
 from team.models import Team
 from datetime import datetime
+from django.utils import timezone
 
 # Create your models here.
 
@@ -39,8 +40,24 @@ class Contest(models.Model):
     open_register = models.BooleanField(default=True)
     creation_time = models.DateTimeField(default=datetime.now, auto_now_add=True)
 
+    def get_time(self):
+        present = timezone.now()
+        if self.start_time < present:
+            deltatime = self.end_time  - present
+        else:
+            deltatime = self.start_time  - present
+            
+        days, seconds = deltatime.days, deltatime.seconds
+        hours = seconds // 3600
+        minutes = (seconds % 3600) // 60
+        seconds = (seconds % 60)
+        return '{} minute{}, {} hour{}, {} day{}'. \
+            format(minutes, 's' if minutes != 1 else '', \
+                hours, 's' if hours != 1 else '', \
+                days, 's' if days != 1 else '')
+
     def __unicode__(self):
-        return self.cname
+        return self.cname 
 
 
 class Contestant(models.Model):

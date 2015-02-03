@@ -25,50 +25,6 @@ var displayInfo = false;
 var loginInfo = false;
 
 window.onload = function() {
-
-    var contest_content = document.getElementById("contest_content").innerHTML;
-    contest_content = contest_content.replace(/<td>/,'');
-    contest_content = contest_content.replace(/<\/td>/,'');
-    contest_content = contest_content.replace(/<tr>/,'');
-    contest_content = contest_content.replace(/<\/tr>/,'');
-    contest_content = contest_content.replace(/\s/g,'');
-    contest_content = contest_content.replace(/\'/g,'');
-    contest_content = contest_content.split('#');
-    var contest_num = contest_content[0];
-    var contest_event = contest_content[1];
-    var contest_time = contest_content[2];
-    contest_event = contest_event.replace(/\[/,'');
-    contest_event = contest_event.replace(/\]/,'');
-    contest_event = contest_event.split(',');
-    contest_time = contest_time.replace(/\[/,'');
-    contest_time = contest_time.replace(/\]/,'');
-    contest_time = contest_time.split(',');
-
-    document.getElementById("contest_content").innerHTML = '';    
-    for (i=1;i<= contest_num;i++){
-        var ori = document.getElementById("contest_content").innerHTML;
-        if(i != contest_num){
-            document.getElementById("contest_content").innerHTML = 
-            ori + '<td>' + i + '</td>' + 
-            '<td>' + 
-            contest_event[Math.floor(Math.random() * contest_num)] + 
-            '</td>' +
-            '<td>' + Math.floor((Math.random() * 10) + 1) + 
-            ' ' + contest_time[Math.floor(Math.random() * contest_num)] + 
-            '</td>' + 
-            '<td>' + '</td>';
-        }
-        else{
-            document.getElementById("contest_content").innerHTML = 
-            ori + '<td>' + i + '</td>' + 
-            '<td>' + 
-            contest_event[Math.floor(Math.random() * contest_num)] + 
-            '</td>' + '<td>' + '</td>' + 
-            '<td>' + Math.floor((Math.random() * 10) + 1) + 
-            ' ' + contest_time[Math.floor(Math.random() * contest_num)] + 
-            '</td>' ;
-        }
-    }
     alert("You have new messages!");
 }
 function info() {
