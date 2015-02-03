@@ -51,10 +51,7 @@ class Contest(models.Model):
         hours = seconds // 3600
         minutes = (seconds % 3600) // 60
         seconds = (seconds % 60)
-        return '{} minute{}, {} hour{}, {} day{}'. \
-            format(minutes, 's' if minutes != 1 else '', \
-                hours, 's' if hours != 1 else '', \
-                days, 's' if days != 1 else '')
+        return {'day':days, 'hour':hours, 'minute':minutes}
 
     def __unicode__(self):
         return self.cname
