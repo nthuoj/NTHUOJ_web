@@ -61,6 +61,9 @@ class User(models.Model):
     )
     theme = models.CharField(max_length=8, choices=THEME_CHOICE, default=PAPER)
 
+    def get_user_level(self):
+        return self.user_level
+
     def __unicode__(self):
         return self.username
 
