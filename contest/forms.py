@@ -17,12 +17,20 @@
     OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
     SOFTWARE.
     '''
+from django import forms
+from contest.models import Contest
 
-from django.conf.urls import patterns, url
-from contest import views
-
-urlpatterns = patterns('',
-    url(r'^$',views.archive,name='archive'),
-    url(r'^new/$',views.newContest,name='newcontest'),
-    url(r'^(?P<contest_cname>\w+)/$',views.contest,name='contest'),
-)
+class ContestForm(forms.ModelForm):
+    class Meta:
+        model = Contest
+        fields = [
+            'cname',
+            'owner',
+            'coowner',
+            'start_time',
+            'end_time',
+            'freeze_time',
+            'problem',
+            'is_homework',
+            'open_register',
+        ]

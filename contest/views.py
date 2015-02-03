@@ -17,8 +17,8 @@
     OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
     SOFTWARE.
     '''
-
-from django.http import HttpResponse
+    
+from django.http import HttpResponseRedirect
 from django.shortcuts import render,get_object_or_404
 from datetime import datetime
 from index.views import custom_proc
@@ -27,6 +27,8 @@ from django.template import RequestContext
 from contest.models import Contest
 from contest.models import Contestant
 from contest.models import Clarification
+
+from contest.forms import ContestForm
 
 from problem.models import Submission
 
@@ -46,25 +48,6 @@ def archive(request):
 def contest(request,contest_cname):
 
     serverTime = datetime.now().strftime('%Y/%m/%d %H:%M:%S')
-    '''
-    problem1 = {'id':1,'name':'First Problem','ppl_pass':2,'ppl_not_pass':4}
-    problem2 = {'id':2,'name':'Second Problem','ppl_pass':1,'ppl_not_pass':8}
-    problem3 = {'id':3,'name':'third Problem','ppl_pass':5,'ppl_not_pass':1}
-    problemList = [problem1,problem2,problem3]
-
-    ppl1 = {'name':'naruto','score':['0/3','1/2','1/4'],'solved':'2','panalty':'833'}
-    ppl2 = {'name':'obama','score':['0/2','1/5','1/3'],'solved':'2','panalty':'83'}
-    
-    contestantList = [ppl1,ppl2]
-
-    clarification1 = {'id':1,'name':'First Problem','asker':'obama','content':'i have some problem','reply':'shut up'}
-
-    clarificationList = [clarification1]
-
-    contest1 = {'name':'First contest','start_time':'2014/12/27 15:30:00','end_time':'2014/12/27 16:00:00',
-                    'contest_contestant':200,'contest_owner':'ma in joe','problem_list':problemList,'contestant_list':contestantList
-                    ,'clarification_list':clarificationList}
-    '''
     contest = get_object_or_404(Contest,cname = contest_cname)
     clarification_list = Clarification.objects.filter(contest = contest)
     contestant_list = Contestant.objects.filter(contest = contest)
@@ -85,3 +68,13 @@ def contest(request,contest_cname):
     return render(request, 'contest/contest.html',{'contest':contest,'clarification_list':clarification_list,
         'contestant_list':contestant_list,'contestant_submission_list':contestant_submission_list,'server_time':serverTime},
         context_instance = RequestContext(request, processors = [custom_proc]))
+
+def newContest(request):
+    if request.method == 'GET':
+        form = ContestForm()
+    if request.method == 'POST':
+        form = ContestForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return HttpResponseRedirect('/contest/')
+    return render(request,'contest/newContest.html',{'form':form})

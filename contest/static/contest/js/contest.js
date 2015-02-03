@@ -24,9 +24,6 @@ $('#myTab a').click(function(e) {
     $('#myTab a[href="#scoreboard"]').tab('show')
     $('#myTab a[href="#status"]').tab('show')
 })
-$('#right-panel-link').panelslider({
-    side: 'right'
-});
 
 function startTime() {
     var today = new Date();
