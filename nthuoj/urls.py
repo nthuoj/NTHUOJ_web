@@ -10,4 +10,5 @@ urlpatterns = patterns('',
     url(r'^contest/', include('contest.urls')),
     url(r'^users/', include('users.urls')),
     url(r'^team/', include('team.urls')),
+    url(r'^status/', include('status.urls')),
 )

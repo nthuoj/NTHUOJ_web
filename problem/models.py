@@ -38,19 +38,6 @@ class Tag(models.Model):
 
 
 class Problem(models.Model):
-
-    pname = models.CharField(max_length=50, default='')
-    owner = models.ForeignKey(User)
-    description = models.TextField(blank=True)
-    input = models.TextField(blank=True)
-    output = models.TextField(blank=True)
-    sample_in = models.TextField(blank=True)
-    sample_out = models.TextField(blank=True)
-    visible = models.BooleanField(default=False)
-    error_torrence = models.DecimalField(decimal_places=15, max_digits=17, default=0)
-    other_judge_id = models.IntegerField(blank=True, null=True)
-    tags = models.ManyToManyField(Tag, blank=True, null=True)
-
     LOCAL = 'LOCAL'
     SPECIAL = 'SPECIAL'
     ERROR_TORRENT = 'ERR_TORRENT'
@@ -63,6 +50,18 @@ class Problem(models.Model):
         (PARTIAL, 'Partial Judge'),
         (OTHER, 'Use Other Judge'),
     )
+
+    pname = models.CharField(max_length=50, default='')
+    owner = models.ForeignKey(User)
+    description = models.TextField(blank=True)
+    input = models.TextField(blank=True)
+    output = models.TextField(blank=True)
+    sample_in = models.TextField(blank=True)
+    sample_out = models.TextField(blank=True)
+    visible = models.BooleanField(default=False)
+    error_torrence = models.DecimalField(decimal_places=15, max_digits=17, default=0)
+    other_judge_id = models.IntegerField(blank=True, null=True)
+    tags = models.ManyToManyField(Tag, blank=True, null=True)
     judge_source = models.CharField(max_length=11, choices=JUDGE_TYPE_CHOICE, default=LOCAL)
 
     def __unicode__(self):
@@ -81,13 +80,6 @@ class Testcase(models.Model):
 
 
 class Submission(models.Model):
-
-    problem = models.ForeignKey(Problem)
-    user = models.ForeignKey(User)
-    team = models.ForeignKey(Team, blank=True, null=True)
-    submit_time = models.DateTimeField(default=datetime.now)
-    error_msg = models.TextField(blank=True)
-
     WAIT = 'WAIT'
     JUDGING = 'JUDGING'
     ACCEPTED = 'AC'
@@ -104,7 +96,6 @@ class Submission(models.Model):
         (RESTRICTED_FUNCTION, 'Restricted Function'),
         (JUDGE_ERROR, 'Judge Error'),
     )
-    status = models.CharField(max_length=7, choices=STATUS_CHOICE, default=WAIT)
 
     C = 'C'
     CPP = 'CPP'
@@ -114,19 +105,20 @@ class Submission(models.Model):
         (CPP, 'C++'),
         (CPP11, 'C++11'),
     )
-    language = models.CharField(max_length=5, choices=LANGUAGE_CHOICE, default=C)
 
+    problem = models.ForeignKey(Problem)
+    user = models.ForeignKey(User)
+    team = models.ForeignKey(Team, blank=True, null=True)
+    submit_time = models.DateTimeField(default=datetime.now)
+    error_msg = models.TextField(blank=True)
+    status = models.CharField(max_length=7, choices=STATUS_CHOICE, default=WAIT)
+    language = models.CharField(max_length=5, choices=LANGUAGE_CHOICE, default=C)
+         
     def __unicode__(self):
         return str(self.id)
-    
+ 
 
 class SubmissionDetail(models.Model):
-
-    tid = models.ForeignKey(Testcase)
-    sid = models.ForeignKey(Submission)
-    cpu = models.FloatField(default=0)
-    memory = models.IntegerField(default=0)
-
     AC = 'AC'
     WA = 'WA'
     TLE = 'TLE'
@@ -141,6 +133,11 @@ class SubmissionDetail(models.Model):
         (RE, 'Runtime Error'),
         (PE, 'Presentation Error'),
     )
+
+    tid = models.ForeignKey(Testcase)
+    sid = models.ForeignKey(Submission)
+    cpu = models.FloatField(default=0)
+    memory = models.IntegerField(default=0)
     virdect = models.CharField(max_length=3, choices=VIRDECT_CHOICE, default='')
 
     class Meta:

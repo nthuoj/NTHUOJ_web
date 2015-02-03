@@ -30,6 +30,14 @@ $(function() {
         type: 'inline',
         midClick: true         
     });
+    $('.ajax-popup-link').magnificPopup({
+        // Class that is added to popup wrapper and background
+        // make it unique to apply your CSS animations just to this exact popup
+        removalDelay: 500,
+        mainClass: 'mmfp-fade',
+        type: 'ajax',
+        midClick: true         
+    });
     $('.code-link').magnificPopup({
         // Class that is added to popup wrapper and background
         // make it unique to apply your CSS animations just to this exact popup
