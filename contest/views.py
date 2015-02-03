@@ -24,35 +24,22 @@ from datetime import datetime
 from index.views import custom_proc
 from django.template import RequestContext
 
+from contest.models import Contest
+from contest.models import Contestant
+from contest.models import Clarification
+
 def index(request):
-    
-    problem1 = {'id':1,'name':'First Problem','ppl_pass':2,'ppl_not_pass':4}
-    problem2 = {'id':2,'name':'Second Problem','ppl_pass':1,'ppl_not_pass':8}
-    problem3 = {'id':3,'name':'third Problem','ppl_pass':5,'ppl_not_pass':1}
-    problemList = [problem1,problem2,problem3]
+    #to store contest basic info and contestants
+    contest_list = []
+    #store contest basic info only
+    contest_info_list = Contest.objects.order_by('-start_time')
+    for contest in contest_info_list:
+        contestants = Contestant.objects.filter(contest = contest)
+        contest_list.append({'contest':contest,'contestants':contestants})
 
-    ppl1 = {'name':'naruto'}
-    ppl2 = {'name':'obama'}
-    
-    contestantList = [ppl1,ppl2]
-
-    ppl3 = {'name':'forest'}
-    ppl4 = {'name':'gump'}
-
-    coownerList = [ppl3,ppl4]
-
-    contest1 = {'id':1,'name':'First contest','start_time':'2014/11/29 10:11:22','end_time':'2014/12/05 02:12:50',
-                'contestant_number':200,'owner':'ma in joe','problem_list':problemList,'contestant_list':contestantList,
-                'coowner_list':coownerList}
-
-    contestList = [contest1]
-
-    #contest_list = Contest.objects.order_by('-contest_id')
-    #problem_list = Problem.objects.all()
-    #contestant_list = {1:'naruto',2:'obama'}
-    #coowner_list = {1:'teemo',2:'lux',3:'jinx'}
-    return render(request, 'contest/contestArchive.html',{'contest_list':contestList,'admin':1},
-                context_instance = RequestContext(request, processors = [custom_proc]))
+    return render(request, 'contest/contestArchive.html',
+        {'contest_list':contest_list,'admin':1},
+        context_instance = RequestContext(request, processors = [custom_proc]))
 
 def contest(request,contest_id):
 

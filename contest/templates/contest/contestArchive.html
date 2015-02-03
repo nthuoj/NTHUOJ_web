@@ -62,7 +62,7 @@ SOFTWARE.
         <th>Contest</th>
         <th>Start time</th>
         <th>End time</th>
-        <th>Contestant</th>
+        <!--<th>Contestant</th>-->
         <th>Owner</th>
       </tr>
     </thead>
@@ -76,7 +76,7 @@ SOFTWARE.
           </button>
 
           <button type="button" class="btn btn-info btn-xs" data-toggle="modal" 
-          data-target="#contestInfo{{ contest.id }}">
+          data-target="#contestInfo{{ contest.cname }}">
             <span class="glyphicon glyphicon-pencil"></span>
           </button>
 
@@ -87,7 +87,7 @@ SOFTWARE.
           </button>
 
           <button type="button" class="btn btn-info btn-xs" data-toggle="modal" 
-          data-target="#contestInfo{{ contest.id }}">
+          data-target="#contestInfo{{ contest.cname }}">
             <span class="glyphicon glyphicon-info-sign"></span>
           </button>
           <script>
@@ -98,16 +98,16 @@ SOFTWARE.
           </script>
           {% endif %}
         </td>
-        <td>{{ contest.id }}</td>
-        <td><a href="{{ contest.id }}">{{ contest.name }}</a>
+        <td>{{ forloop.counter }}</td>
+        <td><a href="{{ contest.contest.cname }}">{{ contest.contest.cname }}</a>
         </td>
-        <td>{{ contest.start_time }}</td>
-        <td>{{ contest.end_time }}</td>
+        <td>{{ contest.contest.start_time }}</td>
+        <td>{{ contest.contest.end_time }}</td>
         <!--
           <td>{{ contest.start_time|date:"Y/m/d h:m:s" }}</td>
-          <td>{{ contest.end_time|date:"Y/m/d h:m:s" }}</td> -->
-        <td>{{ contest.contestant_number }}</td>
-        <td>{{ contest.owner }}</td>
+          <td>{{ contest.end_time|date:"Y/m/d h:m:s" }}</td> 
+        <td>{{ contest.contestant_number }}</td> -->
+        <td>{{ contest.contest.owner }}</td>
       </tr>
       {% endfor %}
     </tbody>
@@ -116,7 +116,7 @@ SOFTWARE.
 <!-- /.container -->
 <!-- Contest detail info-->
 {% for contest in contest_list %}
-<div class="modal fade" id="contestInfo{{ contest.id }}" tabindex="-1" 
+<div class="modal fade" id="contestInfo{{ contest.cname }}" tabindex="-1" 
 role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
@@ -130,7 +130,7 @@ role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
             <table style="table-layout:fixed;width: 100%;text-align:center">
               <tr>
                 <td>
-                  <input class="form-control" value="{{ contest.name }}">
+                  <input class="form-control" value="{{ contest.contest.cname }}">
                 </td>
                 <td>
                   <button type="button" class="btn btn-primary">Submit</button>
@@ -138,7 +138,7 @@ role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
               </tr>
             </table>
             {% else %}
-            {{ contest.name }}
+            {{ contest.contest.cname }}
             {% endif %}
           </h2>
       </div>
@@ -169,7 +169,7 @@ role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
                 </tr>
               </thead>
               <tbody>
-                {% for problem in contest.problem_list %}
+                {% for problem in contest.contest.problem.all %}
                 <tr>
                   {% if admin %}
                   <td>
@@ -181,11 +181,11 @@ role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
                     </button>
                   </td>
                   {% endif %}
-                  <td>{{ problem.id }}</td>
-                  <td>{{ problem.name }}</td>
+                  <td>{{ forloop.counter }}</td>
+                  <td>{{ problem.pname }}</td>
                 </tr>
                 {% endfor %}
-                <!-- -->
+
                 {% if admin %}
                 <tr>
                   <td style="width:10%">
@@ -214,18 +214,19 @@ role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
                 </tr>
               </thead>
               <tbody>
-                {% for ppl in contest.contestant_list %}
+                {% for contestant in contest.contestants %}
                 <tr>
-                  {% if admin %}
-                  <td>
-                    <button type="button" class="btn btn-danger btn-xs">
-                      <span class="glyphicon glyphicon-minus"></span>
-                    </button>
-                  </td>
-                  {% endif %}
-                  <td>{{ forloop.counter }}</td>
-                  <td>{{ ppl.name }}</td>
-                </tr>{% endfor %}
+                    {% if admin %}
+                    <td>
+                      <button type="button" class="btn btn-danger btn-xs">
+                        <span class="glyphicon glyphicon-minus"></span>
+                      </button>
+                    </td>
+                    {% endif %}
+                    <td>{{ forloop.counter }}</td>
+                    <td>{{ contestant.user.username }}</td>
+                </tr>
+                {% endfor %}
                 <tr>
                   {% if admin %}
                   <td style="width:10%">
@@ -254,9 +255,9 @@ role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
                 <td>Start Time</td>
                 <td>
                   {% if admin %}
-                  <input class="form-control" value="{{ contest.start_time }}"></input>
+                  <input class="form-control" value="{{ contest.contest.start_time }}"></input>
                   {% else %}
-                  <h3>{{ contest.start_time }}</h3>
+                  <h3>{{ contest.contest.start_time }}</h3>
                   <!-- -->
                   {% endif %}
                 </td>
@@ -265,9 +266,9 @@ role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
                 <td>End Time</td>
                 <td>
                   {% if admin %}
-                  <input class="form-control" value="{{ contest.end_time }}"></input>
+                  <input class="form-control" value="{{ contest.contest.end_time }}"></input>
                   {% else %}
-                  <h3>{{ contest.end_time }}</h3>
+                  <h3>{{ contest.contest.end_time }}</h3>
                   <!-- -->
                   {% endif %}
                 </td>
@@ -286,7 +287,7 @@ role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
                 </tr>
               </thead>
               <tbody>
-                {% for ppl in contest.coowner_list %}
+                {% for coowner in contest.contest.coowner.all %}
                 <tr>
                   {% if admin %}
                   <td>
@@ -296,7 +297,7 @@ role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
                   </td>
                   {% endif %}
                   <td>{{ forloop.counter }}</td>
-                  <td>{{ ppl.name }}</td>
+                  <td>{{ coowner.username }}</td>
                 </tr>
                 {% endfor %}
                 <!-- -->
@@ -318,7 +319,7 @@ role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
           </div>
           <div class="tab-pane" id="contest_others">
             <label>Freeze：</label>
-            <input type="text" class="form-control"></input>
+            <input type="text" class="form-control" value="{{ contest.contest.freeze_time}}"></input>
             <div class="checkbox">
               <label>
                 <input type="checkbox">Homework</input>
