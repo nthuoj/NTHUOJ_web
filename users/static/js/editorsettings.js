@@ -23,7 +23,7 @@ SOFTWARE.
 */
 var editor;
 
-$(function() {
+$(function () {
     editor = CodeMirror.fromTextArea(document.getElementById('code_editor'), {
         lineNumbers: true,
         styleActiveLine: true,
@@ -32,7 +32,6 @@ $(function() {
         lineWrapping: true,
         tab: 4,
         indentUnit: 4,
-        matchBrackets: true,
         theme: 'solarized light'
     });
 
@@ -53,7 +52,7 @@ $(function() {
                 } catch (e) {
 
                 }
-            }
+            };
             r.readAsText(f);
         } else {
             alert('Failed to load file');
