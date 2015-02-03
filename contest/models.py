@@ -46,7 +46,7 @@ class Contest(models.Model):
             deltatime = self.end_time  - present
         else:
             deltatime = self.start_time  - present
-            
+
         days, seconds = deltatime.days, deltatime.seconds
         hours = seconds // 3600
         minutes = (seconds % 3600) // 60
@@ -57,7 +57,7 @@ class Contest(models.Model):
                 days, 's' if days != 1 else '')
 
     def __unicode__(self):
-        return self.cname 
+        return self.cname
 
 
 class Contestant(models.Model):

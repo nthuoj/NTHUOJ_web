@@ -29,6 +29,7 @@ import datetime
 from django.utils import timezone
 import random
 from contest.models import Contest
+
 # Create your views here.
 def index(request):
     present = timezone.now()
