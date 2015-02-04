@@ -73,9 +73,11 @@ SOFTWARE.
       <tr>
         <td>
           {% if admin %}
-          <button type="button" class="btn btn-danger btn-xs">
-            <span class="glyphicon glyphicon-remove"></span>
-          </button>
+          <a href="delete/{{ contest.contest.id }}/">
+            <button type="button" class="btn btn-danger btn-xs">
+              <span class="glyphicon glyphicon-remove"></span>
+            </button>
+          </a>
           <a href="edit/{{ contest.contest.id }}/">
             <button type="button" class="btn btn-info btn-xs">
               <span class="glyphicon glyphicon-pencil"></span>

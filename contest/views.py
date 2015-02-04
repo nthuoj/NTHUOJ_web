@@ -73,26 +73,27 @@ def contest(request,contest_id):
 def new(request):
     if request.method == 'GET':
         form = ContestForm()
+        return render(request,'contest/editContest.html',{'form':form})
     if request.method == 'POST':
         form = ContestForm(request.POST)
         if form.is_valid():
             form.save()
             return HttpResponseRedirect('/contest/')
-    return render(request,'contest/editContest.html',{'form':form})
+    
 
 def edit(request,contest_id):
     contest = get_object_or_404(Contest,id = contest_id)
     if request.method == 'GET':        
         contest_dic = model_to_dict(contest)
         form = ContestForm(initial = contest_dic)
+        return render(request,'contest/editContest.html',{'form':form})
     if request.method == 'POST':
         form = ContestForm(request.POST, instance = contest )
         if form.is_valid():
             form.save()
             return HttpResponseRedirect('/contest/')
-    return render(request,'contest/editContest.html',{'form':form})
 
-
-    
-
-
+def delete(request,contest_id):
+    contest = get_object_or_404(Contest,id = contest_id)
+    contest.delete()
+    return HttpResponseRedirect('/contest/')
