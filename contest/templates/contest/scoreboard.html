@@ -27,32 +27,52 @@ SOFTWARE.
 <script src="{% static 'contest/js/scoreboard.js' %}"></script>
 <link href="{% static 'contest/css/scoreboard.css' %}" rel="stylesheet">
 
-<table class="table" style="table-layout:fixed">
-  <thead>
-    <tr>
-      <th>Rank</th>
-      <th>User</th>
-      {% for problem in contest.problem.all %}
-      <th><b data-toggle="tooltip" title="{{ problem.pname }}">{{ forloop.counter }}</b>
-      </th>
-      {% endfor %}
-      <th>Solved</th>
-      <th>Penalty</th>
-    </tr>
-  </thead>
-  <tbody>
-    {% for contestant in contestant_list %}
-    <tr>
-      <td>{{ forloop.counter }}</td>
-      <td>{{ contestant.user.username }}</td>
-      <!--not yet finished start-->
-      {% for score in contestant.user.score %}
-      <td>{{ score }}</td>
-      {% endfor %}
-      <td>{{ contestant.user.solved }}</td>
-      <td>{{ contestant.user.panalty }}</td>
-      <!--not yet finished end-->
-    </tr>
-    {% endfor %}
-  </tbody>
-</table>
+<div role="tabpanel">
+  <!-- Nav tabs -->
+  <ul class="nav nav-tabs" role="tablist" id="scoreboardTab">
+    <li role="presentation" class="active"><a href="#testcase" aria-controls="testcase" role="tab" data-toggle="tab">Testcase</a>
+    </li>
+    <li role="presentation"><a href="#panalty" aria-controls="panalty" role="tab" data-toggle="tab">Panalty</a>
+    </li>
+  </ul>
+  <!-- Tab panes -->
+  <div class="tab-content">
+    <div role="tabpanel" class="tab-pane active" id="testcase">
+      <table class="table" style="table-layout:fixed">
+        <thead>
+          <tr>
+            <th>Rank</th>
+            <th>User</th>
+            {% for problem in contest.problem.all %}
+            <th><b data-toggle="tooltip" title="{{ problem.pname }}">{{ forloop.counter }}</b>
+            </th>
+            {% endfor %}
+            <th>Solved</th>
+            <th>Penalty</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for contestant in contestant_list %}
+          <tr>
+            <td>{{ forloop.counter }}</td>
+            <td>{{ contestant.user.username }}</td>
+            <!--not yet finished start-->
+            {% for score in contestant.user.score %}
+            <td>{{ score }}</td>
+            {% endfor %}
+            <td>{{ contestant.user.solved }}</td>
+            <td>{{ contestant.user.panalty }}</td>
+            <!--not yet finished end-->
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+
+    </div>
+    <div role="tabpanel" class="tab-pane" id="panalty">
+
+
+    </div>
+  </div>
+
+</div>

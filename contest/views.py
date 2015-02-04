@@ -52,7 +52,6 @@ def contest(request,contest_id):
     contest = get_object_or_404(Contest,id = contest_id)
     clarification_list = Clarification.objects.filter(contest = contest)
     contestant_list = Contestant.objects.filter(contest = contest)
-
     
     submission_list = []
     contestant_submission_list = []
@@ -62,9 +61,10 @@ def contest(request,contest_id):
             contestant_submission_list.append({'submission':submission})
         
         submission_list.append({'contestant_submission_list':contestant_submission_list})
+    
     #for contestant_submission_list in submission_list:
         #for submission in contestant_submission_list:
-    
+            #if submission 
 
     return render(request, 'contest/contest.html',{'contest':contest,'clarification_list':clarification_list,
         'contestant_list':contestant_list,'contestant_submission_list':contestant_submission_list,'server_time':serverTime},
