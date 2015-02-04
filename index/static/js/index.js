@@ -37,16 +37,6 @@ function info() {
         displayInfo = !displayInfo;
     }
 }
-function sendinfo() {
-    var text = document.getElementById("txt").value;
-    var orgintext = document.getElementById("information").innerHTML;
-    document.getElementById("information").innerHTML = 
-    orgintext + '<li class="divider">' + text + '</li>';
-    alert("You have new messages!" + text);
-}
-function log_in() {
-    document.getElementById("notlogin").style.display = "none";
-}
 $(function() {
     var one_minute = 60*1000;
     setInterval(function() {
