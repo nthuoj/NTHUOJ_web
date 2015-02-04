@@ -21,14 +21,12 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 '''
-
 from django.db import models
 from datetime import date
 
 # Create your models here.
 
 class User(models.Model):
-    
     username = models.CharField(max_length=15, primary_key=True, default='')
     password = models.CharField(max_length=20, blank=True)
     email = models.CharField(max_length=100, default='')
