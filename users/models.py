@@ -71,7 +71,7 @@ class User(models.Model):
 
     def has_subjudge_auth(self):
         has_auth = ((self.user_level == ADMIN) or ( self.user_level == JUDGE) \
-                            or (self.user_level == SUB_JUDGE))
+                    or (self.user_level == SUB_JUDGE))
         return has_auth
 
     def __unicode__(self):
