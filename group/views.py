@@ -145,7 +145,7 @@ def detail(request,group_id):
 
 
 def list(request):
-    group_data = [
+    group_list = [
         {'name': 'GGgroup', 'ta_name': 'drowsy, henry', 'mem_number': '42', 'gid': '001'},
         {'name': '2ndgroup', 'ta_name': 'TA1', 'mem_number': '1', 'gid': '002'},
         {'name': '3rdgroup', 'ta_name': 'TA2, henry', 'mem_number': '22', 'gid': '003'},
@@ -155,5 +155,5 @@ def list(request):
     ]
     return render(
         request,'group/groupList.html', {
-            'G_data': group_data
+            'G_list': group_list
         })
