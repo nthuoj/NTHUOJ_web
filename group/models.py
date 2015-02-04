@@ -19,8 +19,36 @@ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
 AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.'''
+SOFTWARE.
+'''
+
 from django.db import models
+from users.models import User
+from contest.models import Contest
+from datetime import date
 
 # Create your models here.
+
+class Announce(models.Model):
+    
+    title = models.CharField(max_length=100, default='')
+    content = models.TextField(blank=True)
+
+    def __unicode__(self):
+        return self.title
+
+
+class Group(models.Model):
+
+    gname = models.CharField(max_length=50, default='')
+    owner = models.ForeignKey(User, related_name='group_owner')
+    coowner = models.ManyToManyField(User, related_name='group_coowner', blank=True)
+    member = models.ManyToManyField(User, related_name='member', blank=True)
+    description = models.TextField(blank=True)
+    announce = models.ManyToManyField(Announce, blank=True)
+    trace_contest = models.ManyToManyField(Contest, blank=True)
+    creation_time = models.DateField(default=date.today, auto_now_add=True)
+
+    def __unicode__(self):
+        return self.gname
 
