@@ -24,12 +24,12 @@ SOFTWARE.
 from django.shortcuts import render
 from django.http import HttpResponse
 from django.template import RequestContext
-import time
-import datetime
-from django.utils import timezone
-import random
 from contest.models import Contest
 from problem.models import Problem
+from django.utils import timezone
+import time
+import datetime
+import random
 
 # Create your views here.
 def index(request):
