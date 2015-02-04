@@ -24,17 +24,20 @@ SOFTWARE.
 from django.shortcuts import render
 from django.http import HttpResponse
 from django.template import RequestContext
+from contest.models import Contest
+from problem.models import Problem
+from django.utils import timezone
 import time
 import datetime
 import random
+
 # Create your views here.
 def index(request):
-    contest_num = 0
-    contest_num = random.randint(2,4)
-    contest = ['DS', 'senior', 'junior', 'ABC']
-    ctime = ['seconds', 'minutes', 'hours', 'days']
+    present = timezone.now()
+    c_runnings = Contest.objects.filter(start_time__lt=present, end_time__gt=present)
+    c_upcomings = Contest.objects.filter(start_time__gt=present)
     return render(request, 'index/index.html', 
-                {'contest_num':contest_num, 'contest':contest, 'ctime':ctime}, 
+                {'c_runnings':c_runnings, 'c_upcomings':c_upcomings}, 
                 context_instance = RequestContext(request, processors = [custom_proc]))
 
 def base(request):
@@ -58,15 +61,20 @@ def group_list(request):
     return render(request, 'index/group_list.html',{},
                 context_instance = RequestContext(request, processors = [custom_proc]))
 
-def custom_proc(request):    
-    vol = 0    
-    vol = random.randint(1,10)
+def custom_proc(request):
+    volumes = []
+    if Problem.objects.count() != 0:
+        problems = Problem.objects.latest('id')
+        volume_number = problems.id // 1000
+        for i in range(1,volume_number + 2):
+            volumes.append(i)
+
     t = time.time()
     tstr = datetime.datetime.fromtimestamp(t).strftime('%Y-%m-%d %H:%M:%S')
     people = 0
     people = random.randint(100,999)
     return {
-        'vol': vol,
+        'volumes': volumes,
         'tstr': tstr,
         'people': people,
         'info1': 123,

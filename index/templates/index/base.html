@@ -189,7 +189,7 @@ SOFTWARE.
     <div id="mwt_slider_content">feedback</div>
 
     <div id="mwt_fb_tab2">
-      <span>{{ people }}</span>      
+      <span>{{ people }}</span>
     </div>
     <div id="mwt_slider_content">feedback</div>
   </div>
@@ -222,7 +222,11 @@ SOFTWARE.
           <a href="#" class="dropdown-toggle" data-toggle="dropdown">
             <p class="p2">Problem<b class="caret"></b></p>
           </a>
-          <ul class="dropdown-menu" id="volume_num">{{ vol }}</ul>
+          <ul class="dropdown-menu" id="volume_num">
+            {% for i in volumes %}
+              <li><a href="#">volume {{ i }}</a></li>
+            {% endfor %}
+          </ul>
         </li>
         <li><a href="/users/submit"><p class="p2">Submit</p></a></li>
         <li><a href="/index/status"><p class="p2">Status</p></a></li>
@@ -250,11 +254,6 @@ SOFTWARE.
     <li class="divider">{{ info1 }}</li>
     <li class="divider">{{ info2 }}</li>
   </div>
-  <div class="temp"  >
-    <input type="text" id='txt' style="width:150px";>
-    <input type="button" style="cursor: pointer;" value="send" 
-           onclick="sendinfo();">
-  </div>  
   {% block body_block %}
   {% endblock body_block %}
   <!-- footer -->
