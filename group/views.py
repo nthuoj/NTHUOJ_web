@@ -151,7 +151,7 @@ def list(request):
         {'name': '3rdgroup', 'ta_name': 'TA2, henry', 'mem_number': '22', 'gid': '003'},
         {'name': '4thgroup', 'ta_name': 'drowsy, TA3', 'mem_number': '34', 'gid': '004'},
         {'name': '5thgroup', 'ta_name': 'TA4', 'mem_number': '105', 'gid': '005'},
-        {'name': '6thgroup', 'ta_name': 'T5A', 'mem_number': '42', 'gid': '006'}
+        {'name': '6thgroup', 'ta_name': 'T5A', 'mem_number': '42', 'gid': '006'},
     ]
     return render(
         request,'group/groupList.html', {
