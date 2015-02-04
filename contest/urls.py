@@ -24,6 +24,6 @@ from contest import views
 urlpatterns = patterns('',
     url(r'^$',views.archive,name='archive'),
     url(r'^new/$',views.new,name='new'),
-    #url(r'^edit/(?P<contest_id>\d+)$',views.edit,name='edit'),
+    url(r'^edit/(?P<contest_id>\d+)/$',views.edit,name='edit'),
     url(r'^(?P<contest_id>\d+)/$',views.contest,name='contest'),
 )

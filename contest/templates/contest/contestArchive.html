@@ -76,11 +76,11 @@ SOFTWARE.
           <button type="button" class="btn btn-danger btn-xs">
             <span class="glyphicon glyphicon-remove"></span>
           </button>
-
-          <button type="button" class="btn btn-info btn-xs" data-toggle="modal" 
-          data-target="#contestInfo{{ contest.contest.cname }}">
-            <span class="glyphicon glyphicon-pencil"></span>
-          </button>
+          <a href="edit/{{ contest.contest.id }}/">
+            <button type="button" class="btn btn-info btn-xs">
+              <span class="glyphicon glyphicon-pencil"></span>
+            </button>
+          </a>
 
           {% else %}
           <button type="button" class="btn btn-success btn-xs" data-toggle="tooltip" 

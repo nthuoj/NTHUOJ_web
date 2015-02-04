@@ -23,6 +23,7 @@ from django.shortcuts import render,get_object_or_404
 from datetime import datetime
 from index.views import custom_proc
 from django.template import RequestContext
+from django.forms.models import model_to_dict
 
 from contest.models import Contest
 from contest.models import Contestant
@@ -78,4 +79,20 @@ def new(request):
             form.save()
             return HttpResponseRedirect('/contest/')
     return render(request,'contest/editContest.html',{'form':form})
+
+def edit(request,contest_id):
+    contest = get_object_or_404(Contest,id = contest_id)
+    if request.method == 'GET':        
+        contest_dic = model_to_dict(contest)
+        form = ContestForm(initial = contest_dic)
+    if request.method == 'POST':
+        form = ContestForm(request.POST, instance = contest )
+        if form.is_valid():
+            form.save()
+            return HttpResponseRedirect('/contest/')
+    return render(request,'contest/editContest.html',{'form':form})
+
+
+    
+
 

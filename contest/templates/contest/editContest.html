@@ -26,7 +26,8 @@ SOFTWARE.
  {% block body_block %}
 <div class="container">
   <form action="." method="POST">
-    {% csrf_token %} {{ form.as_p }}
+    {% csrf_token %} 
+    {{ form.as_p }}
     <input type="submit">
   </form>
 </div>
