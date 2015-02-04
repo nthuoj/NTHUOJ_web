@@ -11,4 +11,5 @@ urlpatterns = patterns('',
     url(r'^users/', include('users.urls')),
     url(r'^team/', include('team.urls')),
     url(r'^group/', include('group.urls')),
+    url(r'^status/', include('status.urls')),
 )
