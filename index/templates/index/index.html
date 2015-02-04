@@ -75,14 +75,7 @@ SOFTWARE.
       {% for c_running in c_runnings %}
         <tr>
           <td>{{ c_running.cname }}</td>
-          <td>
-            {{ c_running.time_diff.day }} 
-            day{{ c_running.time_diff.day|pluralize }}, 
-            {{ c_running.time_diff.hour }} 
-            hour{{ c_running.time_diff.hour|pluralize }}, 
-            {{ c_running.time_diff.minute }} 
-            minute{{ c_running.time_diff.minute|pluralize }}
-          </td>
+          <td>{{ c_running.time_diff }}</td>          
           <td></td>
         </tr>
       {% endfor %}
@@ -90,14 +83,7 @@ SOFTWARE.
         <tr>
           <td>{{ c_upcoming.cname }}</td>
           <td></td>
-          <td>
-            {{ c_upcoming.time_diff.day }} 
-            day{{ c_upcoming.time_diff.day|pluralize }}, 
-            {{ c_upcoming.time_diff.hour }} 
-            hour{{ c_upcoming.time_diff.hour|pluralize }}, 
-            {{ c_upcoming.time_diff.minute }} 
-            minute{{ c_upcoming.time_diff.minute|pluralize }}
-          </td>
+          <td>{{ c_upcoming.time_diff }}</td>          
         </tr>
       {% endfor %}
     </tbody>
