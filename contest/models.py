@@ -48,7 +48,7 @@ class Contest(models.Model):
         else:
             delta = self.start_time  - present
 
-        deltatime = delta - timedelta(microseconds=delta.microseconds)        
+        deltatime = delta - timedelta(microseconds=delta.microseconds)
         return str(deltatime)
 
     def __unicode__(self):
