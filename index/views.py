@@ -34,8 +34,6 @@ from problem.models import Problem
 # Create your views here.
 def index(request):
     present = timezone.now()
-    contests = Contest.objects.all()
-
     c_runnings = Contest.objects.filter(start_time__lt=present, end_time__gt=present)
     c_upcomings = Contest.objects.filter(start_time__gt=present)
     return render(request, 'index/index.html', 
@@ -65,7 +63,7 @@ def group_list(request):
 
 def custom_proc(request):
     volumes = []
-    problems = Problem.objects.all()
+    problems = Problem.objects.all().order_by('id')
     ids = map(lambda problem: problem.id, problems)
     volume_number = ids[-1] // 1000
     for i in range(1,volume_number + 2):
