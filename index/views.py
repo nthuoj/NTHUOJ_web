@@ -63,11 +63,11 @@ def group_list(request):
 
 def custom_proc(request):
     volumes = []
-    problems = Problem.objects.all().order_by('id')
-    ids = map(lambda problem: problem.id, problems)
-    volume_number = ids[-1] // 1000
-    for i in range(1,volume_number + 2):
-        volumes.append(i)
+    if Problem.objects.count() != 0:
+        problems = Problem.objects.latest('id')
+        volume_number = problems.id // 1000
+        for i in range(1,volume_number + 2):
+            volumes.append(i)
 
     t = time.time()
     tstr = datetime.datetime.fromtimestamp(t).strftime('%Y-%m-%d %H:%M:%S')
