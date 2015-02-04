@@ -45,10 +45,10 @@ def archive(request):
         {'contest_list':contest_list,'admin':1},
         context_instance = RequestContext(request, processors = [custom_proc]))
 
-def contest(request,contest_cname):
+def contest(request,contest_id):
 
     serverTime = datetime.now().strftime('%Y/%m/%d %H:%M:%S')
-    contest = get_object_or_404(Contest,cname = contest_cname)
+    contest = get_object_or_404(Contest,id = contest_id)
     clarification_list = Clarification.objects.filter(contest = contest)
     contestant_list = Contestant.objects.filter(contest = contest)
 
