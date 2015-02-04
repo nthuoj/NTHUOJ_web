@@ -72,31 +72,31 @@ SOFTWARE.
       </tr>
     </thead>
     <tbody class="line" id="contest_content">
-      {% for cRunning in cRunnings %}
+      {% for c_running in c_runnings %}
         <tr>
-          <td>{{ cRunning.cname }}</td>
+          <td>{{ c_running.cname }}</td>
           <td>
-            {{ cRunning.time_diff.day}} 
-            day{{ cRunning.time_diff.day|pluralize}}, 
-            {{ cRunning.time_diff.hour}} 
-            hour{{ cRunning.time_diff.hour|pluralize}}, 
-            {{ cRunning.time_diff.minute}} 
-            minute{{ cRunning.time_diff.minute|pluralize}}
+            {{ c_running.time_diff.day }} 
+            day{{ c_running.time_diff.day|pluralize }}, 
+            {{ c_running.time_diff.hour }} 
+            hour{{ c_running.time_diff.hour|pluralize }}, 
+            {{ c_running.time_diff.minute }} 
+            minute{{ c_running.time_diff.minute|pluralize }}
           </td>
           <td></td>
         </tr>
       {% endfor %}
-      {% for cUpcoming in cUpcomings %}
+      {% for c_upcoming in c_upcomings %}
         <tr>
-          <td>{{ cUpcoming.cname }}</td>
+          <td>{{ c_upcoming.cname }}</td>
           <td></td>
           <td>
-            {{ cUpcoming.time_diff.day}} 
-            day{{ cUpcoming.time_diff.day|pluralize}}, 
-            {{ cUpcoming.time_diff.hour}} 
-            hour{{ cUpcoming.time_diff.hour|pluralize}}, 
-            {{ cUpcoming.time_diff.minute}} 
-            minute{{ cUpcoming.time_diff.minute|pluralize}}
+            {{ c_upcoming.time_diff.day }} 
+            day{{ c_upcoming.time_diff.day|pluralize }}, 
+            {{ c_upcoming.time_diff.hour }} 
+            hour{{ c_upcoming.time_diff.hour|pluralize }}, 
+            {{ c_upcoming.time_diff.minute }} 
+            minute{{ c_upcoming.time_diff.minute|pluralize }}
           </td>
         </tr>
       {% endfor %}

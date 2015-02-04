@@ -35,18 +35,11 @@ from problem.models import Problem
 def index(request):
     present = timezone.now()
     contests = Contest.objects.all()
-    start_times = map(lambda contest: contest.start_time, contests)
-    end_times = map(lambda contest: contest.end_time, contests)
 
-    notFisnished = endcontest_filter(end_times, present)
-    isRunning = isRunning_filter(start_times, end_times, present)
-    isUpcoming = isUpcoming_filter(notFisnished, isRunning)
-
-    cRunnings = Contest.objects.filter(end_time__in=isRunning)
-    cUpcomings = Contest.objects.filter(end_time__in=isUpcoming)
-
+    c_runnings = Contest.objects.filter(start_time__lt=present, end_time__gt=present)
+    c_upcomings = Contest.objects.filter(start_time__gt=present)
     return render(request, 'index/index.html', 
-                {'cRunnings':cRunnings, 'cUpcomings':cUpcomings}, 
+                {'c_runnings':c_runnings, 'c_upcomings':c_upcomings}, 
                 context_instance = RequestContext(request, processors = [custom_proc]))
 
 def base(request):
@@ -89,24 +82,3 @@ def custom_proc(request):
         'info1': 123,
         'info2': 1234567
     }
-
-def endcontest_filter(endlists, present):
-    notFishied = []
-    for i in endlists:
-        if i > present:
-            notFishied.append(i)
-    return notFishied
-
-def isRunning_filter(startlists, endlists, present):
-    isRunning = []
-    for i, j in enumerate(startlists):
-        if j < present and endlists[i] > present:
-            isRunning.append(endlists[i])
-    return isRunning
-
-def isUpcoming_filter(notFisnished, isRunning):
-    isUpcoming = []
-    for i in notFisnished:
-        if i not in isRunning:
-            isUpcoming.append(i)
-    return isUpcoming
