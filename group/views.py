@@ -155,5 +155,5 @@ def list(request):
     ]
     return render(
         request,'group/groupList.html', {
-            'G_list': group_list
+            'g_list': group_list
         })
