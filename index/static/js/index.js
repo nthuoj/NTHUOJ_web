@@ -25,7 +25,7 @@ var displayInfo = false;
 var loginInfo = false;
 
 window.onload = function() {
-    alert("You have new messages!");
+    //alert("You have new messages!");
 }
 function info() {
     if(displayInfo == false){
