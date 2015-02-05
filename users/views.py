@@ -21,13 +21,14 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 '''
-from django.shortcuts import render
 import json
 import random
 from index.views import custom_proc
 from django.template import RequestContext
+from django.contrib.auth import authenticate, login, logout
+from django.shortcuts import render, redirect
+from users.admin import UserCreationForm, AuthenticationForm
 # Create your views here.
-
 
 def submit(request):
     return render(request, 'users/submit.html', {},
@@ -42,4 +43,43 @@ def profile(request):
         request,
         'users/profile.html',
         {'piechart_data': json.dumps(piechart_data)},
+        context_instance = RequestContext(request, processors = [custom_proc]))
+
+
+def user_create(request):
+    if request.method == 'POST':
+        user_form = UserCreationForm(request.POST)
+        if user_form.is_valid():
+            user = user_form.save()
+            user.backend = 'django.contrib.auth.backends.ModelBackend'
+            login(request, user)
+            return redirect('/index')
+        else:
+            return render(request, 'users/auth.html', {'form': user_form, 'title': 'Logout'},
+                context_instance = RequestContext(request, processors = [custom_proc]))
+    return render(request, 'users/auth.html', {'form': UserCreationForm(), 'title': 'Logout'},
+        context_instance = RequestContext(request, processors = [custom_proc]))
+
+
+def user_logout(request):
+    logout(request)
+    return redirect('/index')
+
+
+def user_login(request):
+    if request.user.is_authenticated():
+        return redirect('/index')
+    if request.method == 'POST':
+        user_form = AuthenticationForm(data=request.POST)
+        if user_form.is_valid():
+            user = authenticate(username=user_form.cleaned_data['username'],
+                password=user_form.cleaned_data['password'])
+            print user
+            user.backend = 'django.contrib.auth.backends.ModelBackend'
+            login(request, user)
+            return redirect('/index')
+        else:
+            return render(request, 'users/auth.html', {'form': user_form, 'title': 'Login'},
+                context_instance = RequestContext(request, processors = [custom_proc]))
+    return render(request, 'users/auth.html', {'form': AuthenticationForm(), 'title': 'Login'},
         context_instance = RequestContext(request, processors = [custom_proc]))

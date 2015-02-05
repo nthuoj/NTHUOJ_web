@@ -63,7 +63,7 @@ WSGI_APPLICATION = 'nthuoj.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/1.7/ref/settings/#databases
-INI_PATH = os.path.join(BASE_DIR, 'nthuoj.ini')
+'''INI_PATH = os.path.join(BASE_DIR, 'nthuoj.ini')
 
 DATABASES = {
     'default': {
@@ -72,7 +72,15 @@ DATABASES = {
             'read_default_file': INI_PATH,
         },
     }
+}'''
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+    }
 }
+
+AUTH_USER_MODEL = 'users.User'
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.7/topics/i18n/

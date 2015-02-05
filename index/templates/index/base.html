@@ -240,10 +240,12 @@ SOFTWARE.
           <img src={% static "./images/14.png "%} height="50" width="50" 
                onclick="info();" class="ring">
         </li>
-        <li id="notlogin" >
-          <a href="#login-popup" class="open-popup-link">
-            <p class="p3">Login</p>
-          </a>
+        <li>
+          {% if user.is_authenticated %}
+            <li><a href={% url "logout" %}><p class="p3">Logout</p></a></li>
+          {% else %}
+            <li><a href={% url "login" %}><p class="p3">Login</p></a></li>
+          {% endif %}
         </li>
       </ul>
     </div>
