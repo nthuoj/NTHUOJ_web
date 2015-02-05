@@ -23,7 +23,6 @@ SOFTWARE.
 '''
 from django.shortcuts import render
 from django.template import RequestContext
-import logging
 
 from problem.models import Submission, SubmissionDetail
 from index.views import custom_proc

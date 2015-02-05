@@ -24,15 +24,18 @@ SOFTWARE.
 import json
 import random
 from index.views import custom_proc
+from general_tools.log import get_logger
 from django.template import RequestContext
 from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import render, redirect
 from users.admin import UserCreationForm, AuthenticationForm
 # Create your views here.
 
+logger = get_logger()
+
 def submit(request):
     return render(request, 'users/submit.html', {},
-                context_instance = RequestContext(request, processors = [custom_proc]))
+                context_instance=RequestContext(request, processors=[custom_proc]))
 
 
 def profile(request):
@@ -43,7 +46,7 @@ def profile(request):
         request,
         'users/profile.html',
         {'piechart_data': json.dumps(piechart_data)},
-        context_instance = RequestContext(request, processors = [custom_proc]))
+        context_instance=RequestContext(request, processors=[custom_proc]))
 
 
 def user_create(request):
@@ -52,16 +55,23 @@ def user_create(request):
         if user_form.is_valid():
             user = user_form.save()
             user.backend = 'django.contrib.auth.backends.ModelBackend'
+            logger.info('user %s created' % str(user))
             login(request, user)
             return redirect('/index')
         else:
-            return render(request, 'users/auth.html', {'form': user_form, 'title': 'Logout'},
-                context_instance = RequestContext(request, processors = [custom_proc]))
-    return render(request, 'users/auth.html', {'form': UserCreationForm(), 'title': 'Logout'},
-        context_instance = RequestContext(request, processors = [custom_proc]))
+            return render(
+                request, 'users/auth.html',
+                {'form': user_form, 'title': 'Logout'},
+                context_instance=RequestContext(request, processors=[custom_proc]))
+    return render(
+        request,
+        'users/auth.html',
+        {'form': UserCreationForm(), 'title': 'Logout'},
+        context_instance=RequestContext(request, processors=[custom_proc]))
 
 
 def user_logout(request):
+    logger.info('user %s logged out' % str(request.user))
     logout(request)
     return redirect('/index')
 
@@ -72,14 +82,21 @@ def user_login(request):
     if request.method == 'POST':
         user_form = AuthenticationForm(data=request.POST)
         if user_form.is_valid():
-            user = authenticate(username=user_form.cleaned_data['username'],
+            user = authenticate(
+                username=user_form.cleaned_data['username'],
                 password=user_form.cleaned_data['password'])
-            print user
             user.backend = 'django.contrib.auth.backends.ModelBackend'
+            logger.info('user %s logged in' % str(user))
             login(request, user)
             return redirect('/index')
         else:
-            return render(request, 'users/auth.html', {'form': user_form, 'title': 'Login'},
-                context_instance = RequestContext(request, processors = [custom_proc]))
-    return render(request, 'users/auth.html', {'form': AuthenticationForm(), 'title': 'Login'},
-        context_instance = RequestContext(request, processors = [custom_proc]))
+            return render(
+                request,
+                'users/auth.html',
+                {'form': user_form, 'title': 'Login'},
+                context_instance=RequestContext(request, processors=[custom_proc]))
+    return render(
+        request,
+        'users/auth.html',
+        {'form': AuthenticationForm(), 'title': 'Login'},
+        context_instance=RequestContext(request, processors=[custom_proc]))

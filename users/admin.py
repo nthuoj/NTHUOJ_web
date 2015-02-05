@@ -24,14 +24,13 @@ SOFTWARE.
 '''
 from django import forms
 from django.contrib import admin
+from users.models import User, Notification
 from django.contrib.auth.models import Group
 from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.forms import ReadOnlyPasswordHashField, AuthenticationForm
-from users.models import User, Notification
 
 # Register your models here.
 
-#admin.site.register(User)
 admin.site.register(Notification)
 
 class UserCreationForm(forms.ModelForm):
@@ -99,8 +98,7 @@ class UserAdmin(UserAdmin):
     list_filter = ('is_admin',)
     fieldsets = (
         (None, {'fields': ('username', 'password', 'email', 'user_level', 'active', 'theme')}),
-        #('Personal info', {'fields': ('register_date', 'user_level')}),
-        #('Permissions', {'fields': ('is_admin',)}),
+        ('Permissions', {'fields': ('is_admin',)}),
     )
     # add_fieldsets is not a standard ModelAdmin attribute. UserAdmin
     # overrides get_fieldsets to use this attribute when creating a user.
