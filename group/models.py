@@ -1,4 +1,4 @@
-/*
+'''
 The MIT License (MIT)
 
 Copyright (c) 2014 NTHUOJ team
@@ -20,28 +20,35 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
-*/
-var displayInfo = false;
-var loginInfo = false;
+'''
 
-window.onload = function() {
-    alert("You have new messages!");
-}
-function info() {
-    if(displayInfo == false){
-        document.getElementById("information").style.display = "block";
-        displayInfo = !displayInfo;
-    }
-    else{
-        document.getElementById("information").style.display = "none";
-        displayInfo = !displayInfo;
-    }
-}
-$(function() {
-    var one_minute = 60*1000;
-    setInterval(function() {
-        $.get('/get_time/', function(data) {
-            $('#time').html(data);
-        });
-    }, one_minute);
-})
+from django.db import models
+from users.models import User
+from contest.models import Contest
+from datetime import date
+
+# Create your models here.
+
+class Announce(models.Model):
+    
+    title = models.CharField(max_length=100, default='')
+    content = models.TextField(blank=True)
+
+    def __unicode__(self):
+        return self.title
+
+
+class Group(models.Model):
+
+    gname = models.CharField(max_length=50, default='')
+    owner = models.ForeignKey(User, related_name='group_owner')
+    coowner = models.ManyToManyField(User, related_name='group_coowner', blank=True)
+    member = models.ManyToManyField(User, related_name='member', blank=True)
+    description = models.TextField(blank=True)
+    announce = models.ManyToManyField(Announce, blank=True)
+    trace_contest = models.ManyToManyField(Contest, blank=True)
+    creation_time = models.DateField(default=date.today, auto_now_add=True)
+
+    def __unicode__(self):
+        return self.gname
+

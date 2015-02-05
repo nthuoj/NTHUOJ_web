@@ -61,6 +61,19 @@ class User(models.Model):
     )
     theme = models.CharField(max_length=8, choices=THEME_CHOICE, default=PAPER)
 
+    def has_admin_auth(self):
+        has_auth = (self.user_level == ADMIN)
+        return has_auth
+
+    def has_judge_auth(self):
+        has_auth = ((self.user_level == ADMIN) or ( self.user_level == JUDGE))
+        return has_auth
+
+    def has_subjudge_auth(self):
+        has_auth = ((self.user_level == ADMIN) or ( self.user_level == JUDGE) \
+                    or (self.user_level == SUB_JUDGE))
+        return has_auth
+
     def __unicode__(self):
         return self.username
 
@@ -71,4 +84,3 @@ class Notification(models.Model):
 
     def __unicode__(self):
         return str(self.id)
-
