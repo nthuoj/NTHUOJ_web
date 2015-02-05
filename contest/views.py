@@ -54,7 +54,7 @@ def contest(request,contest_id):
     clarification_list = Clarification.objects.filter(contest = contest)
     contestant_list = Contestant.objects.filter(contest = contest)
     
-    ### get panalty scoreboard ###
+    ### get penalty scoreboard ###
 
     #store contestants' submission dictionary
     submission_list = []
@@ -64,7 +64,7 @@ def contest(request,contest_id):
         for problem in contest.problem.all():
             submission = Submission.objects.filter(problem = problem , submit_time__lte = contest.end_time,
                 submit_time__gte = contest.start_time , user = contestant.user)
-            contestant_submission_list.append({'submission':submission})
+            contestant_submission_list.append(submission)
         
         submission_list.append({'contestant_submission_list':contestant_submission_list})
         contestant_submission_list = []
@@ -77,24 +77,42 @@ def contest(request,contest_id):
     status = {}
     #store single problem submit times
     times = {}
+    #store single problem penalty
+    penalty = {}
 
     #get single contestant
     for contestant_submission_list in submission_list:
         times = {}
         status = {}
-        #count panalty
-        panalty = 0
-
+        #count penalty
+        total_penalty = 0
+        #count solved
+        solved = 0
         #get single contestant's submissions
         for submissions in contestant_submission_list['contestant_submission_list']:
             #get single contestant's single submission
-            for submission in submissions['submission']:
-                times[submission.problem.pname.encode('utf8')] = times.get(submission.problem.pname.encode('utf8'),0) + 1
+            for submission in submissions:
+                #count single problem submission times
+                times[submission.problem.id] = times.get(submission.problem.id,0) + 1  
                 if submission.status == Submission.ACCEPTED:
+                    #status[problem name] = 1 if problem is solved
                     status[submission.problem.id] = 1
+                    #get single problem penalty
+                    penalty[submission.problem.id] = penalty.get(submission.problem.id,0) + (submission.submit_time - contest.start_time).total_seconds()/60
+                else:
+                    #20 is penalty if wrong submission
+                    penalty[submission.problem.id] = penalty.get(submission.problem.id,0) + 20
+                contestant = submission.user
+            #calculate penalty and solved
+            solved = 0
+            for problem in contest.problem.all():
+                if status.get(problem.id,0) == 1:
+                    solved += 1
+                    total_penalty += penalty[problem.id]
 
-            contestant_scoreboard.append({'status':status,'times':times})
-        scoreboard.append({'contestant_scoreboard':contestant_scoreboard})
+
+            contestant_scoreboard = {'status':status,'times':times,'penalty':total_penalty,'solved':solved}
+        scoreboard.append({'contestant':contestant,'contestant_scoreboard':contestant_scoreboard})
         contestant_scoreboard = []
 
 

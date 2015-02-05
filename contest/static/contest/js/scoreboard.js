@@ -27,6 +27,6 @@ $(document).ready(function() {
     $('#scoreboardTab a').click(function(e) {
         e.preventDefault()
         $('#scoreboardTab a[href="#testcase"]').tab('show')
-        $('#scoreboardTab a[href="#panalty"]').tab('show')
+        $('#scoreboardTab a[href="#penalty"]').tab('show')
     })
 });

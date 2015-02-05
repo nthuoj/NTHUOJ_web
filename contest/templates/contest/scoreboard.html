@@ -26,18 +26,22 @@ SOFTWARE.
 <h4>{{ contest.cname }}</h4> {% load staticfiles %}
 <script src="{% static 'contest/js/scoreboard.js' %}"></script>
 <link href="{% static 'contest/css/scoreboard.css' %}" rel="stylesheet">
-
+{% load contest_extras %}
 <div role="tabpanel">
   <!-- Nav tabs -->
   <ul class="nav nav-tabs" role="tablist" id="scoreboardTab">
     <li role="presentation" class="active"><a href="#testcase" aria-controls="testcase" role="tab" data-toggle="tab">Testcase</a>
     </li>
-    <li role="presentation"><a href="#panalty" aria-controls="panalty" role="tab" data-toggle="tab">Panalty</a>
+    <li role="presentation"><a href="#penalty" aria-controls="penalty" role="tab" data-toggle="tab">penalty</a>
     </li>
   </ul>
   <!-- Tab panes -->
   <div class="tab-content">
     <div role="tabpanel" class="tab-pane active" id="testcase">
+      
+
+    </div>
+    <div role="tabpanel" class="tab-pane" id="penalty">
       <table class="table" style="table-layout:fixed">
         <thead>
           <tr>
@@ -52,25 +56,21 @@ SOFTWARE.
           </tr>
         </thead>
         <tbody>
-          {% for contestant in contestant_list %}
+          {% for contestant_scoreboard in scoreboard %}
           <tr>
             <td>{{ forloop.counter }}</td>
-            <td>{{ contestant.user.username }}</td>
-            <!--not yet finished start-->
-            {% for score in contestant.user.score %}
-            <td>{{ score }}</td>
+            <td>{{ contestant_scoreboard.contestant.username }}</td>
+
+            {% for problem in contest.problem.all %}
+            <td>{{ contestant_scoreboard.contestant_scoreboard.status|get_value:problem.id }}/{{ contestant_scoreboard.contestant_scoreboard.times|get_value:problem.id  }}</td>
             {% endfor %}
-            <td>{{ contestant.user.solved }}</td>
-            <td>{{ contestant.user.panalty }}</td>
-            <!--not yet finished end-->
+            <td>{{ contestant_scoreboard.contestant_scoreboard.solved }}</td>
+            <td>{{ contestant_scoreboard.contestant_scoreboard.penalty }}</td>
+
           </tr>
           {% endfor %}
         </tbody>
       </table>
-
-    </div>
-    <div role="tabpanel" class="tab-pane" id="panalty">
-
 
     </div>
   </div>
