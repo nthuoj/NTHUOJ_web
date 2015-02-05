@@ -12,4 +12,5 @@ urlpatterns = patterns('',
     url(r'^team/', include('team.urls')),
     url(r'^group/', include('group.urls')),
     url(r'^status/', include('status.urls')),
+    url(r'^broken/', 'index.views.broken'),
 )

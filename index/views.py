@@ -54,13 +54,6 @@ def get_time(request):
     tstr = datetime.datetime.fromtimestamp(t).strftime('%Y-%m-%d %H:%M:%S')
     return HttpResponse(tstr)
 
-def status(request):
-    return render(request, 'index/status.html',{},
-                context_instance = RequestContext(request, processors = [custom_proc]))
-def group_list(request):
-    return render(request, 'index/group_list.html',{},
-                context_instance = RequestContext(request, processors = [custom_proc]))
-
 def custom_proc(request):
     volumes = []
     if Problem.objects.count() != 0:
