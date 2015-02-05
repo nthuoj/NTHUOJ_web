@@ -34,6 +34,8 @@ from contest.forms import ContestForm
 from problem.models import Submission
 from problem.models import Problem
 
+from general_tools.log import get_logger
+
 def archive(request):
     #to store contest basic info and contestants
     contest_list = []
@@ -127,7 +129,9 @@ def new(request):
     if request.method == 'POST':
         form = ContestForm(request.POST)
         if form.is_valid():
-            form.save()
+            new_contest = form.save()
+            logger = get_logger()
+            logger.info('Contest: Create a new contest %s!' % new_contest.cname)
             return HttpResponseRedirect('/contest/')
     
 
@@ -140,10 +144,14 @@ def edit(request,contest_id):
     if request.method == 'POST':
         form = ContestForm(request.POST, instance = contest )
         if form.is_valid():
-            form.save()
+            modified_contest = form.save()
+            logger = get_logger()
+            logger.info('Contest: Modified contest %s!' % modified_contest.cname)
             return HttpResponseRedirect('/contest/')
 
 def delete(request,contest_id):
     contest = get_object_or_404(Contest,id = contest_id)
-    contest.delete()
+    deleted_contest = contest.delete()
+    logger = get_logger()
+    logger.info('Contest: Delete contest %s!' % deleted_contest.cname)
     return HttpResponseRedirect('/contest/')
