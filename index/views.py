@@ -25,7 +25,6 @@ from django.shortcuts import render
 from django.http import HttpResponse
 from django.template import RequestContext
 from contest.models import Contest
-from problem.models import Problem
 from django.utils import timezone
 import time
 import datetime
@@ -55,19 +54,12 @@ def get_time(request):
     return HttpResponse(tstr)
 
 def custom_proc(request):
-    volumes = []
-    if Problem.objects.count() != 0:
-        problems = Problem.objects.latest('id')
-        volume_number = problems.id // 1000
-        for i in range(1,volume_number + 2):
-            volumes.append(i)
 
     t = time.time()
     tstr = datetime.datetime.fromtimestamp(t).strftime('%Y-%m-%d %H:%M:%S')
     people = 0
     people = random.randint(100,999)
     return {
-        'volumes': volumes,
         'tstr': tstr,
         'people': people,
         'info1': 123,
