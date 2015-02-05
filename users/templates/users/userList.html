@@ -1,0 +1,87 @@
+<!--
+The MIT License (MIT)
+
+Copyright (c) 2014 NTHUOJ team
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+-->
+{% extends "index/base.html" %}
+{% load static %} 
+
+{% block body_block %}
+<div class="panel panel-default">
+  <div class="panel-heading row">    
+    <div class="form-group col-lg-4">
+      <div class="input-group">
+        <span class="input-group-addon">Search</span>
+          <input type="text" class="form-control">
+        <span class="input-group-btn">
+          <button type="button" class="btn btn-default">Submit</button>
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <div class="container" 
+       style="margin-top:50px;margin-bottom:50px;min-height:500px;">
+    <h2>User List</h2>
+    <div style='padding-top: 50px;'>
+      <div id='all-problem'>
+        <table class="table">
+          <thead>
+            <tr>
+              <th><a href="">User name</a></th>
+              <th>User Email</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for user in users %}
+              <tr>
+                <td>{{ user.username }}</td>
+                <td>{{ user.email }}</td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <ul class="pager">
+    <span class="step-links">
+      {% if users.has_previous %}
+        <li class="previous">
+          <a href="?page={{ team_list.previous_page_number }}">← Previous</a>
+        </li>
+       {% endif %}
+
+      <span class="current">
+        Page {{ users.number }} of {{ users.paginator.num_pages }}.
+      </span>
+
+      {% if users.has_next %}
+        <li class="next">
+          <a href="?page={{ team_list.next_page_number }}">Next →</a>
+        </li>
+      {% endif %}
+    </span>
+  </ul>
+</div>
+
+{% endblock body_block %}
