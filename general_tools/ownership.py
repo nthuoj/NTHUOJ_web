@@ -24,13 +24,23 @@ SOFTWARE.
 from django.db import models
 from users.models import User
 
-def has_cownership(curr_user, curr_contest):
+#contest ownership
+def has_c_ownership(curr_user, curr_contest):
     ownership = (curr_user.username == curr_contest.owner)
     for coowner in curr_contest.coowner:
         if curr_user == coowner
             ownership = True
     return ownership
 
-def has_pownership(curr_user, curr_problem):
+#group ownership
+def has_g_ownership(curr_user, curr_group):
+    ownership = (curr_user.username == curr_group.owner)
+    for coowner in curr_group.coowner:
+        if curr_user == coowner
+            ownership = True
+    return ownership
+
+#problem ownership
+def has_p_ownership(curr_user, curr_problem):
     ownership = (curr_user.username == curr_problem.owner)
     return ownership
