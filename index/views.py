@@ -50,11 +50,6 @@ def base(request):
     return render(request, 'index/base.html',{},
                 context_instance = RequestContext(request, processors = [custom_proc]))
 
-def broken(request):
-    return render(request, 'index/brokenpage.html',
-                {'error_message':'error message'},
-                context_instance = RequestContext(request, processors = [custom_proc]))
-
 def get_time(request):
     t = time.time()
     tstr = datetime.datetime.fromtimestamp(t).strftime('%Y-%m-%d %H:%M:%S')
