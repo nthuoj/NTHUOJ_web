@@ -75,7 +75,7 @@ class User(AbstractBaseUser):
         (LUMEN, 'Lumen'),
     )
 
-    username = models.CharField(max_length=15, default='', unique=True)
+    username = models.CharField(max_length=15, default='', unique=True, primary_key=True)
     email = models.CharField(max_length=100, default='')
     register_date = models.DateField(default=date.today, auto_now_add=True)
     active = models.BooleanField(default=False)
@@ -115,9 +115,6 @@ class User(AbstractBaseUser):
         return True
 
     def __unicode__(self):
-        return self.username
-
-    def __str__(self):  # __unicode__ on Python 2
         return self.username
 
     @property
