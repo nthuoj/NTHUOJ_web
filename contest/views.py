@@ -124,10 +124,25 @@ def contest(request,contest_id):
         scoreboard.append({'contestant':contestant,'contestant_scoreboard':contestant_scoreboard})
         contestant_scoreboard = []
 
+    #ppl_pass instead of pass to avoid using python reserved word
+    ppl_pass = {}
+
+    not_pass = {}
+
+    ### get pass rate ###
+    for problem in contest.problem.all():
+        for contestant_data in scoreboard:
+            status = contestant_data['contestant_scoreboard']['status']
+            if status.get(problem.id,0) == 1:
+                ppl_pass[problem.id] = ppl_pass.get(problem.id,0) + 1
+            else:
+                not_pass[problem.id] = not_pass.get(problem.id,0) + 1
+
+    problem_pass_rate = {'pass':ppl_pass,'not_pass':not_pass}
 
 
     return render(request, 'contest/contest.html',{'contest':contest,'clarification_list':clarification_list,
-        'contestant_list':contestant_list,'scoreboard':scoreboard,'server_time':serverTime},
+        'contestant_list':contestant_list,'contestant_number':contestant_list.__len__(),'scoreboard':scoreboard,'server_time':serverTime,'problem_pass_rate':problem_pass_rate},
         context_instance = RequestContext(request, processors = [custom_proc]))
 
 def new(request):
