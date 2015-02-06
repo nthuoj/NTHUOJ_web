@@ -18,6 +18,7 @@ git clone git@github.com:bruce3557/NTHUOJ_web.git
 * django1.7
 * mysql-server
 * python-mysqldb
+* django-axes
 
 ###Installation:
 * Execute install.py for initial setting.

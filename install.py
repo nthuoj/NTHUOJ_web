@@ -50,3 +50,6 @@ if ans == '' or ans == 'y' or ans == 'Y':
 
 # Install needed library
 
+# django-axes
+os.system('pip install pip')
+django_manage('syncdb')

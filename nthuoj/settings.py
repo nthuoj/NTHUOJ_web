@@ -44,6 +44,7 @@ INSTALLED_APPS = (
     'team',
     'group',
     'status',
+    'axes',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -54,6 +55,7 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'axes.middleware.FailedLoginMiddleware',
 )
 
 ROOT_URLCONF = 'nthuoj.urls'
@@ -94,3 +96,11 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.7/howto/static-files/
 
 STATIC_URL = '/static/'
+
+# django-axes 1.3.8 configurations
+# https://pypi.python.org/pypi/django-axes/
+
+# redirect to broken page when exceed wrong-try limits
+AXES_LOCKOUT_TEMPLATE = 'index/brokenpage.html' 
+# freeze login access for that ip for 0.1*60 = 6 minites
+AXES_COOLOFF_TIME = 0.1
