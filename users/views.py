@@ -86,10 +86,12 @@ def user_login(request):
                 username=user_form.cleaned_data['username'],
                 password=user_form.cleaned_data['password'])
             user.backend = 'django.contrib.auth.backends.ModelBackend'
-            logger.info('user %s logged in' % str(user))
+            ip = request.META.get('HTTP_X_FORWARDED_FOR')
+            logger.info('user %s @ %s logged in' % (user, ip))
             login(request, user)
             return redirect('/index')
         else:
+            print request.SESSION['login_tries']
             return render(
                 request,
                 'users/auth.html',
