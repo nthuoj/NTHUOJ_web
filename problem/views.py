@@ -30,7 +30,7 @@ def problem(request):
     b = {'name': 'all_problem', 'pid': 1, 'pass': 60, 'not_pass': 40}
     return render(request, 'problem/panel.html', {'my_problem':[a,a,a], 'all_problem':[a,a,a,b,b,b]})
 
-def category(request):
+def volume(request):
     problem_id=[]
     if Problem.objects.count() != 0:
         problems = Problem.objects.latest('id')

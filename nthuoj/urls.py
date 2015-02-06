@@ -6,7 +6,7 @@ urlpatterns = patterns('',
 
     url(r'^admin/', include(admin.site.urls)),
     url(r'^get_time/', 'index.views.get_time'),
-    url(r'^index/', include('index.urls', namespace='index')),
+    url(r'^$', include('index.urls', namespace='index')),
     url(r'^problem/', include('problem.urls', namespace='problem')),
     url(r'^contest/', include('contest.urls', namespace='contest')),
     url(r'^users/', include('users.urls', namespace='users')),
