@@ -33,9 +33,12 @@ from users.admin import UserCreationForm, AuthenticationForm
 
 logger = get_logger()
 
+
 def submit(request):
-    return render(request, 'users/submit.html', {},
-                context_instance=RequestContext(request, processors=[custom_proc]))
+    return render(
+        request,
+        'users/submit.html', {},
+        context_instance=RequestContext(request, processors=[custom_proc]))
 
 
 def profile(request):
@@ -87,7 +90,7 @@ def user_login(request):
                 password=user_form.cleaned_data['password'])
             user.backend = 'django.contrib.auth.backends.ModelBackend'
             ip = get_client_ip(request)
-            logger.info('user %s @ %s logged in' % (user, ip))
+            logger.info('user %s @ %s logged in' % (str(user), ip))
             login(request, user)
             return redirect('/index')
         else:
