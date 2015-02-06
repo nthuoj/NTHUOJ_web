@@ -24,7 +24,7 @@ SOFTWARE.
 import json
 import random
 from index.views import custom_proc
-from general_tools.log import get_logger
+from general_tools.log import get_logger, get_client_ip
 from django.template import RequestContext
 from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import render, redirect
@@ -86,12 +86,11 @@ def user_login(request):
                 username=user_form.cleaned_data['username'],
                 password=user_form.cleaned_data['password'])
             user.backend = 'django.contrib.auth.backends.ModelBackend'
-            ip = request.META.get('HTTP_X_FORWARDED_FOR')
+            ip = get_client_ip(request)
             logger.info('user %s @ %s logged in' % (user, ip))
             login(request, user)
             return redirect('/index')
         else:
-            print request.SESSION['login_tries']
             return render(
                 request,
                 'users/auth.html',
