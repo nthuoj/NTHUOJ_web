@@ -28,6 +28,12 @@ import os.path
 
 from func import *
 
+# Install needed library
+
+# django-axes
+os.system('pip install django-axes')
+django_manage('syncdb')
+
 
 if not os.path.isfile('nthuoj.ini'):
     # Setting nthuoj.ini
@@ -46,10 +52,3 @@ db_migrate()
 ans = raw_input('Create super user?[Y/n] ')
 if ans == '' or ans == 'y' or ans == 'Y':
     django_manage('createsuperuser')
-
-
-# Install needed library
-
-# django-axes
-os.system('pip install pip')
-django_manage('syncdb')
