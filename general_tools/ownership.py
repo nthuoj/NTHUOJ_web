@@ -22,25 +22,56 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 '''
 from django.db import models
-from users.models import User
+from general_tools.log import get_logger
+
+logger = get_logger()
 
 #contest ownership
 def has_c_ownership(curr_user, curr_contest):
+    user_is_valid(curr_user) #check user
+    #check contset
+    try:
+        contest_id = curr_contest.id
+    except:
+        logger.warning('Contest is invalid!')
+
     ownership = (curr_user.username == curr_contest.owner)
-    for coowner in curr_contest.coowner:
-        if curr_user == coowner
-            ownership = True
+    if curr_contest.coowner.all().count() != 0:
+        for coowner in curr_contest.coowner.all():
+            if curr_user == coowner:
+                ownership = True
     return ownership
 
 #group ownership
 def has_g_ownership(curr_user, curr_group):
+    user_is_valid(curr_user) #check user
+    #check group
+    try:
+        group_id = curr_group.id
+    except:
+        logger.warning('Group is invalid!')
+
     ownership = (curr_user.username == curr_group.owner)
-    for coowner in curr_group.coowner:
-        if curr_user == coowner
-            ownership = True
+    if curr_group.coowner.all().count() != 0:
+        for coowner in curr_group.coowner.all():
+            if curr_user == coowner:
+                ownership = True
     return ownership
 
 #problem ownership
 def has_p_ownership(curr_user, curr_problem):
+    user_is_valid(curr_user) #check user
+    #check problem
+    try:
+        problem_id = curr_problem.id
+    except:
+        logger.warning('Problem is invalid!')
+
     ownership = (curr_user.username == curr_problem.owner)
     return ownership
+
+def user_is_valid(curr_user):
+    try:
+        username = curr_user.username
+    except:
+        logger.warning('User is invalid!')
