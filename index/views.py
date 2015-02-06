@@ -30,7 +30,7 @@ from contest.models import Contest
 from django.shortcuts import render
 from django.http import HttpResponse
 from django.template import RequestContext
-from general_tools.ownership import has_c_ownership
+
 # Create your views here.
 def index(request):
 
