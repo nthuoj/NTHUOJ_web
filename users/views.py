@@ -61,12 +61,12 @@ def user_create(request):
         else:
             return render(
                 request, 'users/auth.html',
-                {'form': user_form, 'title': 'Logout'},
+                {'form': user_form, 'title': 'Sign Up'},
                 context_instance=RequestContext(request, processors=[custom_proc]))
     return render(
         request,
         'users/auth.html',
-        {'form': UserCreationForm(), 'title': 'Logout'},
+        {'form': UserCreationForm(), 'title': 'Sign Up'},
         context_instance=RequestContext(request, processors=[custom_proc]))
 
 
