@@ -1,5 +1,6 @@
 from django.conf.urls import patterns, include, url
 from django.contrib import admin
+from django.conf import settings
 
 urlpatterns = patterns('',
 
@@ -13,5 +14,6 @@ urlpatterns = patterns('',
     url(r'^team/', include('team.urls', namespace='team')),
     url(r'^group/', include('group.urls', namespace='group')),
     url(r'^status/', include('status.urls', namespace='status')),
-    
 )
+handler404 = 'index.views.custom_404'
+handler500 = 'index.views.custom_500'

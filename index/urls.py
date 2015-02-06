@@ -23,5 +23,5 @@ import views
 
 urlpatterns = patterns('',
     url(r'^$', views.index),    
-    url(r'^get_time/', views.get_time),
+    url(r'^get_time/$', views.get_time),
 )

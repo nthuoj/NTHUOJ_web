@@ -21,23 +21,30 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 '''
+import time
+import random
+import datetime
+from django.http import Http404
+from django.utils import timezone
+from contest.models import Contest
 from django.shortcuts import render
 from django.http import HttpResponse
 from django.template import RequestContext
-from contest.models import Contest
-from django.utils import timezone
-import time
-import datetime
-import random
-
 # Create your views here.
 def index(request):
+
     present = timezone.now()
     c_runnings = Contest.objects.filter(start_time__lt=present, end_time__gt=present)
     c_upcomings = Contest.objects.filter(start_time__gt=present)
     return render(request, 'index/index.html', 
                 {'c_runnings':c_runnings, 'c_upcomings':c_upcomings}, 
                 context_instance = RequestContext(request, processors = [custom_proc]))
+
+def custom_404(request):
+    return render(request, 'index/404.html')
+
+def custom_500(request):
+    return render(request, 'index/500.html',{'error_message':'error'})
 
 def base(request):
     return render(request, 'index/base.html',{},
