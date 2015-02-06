@@ -38,7 +38,7 @@ def index(request):
     c_upcomings = Contest.objects.filter(start_time__gt=present)
     return render(request, 'index/index.html', 
                 {'c_runnings':c_runnings, 'c_upcomings':c_upcomings}, 
-                context_instance = RequestContext(request, processors = [custom_proc]))
+                context_instance=RequestContext(request, processors=[custom_proc]))
 
 def custom_404(request):
     return render(request, 'index/404.html')
@@ -48,7 +48,7 @@ def custom_500(request):
 
 def base(request):
     return render(request, 'index/base.html',{},
-                context_instance = RequestContext(request, processors = [custom_proc]))
+                context_instance=RequestContext(request, processors=[custom_proc]))
 
 def get_time(request):
     t = time.time()
