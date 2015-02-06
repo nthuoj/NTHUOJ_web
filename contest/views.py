@@ -19,6 +19,7 @@
     '''
 
 from django.http import HttpResponseRedirect
+from django.http import Http404
 from django.shortcuts import render,get_object_or_404
 from datetime import datetime
 from index.views import custom_proc
@@ -52,7 +53,13 @@ def archive(request):
 def contest(request,contest_id):
 
     serverTime = datetime.now().strftime('%Y/%m/%d %H:%M:%S')
-    contest = get_object_or_404(Contest,id = contest_id)
+    try:
+        contest = Contest.objects.get(id = contest_id)
+    except Contest.DoesNotExist: 
+        logger = get_logger()
+        logger.warning('Contest: Can not find contest %s!' % contest_id)
+        raise Http404("Contest does not exist")
+    
     clarification_list = Clarification.objects.filter(contest = contest)
     contestant_list = Contestant.objects.filter(contest = contest)
     
@@ -118,6 +125,7 @@ def contest(request,contest_id):
         contestant_scoreboard = []
 
 
+
     return render(request, 'contest/contest.html',{'contest':contest,'clarification_list':clarification_list,
         'contestant_list':contestant_list,'scoreboard':scoreboard,'server_time':serverTime},
         context_instance = RequestContext(request, processors = [custom_proc]))
@@ -153,5 +161,5 @@ def delete(request,contest_id):
     contest = get_object_or_404(Contest,id = contest_id)
     deleted_contest = contest.delete()
     logger = get_logger()
-    logger.info('Contest: Delete contest %s!' % deleted_contest.cname)
+    logger.info('Contest: Delete contest %s!' % deleted_contest)
     return HttpResponseRedirect('/contest/')

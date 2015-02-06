@@ -53,7 +53,7 @@ SOFTWARE.
       <tr>
         <th>
           {% if admin %}
-          <a href="new/">
+          <a href="{% url 'new' %}">
             <button type="button" class="btn btn-success btn-xs" >
               <span class="glyphicon glyphicon-plus"></span>
             </button>
@@ -72,12 +72,12 @@ SOFTWARE.
       <tr>
         <td>
           {% if admin %}
-          <a href="delete/{{ contest.contest.id }}/">
+          <a href="{% url 'delete' contest.contest.id %}">
             <button type="button" class="btn btn-danger btn-xs">
               <span class="glyphicon glyphicon-remove"></span>
             </button>
           </a>
-          <a href="edit/{{ contest.contest.id }}/">
+          <a href="{% url 'edit' contest.contest.id %}">
             <button type="button" class="btn btn-info btn-xs">
               <span class="glyphicon glyphicon-pencil"></span>
             </button>
@@ -85,12 +85,12 @@ SOFTWARE.
 
           {% else %}
           <button type="button" class="btn btn-success btn-xs" data-toggle="tooltip" 
-          data-placement="top" title="Start Virtual Contest">
+                  data-placement="top" title="Start Virtual Contest">
             <span class="glyphicon glyphicon-play"></span>
           </button>
 
           <button type="button" class="btn btn-info btn-xs" data-toggle="modal" 
-          data-target="#contestInfo{{ contest.contest.cname }}">
+                  data-target="#contestInfo{{ contest.contest.cname }}">
             <span class="glyphicon glyphicon-info-sign"></span>
           </button>
           <script>
@@ -102,7 +102,7 @@ SOFTWARE.
           {% endif %}
         </td>
         <td>{{ forloop.counter }}</td>
-        <td><a href="{{ contest.contest.id }}">{{ contest.contest.cname }}</a>
+        <td><a href="{% url 'contest' contest.contest.id %}">{{ contest.contest.cname }}</a>
         </td>
         <td>{{ contest.contest.start_time }}</td>
         <td>{{ contest.contest.end_time }}</td>
@@ -116,7 +116,7 @@ SOFTWARE.
 <!-- Contest detail info-->
 {% for contest in contest_list %}
 <div class="modal fade" id="contestInfo{{ contest.contest.cname }}" tabindex="-1" 
-role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+     role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
@@ -144,7 +144,7 @@ role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
       <div class="modal-body">
         <ul class="nav nav-tabs" role="tablist" id="infoTab">
           <li role="presentation" class="active"><a href="#problem" 
-            data-toggle="tab">Problem</a>
+              data-toggle="tab">Problem</a>
           </li>
           <li role="presentation"><a href="#contestant" data-toggle="tab">Contestant</a>
           </li>
