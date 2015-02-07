@@ -51,7 +51,7 @@ def archive(request):
         contest_list.append({'contest':contest,'contestants':contestants})
 
     return render(request, 'contest/contestArchive.html',
-        {'contest_list':contest_list,'admin':1},
+        {'contest_list':contest_list,'admin':0},
         context_instance = RequestContext(request, processors = [custom_proc]))
 
 def contest(request,contest_id):

@@ -142,21 +142,21 @@ SOFTWARE.
           </h2>
       </div>
       <div class="modal-body">
-        <ul class="nav nav-tabs" role="tablist" id="infoTab">
-          <li role="presentation" class="active"><a href="#problem" 
+        <ul class="nav nav-tabs" role="tablist" name="infoTab">
+          <li role="presentation" class="active"><a href="#problem{{ contest.contest.id }}" 
               data-toggle="tab">Problem</a>
           </li>
-          <li role="presentation"><a href="#contestant" data-toggle="tab">Contestant</a>
+          <li role="presentation"><a href="#contestant{{ contest.contest.id }}" data-toggle="tab">Contestant</a>
           </li>
-          <li role="presentation"><a href="#contest_time" data-toggle="tab">Time</a>
+          <li role="presentation"><a href="#contest_time{{ contest.contest.id }}" data-toggle="tab">Time</a>
           </li>
-          <li role="presentation"><a href="#contest_coowner" data-toggle="tab">Coowner</a>
+          <li role="presentation"><a href="#contest_coowner{{ contest.contest.id }}" data-toggle="tab">Coowner</a>
           </li>
-          <li role="presentation"><a href="#contest_others" data-toggle="tab">Others</a>
+          <li role="presentation"><a href="#contest_others{{ contest.contest.id }}" data-toggle="tab">Others</a>
           </li>
         </ul>
         <div class="tab-content">
-          <div class="tab-pane active" id="problem">
+          <div class="tab-pane active" id="problem{{ contest.contest.id }}">
             <table class="table" style="text-align:center">
               <thead>
                 <tr>
@@ -201,7 +201,7 @@ SOFTWARE.
               </tbody>
             </table>
           </div>
-          <div class="tab-pane" id="contestant">
+          <div class="tab-pane" id="contestant{{ contest.contest.id }}">
             <table class="table" style="text-align:center">
               <thead>
                 <tr>
@@ -248,7 +248,7 @@ SOFTWARE.
               </tbody>
             </table>
           </div>
-          <div class="tab-pane" id="contest_time">
+          <div class="tab-pane" id="contest_time{{ contest.contest.id }}">
             <table class="table">
               <tr>
                 <td>Start Time</td>
@@ -274,7 +274,7 @@ SOFTWARE.
               </tr>
             </table>
           </div>
-          <div class="tab-pane" id="contest_coowner">
+          <div class="tab-pane" id="contest_coowner{{ contest.contest.id }}">
             <table class="table" style="text-align:center">
               <thead>
                 <tr>
@@ -316,7 +316,7 @@ SOFTWARE.
               </tbody>
             </table>
           </div>
-          <div class="tab-pane" id="contest_others">
+          <div class="tab-pane" id="contest_others{{ contest.contest.id }}">
             <label>Freeze：</label>
             <input type="text" class="form-control" value="{{ contest.contest.freeze_time}}"></input>
             <div class="checkbox">
