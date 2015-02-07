@@ -37,10 +37,34 @@ SOFTWARE.
   </ul>
   <!-- Tab panes -->
   <div class="tab-content">
+    <!-- testcase -->
     <div role="tabpanel" class="tab-pane active" id="testcase">
-      
+      <table class="table" style="table-layout:fixed">
+        <thead>
+          <tr>
+            <th>Rank</th>
+            <th>User</th>
+            {% for problem in contest.problem.all %}
+            <th><b data-toggle="tooltip" title="{{ problem.pname }}">{{ forloop.counter }}</b>
+            </th>
+            {% endfor %}
+          </tr>
+        </thead>
+        <tbody>
+          {% for key,contestant_scoreboard in testcase_scoreboard.iteritems %}
+          <tr>
+            <td>{{ forloop.counter }}</td>
+            <td>{{ key }}</td>
 
+            {% for problem in contest.problem.all %}
+            <td>{{ contestant_scoreboard.contestant_scoreboard.status|get_value:problem.id }}/{{ contestant_scoreboard.contestant_scoreboard.number|get_value:problem.id }}</td>
+            {% endfor %}
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
     </div>
+    <!-- penalty  -->
     <div role="tabpanel" class="tab-pane" id="penalty">
       <table class="table" style="table-layout:fixed">
         <thead>

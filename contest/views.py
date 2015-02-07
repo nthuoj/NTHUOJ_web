@@ -32,10 +32,14 @@ from contest.models import Clarification
 
 from contest.forms import ContestForm
 
-from problem.models import Submission
 from problem.models import Problem
+from problem.models import Testcase
+from problem.models import Submission
+from problem.models import SubmissionDetail
 
 from general_tools.log import get_logger
+
+logger = get_logger()
 
 def archive(request):
     #to store contest basic info and contestants
@@ -56,7 +60,6 @@ def contest(request,contest_id):
     try:
         contest = Contest.objects.get(id = contest_id)
     except Contest.DoesNotExist: 
-        logger = get_logger()
         logger.warning('Contest: Can not find contest %s!' % contest_id)
         raise Http404("Contest does not exist")
     
@@ -97,6 +100,7 @@ def contest(request,contest_id):
         total_penalty = 0
         #count solved
         solved = 0
+        contestant = []
         #get single contestant's submissions
         for submissions in contestant_submission_list['contestant_submission_list']:
             #get single contestant's single submission
@@ -109,7 +113,7 @@ def contest(request,contest_id):
                     #get single problem penalty
                     penalty[submission.problem.id] = penalty.get(submission.problem.id,0) + (submission.submit_time - contest.start_time).total_seconds()/60
                 else:
-                    #20 is penalty if wrong submission
+                    # 20 is penalty if wrong submission
                     penalty[submission.problem.id] = penalty.get(submission.problem.id,0) + 20
                 contestant = submission.user
             #calculate penalty and solved
@@ -139,11 +143,42 @@ def contest(request,contest_id):
                 not_pass[problem.id] = not_pass.get(problem.id,0) + 1
 
     problem_pass_rate = {'pass':ppl_pass,'not_pass':not_pass}
-
+    
+    ### get testcase scoreboard ###
+    testcase_scoreboard = {}
+    # store single contestant testcase-based score
+    contestant_testcase_scoreboard = {}
+    # store single problem passed testcase number
+    testcase_status = {}
+    # store single problem total testcase number
+    testcase_number = {}
+    if submission_list.__len__() != 0:
+        # single contestant's all submission
+        for contestant_submission_list in submission_list:
+            testcase_status = {}
+            testcase_number = {}
+            testcase_contestant_name = ""
+            # each problem's submissions
+            for submissions in contestant_submission_list['contestant_submission_list']:
+                #each submission
+                for submission in submissions:
+                    submission_detail = SubmissionDetail.objects.filter(sid = submission)
+                    accepted_count = 0
+                    for testcase in submission_detail.all():
+                        if testcase.virdect == SubmissionDetail.AC:
+                            accepted_count += 1
+                    if accepted_count >= testcase_status.get(submission.problem.id,0):
+                        testcase_status[submission.problem.id] = accepted_count
+                    testcase_number[submission.problem.id] = Testcase.objects.filter(problem = submission.problem).__len__()
+                    testcase_contestant_name = submission.user.username
+            contestant_testcase_scoreboard = {'status':testcase_status,'number':testcase_number}
+            testcase_scoreboard[testcase_contestant_name] = {'contestant_scoreboard':contestant_testcase_scoreboard}
+            contestant_testcase_scoreboard = []
 
     return render(request, 'contest/contest.html',{'contest':contest,'clarification_list':clarification_list,
         'contestant_list':contestant_list,'contestant_number':contestant_list.__len__(),
-        'scoreboard':scoreboard,'server_time':serverTime,'problem_pass_rate':problem_pass_rate},
+        'scoreboard':scoreboard,'testcase_scoreboard':testcase_scoreboard,
+        'server_time':serverTime,'problem_pass_rate':problem_pass_rate},
         context_instance = RequestContext(request, processors = [custom_proc]))
 
 def new(request):
@@ -154,7 +189,6 @@ def new(request):
         form = ContestForm(request.POST)
         if form.is_valid():
             new_contest = form.save()
-            logger = get_logger()
             logger.info('Contest: Create a new contest %s!' % new_contest.cname)
             return HttpResponseRedirect('/contest/')
     
@@ -169,7 +203,6 @@ def edit(request,contest_id):
         form = ContestForm(request.POST, instance = contest )
         if form.is_valid():
             modified_contest = form.save()
-            logger = get_logger()
             logger.info('Contest: Modified contest %s!' % modified_contest.cname)
             return HttpResponseRedirect('/contest/')
 
@@ -182,6 +215,5 @@ def delete(request,contest_id):
         raise Http404("Contest does not exist, can not delete.")
 
     deleted_contest = contest.delete()
-    logger = get_logger()
     logger.info('Contest: Delete contest %s!' % deleted_contest)
     return HttpResponseRedirect('/contest/')
