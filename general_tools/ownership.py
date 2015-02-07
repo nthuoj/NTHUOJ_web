@@ -37,7 +37,7 @@ def has_c_ownership(curr_user, curr_contest):
     try:
         Contest.objects.get(id=curr_contest.id)
     except Contest.DoesNotExist:
-        logger.warning('Contest is invalid!')
+        logger.warning('Contest id %ld does not exsit!' % curr_contest.id)
 
     ownership = (curr_user.username == curr_contest.owner)
     if curr_contest.coowner.all().count() != 0:
@@ -53,7 +53,7 @@ def has_g_ownership(curr_user, curr_group):
     try:
         Group.objects.get(id=curr_group.id)
     except Group.DoesNotExist:
-        logger.warning('Group is invalid!')
+        logger.warning('Group id %ld does not exsit!' % curr_group.id)
 
     ownership = (curr_user.username == curr_group.owner)
     if curr_group.coowner.all().count() != 0:
@@ -69,7 +69,7 @@ def has_p_ownership(curr_user, curr_problem):
     try:
         Problem.objects.get(id=curr_problem.id)
     except Problem.DoesNotExist:
-        logger.warning('Problem is invalid!')
+        logger.warning('Problem id %ld does not exsit!' % curr_problem.id)
 
     ownership = (curr_user.username == curr_problem.owner)
     return ownership
@@ -78,4 +78,4 @@ def user_is_valid(curr_user):
     try:
         User.objects.get(username=curr_user.username)
     except User.DoesNotExist:
-        logger.warning('User is invalid!')
+        logger.warning('User username %s does not exsit!' % curr_user.username)
