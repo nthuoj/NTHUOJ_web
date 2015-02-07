@@ -142,7 +142,8 @@ def contest(request,contest_id):
 
 
     return render(request, 'contest/contest.html',{'contest':contest,'clarification_list':clarification_list,
-        'contestant_list':contestant_list,'contestant_number':contestant_list.__len__(),'scoreboard':scoreboard,'server_time':serverTime,'problem_pass_rate':problem_pass_rate},
+        'contestant_list':contestant_list,'contestant_number':contestant_list.__len__(),
+        'scoreboard':scoreboard,'server_time':serverTime,'problem_pass_rate':problem_pass_rate},
         context_instance = RequestContext(request, processors = [custom_proc]))
 
 def new(request):
@@ -173,7 +174,13 @@ def edit(request,contest_id):
             return HttpResponseRedirect('/contest/')
 
 def delete(request,contest_id):
-    contest = get_object_or_404(Contest,id = contest_id)
+    try:
+        contest = Contest.objects.get(id = contest_id)
+    except Contest.DoesNotExist:
+        logger = get_logger()
+        logger.warning('Contest: Can not delete contest %s! Contest not found!' % contest_id)
+        raise Http404("Contest does not exist, can not delete.")
+
     deleted_contest = contest.delete()
     logger = get_logger()
     logger.info('Contest: Delete contest %s!' % deleted_contest)
