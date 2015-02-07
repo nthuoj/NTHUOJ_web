@@ -25,14 +25,14 @@ SOFTWARE.
 {% load static %}
 
 {% block body_block %}
-<div class="container">
-  <h1>{{ title }}</h1>
+<div class="container" style="width:40%">
+  <h3>{{ title }}</h3>
   <form class="form-horizontal" action="" method="post">
     {% csrf_token %}
     {% for field in form %}
     <div class="form-group">
       <div class='row'>
-        <div class='col-md-3'>
+        <div class='col-md-2'>
           <label class="control-label">{{ field.label }}</label>
         </div>
         <div class='col-md-8'>
@@ -40,26 +40,24 @@ SOFTWARE.
         </div>
       </div>
       {% if form.non_field_errors %}
-      <ol>
+      <ul>
         {% for error in form.non_field_errors %}
-          <li class='col-md-offset-3'><strong style="color:red">{{ error|escape }}</strong></li>
+          <li class='col-md-offset-2'><strong style="color:red">{{ error|escape }}</strong></li>
         {% endfor %}
-      </ol>
+      </ul>
       {% endif %} 
       {% if field.errors %}
-      <ol>
+      <ul>
         {% for error in field.errors %}
-          <li class='col-md-offset-3'><strong style="color:red">{{ error|escape }}</strong></li>
+          <li class='col-md-offset-2'><strong style="color:red">{{ error|escape }}</strong></li>
         {% endfor %}
-      </ol>
+      </ul>
       {% endif %}
     </div>
     {% endfor %}
-    <div class="modal-footer row">
+    <div class="modal-footer">
       <div id='msg' class='col-md-4'>{{ message }}</div>
-      <div class='col-md-4 col-md-offset-4'>
-        <button type="submit" class="btn btn-primary">Submit</button>
-      </div>
+      <button type="submit" class="btn btn-primary">Submit</button>
     </div>
     <hr>
     <div class="poptxt_login">
