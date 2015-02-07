@@ -22,6 +22,10 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 '''
 from django.db import models
+from user.models import User
+from group.models import Group
+from contest.models import Contest
+from problem.models import Problem
 from general_tools.log import get_logger
 
 logger = get_logger()
@@ -31,8 +35,8 @@ def has_c_ownership(curr_user, curr_contest):
     user_is_valid(curr_user) #check user
     #check contset
     try:
-        contest_id = curr_contest.id
-    except:
+        Contest.objects.get(id=curr_contest.id)
+    except Contest.DoesNotExist:
         logger.warning('Contest is invalid!')
 
     ownership = (curr_user.username == curr_contest.owner)
@@ -47,8 +51,8 @@ def has_g_ownership(curr_user, curr_group):
     user_is_valid(curr_user) #check user
     #check group
     try:
-        group_id = curr_group.id
-    except:
+        Group.objects.get(id=curr_group.id)
+    except Group.DoesNotExist:
         logger.warning('Group is invalid!')
 
     ownership = (curr_user.username == curr_group.owner)
@@ -63,8 +67,8 @@ def has_p_ownership(curr_user, curr_problem):
     user_is_valid(curr_user) #check user
     #check problem
     try:
-        problem_id = curr_problem.id
-    except:
+        Problem.objects.get(id=curr_problem.id)
+    except Problem.DoesNotExist:
         logger.warning('Problem is invalid!')
 
     ownership = (curr_user.username == curr_problem.owner)
@@ -72,6 +76,6 @@ def has_p_ownership(curr_user, curr_problem):
 
 def user_is_valid(curr_user):
     try:
-        username = curr_user.username
-    except:
+        User.objects.get(username=curr_user.username)
+    except User.DoesNotExist:
         logger.warning('User is invalid!')
