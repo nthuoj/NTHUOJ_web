@@ -22,100 +22,77 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 -->
 
-<!DOCTYPE html>
-
-<head>
-  <meta charset="utf-8">
-  <title>View all - NTHU Online Judge</title>
-  <!-- Bootstrap&Somethings styles -->
-  <link rel="stylesheet" href="http://bootswatch.com/simplex/bootstrap.css" media="screen">
-  <link href="http://bootswatch.com/paper/bootstrap.css" rel="stylesheet">
-  <link rel="stylesheet" href="http://bootswatch.com/assets/css/bootswatch.min.css">
-
-  <script src="http://libs.baidu.com/jquery/2.0.0/jquery.min.js"></script>
-  <script src="http://libs.baidu.com/bootstrap/3.0.3/js/bootstrap.min.js"></script>
-  <!-- Magnific Popup core JS & CSS -->
-  <link rel="stylesheet" href="/css/magnific-popup.css">
-  <link rel="stylesheet" href="/css/mfp-fade.css">
-  <script src="/js/jquery.magnific-popup.js"></script>
-  <script src="/js/popup-setting.js"></script>
-</head>
-
-<body>
-  <h4>All {{ title }}</h4>
-  <div class="modal-body">
-    <div class="input-group">
-      <span class="input-group-addon">search {{ title }} by id</span>
-      <input type="text" class="form-control">
-      <span class="input-group-btn">
-        <button class="btn btn-default btn-sm" type="button">search</button>
-      </span>
-    </div>
-    <br>
-    <table class="table table-hover">
-      <thead>
-        <th>{{ title }} title</th>
+{% extends "index/base.html" %} 
+{% load static %} 
+{% block body_block %}
+<h4>All {{ title }}</h4>
+<div class="modal-body">
+  <div class="input-group">
+    <span class="input-group-addon">search {{ title }} by id</span>
+    <input type="text" class="form-control">
+    <span class="input-group-btn">
+      <button class="btn btn-default btn-sm" type="button">search</button>
+    </span>
+  </div>
+  <br>
+  <table class="table table-hover">
+    <thead>
+      <th>{{ title }} title</th>
+      {% if list_type == "announce" %}
+      <th>oringinal post</th>
+      {% endif %} {% if list_type == "runContest" %}
+      <th>start time</th>
+      <th>end time</th>
+      {% endif %} {% if list_type != "runContest" %}
+      <th>time</th>
+      {% endif %}
+    </thead>
+    <tbody>
+      {% for archive in data_list %}
+      <tr>
+        <td>{{ archive.name }}</td>
         {% if list_type == "announce" %}
-        <th>oringinal post</th>
-        {% endif %}
-        {% if list_type == "runContest" %}
-        <th>start time</th>
-        <th>end time</th>
-        {% endif %}
-        {% if list_type != "runContest" %}
-        <th>time</th>
-        {% endif %}
-      </thead>
-      <tbody>
-        {% for archive in data_list %}
-        <tr>
-          <td>{{ archive.name }}</td>
-          {% if list_type == "announce" %}
-          <td>{{ archive.op }}</td>
-          {% endif %}
-          {% if list_type == "runContest" %}
-          <td>{{ archive.s_time }}</td>
-          <td>{{ archive.e_time }}</td>
-          {% endif %}
-          {% if list_type != "runContest" %}
-          <td>{{ archive.time }}</td>
-          {% endif %}
-          {% if list_type == "announce" %}
-          <td>
-            <a href="" class="btn btn-sm btn-default" data-toggle="modal" 
-               data-target="#annowenceContentModal{{archive.id}}" style="float:right">
-              Detail</a>
-            <!--1. Modal for Edit Annowence button-->
-            <div class="modal fade" id="annowenceContentModal{{archive.id}}" tabindex="-1" role="dialog" 
-                 aria-labelledby="myModalLabel" aria-hidden="true">
-              <div class="modal-dialog">
-                <div class="modal-content">
-                  <div class="modal-header">
-                    <button type="btn-default" class="close" data-dismiss="modal" aria-hidden="true">
-                      &times;
-                    </button>
-                    <h4 class="modal-title">Edit Annowence</h4>
+        <td>{{ archive.op }}</td>
+        {% endif %} {% if list_type == "runContest" %}
+        <td>{{ archive.s_time }}</td>
+        <td>{{ archive.e_time }}</td>
+        {% endif %} {% if list_type != "runContest" %}
+        <td>{{ archive.time }}</td>
+        {% endif %} {% if list_type == "announce" %}
+        <td>
+          <a href="" class="btn btn-sm btn-default" data-toggle="modal" 
+             data-target="#annowenceContentModal{{archive.id}}" style="float:right">
+            Detail</a>
+          <!--1. Modal for Edit Annowence button-->
+          <div class="modal fade" id="annowenceContentModal{{archive.id}}" 
+               role="dialog" aria-hidden="true">
+            <div class="modal-dialog">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <button type="btn-default" class="close" data-dismiss="modal" 
+                          aria-hidden="true">&times;</button>
+                  <h4 class="modal-title">Edit Annowence</h4>
+                </div>
+                <div class="modal-body">
+                  <div class="input-group">
+                    <span class="input-group-addon">Title</span>
+                    <input type="text" class="form-control" value="{{ archive.name }}">
                   </div>
-                  <div class="modal-body">
-                    <div class="input-group">
-                      <span class="input-group-addon">Title</span>
-                      <input type="text" class="form-control" value="{{ archive.name }}">
-                    </div>
-                    <textarea class="form-control input-sm" type="text" style="height:200px;">
+                  <textarea class="form-control input-sm" type="text" style="height:200px;">
                     {{ archive.content }}</textarea>
-                  </div>
-                  <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-                    <button type="button" class="btn btn-primary"> Confirm </button>
-                  </div>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                  <button type="button" class="btn btn-primary"> Confirm </button>
                 </div>
               </div>
             </div>
-          </td>
-          {% endif %}
-        </tr>
-        {% endfor %}
-      </tbody>
-    </table>
-  </div>
-</body>
+          </div>
+        </td>
+        {% endif %}
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock body_block %}
