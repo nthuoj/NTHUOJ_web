@@ -21,13 +21,34 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 '''
-from django.shortcuts import render
 import json
 import random
+from django.shortcuts import render
+from users.models import User
 from index.views import custom_proc
 from django.template import RequestContext
-# Create your views here.
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
+# Create your views here.
+def list(request):
+    users = User.objects.all()
+    paginator = Paginator(users, 25)  # Show 25 teams per page
+    page = request.GET.get('page')
+
+    try:
+        user = paginator.page(page)
+    except PageNotAnInteger:
+        # If page is not an integer, deliver first page.
+        user = paginator.page(1)
+    except EmptyPage:
+        # If page is out of range (e.g. 9999), deliver last page of results.
+        user = paginator.page(paginator.num_pages)
+
+    return render(
+        request,
+        'users/userList.html',
+        {'users': user},
+        context_instance = RequestContext(request, processors = [custom_proc]))
 
 def submit(request):
     return render(request, 'users/submit.html', {},

@@ -67,7 +67,7 @@ SOFTWARE.
           <th>{{ submission.grouper.problem }}</th>
           <th>
             {% if submission.grouper.status == "CE" or submission.grouper.status == "RF" %}
-              <a class="ajax-popup-link" href={% url "error_message" submission.grouper.id %}>
+              <a class="ajax-popup-link" href={% url "status:error_message" submission.grouper.id %}>
                 {{ submission.grouper.get_status_display }}
               </a>
             {% else %}

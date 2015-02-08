@@ -22,24 +22,40 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 -->
 <!DOCTYPE html>
-{% extends "index/base.html" %}
 {% load static %}
 
-{% block title_name %}
-  <title>brokenpage</title>
-{% endblock title_name %}
-{% block import_source %}
-{% endblock import_source %}
-{% block body_block %}
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  {% block title_name %}
+  {% endblock title_name %}
+  <!-- necessarily jQeuery -->
+  <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js">
+  </script>
+  <!-- bootstrap, bootwatch JS & CSS -->
+  <link rel="stylesheet" 
+        href="http://bootswatch.com/paper/bootstrap.css" media="screen">
+  <link rel="stylesheet" 
+        href="http://bootswatch.com/assets/css/bootswatch.min.css">
+  <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js">
+  </script>
+  <link rel="stylesheet" href={% static "./css/index.css"%} media="screen">
+  {% block import_source %}
+  {% endblock import_source %}
+</head>
+<body>
   <div style="position:relative;bottom:0px;">
     <p style="text-align:center" class="err1" >4&nbsp0&nbsp4</p>
   </div>
   <p style="text-align:center" class="err2">Page Not Found</p>
-  <p style="text-align:center" class="err2">{{ error_message }}</p>
   <p style="text-align:center" class="err3">
     Sorry , the page you are looking for seems to be missing.
   </p>
 
   <hr class="hr1" style="position:relative;top:40px;">
-  <br><br><br><br><br><br><br><br><br><br><br><br>
-{% endblock body_block %}
+  
+  {% block body_block %}
+  {% endblock body_block %} 
+
+</body>
+</html>

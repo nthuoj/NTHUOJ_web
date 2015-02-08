@@ -24,9 +24,6 @@ SOFTWARE.
 var displayInfo = false;
 var loginInfo = false;
 
-window.onload = function() {
-    alert("You have new messages!");
-}
 function info() {
     if(displayInfo == false){
         document.getElementById("information").style.display = "block";
