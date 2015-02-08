@@ -21,10 +21,18 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
-body{
-  padding-top: 0px;
-}
 
+html {
+  height: 100%;
+}
+body {
+  padding-top: 0px;
+  height: 100%;
+}
+.wrap-body {
+  min-height: 100%;
+  height: auto;
+}
 .gray {
   background-color: #E5E5E5;
   height: 250px;
@@ -74,26 +82,13 @@ body{
   padding: 0px;
   font-size: 26px;
 }
-.foo {
+.sticky-footer {
   padding: 0px 0px;
   background-color: #1b2435;
   border-top: 1px solid #dddddd;
   border-bottom-right-radius: -1;
   border-bottom-left-radius: -1;
   position:fixed; bottom: 0px; 
-  z-index: 1;
-  width: 100%;
-  border-top-left-radius: 250px;
-  border-top-right-radius: 250px;
-  border-bottom-right-radius: 0px;
-  border-bottom-left-radius: 0px;
-}
-.fooe {
-  padding: 0px 0px;
-  background-color: #1b2435;
-  border-top: 1px solid #dddddd;
-  border-bottom-right-radius: -1;
-  border-bottom-left-radius: -1;
   z-index: 1;
   width: 100%;
   border-top-left-radius: 250px;

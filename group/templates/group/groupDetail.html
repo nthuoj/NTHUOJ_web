@@ -21,33 +21,9 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 -->
-<!DOCTYPE html>
-<head>
-  <meta charset="utf-8">
-  <title>Group Detail - NTHU Online Judge</title>
-  <!-- Bootstrap&Somethings styles -->
-  <link rel="stylesheet" href="http://bootswatch.com/simplex/bootstrap.css" media="screen">
-  <link href="http://bootswatch.com/paper/bootstrap.css" rel="stylesheet">
-  <link rel="stylesheet" href="http://bootswatch.com/assets/css/bootswatch.min.css">
-
-  <script src="http://libs.baidu.com/jquery/2.0.0/jquery.min.js"></script>
-  <script src="http://libs.baidu.com/bootstrap/3.0.3/js/bootstrap.min.js"></script>
-  <!-- Magnific Popup core JS & CSS -->
-  <link rel="stylesheet" href="/css/magnific-popup.css">
-  <link rel="stylesheet" href="/css/mfp-fade.css">
-  <script src="/js/jquery.magnific-popup.js"></script>
-  <script src="/js/popup-setting.js"></script>
-</head>
-
 {% extends "index/base.html" %}
 {% load static %} 
 {% block body_block %}
-
-<script language="javascript" type="text/javascript" 
-        src="//cdnjs.cloudflare.com/ajax/libs/flot/0.8.2/jquery.flot.min.js"></script>
-<script language="javascript" type="text/javascript" 
-        src="//cdnjs.cloudflare.com/ajax/libs/flot/0.8.2/jquery.flot.pie.min.js"></script>
-
 <div class="container-fluid">
   <div class="row-fluid">
     <a href="{% url 'list' %}" class="btn btn-sm btn-default" data-toggle="modal" style="float:left">
@@ -189,8 +165,7 @@ SOFTWARE.
                style="float:right">Detail</a>
             <!--1. Modal for Edit Annowence button-->
             <div class="modal fade" id="annowenceContentModal{{annowence.id}}" 
-                 tabindex="-1" role="dialog" aria-labelledby="myModalLabel" 
-                 aria-hidden="true">
+                 role="dialog" aria-hidden="true">
               <div class="modal-dialog">
                 <div class="modal-content">
                   <div class="modal-header">
@@ -274,8 +249,7 @@ SOFTWARE.
   <hr>
   <!--Modal Section-->
   <!--2. Modal for Adding Annowence button-->
-  <div class="modal fade" id="addAnnowenceModal" tabindex="-1" role="dialog" 
-       aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal fade" id="addAnnowenceModal" role="dialog" aria-hidden="true">
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
@@ -300,8 +274,7 @@ SOFTWARE.
     </div>
   </div>
   <!--3. Modal for Adding Contest button-->
-  <div class="modal fade" id="addContestModal" tabindex="-1" role="dialog" 
-       aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal fade" id="addContestModal" role="dialog" aria-hidden="true">
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
@@ -324,8 +297,7 @@ SOFTWARE.
     </div>
   </div>
   <!--4. Modal for Add/Delete Co-owner button-->
-  <div class="modal fade" id="setOwnerModal" tabindex="-1" role="dialog" 
-       aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal fade" id="setOwnerModal" role="dialog" aria-hidden="true">
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
@@ -366,8 +338,7 @@ SOFTWARE.
     </div>
   </div>
   <!--5. Modal for Edit Group Description button-->
-  <div class="modal fade" id="editGroupDescriptionModal" tabindex="-1" role="dialog" 
-       aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal fade" id="editGroupDescriptionModal" role="dialog" aria-hidden="true">
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
@@ -388,8 +359,7 @@ SOFTWARE.
     </div>
   </div>
   <!--6. Modal for Downloading student data-->
-  <div class="modal fade" id="studentDataDownloadModal" tabindex="-1" role="dialog" 
-       aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal fade" id="studentDataDownloadModal" role="dialog" aria-hidden="true">
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
