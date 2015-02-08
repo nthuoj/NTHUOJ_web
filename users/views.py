@@ -23,16 +23,39 @@ SOFTWARE.
 '''
 import json
 import random
+from django.shortcuts import render
+from users.models import User
 from index.views import custom_proc
 from general_tools.log import get_logger, get_client_ip
 from django.template import RequestContext
 from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import render, redirect
 from users.admin import UserCreationForm, AuthenticationForm
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+
 # Create your views here.
 
 logger = get_logger()
 
+def list(request):
+    users = User.objects.all()
+    paginator = Paginator(users, 25)  # Show 25 users per page
+    page = request.GET.get('page')
+
+    try:
+        user = paginator.page(page)
+    except PageNotAnInteger:
+        # If page is not an integer, deliver first page.
+        user = paginator.page(1)
+    except EmptyPage:
+        # If page is out of range (e.g. 9999), deliver last page of results.
+        user = paginator.page(paginator.num_pages)
+
+    return render(
+        request,
+        'users/userList.html',
+        {'users': user},
+        context_instance=RequestContext(request, processors=[custom_proc]))
 
 def submit(request):
     return render(
@@ -60,7 +83,7 @@ def user_create(request):
             user.backend = 'django.contrib.auth.backends.ModelBackend'
             logger.info('user %s created' % str(user))
             login(request, user)
-            return redirect('/index')
+            return redirect('/')
         else:
             return render(
                 request, 'users/auth.html',
@@ -76,12 +99,12 @@ def user_create(request):
 def user_logout(request):
     logger.info('user %s logged out' % str(request.user))
     logout(request)
-    return redirect('/index')
+    return redirect('/')
 
 
 def user_login(request):
     if request.user.is_authenticated():
-        return redirect('/index')
+        return redirect('/')
     if request.method == 'POST':
         user_form = AuthenticationForm(data=request.POST)
         if user_form.is_valid():
@@ -92,7 +115,7 @@ def user_login(request):
             ip = get_client_ip(request)
             logger.info('user %s @ %s logged in' % (str(user), ip))
             login(request, user)
-            return redirect('/index')
+            return redirect('/')
         else:
             return render(
                 request,

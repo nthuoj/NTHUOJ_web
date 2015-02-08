@@ -27,9 +27,10 @@ from axes.decorators import watch_login
 import views
 
 urlpatterns = patterns('',
-    url(r'^submit/$', views.submit),
-    url(r'^profile/$', views.profile),
-    url(r'^create/$', views.user_create, name='user_create'),
+    url(r'^create/$', views.user_create, name='create'),
     url(r'^login/$', watch_login(views.user_login), name='login'),
     url(r'^logout/$', views.user_logout, name='logout'),
+    url(r'^list/$', views.list, name='list'),
+    url(r'^submit/$', views.submit, name='submit'),
+    url(r'^profile/$', views.profile, name='profile'),
 )
