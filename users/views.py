@@ -23,13 +23,13 @@ SOFTWARE.
 '''
 import json
 import random
-from django.shortcuts import render
 from users.models import User
 from index.views import custom_proc
-from general_tools.log import get_logger, get_client_ip
 from django.template import RequestContext
-from django.contrib.auth import authenticate, login, logout
+from django.core.urlresolvers import reverse
 from django.shortcuts import render, redirect
+from general_tools.log import get_logger, get_client_ip
+from django.contrib.auth import authenticate, login, logout
 from users.admin import UserCreationForm, AuthenticationForm
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
@@ -83,7 +83,7 @@ def user_create(request):
             user.backend = 'django.contrib.auth.backends.ModelBackend'
             logger.info('user %s created' % str(user))
             login(request, user)
-            return redirect('/')
+            return redirect(reverse('index:index'))
         else:
             return render(
                 request, 'users/auth.html',
@@ -99,12 +99,12 @@ def user_create(request):
 def user_logout(request):
     logger.info('user %s logged out' % str(request.user))
     logout(request)
-    return redirect('/')
+    return redirect(reverse('index:index'))
 
 
 def user_login(request):
     if request.user.is_authenticated():
-        return redirect('/')
+        return redirect(reverse('index:index'))
     if request.method == 'POST':
         user_form = AuthenticationForm(data=request.POST)
         if user_form.is_valid():
@@ -115,7 +115,7 @@ def user_login(request):
             ip = get_client_ip(request)
             logger.info('user %s @ %s logged in' % (str(user), ip))
             login(request, user)
-            return redirect('/')
+            return redirect(reverse('index:index'))
         else:
             return render(
                 request,

@@ -77,7 +77,7 @@ class UserTestCase(TestCase):
         response = self.client.post(
             reverse('users:create'),
             {'username': 'henry', 'password1': 'correct',
-            'password2':'correct', 'email': 'oj'})
+            'password2':'correct', 'email': 'oj@nthucs.edu.tw'})
         self.assertNotEqual(User.objects.all().count(), user_count + 1)
 
         # valid sign up
