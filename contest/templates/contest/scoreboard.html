@@ -32,7 +32,7 @@ SOFTWARE.
   <ul class="nav nav-tabs" role="tablist" id="scoreboardTab">
     <li role="presentation" class="active"><a href="#testcase" aria-controls="testcase" role="tab" data-toggle="tab">Testcase</a>
     </li>
-    <li role="presentation"><a href="#penalty" aria-controls="penalty" role="tab" data-toggle="tab">penalty</a>
+    <li role="presentation"><a href="#penalty" aria-controls="penalty" role="tab" data-toggle="tab">Penalty</a>
     </li>
   </ul>
   <!-- Tab panes -->
@@ -84,19 +84,15 @@ SOFTWARE.
           <tr>
             <td>{{ forloop.counter }}</td>
             <td>{{ contestant_scoreboard.contestant.username }}</td>
-
             {% for problem in contest.problem.all %}
             <td>{{ contestant_scoreboard.contestant_scoreboard.status|get_value:problem.id }}/{{ contestant_scoreboard.contestant_scoreboard.times|get_value:problem.id  }}</td>
             {% endfor %}
             <td>{{ contestant_scoreboard.contestant_scoreboard.solved }}</td>
             <td>{{ contestant_scoreboard.contestant_scoreboard.penalty }}</td>
-
           </tr>
           {% endfor %}
         </tbody>
       </table>
-
     </div>
   </div>
-
 </div>

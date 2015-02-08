@@ -50,8 +50,10 @@ def archive(request):
         contestants = Contestant.objects.filter(contest = contest)
         contest_list.append({'contest':contest,'contestants':contestants})
 
+    user = request.user
+
     return render(request, 'contest/contestArchive.html',
-        {'contest_list':contest_list,'admin':0},
+        {'contest_list':contest_list,'user':user},
         context_instance = RequestContext(request, processors = [custom_proc]))
 
 def contest(request,contest_id):
