@@ -88,7 +88,7 @@ body {
   border-top: 1px solid #dddddd;
   border-bottom-right-radius: -1;
   border-bottom-left-radius: -1;
-  position:fixed; bottom: 0px; 
+  position:fixed; bottom: 0px;
   z-index: 1;
   width: 100%;
   border-top-left-radius: 250px;
