@@ -102,7 +102,7 @@ SOFTWARE.
           {% endif %}
         </td>
         <td>{{ forloop.counter }}</td>
-        <td><a href="{% url 'contest' contest.contest.id %}">{{ contest.contest.cname }}</a>
+        <td><a href="{% url 'contest:contest' contest.contest.id %}">{{ contest.contest.cname }}</a>
         </td>
         <td>{{ contest.contest.start_time }}</td>
         <td>{{ contest.contest.end_time }}</td>
