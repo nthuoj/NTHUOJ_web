@@ -67,7 +67,7 @@ SOFTWARE.-->
       {% for group in g_list %}
       <tr>
         <td>
-          <a href="{% url 'detail' group.gid %}">{{ group.name }}</a>
+          <a href="{% url 'group:detail' group.gid %}">{{ group.name }}</a>
         </td>
         <td>{{ group.ta_name }}</td>
         <td>{{ group.mem_number }}</td>

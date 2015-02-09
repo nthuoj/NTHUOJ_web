@@ -22,12 +22,28 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 '''
 from django.shortcuts import render
+from problem.models import Problem
 
 # Create your views here.
 def problem(request):
     a = {'name': 'my_problem', 'pid': 1, 'pass': 60, 'not_pass': 40}
     b = {'name': 'all_problem', 'pid': 1, 'pass': 60, 'not_pass': 40}
     return render(request, 'problem/panel.html', {'my_problem':[a,a,a], 'all_problem':[a,a,a,b,b,b]})
+
+def volume(request):
+    problem_id=[]
+    if Problem.objects.count() != 0:
+        problems = Problem.objects.latest('id')
+        volume_number = (problems.id - 1) // 100
+        for i in range(1,volume_number + 2):
+            start_id = ((i - 1) * 100 + 1)
+            if problems.id < i * 100:
+                end_id = problems.id
+            else:
+                end_id = i * 100
+            problem_id.append(str(start_id) + ' ~ ' + str(end_id))
+
+    return render(request, 'problem/category.html', {'problem_id':problem_id})
 
 def detail(request, problem_id):
     p = {

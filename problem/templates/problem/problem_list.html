@@ -36,8 +36,8 @@ SOFTWARE.
         <td>
           <span id='rejudge' class='glyphicon glyphicon-refresh' 
           data-toggle="tooltip" data-placement="left" title="Rejudge"></span>&nbsp;{{p.pid}}</td>
-        <td><a href="{% url 'problem.views.detail' p.pid %}">{{p.name}}</a>&nbsp;
-          <a href="{% url 'problem.views.edit' p.pid %}">
+        <td><a href="{% url 'problem:problem.views.detail' p.pid %}">{{p.name}}</a>&nbsp;
+          <a href="{% url 'problem:problem.views.edit' p.pid %}">
             <span id='edit' class='glyphicon glyphicon-pencil' 
             data-toggle="tooltip" data-placement="right" title="Edit"></span>
           </a>
