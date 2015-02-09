@@ -50,3 +50,18 @@ def get_logger(name='NTHU OJ'):
     logger.addHandler(ch)
 
     return logger
+
+
+def get_client_ip(request):
+    '''Return ip from request
+    Args:
+        request: the request in view.
+    Returns:
+        the client ip of that request.
+    '''
+    x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
+    if x_forwarded_for:
+        ip = x_forwarded_for.split(',')[-1].strip()
+    else:
+        ip = request.META.get('REMOTE_ADDR')
+    return ip
