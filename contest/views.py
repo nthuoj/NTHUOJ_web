@@ -17,7 +17,7 @@
     OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
     SOFTWARE.
     '''
-
+from django.core.exceptions import PermissionDenied
 from django.http import HttpResponseRedirect
 from django.http import Http404
 from django.shortcuts import render,get_object_or_404
@@ -38,6 +38,8 @@ from problem.models import Submission
 from problem.models import SubmissionDetail
 
 from general_tools.log import get_logger
+from general_tools import ownership
+
 
 logger = get_logger()
 
@@ -184,29 +186,35 @@ def contest(request,contest_id):
         context_instance = RequestContext(request, processors = [custom_proc]))
 
 def new(request):
-    if request.method == 'GET':
-        form = ContestForm()
-        return render(request,'contest/editContest.html',{'form':form})
-    if request.method == 'POST':
-        form = ContestForm(request.POST)
-        if form.is_valid():
-            new_contest = form.save()
-            logger.info('Contest: Create a new contest %s!' % new_contest.id)
-            return HttpResponseRedirect('/contest/')
+    if request.user.has_subjudge_auth():
+        if request.method == 'GET':
+            form = ContestForm()
+            return render(request,'contest/editContest.html',{'form':form})
+        if request.method == 'POST':
+            form = ContestForm(request.POST)
+            if form.is_valid():
+                new_contest = form.save()
+                logger.info('Contest: Create a new contest %s!' % new_contest.id)
+                return HttpResponseRedirect('/contest/')
+    else:
+        raise PermissionDenied
     
 
 def edit(request,contest_id):
     contest = get_object_or_404(Contest,id = contest_id)
-    if request.method == 'GET':        
-        contest_dic = model_to_dict(contest)
-        form = ContestForm(initial = contest_dic)
-        return render(request,'contest/editContest.html',{'form':form})
-    if request.method == 'POST':
-        form = ContestForm(request.POST, instance = contest)
-        if form.is_valid():
-            modified_contest = form.save()
-            logger.info('Contest: Modified contest %s!' % modified_contest.id)
-            return HttpResponseRedirect('/contest/')
+    if has_c_ownership(request.user,contest):
+        if request.method == 'GET':        
+            contest_dic = model_to_dict(contest)
+            form = ContestForm(initial = contest_dic)
+            return render(request,'contest/editContest.html',{'form':form})
+        if request.method == 'POST':
+            form = ContestForm(request.POST, instance = contest)
+            if form.is_valid():
+                modified_contest = form.save()
+                logger.info('Contest: Modified contest %s!' % modified_contest.id)
+                return HttpResponseRedirect('/contest/')
+    else:
+        raise PermissionDenied
 
 def delete(request,contest_id):
     try:
@@ -214,7 +222,11 @@ def delete(request,contest_id):
     except Contest.DoesNotExist:
         logger.warning('Contest: Can not delete contest %s! Contest not found!' % contest_id)
         raise Http404("Contest does not exist, can not delete.")
-    deleted_contest_id = contest.id
-    contest.delete()
-    logger.info('Contest: Delete contest %s!' % deleted_contest_id)
-    return HttpResponseRedirect('/contest/')
+        
+    if has_c_ownership(request.user,contest):
+        deleted_contest_id = contest.id
+        contest.delete()
+        logger.info('Contest: Delete contest %s!' % deleted_contest_id)
+        return HttpResponseRedirect('/contest/')
+    else:
+        raise PermissionDenied
