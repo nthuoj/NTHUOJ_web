@@ -26,6 +26,7 @@ from django.conf.urls import patterns, include, url
 import views
 
 urlpatterns = patterns('',
-    url(r'^submit/$', views.submit),
-    url(r'^profile/$', views.profile),
+    url(r'^list/$', views.list, name='list'),
+    url(r'^submit/$', views.submit, name='submit'),
+    url(r'^profile/$', views.profile, name='profile'),
 )

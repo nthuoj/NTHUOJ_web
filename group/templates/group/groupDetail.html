@@ -26,7 +26,7 @@ SOFTWARE.
 {% block body_block %}
 <div class="container-fluid">
   <div class="row-fluid">
-    <a href="{% url 'list' %}" class="btn btn-sm btn-default" data-toggle="modal" style="float:left">
+    <a href="{% url 'group:list' %}" class="btn btn-sm btn-default" data-toggle="modal" style="float:left">
       return
     </a>
     <br>
@@ -101,7 +101,7 @@ SOFTWARE.
               </tbody>
             </table>
             <a class="btn btn-sm btn-default" style="float:right"
-               onclick="window.open('{% url 'viewall_contest' %}', '', config='height=500,width=500');">view all</a>
+               onclick="window.open('{% url 'group:viewall_contest' %}', '', config='height=500,width=500');">view all</a>
           </div>
         </div>
       </div>
@@ -130,7 +130,7 @@ SOFTWARE.
               </tbody>
             </table>
             <a class="btn btn-sm btn-default" style="float:right"
-               onclick="window.open('{% url 'viewall_archive' %}', '', config='height=500,width=500');">view all</a>
+               onclick="window.open('{% url 'group:viewall_archive' %}', '', config='height=500,width=500');">view all</a>
           </div>
         </div>
       </div>
@@ -195,7 +195,7 @@ SOFTWARE.
       </tbody>
     </table>
     <a class="btn btn-sm btn-default" style="float:right"
-       onclick="window.open('{% url 'viewall_announce' %}', '', config='height=500,width=500');">view all</a>
+       onclick="window.open('{% url 'group:viewall_announce' %}', '', config='height=500,width=500');">view all</a>
     <br>
   </div>
   {% endblock annowence_block %}

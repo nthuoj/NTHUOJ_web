@@ -59,5 +59,5 @@ def error_message(request, sid):
         logger.warning('SID %s Not Found!' % sid)
         return render(
             request,
-            'index/brokenpage.html',
+            'index/500.html',
             {'error_message': 'SID %s Not Found!' % sid})
