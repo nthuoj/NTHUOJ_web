@@ -51,6 +51,8 @@ SOFTWARE.
       </tr>
     </thead>
     <tbody>
+      {% if user.has_judge_auth %}
+        
       {% for submission in submissions %}
         <tr title="
           <ol style='margin:15px'>
@@ -77,6 +79,7 @@ SOFTWARE.
           <th>{{ submission.grouper.get_language_display }}</th>
         </tr>
       {% endfor %}
+      {% endif %}
     </tbody>
   </table>
 </div>
