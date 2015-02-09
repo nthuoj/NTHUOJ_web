@@ -63,7 +63,7 @@ def contest(request,contest_id):
         contest = Contest.objects.get(id = contest_id)
     except Contest.DoesNotExist: 
         logger.warning('Contest: Can not find contest %s!' % contest_id)
-        raise Http404("Contest does not exist")
+        raise Http404('Contest does not exist')
     
     clarification_list = Clarification.objects.filter(contest = contest)
     contestant_list = Contestant.objects.filter(contest = contest)
@@ -191,7 +191,7 @@ def new(request):
         form = ContestForm(request.POST)
         if form.is_valid():
             new_contest = form.save()
-            logger.info('Contest: Create a new contest %s!' % new_contest.cname)
+            logger.info('Contest: Create a new contest %s!' % new_contest.id)
             return HttpResponseRedirect('/contest/')
     
 
@@ -202,20 +202,19 @@ def edit(request,contest_id):
         form = ContestForm(initial = contest_dic)
         return render(request,'contest/editContest.html',{'form':form})
     if request.method == 'POST':
-        form = ContestForm(request.POST, instance = contest )
+        form = ContestForm(request.POST, instance = contest)
         if form.is_valid():
             modified_contest = form.save()
-            logger.info('Contest: Modified contest %s!' % modified_contest.cname)
+            logger.info('Contest: Modified contest %s!' % modified_contest.id)
             return HttpResponseRedirect('/contest/')
 
 def delete(request,contest_id):
     try:
         contest = Contest.objects.get(id = contest_id)
     except Contest.DoesNotExist:
-        logger = get_logger()
         logger.warning('Contest: Can not delete contest %s! Contest not found!' % contest_id)
         raise Http404("Contest does not exist, can not delete.")
-
-    deleted_contest = contest.delete()
-    logger.info('Contest: Delete contest %s!' % deleted_contest)
+    deleted_contest_id = contest.id
+    contest.delete()
+    logger.info('Contest: Delete contest %s!' % deleted_contest_id)
     return HttpResponseRedirect('/contest/')
