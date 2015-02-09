@@ -27,4 +27,5 @@ urlpatterns = patterns('',
     url(r'^edit/(?P<contest_id>\d+)/$',views.edit,name='edit'),
     url(r'^delete/(?P<contest_id>\d+)/$',views.delete,name='delete'),
     url(r'^(?P<contest_id>\d+)/$',views.contest,name='contest'),
+    url(r'^register/(?P<contest_id>\d+)/$',views.register,name='register'),
 )

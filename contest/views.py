@@ -230,3 +230,13 @@ def delete(request,contest_id):
         return HttpResponseRedirect('/contest/')
     else:
         raise PermissionDenied
+
+def register(request,contest_id):
+    try:
+        contest = Contest.objects.get(id = contest_id)
+    except Contest.DoesNotExist:
+        logger.warning('Contest: Can not register contest %s! Contest not found!' % contest_id)
+        raise Http404("Contest does not exist, can not register.")
+    contest.contestant.add(request.user)
+    logger.info('Contest: User %s attends Contest %s!' % request.user.id, contest.id)
+    return return HttpResponseRedirect('/contest/')
