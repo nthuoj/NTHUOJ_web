@@ -28,7 +28,7 @@ from index.views import custom_proc
 from django.template import RequestContext
 from django.core.urlresolvers import reverse
 from django.shortcuts import render, redirect
-from general_tools.log import get_logger, get_client_ip
+from utils.log_info import get_logger, get_client_ip
 from django.contrib.auth import authenticate, login, logout
 from users.admin import UserCreationForm, AuthenticationForm
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger

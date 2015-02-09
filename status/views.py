@@ -26,7 +26,7 @@ from django.template import RequestContext
 
 from problem.models import Submission, SubmissionDetail
 from index.views import custom_proc
-from general_tools.log import get_logger
+from utils.log_info import get_logger
 # Create your views here.
 
 logger = get_logger()

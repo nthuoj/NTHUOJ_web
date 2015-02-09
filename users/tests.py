@@ -29,13 +29,13 @@ from users.models import User
 
 class UserTestCase(TestCase):
     def setUp(self):
-        User.objects.create_user(username='henry', password='correct')
+        User.objects.create_user(username='test001', password='test001')
 
     def test_login(self):
         '''Test basic login function'''
-        response = self.client.login(username='henry', password='wrong')
+        response = self.client.login(username='test001', password='wrong')
         self.assertEqual(response, False)
-        response = self.client.login(username='henry', password='correct')
+        response = self.client.login(username='test001', password='test001')
         self.assertEqual(response, True)
         self.client.logout()
 
@@ -45,13 +45,13 @@ class UserTestCase(TestCase):
         for wrong_tries in range(3):
             response = self.client.post(
                 reverse('users:login'),
-                {'username': 'henry', 'password': 'wrong'})
+                {'username': 'test001', 'password': 'wrong'})
             self.assertNotContains(response, 'Page Not Found')
 
         # get blocked for forth wrong tries
         response = self.client.post(
             reverse('users:login'),
-            {'username': 'henry', 'password': 'wrong'})
+            {'username': 'test001', 'password': 'wrong'})
         self.assertContains(response, 'Page Not Found')
 
     def test_sign_up(self):
@@ -62,27 +62,27 @@ class UserTestCase(TestCase):
         # sign up with different password confirmation
         response = self.client.post(
             reverse('users:create'),
-            {'username': 'boss', 'password1': 'correct1',
-            'password2':'correct2', 'email': 'oj@nthucs.edu.tw'})
+            {'username': 'test002', 'password1': 'test002',
+            'password2':'002test', 'email': 'oj@nthucs.edu.tw'})
         self.assertNotEqual(User.objects.all().count(), user_count + 1)
 
         # sign up with invalid email format
         response = self.client.post(
             reverse('users:create'),
-            {'username': 'boss', 'password1': 'correct1',
-            'password2':'correct2', 'email': 'oj'})
+            {'username': 'test002', 'password1': 'test002',
+            'password2':'test002', 'email': 'oj'})
         self.assertNotEqual(User.objects.all().count(), user_count + 1)
 
         # sign up with used username
         response = self.client.post(
             reverse('users:create'),
-            {'username': 'henry', 'password1': 'correct',
-            'password2':'correct', 'email': 'oj@nthucs.edu.tw'})
+            {'username': 'test001', 'password1': 'test002',
+            'password2':'test002', 'email': 'oj@nthucs.edu.tw'})
         self.assertNotEqual(User.objects.all().count(), user_count + 1)
 
         # valid sign up
         response = self.client.post(
             reverse('users:create'),
-            {'username': 'boss', 'password1': 'correct',
-            'password2':'correct', 'email': 'oj@nthucs.edu.tw'})
+            {'username': 'test002', 'password1': 'test002',
+            'password2':'test002', 'email': 'oj@nthucs.edu.tw'})
         self.assertEqual(User.objects.all().count(), user_count + 1)
