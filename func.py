@@ -40,7 +40,7 @@ def django_manage(args):
     os.system(cmd)
 
 def db_migrate():
-    apps = ['index', 'problem', 'users', 'contest', 'team']
+    apps = ['index', 'problem', 'users', 'contest', 'team', 'group']
     for app in apps:
         django_manage('makemigrations ' + app)
     django_manage('migrate')

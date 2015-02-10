@@ -22,11 +22,11 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 '''
 from django.db import models
-from users.models import User
+from user.models import User
 from group.models import Group
 from contest.models import Contest
 from problem.models import Problem
-from general_tools.log import get_logger
+from utils.log_info import get_logger
 
 logger = get_logger()
 

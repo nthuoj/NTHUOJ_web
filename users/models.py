@@ -21,20 +21,37 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 '''
-
+from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 from django.db import models
 from datetime import date
 
 # Create your models here.
+class UserManager(BaseUserManager):
+    def create_user(self, username, password=None):
+        """
+        Creates and saves a User with the given username and password.
+        """
+        user = self.model(
+            username=username,
+            password=password
+        )
 
-class User(models.Model):
-    
-    username = models.CharField(max_length=15, primary_key=True, default='')
-    password = models.CharField(max_length=20, blank=True)
-    email = models.CharField(max_length=100, default='')
-    register_date = models.DateField(default=date.today, auto_now_add=True)
-    active = models.BooleanField(default=False)
+        user.set_password(password)
+        user.save(using=self._db)
+        return user
 
+    def create_superuser(self, username, password):
+        """
+        Creates and saves a Superser with the given username and password.
+        """
+        user = self.create_user(username=username, password=password)
+        user.is_admin = True
+        user.save(using=self._db)
+        return user
+
+
+
+class User(AbstractBaseUser):
     ADMIN = 'ADMIN'
     JUDGE = 'JUDGE'
     SUB_JUDGE = 'SUB_JUDGE'
@@ -45,8 +62,6 @@ class User(models.Model):
         (SUB_JUDGE, 'Sub-judge'),
         (USER, 'User'),
     )
-    user_level = models.CharField(max_length=9, choices=USER_LEVEL_CHOICE, default=USER)
-
     PAPER = 'PAPER'
     READABLE = 'READABLE'
     COSMO = 'COSMO'
@@ -59,7 +74,18 @@ class User(models.Model):
         (DEFAULT, 'Default'),
         (LUMEN, 'Lumen'),
     )
+
+    username = models.CharField(max_length=15, default='', unique=True, primary_key=True)
+    email = models.CharField(max_length=100, default='')
+    register_date = models.DateField(default=date.today, auto_now_add=True)
+    active = models.BooleanField(default=False)
+    user_level = models.CharField(max_length=9, choices=USER_LEVEL_CHOICE, default=USER)
     theme = models.CharField(max_length=8, choices=THEME_CHOICE, default=PAPER)
+    
+    USERNAME_FIELD = 'username'
+    is_active = models.BooleanField(default=True)
+    is_admin = models.BooleanField(default=False)
+    objects = UserManager()
 
     def has_admin_auth(self):
         has_auth = (self.user_level == ADMIN)
@@ -74,8 +100,30 @@ class User(models.Model):
                     or (self.user_level == SUB_JUDGE))
         return has_auth
 
+    def get_full_name(self):
+        return self.username
+
+    def get_short_name(self):
+        return self.username
+
+    def has_perm(self, perm, obj=None):
+        # Simplest possible answer: Yes, always (To be constructed later)
+        return True
+
+    def has_module_perms(self, app_label):
+        # Simplest possible answer: Yes, always (To be constructed later)
+        return True
+
     def __unicode__(self):
         return self.username
+
+    @property
+    def is_superuser(self):
+        return self.is_admin
+
+    @property
+    def is_staff(self):
+        return self.is_admin
 
 class Notification(models.Model):
     reciver = models.ForeignKey(User)
