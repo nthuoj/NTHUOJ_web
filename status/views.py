@@ -22,11 +22,13 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 '''
 from django.shortcuts import render
-from django.template import RequestContext
-
-from problem.models import Submission, SubmissionDetail
 from index.views import custom_proc
 from utils.log_info import get_logger
+from django.template import RequestContext
+from problem.models import Submission, SubmissionDetail
+from django.contrib.auth.decorators import login_required
+from status.templatetags.status_filters import show_detail
+
 # Create your views here.
 
 logger = get_logger()
@@ -46,14 +48,45 @@ def status(request):
 
 
 def error_message(request, sid):
+
     try:
         submission = Submission.objects.get(id=sid)
         error_msg = submission.error_msg
+        if show_detail(submission, request.user):
+            return render(
+                request,
+                'status/error_message.html',
+                {'error_message': error_msg})
+        else:
+            logger.warning('User %s attempt to view detail of SID %s' % (request.user, sid))
+            return render(
+                request,
+                'index/500.html',
+                {'error_message': 'You are not qualified to view detail of SID %s' % sid})
+
+    except Submission.DoesNotExist:
+        logger.warning('SID %s Not Found!' % sid)
         return render(
             request,
-            'status/error_message.html',
-            {'error_message': error_msg})
+            'index/500.html',
+            {'error_message': 'SID %s Not Found!' % sid})
 
+
+@login_required()
+def view_code(request, sid):
+    try:
+        submission = Submission.objects.get(id=sid)
+        if show_detail(submission, request.user):
+            return render(
+                request,
+                'users/submit.html',
+                {})
+        else:
+            logger.warning('User %s attempt to view detail of SID %s' % (request.user, sid))
+            return render(
+                request,
+                'index/500.html',
+                {'error_message': 'You are not qualified to view detail of SID %s' % sid})
     except Submission.DoesNotExist:
         logger.warning('SID %s Not Found!' % sid)
         return render(

@@ -76,7 +76,12 @@ DATABASES = {
     }
 }
 
+# Custom User auth
+
 AUTH_USER_MODEL = 'users.User'
+# where @login_required will redirect to
+LOGIN_URL = '/users/login/' 
+
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.7/topics/i18n/
