@@ -232,12 +232,20 @@ def delete(request,contest_id):
         raise PermissionDenied
 
 def register(request,contest_id):
+    #check contest's existance
     try:
         contest = Contest.objects.get(id = contest_id)
     except Contest.DoesNotExist:
         logger.warning('Contest: Can not register contest %s! Contest not found!' % contest_id)
         raise Http404("Contest does not exist, can not register.")
-    contestant = Contestant(contest = contest,user = request.user)
-    contestant.save()
-    logger.info('Contest: User %s attends Contest %s!' % (request.user.username,contest.id))
+    #check contestant existance
+    try:
+        #if user has attended
+        contestant = Contestant.objects.get(contest = contest,user = request.user)
+        logger.info('Contest: User %s has already attended Contest %s!' % (request.user.username,contest.id))
+    except Contestant.DoesNotExist:
+        contestant = Contestant(contest = contest,user = request.user)
+        contestant.save()
+        logger.info('Contest: User %s attends Contest %s!' % (request.user.username,contest.id))
     return HttpResponseRedirect('/contest/')
+    
