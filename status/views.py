@@ -62,7 +62,7 @@ def error_message(request, sid):
             return render(
                 request,
                 'index/500.html',
-                {'error_message': 'You are not qualified to view detail of SID %s' % sid})
+                {'error_message': 'You don\'t have permission to view detail of SID %s' % sid})
 
     except Submission.DoesNotExist:
         logger.warning('SID %s Not Found!' % sid)
@@ -76,6 +76,8 @@ def error_message(request, sid):
 def view_code(request, sid):
     try:
         submission = Submission.objects.get(id=sid)
+        # TODO:
+        # fetch code from file system
         if show_detail(submission, request.user):
             return render(
                 request,
@@ -86,7 +88,7 @@ def view_code(request, sid):
             return render(
                 request,
                 'index/500.html',
-                {'error_message': 'You are not qualified to view detail of SID %s' % sid})
+                {'error_message': 'You don\'t have permission to view detail of SID %s' % sid})
     except Submission.DoesNotExist:
         logger.warning('SID %s Not Found!' % sid)
         return render(
