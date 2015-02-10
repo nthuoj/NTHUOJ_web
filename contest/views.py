@@ -37,8 +37,8 @@ from problem.models import Testcase
 from problem.models import Submission
 from problem.models import SubmissionDetail
 
-from general_tools.log import get_logger
-from general_tools import ownership
+from utils.log_info import get_logger
+from utils import user_info
 
 
 logger = get_logger()
@@ -202,7 +202,7 @@ def new(request):
 
 def edit(request,contest_id):
     contest = get_object_or_404(Contest,id = contest_id)
-    if has_c_ownership(request.user,contest):
+    if user_info.has_c_ownership(request.user,contest):
         if request.method == 'GET':        
             contest_dic = model_to_dict(contest)
             form = ContestForm(initial = contest_dic)
@@ -223,7 +223,7 @@ def delete(request,contest_id):
         logger.warning('Contest: Can not delete contest %s! Contest not found!' % contest_id)
         raise Http404("Contest does not exist, can not delete.")
         
-    if has_c_ownership(request.user,contest):
+    if user_info.has_c_ownership(request.user,contest):
         deleted_contest_id = contest.id
         contest.delete()
         logger.info('Contest: Delete contest %s!' % deleted_contest_id)
@@ -237,6 +237,7 @@ def register(request,contest_id):
     except Contest.DoesNotExist:
         logger.warning('Contest: Can not register contest %s! Contest not found!' % contest_id)
         raise Http404("Contest does not exist, can not register.")
-    contest.contestant.add(request.user)
-    logger.info('Contest: User %s attends Contest %s!' % request.user.id, contest.id)
-    return return HttpResponseRedirect('/contest/')
+    contestant = Contestant(contest = contest,user = request.user)
+    contestant.save()
+    logger.info('Contest: User %s attends Contest %s!' % (request.user.username,contest.id))
+    return HttpResponseRedirect('/contest/')

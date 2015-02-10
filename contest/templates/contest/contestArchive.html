@@ -53,7 +53,7 @@ SOFTWARE.
       <tr>
         <th>
           {% if user.has_subjudge_auth %}
-          <a href="{% url 'new' %}">
+          <a href="{% url 'contest:new' %}">
             <button type="button" class="btn btn-success btn-xs" >
               <span class="glyphicon glyphicon-plus"></span>
             </button>
@@ -72,12 +72,12 @@ SOFTWARE.
       <tr>
         <td>
           {% if user.has_subjudge_auth %}
-          <a href="{% url 'delete' contest.contest.id %}">
+          <a href="{% url 'contest:delete' contest.contest.id %}">
             <button type="button" class="btn btn-danger btn-xs">
               <span class="glyphicon glyphicon-remove"></span>
             </button>
           </a>
-          <a href="{% url 'edit' contest.contest.id %}">
+          <a href="{% url 'contest:edit' contest.contest.id %}">
             <button type="button" class="btn btn-info btn-xs">
               <span class="glyphicon glyphicon-pencil"></span>
             </button>
@@ -89,7 +89,7 @@ SOFTWARE.
             <span class="glyphicon glyphicon-play"></span>
           </button>
 
-          <a href="#">
+          <a href="{% url 'contest:register' contest.contest.id %}">
             <button type="button" class="btn btn-success btn-xs" >
               <span class="glyphicon glyphicon-plus"></span>
             </button>

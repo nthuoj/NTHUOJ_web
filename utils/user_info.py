@@ -22,7 +22,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 '''
 from django.db import models
-from user.models import User
+from users.models import User
 from group.models import Group
 from contest.models import Contest
 from problem.models import Problem
