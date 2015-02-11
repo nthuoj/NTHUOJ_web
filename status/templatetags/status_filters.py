@@ -59,6 +59,10 @@ def show_submission(submission, user):
     if submission.user == user:
         return True
 
+    # problem owner can see all submission of his problem
+    if submission.problem.owner_id == user.username:
+        return True
+
     # contest owner & coowner's submission can't be seen until the end
     contests = Contest.objects.filter(
         problem=submission.problem,
@@ -107,6 +111,7 @@ def show_detail(submission, user):
         # no one can see admin's detail
         if submission.user.user_level == user.ADMIN:
             return False
+
         contests = Contest.objects.filter(
             start_time__lt=datetime.now(),
             end_time__gt=datetime.now())
@@ -125,10 +130,13 @@ def show_detail(submission, user):
         # a user can view his own detail
         if submission.user == user:
             return True
+        # a problem owner can view his problem's detail
+        if submission.problem.owner_id == user.username:
+            return True
         # a user can view his team member's detail
         if submission.team:
             team_member = TeamMember.objects.filter(team=submission.team, member=user)
-            if team_member:
+            if team_member or submission.team.leader == user:
                 return True
     # no condition is satisfied
     return False
