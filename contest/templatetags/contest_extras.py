@@ -18,11 +18,22 @@
     SOFTWARE.
     '''
 from django import template
+from utils import user_info
+from contest.models import Contest
 
 register = template.Library()
 
+# get value['key']
 @register.filter
 def get_value(value,key):
 	return value.get(key,0)
 
 register.filter('get_value', get_value)
+
+# check if user has contest ownership
+@register.filter
+def has_auth(user,contest_id):
+    contest = Contest.objects.get(id = contest_id)
+    return user_info.has_c_ownership(user,contest)
+
+register.filter("has_auth",has_auth)

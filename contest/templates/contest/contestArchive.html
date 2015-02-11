@@ -29,6 +29,8 @@ SOFTWARE.
 <script src="{% static 'contest/js/contestArchive.js' %}"></script>
 {% endblock import_source %} 
 
+{% load contest_extras %}
+
 {% block body_block %}
 
 <div class="container" id="contestArchive">
@@ -52,7 +54,7 @@ SOFTWARE.
     <thead>
       <tr>
         <th>
-          {% if user.has_subjudge_auth %}
+          {% if user.has_judge_auth %}
           <a href="{% url 'contest:new' %}">
             <button type="button" class="btn btn-success btn-xs" >
               <span class="glyphicon glyphicon-plus"></span>
@@ -72,7 +74,7 @@ SOFTWARE.
       <tr>
         <td>
 
-          {% if user.has_judge_auth %}
+          {% if user|has_auth:contest.contest.id %}
           <a href="{% url 'contest:delete' contest.contest.id %}">
             <button type="button" class="btn btn-danger btn-xs">
               <span class="glyphicon glyphicon-remove"></span>
@@ -134,7 +136,7 @@ SOFTWARE.
           <span class="sr-only">Close</span>
         </button>
         <h2 class="modal-title" id="myModalLabel">
-            {% if user.has_subjudge_auth %}
+            {% if user|has_auth:contest.contest.id %}
             <table style="table-layout:fixed;width: 100%;text-align:center">
               <tr>
                 <td>
@@ -169,7 +171,7 @@ SOFTWARE.
             <table class="table" style="text-align:center">
               <thead>
                 <tr>
-                  {% if user.has_subjudge_auth %}
+                  {% if user|has_auth:contest.contest.id %}
                   <th style="text-align:center">Rejudge</th>
                   {% endif %}
                   <th style="text-align:center">#</th>
@@ -179,7 +181,7 @@ SOFTWARE.
               <tbody>
                 {% for problem in contest.contest.problem.all %}
                 <tr>
-                  {% if admin %}
+                  {% if user|has_auth:contest.contest.id %}
                   <td>
                     <button type="button" class="btn btn-warning btn-xs">
                       <span class="glyphicon glyphicon-refresh"></span>
@@ -194,7 +196,7 @@ SOFTWARE.
                 </tr>
                 {% endfor %}
 
-                {% if user.has_subjudge_auth %}
+                {% if user|has_auth:contest.contest.id %}
                 <tr>
                   <td style="width:10%">
                     <button type="button" class="btn btn-success btn-xs">
@@ -214,7 +216,7 @@ SOFTWARE.
             <table class="table" style="text-align:center">
               <thead>
                 <tr>
-                  {% if user.has_subjudge_auth %}
+                  {% if user|has_auth:contest.contest.id %}
                   <th></th>
                   {% endif %}
                   <th style="text-align:center">#</th>
@@ -224,7 +226,7 @@ SOFTWARE.
               <tbody>
                 {% for contestant in contest.contestants %}
                 <tr>
-                    {% if user.has_subjudge_auth %}
+                    {% if user|has_auth:contest.contest.id %}
                     <td>
                       <button type="button" class="btn btn-danger btn-xs">
                         <span class="glyphicon glyphicon-minus"></span>
@@ -236,7 +238,7 @@ SOFTWARE.
                 </tr>
                 {% endfor %}
                 <tr>
-                  {% if user.has_subjudge_auth %}
+                  {% if user|has_auth:contest.contest.id %}
                   <td style="width:10%">
                     <button type="button" class="btn btn-success btn-xs">
                       <span class="glyphicon glyphicon-plus"></span>
@@ -262,7 +264,7 @@ SOFTWARE.
               <tr>
                 <td>Start Time</td>
                 <td>
-                  {% if user.has_subjudge_auth %}
+                  {% if user|has_auth:contest.contest.id %}
                   <input class="form-control" value="{{ contest.contest.start_time }}"></input>
                   {% else %}
                   <h3>{{ contest.contest.start_time }}</h3>
@@ -273,7 +275,7 @@ SOFTWARE.
               <tr>
                 <td>End Time</td>
                 <td>
-                  {% if user.has_subjudge_auth %}
+                  {% if user|has_auth:contest.contest.id %}
                   <input class="form-control" value="{{ contest.contest.end_time }}"></input>
                   {% else %}
                   <h3>{{ contest.contest.end_time }}</h3>
@@ -287,7 +289,7 @@ SOFTWARE.
             <table class="table" style="text-align:center">
               <thead>
                 <tr>
-                  {% if user.has_subjudge_auth %}
+                  {% if user|has_auth:contest.contest.id %}
                   <th></th>
                   {% endif %}
                   <th style="text-align:center">#</th>
@@ -297,7 +299,7 @@ SOFTWARE.
               <tbody>
                 {% for coowner in contest.contest.coowner.all %}
                 <tr>
-                  {% if user.has_subjudge_auth %}
+                  {% if user|has_auth:contest.contest.id %}
                   <td>
                     <button type="button" class="btn btn-danger btn-xs">
                       <span class="glyphicon glyphicon-minus"></span>
@@ -309,7 +311,7 @@ SOFTWARE.
                 </tr>
                 {% endfor %}
                 <!-- -->
-                {% if user.has_subjudge_auth %}
+                {% if user|has_auth:contest.contest.id %}
                 <tr>
                   <td style="width:10%">
                     <button type="button" class="btn btn-success btn-xs">
