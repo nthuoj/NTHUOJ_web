@@ -47,6 +47,10 @@ def show_submission(submission, user):
     Returns:
         a boolean of the judgement
     '''
+    # admin can see all submissions
+    if user.user_level == user.ADMIN:
+        return True
+
     # no one can see admin's submissions
     if submission.user.user_level == user.ADMIN:
         return False
@@ -55,13 +59,6 @@ def show_submission(submission, user):
     if submission.user == user:
         return True
 
-    valid = True
-    # an invisible problem's submission can't be seen
-    if not submission.problem.visible:
-        valid = False
-    # problem owner's submission can't be seen
-    if submission.user.username == submission.problem.owner_id:
-        valid = False
     # contest owner & coowner's submission can't be seen until the end
     contests = Contest.objects.filter(
         problem=submission.problem,
@@ -71,7 +68,21 @@ def show_submission(submission, user):
         for contest in contests:
             owners.append(contest.owner)
             owners.extend(contest.coowner.all())
-        valid = user in owners
+        if user in owners:
+            # owner/coowner can see submission
+            return True
+        else:
+            # not a owner/coowner
+            # to see submission, submission.user must not be owners
+            return submission.user not in owners
+
+    valid = True
+    # an invisible problem's submission can't be seen
+    if not submission.problem.visible:
+        valid = False
+    # problem owner's submission can't be seen
+    if submission.user.username == submission.problem.owner_id:
+        valid = False
     return valid
 
 
