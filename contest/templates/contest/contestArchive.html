@@ -72,7 +72,7 @@ SOFTWARE.
       <tr>
         <td>
 
-          {% if user.has_subjudge_auth %}
+          {% if user.has_judge_auth %}
           <a href="{% url 'contest:delete' contest.contest.id %}">
             <button type="button" class="btn btn-danger btn-xs">
               <span class="glyphicon glyphicon-remove"></span>

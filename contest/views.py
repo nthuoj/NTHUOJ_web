@@ -186,7 +186,7 @@ def contest(request,contest_id):
         context_instance = RequestContext(request, processors = [custom_proc]))
 
 def new(request):
-    if request.user.has_subjudge_auth():
+    if request.user.has_judge_auth():
         if request.method == 'GET':
             form = ContestForm()
             return render(request,'contest/editContest.html',{'form':form})
