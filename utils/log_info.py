@@ -1,3 +1,4 @@
+'''
 The MIT License (MIT)
 
 Copyright (c) 2014 NTHUOJ team
@@ -19,4 +20,48 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
+'''
+import logging
 
+
+def get_logger(name='NTHU OJ'):
+    '''Return a logger with specified settings
+
+    Args:
+        name: the name of the module.
+    Returns:
+        the logger with specified format.
+    '''
+    # create logger
+    logger = logging.getLogger(name)
+    logger.setLevel(logging.DEBUG)
+
+    # create console handler and set level to debug
+    ch = logging.StreamHandler()
+    ch.setLevel(logging.DEBUG)
+
+    # create formatter
+    formatter = logging.Formatter('[%(asctime)s] %(levelname)s: %(message)s')
+
+    # add formatter to ch
+    ch.setFormatter(formatter)
+
+    # add ch to logger
+    logger.addHandler(ch)
+
+    return logger
+
+
+def get_client_ip(request):
+    '''Return ip from request
+    Args:
+        request: the request in view.
+    Returns:
+        the client ip of that request.
+    '''
+    x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
+    if x_forwarded_for:
+        ip = x_forwarded_for.split(',')[-1].strip()
+    else:
+        ip = request.META.get('REMOTE_ADDR')
+    return ip

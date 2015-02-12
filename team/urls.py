@@ -1,3 +1,4 @@
+'''
 The MIT License (MIT)
 
 Copyright (c) 2014 NTHUOJ team
@@ -19,4 +20,12 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
+'''
+from django.conf.urls import patterns, include, url
 
+import views
+
+urlpatterns = patterns('',
+    url(r'^list/$', views.team_list, name='list'),
+    url(r'^profile/$', views.team_profile, name='profile'),
+)

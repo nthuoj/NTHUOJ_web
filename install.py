@@ -1,3 +1,4 @@
+'''
 The MIT License (MIT)
 
 Copyright (c) 2014 NTHUOJ team
@@ -19,4 +20,34 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
+'''
 
+
+import getpass
+import os.path
+
+from func import *
+
+
+if not os.path.isfile('nthuoj.ini'):
+    # Setting nthuoj.ini
+    host = raw_input('Mysql host: ')
+    db = raw_input('Mysql database: ')
+    user = raw_input('Please input your mysql user: ')
+    pwd = getpass.getpass()
+    write_ini_file(host, db, user, pwd)
+
+
+# Database Migratinos
+db_migrate()
+
+
+# Create super user
+ans = raw_input('Create super user?[Y/n] ')
+if ans == '' or ans == 'y' or ans == 'Y':
+    django_manage('createsuperuser')
+
+# Install needed library & setup
+
+# django-axes
+django_manage('syncdb')

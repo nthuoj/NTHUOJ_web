@@ -1,0 +1,108 @@
+<!--
+The MIT License (MIT)
+
+Copyright (c) 2014 NTHUOJ team
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+-->
+{% extends 'problem/base.html' %} {% block body_block %} {% load staticfiles %}
+<script src='http://cdn.ckeditor.com/4.4.6/standard/ckeditor.js'></script>
+<script src="{% static 'problem/js/edit.js' %}"></script>
+<div class="container" id="Body">
+  <form method="POST" action=''>
+    {% csrf_token %}
+    <div style="width:80%; float:left;">
+      <ul class="nav nav-tabs" role="tablist">
+        <li class="active">
+          <a href="#info" role="tab" data-toggle="tab">Info</a>
+        </li>
+        <li>
+          <a href="#tag" role="tab" data-toggle="tab">Tag</a>
+        </li>
+        <li>
+          <a href="#description" role="tab" data-toggle="tab">Description</a>
+        </li>
+        <li>
+          <a href="#sampio" role="tab" data-toggle="tab">Sample IO</a>
+        </li>
+        <li>
+          <a href="#testcase" role="tab" data-toggle="tab">TestCase</a>
+        </li>
+      </ul>
+
+      <style>
+      .tab-pane {
+        padding-top: 10px;
+      }
+      </style>
+      <div class="tab-content">
+        <div class="tab-pane active" id="info">
+          {% include 'problem/editTab/info.html' %}
+        </div>
+        <div class="tab-pane" id="tag">
+          {% include 'problem/editTab/tag.html' %}
+        </div>
+        <div class="tab-pane" id="description">
+          <strong>Description</strong>
+          <textarea cols="80" rows="20" id="des" name="description"></textarea>
+          <br><strong>Input</strong>
+          <textarea cols="80" rows="20" id="inText" name="input"></textarea>
+          <br><strong>Output</strong>
+          <textarea cols="80" rows="20" id="outText" name="output"></textarea>
+
+          <script>
+          CKEDITOR.replace('des')
+          CKEDITOR.replace('inText')
+          CKEDITOR.replace('outText')
+          </script>
+        </div>
+        <div class="tab-pane" id="sampio">
+          <div class='panel panel-default' style='float:left;width:47%'>
+            <div class='panel-heading'>Sample Input</div>
+            <textarea name='samp_input' class='panel-body' style='width:100%' rows='20'></textarea>
+          </div>
+          <div class='panel panel-default' style='float:right;width:47%'>
+            <div class='panel-heading'>Sample Output</div>
+            <textarea name='samp_output' class='panel-body' style='width:100%' rows='20'></textarea>
+          </div>
+        </div>
+        <div class="tab-pane" id="testcase">
+          {% include 'problem/editTab/testcase.html' %}
+        </div>
+      </div>
+
+    </div>
+    <div style="width:20%;float:right">
+      <a class='btn btn-success' target='_blank' id='preview_button'>Preview</a>
+      <input type="submit" value="Save" class="btn btn-primary" href="{% url 'problem:problem.views.problem' %}">
+    </div>
+  </form>
+</div>
+</body>
+<script>
+$('#preview_button').click(function() {
+  MyWindow = window.open('{% url "problem:problem.views.preview" %}',
+    'MyWindow',
+    'toolbar=no,location=no,directories=no,status=no,menubar=no,
+    scrollbars=yes,resizable=yes,width=600,height=30'
+  );
+  return false;
+});
+</script>
+{% endblock %}

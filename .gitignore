@@ -1,3 +1,9 @@
+# Migrations
+migrations/
+
+# Config files
+nthuoj.ini
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
@@ -52,3 +58,6 @@ docs/_build/
 
 # PyBuilder
 target/
+
+#bootstrap
+bootstrap/

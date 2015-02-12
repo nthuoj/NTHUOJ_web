@@ -1,3 +1,4 @@
+/*
 The MIT License (MIT)
 
 Copyright (c) 2014 NTHUOJ team
@@ -19,4 +20,19 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
+*/
+function switchTab(t) {
+    $("a[role='tab']").parent().removeClass("active");
+    $(t).parent().addClass("active");
+    $(".tab-pane").removeClass("active");
+    $($(t).attr("href")).addClass("active");
+}
+
+var tags = [];
+
+$(document).ready(function() {
+    $("a[role='tab']").click(function(e) {
+        e.preventDefault()
+        switchTab(this);
+    });
 

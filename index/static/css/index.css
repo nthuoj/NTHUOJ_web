@@ -1,0 +1,300 @@
+/*
+The MIT License (MIT)
+
+Copyright (c) 2014 NTHUOJ team
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+*/
+
+html {
+  height: 100%;
+}
+body {
+  padding-top: 0px;
+  height: 100%;
+}
+.wrap-body {
+  min-height: 100%;
+  height: auto;
+}
+.gray {
+  background-color: #E5E5E5;
+  height: 250px;
+}
+.hr1 {
+  margin: 0px;
+  position: relative;
+  top: -250px;
+  border-width: 3px;
+  color:gray;
+}
+.logo {
+  background-color: white;
+  padding-left: 40px;
+  padding-top: 20px;
+  padding-right: 40px;
+  padding-bottom: 30px;
+  margin: 0px;
+  width: 70%;
+  font-size: 22px;
+  border: 5px solid #1b2435;
+  border-radius: 10px;
+}
+.p1 {
+  font-size: 60px;
+  font-family: impact;
+  text-align: left;
+}
+.hr2 {
+  border-width: 2px;
+}
+.newbar {
+  margin: 0px; 
+  background-color: #1B2435;
+  z-index: 0px;
+
+}
+.p2 {
+  font-size: 18px;
+  color: white;
+  margin: 0px;
+  padding: 0px;
+}
+.p3 {
+  color: white;
+  margin: 0px;
+  padding: 0px;
+  font-size: 26px;
+}
+.sticky-footer {
+  padding: 0px 0px;
+  background-color: #1b2435;
+  border-top: 1px solid #dddddd;
+  border-bottom-right-radius: -1;
+  border-bottom-left-radius: -1;
+  position:fixed; bottom: 0px; 
+  z-index: 1;
+  width: 100%;
+  border-top-left-radius: 250px;
+  border-top-right-radius: 250px;
+  border-bottom-right-radius: 0px;
+  border-bottom-left-radius: 0px;
+}
+.p4 {
+  color: white;
+  margin: 3px;
+  padding: 0px;
+  font-size: 20px;
+}
+.p7 {
+  font-size: 120px;
+  font-family: impact;
+  text-align: left;
+}
+.p8 {
+  font-size: 70px;
+  font-family: impact;
+  text-align: left;
+  color: black;
+}
+.p9 {
+  font-size: 30px;
+  font-family: impact;
+  text-align: left;
+  color: black;
+}
+.table1 {
+  width: 70%;
+  position: relative;
+  top: -150px;
+}
+.tlogo {
+  position: relative;
+  top: -200px;
+}
+.p5 {
+  font-size: 20px;
+  color: #444444;
+}
+.line {
+  border: 3px none black;
+  border-bottom-style: solid;
+}
+.btn1 {
+  border-color: #444444;
+  background-color: gray;
+  color: #000;
+}
+.login {
+  font-size: 20px;
+}
+.p6 {
+  color: blue;
+}
+#mwt_mwt_slider_scroll {
+  top: 0;
+  left: -360px;
+  width: 360px;  
+  position: fixed;
+  z-index: 9999;
+}       
+#mwt_slider_content {
+  background: #3c5a98;
+  text-align: center;
+  padding-top: 20px;
+}       
+#mwt_fb_tab {
+  position: absolute;
+  top: 230px;
+  right: -24px;
+  width: 24px;
+  background: #3c5a98;
+  color: #ffffff;
+  font-family: Arial, Helvetica, sans-serif; 
+  text-align: center;
+  padding: 9px 0;
+  -moz-border-radius-topright: 10px;
+  -moz-border-radius-bottomright: 10px;
+  -webkit-border-top-right-radius: 10px;
+  -webkit-border-bottom-right-radius: 10px;  
+}
+#mwt_fb_tab2 {
+  position: absolute;
+  top: 350px;
+  right: -24px;
+  width: 24px;
+  height:40px;
+  background: #3c5a98;
+  color: #ffffff;
+  font-family: Arial, Helvetica, sans-serif; 
+  text-align: center;
+  padding: 9px 0;
+  -moz-border-radius-topright: 10px;
+  -moz-border-radius-bottomright: 10px;
+  -webkit-border-top-right-radius: 10px;
+  -webkit-border-bottom-right-radius: 10px;  
+}
+#mwt_fb_tab span {
+  display: block;
+  height: 12px;
+  padding: 1px 0;
+  line-height: 12px;
+  text-transform: uppercase;
+  font-size: 12px;
+  -webkit-transform: rotate(90deg);
+  -moz-transform: rotate(90deg); 
+}
+#mwt_fb_tab2 span {
+  display: block;
+  height: 12px;
+  padding: 1px 0;
+  line-height: 12px;
+  text-transform: uppercase;
+  font-size: 12px;
+  -webkit-transform: rotate(90deg);
+  -moz-transform: rotate(90deg); 
+}
+.information {
+  position: absolute;   
+  right: 5px;
+  background-color: white;
+  font-size: 16px;
+  z-index: 999;
+  border: 2px solid #000;
+  border-radius: 3px;
+  padding: 10px;
+}
+.temp {
+  position: absolute;
+  right: 5px;
+  top: 200px;
+  z-index: 998;
+}
+.register {
+  font-size: 20px; 
+}
+.forget {
+  font-size: 20px; 
+}
+.p10 {
+  font-size: 18px;
+  color: white;
+  margin: 0px;
+  padding: 0px;
+}
+.p11 {
+  font-size: 18px;
+  color: white;
+  margin: 3px;
+  padding: 0px;
+}
+.popdiv{
+  padding:30px;
+}
+.txtbd{
+  border:1px black solid;
+}
+.poptxt_login{
+  display:inline;
+  float:left;
+  text-align:left;
+}
+textarea#inputSmall {
+  height: 200px;
+}
+.poptxt_sm{
+  display:inline;
+  float:right;
+}
+.poptitle{
+  font-size: 30px;
+}
+.sidebar_color{
+  color:white;
+}
+.ring{
+  cursor: pointer;
+}
+.err1 {
+  font-size: 120px;
+  font-family: impact;
+  text-align: left;
+  margin-bottom: -40px;
+}
+.err2 {
+  font-size: 70px;
+  font-family: impact;
+  text-align: left;
+  color: black;
+  margin-bottom: 0px;
+}
+.err3 {
+  font-size: 30px;
+  font-family: impact;
+  text-align: left;
+  color: black;
+  margin-bottom: 0px;
+}
+#time {
+  margin-bottom: 0px;
+  display: inline;
+}
+.p10 {
+  display: inline;
+}
