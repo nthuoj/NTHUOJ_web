@@ -25,6 +25,7 @@ import json
 import random
 from users.models import User
 from index.views import custom_proc
+from users.forms import CodeSubmitForm
 from django.template import RequestContext
 from django.core.urlresolvers import reverse
 from django.shortcuts import render, redirect
@@ -34,7 +35,6 @@ from django.contrib.auth import authenticate, login, logout
 from users.admin import UserCreationForm, AuthenticationForm
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
-from users.forms import CodeSubmitForm
 # Create your views here.
 
 logger = get_logger()
@@ -58,23 +58,6 @@ def list(request):
         request,
         'users/userList.html',
         {'users': user},
-        context_instance=RequestContext(request, processors=[custom_proc]))
-
-
-@login_required()
-def submit(request):
-    if request.method=='POST':
-        codesibmitform = CodeSubmitForm(request.POST)
-        if codesibmitform.is_valid():
-            pass
-        else:
-            return render(
-                request,
-                'users/submit.html', {'form': codesibmitform},
-                context_instance=RequestContext(request, processors=[custom_proc]))
-    return render(
-        request,
-        'users/submit.html', {'form': CodeSubmitForm()},
         context_instance=RequestContext(request, processors=[custom_proc]))
 
 
@@ -141,3 +124,23 @@ def user_login(request):
         'users/auth.html',
         {'form': AuthenticationForm(), 'title': 'Login'},
         context_instance=RequestContext(request, processors=[custom_proc]))
+
+
+@login_required()
+def submit(request, pid=None):
+    if request.method=='POST':
+        codesibmitform = CodeSubmitForm(request.POST)
+        if codesibmitform.is_valid():
+            code = codesibmitform.cleaned_data['code']
+            
+            return redirect(reverse('status:status'))
+        else:
+            return render(
+                request,
+                'users/submit.html', {'form': codesibmitform},
+                context_instance=RequestContext(request, processors=[custom_proc]))
+    return render(
+        request,
+        'users/submit.html', {'form': CodeSubmitForm(initial={'pid': pid})},
+        context_instance=RequestContext(request, processors=[custom_proc]))
+

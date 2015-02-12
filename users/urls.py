@@ -32,5 +32,6 @@ urlpatterns = patterns('',
     url(r'^logout/$', views.user_logout, name='logout'),
     url(r'^list/$', views.list, name='list'),
     url(r'^submit/$', views.submit, name='submit'),
+    url(r'^submit/(?P<pid>\d+)$', views.submit, name='submit'),
     url(r'^profile/$', views.profile, name='profile'),
 )
