@@ -1,4 +1,4 @@
-<!--
+'''
 The MIT License (MIT)
 
 Copyright (c) 2014 NTHUOJ team
@@ -19,27 +19,7 @@ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
 AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
--->
-<!DOCTYPE html>
-{% extends "index/base.html" %}
-{% load static %}
+SOFTWARE.'''
+from django.test import TestCase
 
-{% block title_name %}
-  <title>brokenpage</title>
-{% endblock title_name %}
-{% block import_source %}
-{% endblock import_source %}
-{% block body_block %}
-  <div style="position:relative;bottom:0px;">
-    <p style="text-align:center" class="err1" >4&nbsp0&nbsp4</p>
-  </div>
-  <p style="text-align:center" class="err2">Page Not Found</p>
-  <p style="text-align:center" class="err2">{{ error_message }}</p>
-  <p style="text-align:center" class="err3">
-    Sorry , the page you are looking for seems to be missing.
-  </p>
-
-  <hr class="hr1" style="position:relative;top:40px;">
-  <br><br><br><br><br><br><br><br><br><br><br><br>
-{% endblock body_block %}
+# Create your tests here.
