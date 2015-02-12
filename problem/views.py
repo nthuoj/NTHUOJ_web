@@ -72,7 +72,27 @@ def edit(request, pid):
     return render(request, 'problem/edit.html')
 
 def new(request):
-    return render(request, 'problem/edit.html')
+    if not request.user.has_subjudge_auth():
+        logger.warning("user %s has no auth to add new problem" % (request.user))
+        raise Http404("you can't add new problem")
+    if request.method == 'GET':
+        form = ProblemForm()
+    if request.method == 'POST':
+        form = ProblemForm(request.POST)
+        if form.is_valid():
+            problem = form.save()
+            problem.description = request.POST['description']
+            problem.input= request.POST['input_description']
+            problem.output = request.POST['output_description']
+            problem.sample_in = request.POST['sample_input']
+            problem.sample_out = request.POST['sample_output']
+            problem.save()
+            logger.info('post new problem, pid = %d' % (problem.pk))
+            return redirect('/problem/%d' % (problem.pk))
+    if not request.user.is_admin:
+        del form.fields['owner']
+    return render(request, 'problem/edit.html', 
+                    { 'form': form, 'owner': request.user, 'is_new': True })
 
 def preview(request):
     return render(request, 'problem/preview.html')

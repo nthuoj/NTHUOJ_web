@@ -26,13 +26,16 @@ function switchTab(t) {
     $(t).parent().addClass("active");
     $(".tab-pane").removeClass("active");
     $($(t).attr("href")).addClass("active");
+    $(".tab-pane").hide();
+    $($(t).attr("href")).show();
 }
 
-var tags = [];
-
 $(document).ready(function() {
+    $(".tab-pane").hide();
+    $("#info").show();
     $("a[role='tab']").click(function(e) {
         e.preventDefault()
         switchTab(this);
     });
+});
 
