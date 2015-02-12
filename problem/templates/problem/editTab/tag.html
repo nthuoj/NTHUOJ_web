@@ -22,10 +22,18 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 -->
 <br>
+{% if not is_new %}
 <strong>Current Tags</strong>
 <button id='merge_tag' class='btn btn-default'>Merge tags</button>
 <table>
   <tbody id="tagTable">
+    {% for t in tags %}
+      <tr>
+        <td><input type="checkbox"></td>
+        <td>{{t.tag_name}}</td>
+        <td><button class="btn btn-primary">Delete</button></td>
+      </tr>
+    {% endfor %}
   </tbody>
 </table>
 <br>
@@ -34,12 +42,27 @@ SOFTWARE.
   <tr>
     <th>Add Tag</th>
     <td>
-      <div class='input-group'>
-        <input type='text' id='newTag' class='form-control' width='25%'>
-        <span class='input-group-btn'>
-          <button id='add_tag_button' class='btn btn-default'>Add</button>
-        </span>
-      </div>
+      <form id="addTag">
+        <div class='input-group'>
+          {% csrf_token %}
+          <input type='text' id='newTag' name='tag' class='form-control' width='25%'>
+          <span class='input-group-btn'>
+            <button id='add_tag_button' class='btn btn-default'>Add</button>
+          </span>
+        </div>
+      </form>
     </td>
   </tr>
 </table>
+<script>
+$(document).ready(function() {
+    $("#addTag").submit(function(e) {
+        e.preventDefault();
+        return add_new_tag({{pid}});
+    });
+});
+</script>
+{% else %}
+<strong>Save your problem before editing the tags</strong>
+{% endif %}
+
