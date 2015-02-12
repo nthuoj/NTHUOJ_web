@@ -76,7 +76,7 @@ def error_message(request, sid):
 def view_code(request, sid):
     try:
         submission = Submission.objects.get(id=sid)
-        # TODO:
+        # TODO: 
         # fetch code from file system
         if show_detail(submission, request.user):
             return render(
