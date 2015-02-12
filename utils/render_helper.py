@@ -26,20 +26,20 @@ from index.views import custom_proc
 from django.template import RequestContext
 
 def render_404(request, message):
-    '''Helper to render 404 page
+    '''Help to render 404 page
 
     example: 
-        render500(request, 'Page not found')
+        render_404(request, 'Page not found')
     '''
     return render(request, 'index/404.html',
         {'error_message': message}, status=500)
 
 
 def render_500(request, message):
-    '''Helper to render 500 page
+    '''Help to render 500 page
 
     example: 
-        render500(request, 'Request query does not exist')
+        render_500(request, 'Request query does not exist')
     '''
     return render(request, 'index/500.html',
         {'error_message': message}, status=500)
