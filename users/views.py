@@ -34,6 +34,7 @@ from django.contrib.auth import authenticate, login, logout
 from users.admin import UserCreationForm, AuthenticationForm
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
+from users.forms import CodeSubmitForm
 # Create your views here.
 
 logger = get_logger()
@@ -62,9 +63,18 @@ def list(request):
 
 @login_required()
 def submit(request):
+    if request.method=='POST':
+        codesibmitform = CodeSubmitForm(request.POST)
+        if codesibmitform.is_valid():
+            pass
+        else:
+            return render(
+                request,
+                'users/submit.html', {'form': codesibmitform},
+                context_instance=RequestContext(request, processors=[custom_proc]))
     return render(
         request,
-        'users/submit.html', {},
+        'users/submit.html', {'form': CodeSubmitForm()},
         context_instance=RequestContext(request, processors=[custom_proc]))
 
 
