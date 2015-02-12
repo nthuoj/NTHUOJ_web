@@ -29,14 +29,12 @@ SOFTWARE.-->
   <div class="row-fluid">
     <div class="span12">
       <div class="form-group">
-        <p><a class="btn" href="#" style="float:right">Create &raquo;</a></p>
-          <input class="form-control input-sm" type="text" placeholder="Group Name"
-                 style="float:right">
+        <a class="btn btn-sm btn-default" style="float:right" 
+           href="{% url 'group:new' %}">Create</a>
       </div>
     </div>
   </div>
-</div>
-<hr> 
+</div> 
 {% block list_block %}
 <div class="contest">
   <h2 style="border-bottom:1px solid; padding:2px; float:left; font-family:sans-serif">
@@ -60,17 +58,18 @@ SOFTWARE.-->
       <tr>
         <th>Name</th>
         <th>Owner/TA</th>
-        <th>Member Number</th>
+        <th>Group Description</th>
+        <th></th>
       </tr>
     </thead>
     <tbody>
       {% for group in g_list %}
       <tr>
         <td>
-          <a href="{% url 'group:detail' group.gid %}">{{ group.name }}</a>
+          <a href="{% url 'group:detail' group.id %}">{{ group.gname }}</a>
         </td>
-        <td>{{ group.ta_name }}</td>
-        <td>{{ group.mem_number }}</td>
+        <td>{{ group.owner }}</td>
+        <td>{{ group.description }}</td>
         <td>
           <p><a class="btn" href="#" style="float:right">Delete &raquo;</a>
         </td>

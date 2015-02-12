@@ -44,8 +44,9 @@ SOFTWARE.
               <button class="btn btn-default btn-sm" data-toggle="modal" 
                       data-target="#setOwnerModal" style="float:right">+</button>
               <h2>
-                {% for ta in ta_list %}
-                  {{ ta.name }}
+                {{ owner }}
+                {% for coowner in coowner_list %}
+                  {{ coowner.username }}
                 {% endfor %} 
               </h2>
               </span>
@@ -85,23 +86,23 @@ SOFTWARE.
             <table class="table table-hover">
               <thead>
                 <tr>
-                  <th class='col-md-2'>Title</th>
-                  <th class='col-md-4'>Start Time</th>
-                  <th class='col-md-4'>End Time</th>
+                  <th>Title</th>
+                  <th>Start Time</th>
+                  <th>End Time</th>
                 </tr>
               </thead>
               <tbody>
                 {% for running_contest in rc_list %}
                 <tr>
-                  <td>{{ running_contest.name }}</td>
-                  <td>{{ running_contest.s_time }}</td>
-                  <td>{{ running_contest.e_time }}</td>
+                  <td>{{ running_contest.cname }}</td>
+                  <td>{{ running_contest.start_time }}</td>
+                  <td>{{ running_contest.end_time }}</td>
                 </tr>
                 {% endfor %}
               </tbody>
             </table>
             <a class="btn btn-sm btn-default" style="float:right"
-               onclick="window.open('{% url 'group:viewall_contest' %}', '', config='height=500,width=500');">view all</a>
+               onclick="window.open('{% url 'group:viewall_contest' group_id %}', '', config='height=500,width=800');">view all</a>
           </div>
         </div>
       </div>
@@ -116,21 +117,23 @@ SOFTWARE.
             <table class="table table-hover">
               <thead>
                 <tr>
-                  <th class='col-md-2'>Title</th>
-                  <th class='col-md-4'>Time</th>
+                  <th>Title</th>
+                  <th>Start Time</th>
+                  <th>End Time</th>
                 </tr>
               </thead>
               <tbody>
                 {% for ended_contest in ec_list %}
                 <tr>
-                  <td>{{ ended_contest.name }}</td>
-                  <td>{{ ended_contest.time }}</td>
+                  <td>{{ ended_contest.cname }}</td>
+                  <td>{{ ended_contest.start_time }}</td>
+                  <td>{{ ended_contest.end_time }}</td>
                 </tr>
                 {% endfor %}
               </tbody>
             </table>
             <a class="btn btn-sm btn-default" style="float:right"
-               onclick="window.open('{% url 'group:viewall_archive' %}', '', config='height=500,width=500');">view all</a>
+               onclick="window.open('{% url 'group:viewall_archive' group_id %}', '', config='height=500,width=800');">view all</a>
           </div>
         </div>
       </div>
@@ -147,18 +150,16 @@ SOFTWARE.
     <table class="table table-hover">
       <thead>
         <tr>
-          <th class='col-md-2'>Title</th>
-          <th class='col-md-2'>Original Post</th>
-          <th class='col-md-2'>Time</th>
-          <th class='col-md-2'></th>
+          <th>Title</th>
+          <th>Content</th>
+          <th></th>
         </tr>
       </thead>
       <tbody>
         {% for annowence in an_list %}
         <tr>
-          <td>{{ annowence.name }}</td>
-          <td>{{ annowence.op }}</td>
-          <td>{{ annowence.time }}</td>
+          <td>{{ annowence.title }}</td>
+          <td>{{ annowence.content }}</td>
           <td>
             <a href="" class="btn btn-sm btn-default" data-toggle="modal" 
                data-target="#annowenceContentModal{{annowence.id}}" 
@@ -176,7 +177,7 @@ SOFTWARE.
                   <div class="modal-body">
                     <div class="input-group">
                       <span class="input-group-addon">Title</span>
-                      <input type="text" class="form-control" value="{{annowence.name}}">
+                      <input type="text" class="form-control" value="{{annowence.title}}">
                     </div>
                     <textarea class="form-control input-sm" type="text" style="height:200px;">
                     {{ annowence.content }}</textarea>
@@ -195,7 +196,7 @@ SOFTWARE.
       </tbody>
     </table>
     <a class="btn btn-sm btn-default" style="float:right"
-       onclick="window.open('{% url 'group:viewall_announce' %}', '', config='height=500,width=500');">view all</a>
+       onclick="window.open('{% url 'group:viewall_announce' group_id %}', '', config='height=500,width=800');">view all</a>
     <br>
   </div>
   {% endblock annowence_block %}
@@ -231,15 +232,15 @@ SOFTWARE.
     <table class="table table-hover">
       <thead>
         <tr>
-          <th class='col-md-2'>Name</th>
-          <th class='col-md-2'>Adding time</th>
+          <th>Name</th>
+          <th>Adding time</th>
         </tr>
       </thead>
       <tbody>
         {% for student in s_list %}
         <tr>
-          <td>{{ student.name }}</td>
-          <td>{{ student.time }}</td>
+          <td>{{ student.username }}</td>
+          <td>{{ student.register_date }}</td>
         </tr>
         {% endfor %}
       </tbody>
@@ -321,9 +322,13 @@ SOFTWARE.
               </tr>
             </thead>
             <tbody>
-              {% for ta in ta_name %}
               <tr>
-                <td>{{ ta.name }}</td>
+                <td>{{ owner }}</td>
+                <td><p style="color:gray;float:right">owner cannot be delete</p></td>
+              </tr>
+              <tr>
+                {% for coowner in coowner_list %}
+                <td>{{ coowner.username }}</td>
                 <td><a class="btn btn-default btn-sm" href="#" style="float:right">x</a>
               </tr>
               {% endfor %}

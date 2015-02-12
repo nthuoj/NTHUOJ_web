@@ -39,26 +39,23 @@ SOFTWARE.
     <thead>
       <th>{{ title }} title</th>
       {% if list_type == "announce" %}
-      <th>oringinal post</th>
+      <th>announce content</th>
       {% endif %} {% if list_type == "runContest" %}
       <th>start time</th>
       <th>end time</th>
-      {% endif %} {% if list_type != "runContest" %}
-      <th>time</th>
-      {% endif %}
+      {% endif %} 
     </thead>
     <tbody>
       {% for archive in data_list %}
       <tr>
-        <td>{{ archive.name }}</td>
+        {% if list_type == 'runContest' or list_type == "endContest" %}
+        <td>{{ archive.cname }}</td>
+        <td>{{ archive.start_time }}</td>
+        <td>{{ archive.end_time }}</td>
+        {% endif %}
         {% if list_type == "announce" %}
-        <td>{{ archive.op }}</td>
-        {% endif %} {% if list_type == "runContest" %}
-        <td>{{ archive.s_time }}</td>
-        <td>{{ archive.e_time }}</td>
-        {% endif %} {% if list_type != "runContest" %}
-        <td>{{ archive.time }}</td>
-        {% endif %} {% if list_type == "announce" %}
+        <td>{{ archive.title }}</td>
+        <td>{{ archive.content }}</td>
         <td>
           <a href="" class="btn btn-sm btn-default" data-toggle="modal" 
              data-target="#annowenceContentModal{{archive.id}}" style="float:right">
@@ -89,7 +86,7 @@ SOFTWARE.
             </div>
           </div>
         </td>
-        {% endif %}
+        {% endif %} 
       </tr>
       {% endfor %}
     </tbody>
