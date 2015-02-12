@@ -33,65 +33,65 @@ logger = log.get_logger()
 
 def get_running_contest(request, group_id):
         
-        try:
-            group = Group.objects.get(id = group_id)
-        except:
-            logger.warning('Group: group does not exist - gid: %s!' % group_id)
-            raise Http404('Group does not exist')
+    try:
+        group = Group.objects.get(id = group_id)
+    except:
+        logger.warning('Group: group does not exist - gid: %s!' % group_id)
+        raise Http404('Group does not exist')
 
-        all_contest = group.trace_contest.all()
-        all_running_contest_list = []
-        now = timezone.now()
+    all_contest = group.trace_contest.all()
+    all_running_contest_list = []
+    now = timezone.now()
 
-        for contest in all_contest:
-            if contest.start_time < now and contest.end_time > now:
-                    all_running_contest_list.append(contest)
+    for contest in all_contest:
+        if contest.start_time < now and contest.end_time > now:
+                all_running_contest_list.append(contest)
 
-        return render(
-            request, 'group/viewall.html', {
-                'data_list': all_running_contest_list, 
-                'title': 'running contest',
-                'list_type': 'runContest',
-            })
+    return render(
+        request, 'group/viewall.html', {
+            'data_list': all_running_contest_list, 
+            'title': 'running contest',
+            'list_type': 'runContest',
+        })
 
 def get_ended_contest(request, group_id):
         
-        try:
-            group = Group.objects.get(id = group_id)
-        except:
-            logger.warning('Group: group does not exist - gid: %s!' % group_id)
-            raise Http404('Group does not exist')
+    try:
+        group = Group.objects.get(id = group_id)
+    except:
+        logger.warning('Group: group does not exist - gid: %s!' % group_id)
+        raise Http404('Group does not exist')
 
-        all_contest = group.trace_contest.all()
-        all_ended_contest_list = []
-        now = timezone.now()
+    all_contest = group.trace_contest.all()
+    all_ended_contest_list = []
+    now = timezone.now()
 
-        for contest in all_contest:
-            if contest.end_time < now:
-                all_ended_contest_list.append(contest)
+    for contest in all_contest:
+        if contest.end_time < now:
+            all_ended_contest_list.append(contest)
 
-        return render(
-            request, 'group/viewall.html', {
-                'data_list': all_ended_contest_list, 
-                'title': 'ended contest',
-                'list_type': 'endContest',
-            })
+    return render(
+        request, 'group/viewall.html', {
+            'data_list': all_ended_contest_list, 
+            'title': 'ended contest',
+            'list_type': 'endContest',
+        })
 
 def get_all_announce(request, group_id):
 
-        try:
-            group = Group.objects.get(id = group_id)
-        except:
-            logger.warning('Group: group does not exist - gid: %s!' % group_id)
-            raise Http404('Group does not exist')
+    try:
+        group = Group.objects.get(id = group_id)
+    except:
+        logger.warning('Group: group does not exist - gid: %s!' % group_id)
+        raise Http404('Group does not exist')
 
-        all_announce_list = group.announce.all()
-        return render(
-            request, 'group/viewall.html', {
-                'data_list': all_announce_list, 
-                'title': 'announce',
-                'list_type': 'announce',
-            })
+    all_announce_list = group.announce.all()
+    return render(
+        request, 'group/viewall.html', {
+            'data_list': all_announce_list, 
+            'title': 'announce',
+            'list_type': 'announce',
+        })
 
     
 def detail(request, group_id):

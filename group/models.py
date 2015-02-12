@@ -50,4 +50,3 @@ class Group(models.Model):
 
     def __unicode__(self):
         return self.gname
-
