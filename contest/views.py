@@ -201,7 +201,12 @@ def new(request):
     
 
 def edit(request,contest_id):
-    contest = get_object_or_404(Contest,id = contest_id)
+    try:
+        contest = Contest.objects.get(id = contest_id)
+    except Contest.DoesNotExist:
+        logger.warning('Contest: Can not edit contest %s! Contest not found!' % contest_id)
+        raise Http404("Contest does not exist, can not edit.")
+
     if user_info.has_c_ownership(request.user,contest):
         if request.method == 'GET':        
             contest_dic = model_to_dict(contest)
@@ -222,8 +227,9 @@ def delete(request,contest_id):
     except Contest.DoesNotExist:
         logger.warning('Contest: Can not delete contest %s! Contest not found!' % contest_id)
         raise Http404("Contest does not exist, can not delete.")
-        
-    if user_info.has_c_ownership(request.user,contest):
+    
+    # only contest owner can delete
+    if request.user == contest.owner:
         deleted_contest_id = contest.id
         contest.delete()
         logger.info('Contest: Delete contest %s!' % deleted_contest_id)
