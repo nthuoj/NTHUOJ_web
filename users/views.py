@@ -23,17 +23,18 @@ SOFTWARE.
 '''
 import json
 import random
-from users.models import User
-from index.views import custom_proc
-from users.forms import CodeSubmitForm
-from django.template import RequestContext
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.core.urlresolvers import reverse
 from django.shortcuts import render, redirect
-from utils.log_info import get_logger, get_client_ip
-from django.contrib.auth.decorators import login_required
-from django.contrib.auth import authenticate, login, logout
+from django.template import RequestContext
+
+from index.views import custom_proc
 from users.admin import UserCreationForm, AuthenticationForm
-from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from users.forms import CodeSubmitForm
+from users.models import User
+from utils.log_info import get_logger, get_client_ip
 
 # Create your views here.
 
@@ -131,8 +132,7 @@ def submit(request, pid=None):
     if request.method=='POST':
         codesibmitform = CodeSubmitForm(request.POST)
         if codesibmitform.is_valid():
-            code = codesibmitform.cleaned_data['code']
-            
+            codesibmitform.submit(request.user)
             return redirect(reverse('status:status'))
         else:
             return render(
@@ -143,4 +143,3 @@ def submit(request, pid=None):
         request,
         'users/submit.html', {'form': CodeSubmitForm(initial={'pid': pid})},
         context_instance=RequestContext(request, processors=[custom_proc]))
-

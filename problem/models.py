@@ -22,10 +22,10 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 '''
 
-from django.db import models
-from users.models import User
-from team.models import Team
 from datetime import datetime
+from django.db import models
+from team.models import Team
+from users.models import User
 
 # Create your models here.
 

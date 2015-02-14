@@ -76,6 +76,8 @@ DATABASES = {
     }
 }
 
+SUBMIT_CODE_PATH = '/Users/henryyang/Desktop/code/'
+
 # Custom User auth
 
 AUTH_USER_MODEL = 'users.User'
