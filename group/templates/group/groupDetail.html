@@ -24,12 +24,12 @@ SOFTWARE.
 {% extends "index/base.html" %}
 {% load static %} 
 {% block body_block %}
+<br>
 <div class="container-fluid">
   <div class="row-fluid">
-    <a href="{% url 'group:list' %}" class="btn btn-sm btn-default" data-toggle="modal" style="float:left">
+    <a href="{% url 'group:list' %}" class="btn btn-sm btn-default" data-toggle="modal" style="float:left, margin-right:5px">
       return
     </a>
-    <p> </p>
     <a href="{% url 'group:edit' group_id %}">
       <button type="button" class="btn btn-sm btn-default">
         Edit
