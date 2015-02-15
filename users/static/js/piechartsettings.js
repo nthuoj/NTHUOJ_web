@@ -34,7 +34,7 @@ $(function() {
             series: {
                 pie: {
                     show: true,
-                    radius: 180,
+                    radius: 120,
                     label: {
                         show: true,
                         radius: 0.6,

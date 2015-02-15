@@ -160,7 +160,9 @@ SOFTWARE.
           <li><a href={% url "status:status" %}><p class="p2">Status</p></a></li>
           <li><a href="/index/group_list"><p class="p2">Group</p></a></li>
           <li><a href={% url "team:list" %}><p class="p2">Team</p></a></li>
-          <li><a href={% url "users:profile" %}><p class="p2">Personal</p></a></li>
+          {% if user.is_authenticated %}
+            <li><a href={% url "users:profile" user.username %}><p class="p2">Personal</p></a></li>
+          {% endif %}
           <li><a href="#"><p class="p2">User Rank</p></a></li>
         </ul>
         <ul class="nav navbar-nav navbar-right">

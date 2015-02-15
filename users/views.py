@@ -24,6 +24,7 @@ SOFTWARE.
 import json
 import random
 from users.models import User
+from users.forms import UserProfileForm
 from index.views import custom_proc
 from django.template import RequestContext
 from django.core.urlresolvers import reverse
@@ -64,16 +65,35 @@ def submit(request):
         context_instance=RequestContext(request, processors=[custom_proc]))
 
 
-def profile(request):
-    piechart_data = []
-    for l in ['WA', 'AC', 'RE', 'TLE', 'MLE', 'OLE', 'Others']:
-        piechart_data += [{'label': l, 'data': random.randint(50, 100)}]
-    return render(
-        request,
-        'users/profile.html',
-        {'piechart_data': json.dumps(piechart_data)},
-        context_instance=RequestContext(request, processors=[custom_proc]))
-
+def profile(request, username):
+    try:
+        user = User.objects.get(username=username)
+        piechart_data = []
+        for l in ['WA', 'AC', 'RE', 'TLE', 'MLE', 'OLE', 'Others']:
+            piechart_data += [{'label': l, 'data': random.randint(50, 100)}]
+        if request.method == 'POST':
+            profile_form = UserProfileForm(request.POST, instance=user)
+            if profile_form.is_valid():
+                profile_form.save(request.user)
+            else:
+                return render(
+                    request,
+                    'users/profile.html',
+                    {'piechart_data': json.dumps(piechart_data),
+                    'profile_form': profile_form},
+                    context_instance=RequestContext(request, processors=[custom_proc]))
+        
+        return render(
+            request,
+            'users/profile.html',
+            {'piechart_data': json.dumps(piechart_data),
+            'profile_form': UserProfileForm(instance=user)},
+            context_instance=RequestContext(request, processors=[custom_proc]))
+    except User.DoesNotExist:
+        return render(
+            request,
+            'index/500.html',
+            {'error_message': '%s does not exist' % username})
 
 def user_create(request):
     if request.method == 'POST':
