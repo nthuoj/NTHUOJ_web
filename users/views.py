@@ -24,7 +24,7 @@ SOFTWARE.
 import json
 import random
 from users.models import User
-from users.forms import UserProfileForm
+from users.forms import UserProfileForm, UserLevelForm
 from index.views import custom_proc
 from django.template import RequestContext
 from django.core.urlresolvers import reverse
@@ -67,33 +67,52 @@ def submit(request):
 
 def profile(request, username):
     try:
-        user = User.objects.get(username=username)
+        profile_user = User.objects.get(username=username)
         piechart_data = []
         for l in ['WA', 'AC', 'RE', 'TLE', 'MLE', 'OLE', 'Others']:
             piechart_data += [{'label': l, 'data': random.randint(50, 100)}]
+
+        render_data = {}
+        render_data['profile_user'] = profile_user
+        render_data['piechart_data'] = json.dumps(piechart_data)
+        if request.user == profile_user:
+            render_data['profile_form'] = UserProfileForm(instance=profile_user)
+        if request.user.has_judge_auth():
+            render_data['userlevel_form'] = UserLevelForm(instance=profile_user)
+
         if request.method == 'POST':
-            profile_form = UserProfileForm(request.POST, instance=user)
-            if profile_form.is_valid():
-                profile_form.save(request.user)
-            else:
-                return render(
-                    request,
-                    'users/profile.html',
-                    {'piechart_data': json.dumps(piechart_data),
-                    'profile_form': profile_form},
-                    context_instance=RequestContext(request, processors=[custom_proc]))
+            profile_form = UserProfileForm(request.POST, instance=profile_user)
+            render_data['profile_form'] = profile_form
+            if profile_form.is_valid() and request.user == profile_user:
+                logger.info('User %s update profile' % username)
+                profile_form.save()
+                render_data['message'] = 'Update successfully'
+
+            userlevel_form = UserLevelForm(request.POST, instance=profile_user)
+            if userlevel_form.is_valid() and request.user.has_judge_auth():
+                user_level = userlevel_form.cleaned_data['user_level']
+                # admin can change user to all levels
+                # judge can change user to sub-judge, user
+                if request.user.has_admin_auth() or \
+                    request.user.has_judge_auth and \
+                    (user_level == User.SUB_JUDGE or user_level == User.USER):
+                    logger.info('User %s update %s\'s user_level to %s' %
+                        (request.user, username, user_level))
+                    render_data['userlevel_form'] = userlevel_form
+                    userlevel_form.save()
         
         return render(
             request,
             'users/profile.html',
-            {'piechart_data': json.dumps(piechart_data),
-            'profile_form': UserProfileForm(instance=user)},
+            render_data,
             context_instance=RequestContext(request, processors=[custom_proc]))
+    
     except User.DoesNotExist:
+        logger.warning('User %s does not exist' % username)
         return render(
             request,
             'index/500.html',
-            {'error_message': '%s does not exist' % username})
+            {'error_message': 'User %s does not exist' % username})
 
 
 def user_create(request):

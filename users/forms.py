@@ -63,9 +63,20 @@ class UserProfileForm(forms.ModelForm):
             raise forms.ValidationError("Passwords can't be empty")
         return password2
 
-    def save(self, user, commit=True):
+    def save(self):
         if self.cleaned_data["password1"]:
-            user.set_password(self.cleaned_data["password1"])
-        if commit:
-            user.save()
-        return user
+            self.instance.set_password(self.cleaned_data["password1"])
+        self.instance.save()
+        return self.instance
+
+
+class UserLevelForm(forms.ModelForm):
+    """A form for updating user's userlevel."""
+    user_level = forms.ChoiceField(label='Userlevel',
+        choices=User.USER_LEVEL_CHOICE,
+        widget=forms.Select(attrs={'class': 'form-control'}))
+    
+    class Meta:
+        model = User
+        fields = ('user_level',)
+

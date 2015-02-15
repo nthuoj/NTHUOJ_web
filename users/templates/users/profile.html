@@ -43,8 +43,8 @@ $(function() {
         <div class="panel-heading">Statistics</div>
         <div class="panel-body">
           <div class="form-group">
-            <label class="col-lg-2 control-label">Piechart</label>
-            <div class="col-lg-10">
+            <label class="col-lg-2 col-lg-offset-1 control-label">Piechart</label>
+            <div class="col-lg-9">
               <div id="piechart" style="width:320px;height:250px;"></div>
             </div>
           </div>
@@ -59,134 +59,81 @@ $(function() {
       <div class="panel panel-default">
         <div class="panel-heading">Profile</div>
         <div class="panel-body">
-          <!--form class="form-horizontal" style="width:60%; padding: 5px;">
-            <fieldset>
+          {% if user == profile_user %}
+            <form class="form-horizontal" action="" method="post" style="margin:10px;">
+              {% csrf_token %}
+              {% for field in profile_form %}
               <div class="form-group">
-                <label class="col-lg-4 control-label">User ID</label>
-                <div class="col-lg-8">
-                  <input type="text" class="form-control" value="" disabled>
+                <div class='row'>
+                  <div class='col-lg-2 col-lg-offset-1'>
+                    <label class="control-label">{{ field.label }}</label>
+                  </div>
+                  <div class='col-lg-5'>
+                    {{ field }}
+                  </div>
+                </div>
+                {% if form.non_field_errors %}
+                <ul>
+                  {% for error in form.non_field_errors %}
+                    <li class='col-lg-offset-2'><strong style="color:red">{{ error|escape }}</strong></li>
+                  {% endfor %}
+                </ul>
+                {% endif %} 
+                {% if field.errors %}
+                <ul>
+                  {% for error in field.errors %}
+                    <li class='col-lg-offset-2'><strong style="color:red">{{ error|escape }}</strong></li>
+                  {% endfor %}
+                </ul>
+                {% endif %}
+              </div>
+              {% endfor %}
+              <div class="modal-footer">
+                <div id='msg' class='col-lg-4'>{{ message }}</div>
+                <button type="submit" class="btn btn-primary">Submit</button>
+              </div>
+            </form>
+          {% else %}
+            <div class="form-group">
+              <div class='row'>
+                <div class='col-lg-2 col-lg-offset-1'>
+                  <label class="control-label">Username</label>
+                </div>
+                <div class='col-lg-5'>
+                  <input class="form-control" readonly="True" type="text" value="{{ profile_user.username }}">
                 </div>
               </div>
-              <div class="form-group">
-                <label class="col-lg-4 control-label">Nickname</label>
-                <div class="col-lg-8">
-                  <input type="text" class="form-control" value="">
+            </div>
+            <div class="form-group">
+              <div class='row'>
+                <div class='col-lg-2 col-lg-offset-1'>
+                  <label class="control-label">Email</label>
+                </div>
+                <div class='col-lg-5'>
+                  <input class="form-control" readonly="True" type="email" value="{{ profile_user.email }}">
                 </div>
               </div>
-              <div class="form-group">
-                <label class="col-lg-4 control-label">Email</label>
-                <div class="col-lg-8">
-                  <input type="text" class="form-control" value="">
-                </div>
-              </div>
+            </div>
+          {% endif %}
 
+          {% if user.has_judge_auth %}
+            <form class="form-horizontal" action="" method="post" style="margin:10px;">
+              {% csrf_token %}
+              {% for field in userlevel_form %}
               <div class="form-group">
-                <label class="col-lg-4 control-label">New Password</label>
-                <div class="col-lg-8">
-                  <input type="password" class="form-control" placeholder="Password">
+                <div class='row'>
+                  <div class='col-lg-2 col-lg-offset-1'>
+                    <label class="control-label">{{ field.label }}</label>
+                  </div>
+                  <div class='col-lg-5'>
+                    {{ field }}
+                  </div>
                 </div>
               </div>
-              <div class="form-group">
-                <label class="col-lg-4 control-label">Conform Password</label>
-                <div class="col-lg-8">
-                  <input type="password" class="form-control" placeholder="Password">
-                </div>
-              </div>
-              <div class="form-group">
-                <label class="col-lg-4 control-label">Class Participatd</label>
-                <div class="col-lg-8 col-lg-offset-4" style="margin-bottom:2px">
-                  <input type="text" class="form-control" value="" disabled>
-                </div>
-                <div class="col-lg-8 col-lg-offset-4" style="margin-bottom:2px">
-                  <input type="text" class="form-control" value="" disabled>
-                </div>
-              </div>
-              <div class="form-group">
-                <label class="col-lg-4 control-label">Team Participatd</label>
-                <div class="col-lg-8 col-lg-offset-4" style="margin-bottom:2px">
-                  <input type="text" class="form-control" value="" disabled="">
-                </div>
-              </div>
-              <div class="form-group">
-                <label class="col-lg-4 control-label">Registration Date</label>
-                <div class="col-lg-8">
-                  <input type="text" class="form-control" value="" disabled>
-                </div>
-              </div>
-              <div class="form-group">
-                <label for="select" class="col-lg-4 control-label">User Level</label>
-                <div class="col-lg-8">
-                  <select class="form-control" id="select">
-                    <option>admin</option>
-                    <option>judge</option>
-                    <option>sub-judge</option>
-                    <option>user</option>
-                  </select>
-                </div>
-              </div>
-              <legend>OJ Settings</legend>
-              <div class="form-group">
-                <label for="select" class="col-lg-4 control-label">Theme</label>
-                <div class="col-lg-8">
-                  <select class="form-control" id="select">
-                    <option>Paper</option>
-                    <option>Readable</option>
-                    <option>Cosmo</option>
-                    <option>Default</option>
-                    <option>Lumen</option>
-                  </select>
-                </div>
-              </div>
-              <hr>
-              <div class="form-group">
-                <div class="col-lg-10">
-                  <a href="#passwd-popup" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#passwd-modal">Update</a>
-                  <span class="help-block">To update, it requires your current password.</span>
-                </div>
-              </div>
-            </fieldset>
-          </form-->
-
-  <form class="form-horizontal" action="" method="post" style="margin:10px;">
-    {% csrf_token %}
-    {% for field in profile_form %}
-    <div class="form-group">
-      <div class='row'>
-        <div class='col-lg-2 col-lg-offset-1'>
-          <label class="control-label">{{ field.label }}</label>
-        </div>
-        <div class='col-lg-5'>
-          {{ field }}
-        </div>
-      </div>
-      {% if form.non_field_errors %}
-      <ul>
-        {% for error in form.non_field_errors %}
-          <li class='col-lg-offset-2'><strong style="color:red">{{ error|escape }}</strong></li>
-        {% endfor %}
-      </ul>
-      {% endif %} 
-      {% if field.errors %}
-      <ul>
-        {% for error in field.errors %}
-          <li class='col-lg-offset-2'><strong style="color:red">{{ error|escape }}</strong></li>
-        {% endfor %}
-      </ul>
-      {% endif %}
-    </div>
-    {% endfor %}
-    <div class="modal-footer">
-      <div id='msg' class='col-lg-4'>{{ message }}</div>
-      <button type="submit" class="btn btn-primary">Submit</button>
-    </div>
-    <hr>
-    <div class="poptxt_login">
-      Don't have an account? You can 
-      <a href={% url "users:create" %}>
-        <p class="p6">register here</p>
-      </a>
-    </div>
-  </form>
+              {% endfor %}
+              <button type="submit" class="btn btn-primary">Submit</button>
+            </form>
+          {% endif %}
         </div>
       </div>
       {% endblock profile_field_block %}
