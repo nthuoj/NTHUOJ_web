@@ -28,10 +28,10 @@ SOFTWARE.
 <table>
   <tbody id="tagTable">
     {% for t in tags %}
-      <tr>
+      <tr data-target="{{t.pk}}">
         <td><input type="checkbox"></td>
         <td>{{t.tag_name}}</td>
-        <td><button class="btn btn-primary">Delete</button></td>
+        <td><button class="btn btn-primary del_tag_btn">Delete</button></td>
       </tr>
     {% endfor %}
   </tbody>
@@ -59,6 +59,18 @@ $(document).ready(function() {
     $("#addTag").submit(function(e) {
         e.preventDefault();
         return add_new_tag({{pid}});
+    });
+    $(".del_tag_btn").click(function (e) {
+        var row = $(this).parents("tr");
+        var tid = $(this).parents("tr").attr('data-target');
+        $.ajax({
+            type: 'GET',
+            url: '/problem/'+{{pid}}+'/tag/'+tid+'/delete/',
+            success: function(data) {
+              row.hide();
+            }
+        });
+        return false;
     });
 });
 </script>

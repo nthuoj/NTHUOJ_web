@@ -19,17 +19,17 @@
   {% for t in testcase %}
   <tr data-target="{{t.pk}}">
     <td>
-      <a href="/media/testcase/{{t.pk}}.in">{{t.pk}}.in</a>
+      <a href="">{{t.pk}}.in</a>
     </td>
     <td>
-      <a href="/media/testcase/{{t.pk}}.out">{{t.pk}}.out</a>
+      <a href="">{{t.pk}}.out</a>
     </td>
     <td><input type="number" id="{{t.pk}}_time" name="time_limit" value="{{t.time_limit}}"></td>
     <td><input type="number" id="{{t.pk}}_memory" name="memory_limit" value="{{t.memory_limit}}"></td>
     <td><button class="btn btn-primary reupload_btn" onclick="return false"
         data-toggle="modal" data-target="#edit_testcase">ReUpload</button></td>
     <td><button class="btn btn-primary update_btn">Update</button></td>
-    <td><button class="btn btn-danger delete_btn">Delete</button></td>
+    <td><button class="btn btn-danger del_testcase_btn">Delete</button></td>
   </tr>
   {% endfor %}
   <tr>
@@ -111,7 +111,7 @@ $(document).ready(function() {
         });
         return false;
     });
-    $(".delete_btn").click(function (e) {
+    $(".del_testcase_btn").click(function (e) {
         var row = $(this).parents("tr");
         var tid = $(this).parents("tr").attr('data-target');
         $.ajax({

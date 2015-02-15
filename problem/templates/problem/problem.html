@@ -25,9 +25,9 @@ SOFTWARE.
 <div style='height:90px;' class='panel panel-default'>
   <div style='padding-left:10px;padding-right:10px'>
     <div style='float:left;width:60%;'>
-      <h2>{{problem.pname}} &nbsp;&nbsp;
+      <h2>{{ problem.pname }} &nbsp;&nbsp;
         {% if problem.owner == user or user.user_level == 'ADMIN' %}
-          <a href="{% url 'problem:edit' problem.pk %}">EDIT</a>
+          <a href="{% url 'problem:problem.views.edit' problem.pk %}">EDIT</a>
         {% endif %}
       </h2>
     </div>
@@ -76,15 +76,15 @@ SOFTWARE.
 
 <div style="width:75%; float:left">
   <h3>Description</h3>
-  <p>{{problem.description|safe}}</p>
+  {{ problem.description | safe }}
   <h3>Input</h3>
-  <p>{{problem.input|safe}}</p>
+  {{ problem.input | safe }}
   <h3>Output</h3>
-  <p>{{problem.output|safe}}</p>
+  {{ problem.output | safe }}
   <h3>Sample Input</h3>
   <div class='panel panel-default'>
     <div class='panel-body'>
-      <samp id='sampinText'>{{problem.sample_in|linebreaksbr}}</samp>
+      <samp id='sampinText'>{{ problem.sample_in|linebreaksbr }}</samp>
       <br>
       <span class='label label-danger'>EOF</span>
     </div>
@@ -92,7 +92,7 @@ SOFTWARE.
   <h3>Sample Output</h3>
   <div class='panel panel-default'>
     <div class='panel-body'>
-      <samp id='sampoutText' name='sampoutText'>{{problem.sample_out|linebreaksbr}}</samp>
+      <samp id='sampoutText' name='sampoutText'>{{ problem.sample_out|linebreaksbr }}</samp>
       <br>
       <span class='label label-danger'>EOF</span>
     </div>
@@ -103,12 +103,15 @@ SOFTWARE.
       <span class='label label-info'>{{t.tag_name}}</span>
     {% endfor %}
   </div>
-  <div class='input-group' style='float:right;width:30%'>
-    <input type='text' id='newTag' class='form-control' width='25%'>
-    <span class='input-group-btn'>
-      <button id='addTagButton' class='btn btn-default'>Add Tag</button>
-    </span>
-  </div>
+  <form id='addTag'>
+    {% csrf_token %}
+    <div class='input-group' style='float:right;width:30%'>
+      <input type='text' name='tag' id='newTag' class='form-control' width='25%'>
+      <span class='input-group-btn'>
+        <button id='addTagButton' class='btn btn-default'>Add Tag</button>
+      </span>
+    </div>
+  </form>
 
   <br>
   <br>
@@ -121,3 +124,22 @@ SOFTWARE.
   <br>
 </div>
 </body>
+<script>
+$(document).ready(function() {
+    $("#addTagButton").click(function() {
+        var new_tag = $('#newTag').val().trim();
+        if (new_tag == '') return false;
+        $.ajax({
+            url: "/problem/{{problem.pk}}/tag/",
+            data: $("#addTag").serialize(),
+            type: "POST",
+            success: function(msg) {
+              var new_tag_span = "<span class='label label-info'>"+new_tag+"</span>"
+              $("#tags").append(new_tag_span);
+            }
+        });    
+        $("#newTag").val("");
+        return false;
+    });
+});
+</script>
