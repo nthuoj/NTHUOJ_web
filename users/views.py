@@ -95,6 +95,7 @@ def profile(request, username):
             'index/500.html',
             {'error_message': '%s does not exist' % username})
 
+
 def user_create(request):
     if request.method == 'POST':
         user_form = UserCreationForm(request.POST)
