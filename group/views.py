@@ -25,7 +25,7 @@ from django.shortcuts import render_to_response, render
 from group.models import Group
 from django.utils import timezone
 from general_tools import log
-from group.forms import GroupForm
+from group.forms import GroupForm, GroupFormEdit
 from django.http import HttpResponseRedirect
 from django.core.exceptions import PermissionDenied
 from django.forms.models import model_to_dict
@@ -175,10 +175,10 @@ def edit(request, group_id):
 
     if request.method == 'GET':        
         group_dic = model_to_dict(group)
-        form = GroupForm(initial = group_dic)
+        form = GroupFormEdit(initial = group_dic)
         return render(request,'group/editGroup.html',{'form':form})
     if request.method == 'POST':
-        form = GroupForm(request.POST, instance = group)
+        form = GroupFormEdit(request.POST, instance = group)
         if form.is_valid():
             modified_group = form.save()
             logger.info('Group: Modified group %s!' % modified_group.id)
