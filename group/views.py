@@ -27,6 +27,8 @@ from django.utils import timezone
 from general_tools import log
 from group.forms import GroupForm
 from django.http import HttpResponseRedirect
+from django.core.exceptions import PermissionDenied
+from django.forms.models import model_to_dict
 
 
 logger = log.get_logger()
@@ -150,3 +152,34 @@ def new(request):
             return HttpResponseRedirect('/group/list')
         else:
             raise Http404('Cannot create group! Info is blank!')
+
+def delete(request, group_id):
+    try:
+        group = Group.objects.get(id = group_id)
+    except Group.DoesNotExist:
+        logger.warning('Group: Can not delete group %s! Group is not exist!' % group_id)
+        raise Http404("Group does not exist!")
+    
+    # only contest owner can delete
+    deleted_gid = group.id
+    group.delete()
+    logger.info('Group: Delete group %s!' % deleted_gid)
+    return HttpResponseRedirect('/group/list')
+
+def edit(request, group_id):
+    try:
+        group = Group.objects.get(id = group_id)
+    except Group.DoesNotExist:
+        logger.warning('Group: Can not edit group %s! Group is not exist!' % group_id)
+        raise Http404("Group does not exist!")
+
+    if request.method == 'GET':        
+        group_dic = model_to_dict(group)
+        form = GroupForm(initial = group_dic)
+        return render(request,'group/editGroup.html',{'form':form})
+    if request.method == 'POST':
+        form = GroupForm(request.POST, instance = group)
+        if form.is_valid():
+            modified_group = form.save()
+            logger.info('Group: Modified group %s!' % modified_group.id)
+            return HttpResponseRedirect('/group/list')

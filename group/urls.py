@@ -9,4 +9,6 @@ urlpatterns = patterns('',
     url(r'^list/$', views.list, name='list'),
     url(r'^detail/(?P<group_id>[0-9]+)/$', views.detail, name='detail'),
     url(r'^new/$', views.new, name='new'),
+    url(r'^delete/(?P<group_id>\d+)/$', views.delete, name='delete'),
+    url(r'^edit/(?P<group_id>\d+)/$', views.edit, name='edit'),
 )

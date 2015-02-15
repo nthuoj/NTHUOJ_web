@@ -71,7 +71,11 @@ SOFTWARE.-->
         <td>{{ group.owner }}</td>
         <td>{{ group.description }}</td>
         <td>
-          <p><a class="btn" href="#" style="float:right">Delete &raquo;</a>
+          <a href="{% url 'group:delete' group.id %}">
+            <button type="button" class="btn btn-danger" style="float:right">
+              Delete
+            </button>
+          </a>
         </td>
       </tr>
       {% endfor %}

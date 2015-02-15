@@ -29,9 +29,14 @@ SOFTWARE.
     <a href="{% url 'group:list' %}" class="btn btn-sm btn-default" data-toggle="modal" style="float:left">
       return
     </a>
+    <p> </p>
+    <a href="{% url 'group:edit' group_id %}">
+      <button type="button" class="btn btn-sm btn-default">
+        Edit
+      </button>
+    </a>
     <br>
     <br> 
-    {% block Group_intro_block %}
     <div class="span12">
       <div class="hero-unit">
         <div class="hero-unit">
@@ -64,12 +69,10 @@ SOFTWARE.
         </div>
       </div>
     </div>
-    {% endblock Group_intro_block %}
   </div>
   <hr> 
-  {% block contest_block %}
   <div class="contest">
-    <p style="border-bottom:1px solid; padding:2px; float:left; font-family:sans-serif">  contest</p>
+    <p style="border-bottom:1px solid; padding:2px; float:left; font-family:sans-serif">contest</p>
     <a href="" class="btn btn-sm btn-default" data-toggle="modal" 
        data-target="#addContestModal" style="float:right">Add contest</a>
     <br>
@@ -139,9 +142,7 @@ SOFTWARE.
       </div>
     </div>
   </div>
-  {% endblock contest_block %}
   <hr> 
-  {% block annowence_block %}
   <div class="announce">
     <p style="border-bottom:1px solid; padding:2px; float:left; font-family:sans-serif">
       Announce</p>
@@ -199,9 +200,7 @@ SOFTWARE.
        onclick="window.open('{% url 'group:viewall_announce' group_id %}', '', config='height=500,width=800');">view all</a>
     <br>
   </div>
-  {% endblock annowence_block %}
   <hr> 
-  {% block member_block %}
   <div class="member">
     <p style="border-bottom:1px solid; padding:2px; float:left; font-family:sans-serif">  Member</p>
     <div class="btn-group" style="float:right">
@@ -246,7 +245,6 @@ SOFTWARE.
       </tbody>
     </table>
   </div>
-  {% endblock member_block %}
   <hr>
   <!--Modal Section-->
   <!--2. Modal for Adding Annowence button-->
