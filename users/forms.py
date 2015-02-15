@@ -23,6 +23,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 '''
 from django import forms
+
 from users.models import User
 
 class UserProfileForm(forms.ModelForm):

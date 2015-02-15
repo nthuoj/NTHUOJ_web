@@ -23,17 +23,18 @@ SOFTWARE.
 '''
 import json
 import random
-from users.models import User
-from users.forms import UserProfileForm, UserLevelForm
-from index.views import custom_proc
-from django.template import RequestContext
+
+from django.contrib.auth import authenticate, login, logout
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.core.urlresolvers import reverse
 from django.shortcuts import render, redirect
-from utils.log_info import get_logger, get_client_ip
-from django.contrib.auth import authenticate, login, logout
+from django.template import RequestContext
 from users.admin import UserCreationForm, AuthenticationForm
-from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
+from index.views import custom_proc
+from users.forms import UserProfileForm, UserLevelForm
+from users.models import User
+from utils.log_info import get_logger, get_client_ip
 # Create your views here.
 
 logger = get_logger()
