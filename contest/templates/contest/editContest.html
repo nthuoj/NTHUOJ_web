@@ -24,13 +24,7 @@ SOFTWARE.
 {% endblock title_name %}
 
  {% block body_block %}
- {% for fields in form%}
-<div>
-    {{ fields.errors }}
-    {{ fields.label_tag }}
-    {{ fields }}
-</div>
-{% endfor %}
+
 <div class="container">
   <form action="." method="POST">
     {% csrf_token %} 
