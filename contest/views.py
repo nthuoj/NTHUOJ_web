@@ -243,15 +243,18 @@ def register(request,contest_id):
         contest = Contest.objects.get(id = contest_id)
     except Contest.DoesNotExist:
         logger.warning('Contest: Can not register contest %s! Contest not found!' % contest_id)
-        raise Http404("Contest does not exist, can not register.")
-    #check contestant existance
-    try:
-        #if user has attended
-        contestant = Contestant.objects.get(contest = contest,user = request.user)
-        logger.info('Contest: User %s has already attended Contest %s!' % (request.user.username,contest.id))
-    except Contestant.DoesNotExist:
-        contestant = Contestant(contest = contest,user = request.user)
-        contestant.save()
-        logger.info('Contest: User %s attends Contest %s!' % (request.user.username,contest.id))
+        raise Http404('Contest does not exist, can not register.')
+    #check if user is not owner or coowner
+    if user_info.has_c_ownership(request.user,contest):
+        logger.info('Contest: User %s is owner or coowner! Can not register!' % request.user.username)
+    else:
+        #check contestant existance
+        if Contestant.objects.filter(contest = contest,user = request.user).exists():
+            #if user has attended
+            logger.info('Contest: User %s has already attended Contest %s!' % (request.user.username,contest.id))
+        else:
+            contestant = Contestant(contest = contest,user = request.user)
+            contestant.save()
+            logger.info('Contest: User %s attends Contest %s!' % (request.user.username,contest.id))
     return HttpResponseRedirect('/contest/')
     
