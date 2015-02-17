@@ -26,7 +26,6 @@ SOFTWARE.
 {% load status_filters %}
 
 {% block body_block %}
-{% regroup submission_details by sid as submissions %}
 <link rel="stylesheet" type="text/css" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.9.2/themes/dark-hive/jquery-ui.css">
 <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.9.2/jquery-ui.min.js"></script>
 <script type="text/javascript">
@@ -52,12 +51,15 @@ SOFTWARE.
     </thead>
     <tbody>
       {% for submission in submissions|submission_filter:user %}
-        <tr title="
-          <ol style='margin:15px'>
-            {% for detail in submission.list %}
-              <li class='row'>{{ detail.get_virdect_display }} CPU: {{ detail.cpu }}</li>
-            {% endfor %}
-          </ol>"
+        <tr 
+          {% if submission.list %}
+            title="
+              <ol style='margin:15px'>
+                {% for detail in submission.list %}
+                  <li class='row'>{{ detail.get_virdect_display }} CPU: {{ detail.cpu }}</li>
+                {% endfor %}
+              </ol>"
+            {% endif %}
           class={% if submission.grouper.status == "AC" %} 
           "success" {% else %} "danger" {% endif %}>
           <td>

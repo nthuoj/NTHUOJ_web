@@ -63,11 +63,13 @@ def show_submission(submission, user):
     if submission.problem.owner_id == user.username:
         return True
 
-    # contest owner & coowner's submission can't be seen until the end
+    # contest owner/coowner's submission can't be seen during the contest
     contests = Contest.objects.filter(
         is_homework=False,
         problem=submission.problem,
+        start_time__lt=datetime.now(),
         end_time__gt=datetime.now())
+
     if contests:
         owners = []
         for contest in contests:
@@ -81,14 +83,13 @@ def show_submission(submission, user):
             # to see submission, submission.user must not be owners
             return submission.user not in owners
 
-    valid = True
     # an invisible problem's submission can't be seen
     if not submission.problem.visible:
-        valid = False
+        return False
     # problem owner's submission can't be seen
     if submission.user.username == submission.problem.owner_id:
-        valid = False
-    return valid
+        return False
+    return True
 
 
 @register.filter()
@@ -125,7 +126,7 @@ def show_detail(submission, user):
             for contest in contests:
                 owners.append(contest.owner)
                 owners.extend(contest.coowner.all())
-            if user.has_subjudge_auth() and user in owners:
+            if user in owners:
                 return True
             else:
                 return False
