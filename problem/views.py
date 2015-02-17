@@ -56,7 +56,6 @@ def volume(request):
     return render(request, 'problem/category.html', {'problem_id':problem_id})
 
 def detail(request, pid):
-    print pid
     user = request.user
     try:
         problem = Problem.objects.get(pk=pid)
@@ -66,7 +65,7 @@ def detail(request, pid):
     testcase = Testcase.objects.filter(problem=problem)
     tag = problem.tags.all()
     return render(request, 'problem/detail.html',
-                  {'problem': problem, 'tag': tag, 'testcase': testcase})
+                  {'problem': problem, 'tags': tag, 'testcase': testcase})
 
 def edit(request, pid):
     return render(request, 'problem/edit.html')

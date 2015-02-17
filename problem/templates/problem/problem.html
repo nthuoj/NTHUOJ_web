@@ -99,8 +99,8 @@ SOFTWARE.
   </div>
   <h3>Tags</h3>
   <div id='tags' style='float:left;width:60%'>
-    {% for t in tag %}
-      <span class='label label-info'>{{t.tag_name}}</span>
+    {% for tag in tags %}
+      <span class='label label-info'>{{tag.tag_name}}</span>
     {% endfor %}
   </div>
   <div class='input-group' style='float:right;width:30%'>
