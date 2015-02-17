@@ -28,10 +28,12 @@ SOFTWARE.-->
 <div class="container-fluid">
   <div class="row-fluid">
     <div class="span12">
+      {% if user.has_judge_auth %}
       <div class="form-group">
         <a class="btn btn-sm btn-default" style="float:right" 
            href="{% url 'group:new' %}">Create</a>
       </div>
+      {% endif %}
     </div>
   </div>
 </div> 
@@ -71,11 +73,13 @@ SOFTWARE.-->
         <td>{{ group.owner }}</td>
         <td>{{ group.description }}</td>
         <td>
+          {% if user.has_judge_auth %}
           <a href="{% url 'group:delete' group.id %}">
             <button type="button" class="btn btn-danger" style="float:right">
               Delete
             </button>
           </a>
+          {% endif %}
         </td>
       </tr>
       {% endfor %}

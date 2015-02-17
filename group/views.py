@@ -20,15 +20,14 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.'''
-from django.http import HttpResponse, Http404
+from django.http import HttpResponse, Http404, HttpResponseRedirect
 from django.shortcuts import render_to_response, render
-from group.models import Group
 from django.utils import timezone
-from general_tools import log
-from group.forms import GroupForm, GroupFormEdit
-from django.http import HttpResponseRedirect
 from django.core.exceptions import PermissionDenied
-from django.forms.models import model_to_dict
+from group.forms import GroupForm, GroupFormEdit
+from group.models import Group
+from utils import user_info
+from general_tools import log
 
 
 logger = log.get_logger()
@@ -37,7 +36,7 @@ def get_running_contest(request, group_id):
         
     try:
         group = Group.objects.get(id = group_id)
-    except:
+    except Group.DoesNotExist:
         logger.warning('Group: group does not exist - gid: %s!' % group_id)
         raise Http404('Group does not exist')
 
@@ -47,7 +46,7 @@ def get_running_contest(request, group_id):
 
     for contest in all_contest:
         if contest.start_time < now and contest.end_time > now:
-                all_running_contest_list.append(contest)
+            all_running_contest_list.append(contest)
 
     return render(
         request, 'group/viewall.html', {
@@ -60,7 +59,7 @@ def get_ended_contest(request, group_id):
         
     try:
         group = Group.objects.get(id = group_id)
-    except:
+    except Group.DoesNotExist:
         logger.warning('Group: group does not exist - gid: %s!' % group_id)
         raise Http404('Group does not exist')
 
@@ -83,7 +82,7 @@ def get_all_announce(request, group_id):
 
     try:
         group = Group.objects.get(id = group_id)
-    except:
+    except Group.DoesNotExist:
         logger.warning('Group: group does not exist - gid: %s!' % group_id)
         raise Http404('Group does not exist')
 
@@ -100,7 +99,7 @@ def detail(request, group_id):
     
     try:
         group = Group.objects.get(id = group_id)
-    except:
+    except Group.DoesNotExist:
         logger.warning('Group: group does not exist - gid: %s!' % group_id)
         raise Http404('Group does not exist')
 
@@ -142,44 +141,55 @@ def list(request):
         })
 
 def new(request):
-    if request.method == 'GET':
+
+    if request.user.has_judge_auth():
+        if request.method == 'GET':
             form = GroupForm()
             return render(request,'group/editGroup.html',{'form':form})
-    if request.method == 'POST':
-        form = GroupForm(request.POST)
-        if form.is_valid():
-            new_group = form.save()
-            return HttpResponseRedirect('/group/list')
-        else:
-            raise Http404('Cannot create group! Info is blank!')
+        if request.method == 'POST':
+            form = GroupForm(request.POST)
+            if form.is_valid():
+                new_group = form.save()
+                return HttpResponseRedirect('/group/list')
+            else:
+                raise Http404('Cannot create group! Info is blank!')
+    else:
+        raise PermissionDenied
 
 def delete(request, group_id):
-    try:
-        group = Group.objects.get(id = group_id)
-    except Group.DoesNotExist:
-        logger.warning('Group: Can not delete group %s! Group is not exist!' % group_id)
-        raise Http404("Group does not exist!")
-    
-    # only contest owner can delete
-    deleted_gid = group.id
-    group.delete()
-    logger.info('Group: Delete group %s!' % deleted_gid)
-    return HttpResponseRedirect('/group/list')
+
+    if request.user.has_judge_auth():
+        try:
+            group = Group.objects.get(id = group_id)
+        except Group.DoesNotExist:
+            logger.warning('Group: Can not delete group %s! Group is not exist!' % group_id)
+            raise Http404("Group does not exist!")
+        deleted_gid = group.id
+        group.delete()
+        logger.info('Group: Delete group %s!' % deleted_gid)
+        return HttpResponseRedirect('/group/list')
+    else:
+        raise PermissionDenied
 
 def edit(request, group_id):
-    try:
-        group = Group.objects.get(id = group_id)
-    except Group.DoesNotExist:
-        logger.warning('Group: Can not edit group %s! Group is not exist!' % group_id)
-        raise Http404("Group does not exist!")
 
-    if request.method == 'GET':        
-        group_dic = model_to_dict(group)
-        form = GroupFormEdit(initial = group_dic)
-        return render(request,'group/editGroup.html',{'form':form})
-    if request.method == 'POST':
-        form = GroupFormEdit(request.POST, instance = group)
-        if form.is_valid():
-            modified_group = form.save()
-            logger.info('Group: Modified group %s!' % modified_group.id)
-            return HttpResponseRedirect('/group/list')
+    if request.user.has_judge_auth():
+        try:
+            group = Group.objects.get(id = group_id)
+        except Group.DoesNotExist:
+            logger.warning('Group: Can not edit group %s! Group is not exist!' % group_id)
+            raise Http404("Group does not exist!")
+
+        if request.method == 'GET':        
+            group_dic = model_to_dict(group)
+            form = GroupFormEdit(initial = group_dic)
+            return render(request,'group/editGroup.html',{'form':form})
+        if request.method == 'POST':
+            form = GroupFormEdit(request.POST, instance = group)
+            if form.is_valid():
+                modified_group = form.save()
+                logger.info('Group: Modified group %s!' % modified_group.id)
+                return HttpResponseRedirect('/group/list')
+    else:
+        raise PermissionDenied
+        

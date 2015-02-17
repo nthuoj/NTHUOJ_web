@@ -27,14 +27,17 @@ SOFTWARE.
 <br>
 <div class="container-fluid">
   <div class="row-fluid">
-    <a href="{% url 'group:list' %}" class="btn btn-sm btn-default" data-toggle="modal" style="float:left, margin-right:5px">
+    <a href="{% url 'group:list' %}" class="btn btn-sm btn-default" 
+       data-toggle="modal" style="float:left, margin-right:5px">
       return
     </a>
+    {% if user.has_judge_auth %}
     <a href="{% url 'group:edit' group_id %}">
       <button type="button" class="btn btn-sm btn-default">
         Edit
       </button>
     </a>
+    {% endif %}
     <br>
     <br> 
     <div class="span12">
