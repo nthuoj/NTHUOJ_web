@@ -24,6 +24,7 @@ from django.http import HttpResponse, Http404, HttpResponseRedirect
 from django.shortcuts import render_to_response, render
 from django.utils import timezone
 from django.core.exceptions import PermissionDenied
+from django.forms.models import model_to_dict
 from group.forms import GroupForm, GroupFormEdit
 from group.models import Group
 from utils import user_info
@@ -173,23 +174,28 @@ def delete(request, group_id):
 
 def edit(request, group_id):
 
-    if request.user.has_judge_auth():
         try:
             group = Group.objects.get(id = group_id)
         except Group.DoesNotExist:
             logger.warning('Group: Can not edit group %s! Group is not exist!' % group_id)
             raise Http404("Group does not exist!")
+        
+        coowner_list = []
+        all_coowner = group.coowner.all()
+        for coowner in all_coowner:
+            coowner_list.append(coowner.username)
 
-        if request.method == 'GET':        
-            group_dic = model_to_dict(group)
-            form = GroupFormEdit(initial = group_dic)
-            return render(request,'group/editGroup.html',{'form':form})
-        if request.method == 'POST':
-            form = GroupFormEdit(request.POST, instance = group)
-            if form.is_valid():
-                modified_group = form.save()
-                logger.info('Group: Modified group %s!' % modified_group.id)
-                return HttpResponseRedirect('/group/list')
-    else:
-        raise PermissionDenied
+        if request.user.username == group.owner.username or request.user.username in coowner_list:
+            if request.method == 'GET':        
+                group_dic = model_to_dict(group)
+                form = GroupFormEdit(initial = group_dic)
+                return render(request,'group/editGroup.html',{'form':form})
+            if request.method == 'POST':
+                form = GroupFormEdit(request.POST, instance = group)
+                if form.is_valid():
+                    modified_group = form.save()
+                    logger.info('Group: Modified group %s!' % modified_group.id)
+                    return HttpResponseRedirect('/group/detail/%s' % modified_group.id)
+        else:
+            raise PermissionDenied
         

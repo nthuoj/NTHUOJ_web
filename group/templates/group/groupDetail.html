@@ -31,13 +31,23 @@ SOFTWARE.
        data-toggle="modal" style="float:left, margin-right:5px">
       return
     </a>
-    {% if user.has_judge_auth %}
+    <!--Check if user is owner/coowner, if yes then display edit button-->
+    {% ifequal user.username|upper owner|upper %}
     <a href="{% url 'group:edit' group_id %}">
       <button type="button" class="btn btn-sm btn-default">
         Edit
       </button>
     </a>
-    {% endif %}
+    {% endifequal %}
+    {% for coowner in coowner_list %}
+      {% ifequal user.username|upper coowner.username|upper %}
+      <a href="{% url 'group:edit' group_id %}">
+        <button type="button" class="btn btn-sm btn-default">
+          Edit
+        </button>
+      </a>
+      {% endifequal %}
+    {% endfor %}
     <br>
     <br> 
     <div class="span12">
