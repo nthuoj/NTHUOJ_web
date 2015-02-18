@@ -56,6 +56,7 @@ class StatusTestCase(TestCase):
         # crete a contest held by judge and subjudge for 5 hours (ie, active during the unit test)
         self.contest = Contest.objects.create(cname='Contest by judge & subjudge', owner=self.judge,
             start_time=datetime.now()-timedelta(hours=1), end_time=datetime.now()+timedelta(hours=4))
+
         self.contest.coowner.add(self.subjudge) # subjudge as coowner
         self.contest.problem.add(self.contest_problem)
 

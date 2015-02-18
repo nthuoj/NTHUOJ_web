@@ -63,11 +63,12 @@ def show_submission(submission, user):
     if submission.problem.owner_id == user.username:
         return True
 
-    # contest owner/coowner's submission can't be seen during the contest
+    # contest owner/coowner's submission can't be seen before the end of contest
     contests = Contest.objects.filter(
         is_homework=False,
         problem=submission.problem,
-        end_time__gt=datetime.now())
+        creation_time__lte=submission.submit_time,
+        end_time__gte=datetime.now())
 
     if contests:
         owners = []
@@ -115,8 +116,8 @@ def show_detail(submission, user):
 
         contests = Contest.objects.filter(
             is_homework=False,
-            start_time__lt=datetime.now(),
-            end_time__gt=datetime.now())
+            start_time__lte=datetime.now(),
+            end_time__gte=datetime.now())
         # during the contest, only owner/coowner with user level sub-judge/judge 
         # can view the detail
         if contests:
