@@ -205,7 +205,7 @@ def edit(request,contest_id):
         contest = Contest.objects.get(id = contest_id)
     except Contest.DoesNotExist:
         logger.warning('Contest: Can not edit contest %s! Contest not found!' % contest_id)
-        raise Http404("Contest does not exist, can not edit.")
+        raise Http404('Contest does not exist, can not edit.')
 
     if user_info.has_c_ownership(request.user,contest):
         if request.method == 'GET':        
@@ -226,7 +226,7 @@ def delete(request,contest_id):
         contest = Contest.objects.get(id = contest_id)
     except Contest.DoesNotExist:
         logger.warning('Contest: Can not delete contest %s! Contest not found!' % contest_id)
-        raise Http404("Contest does not exist, can not delete.")
+        raise Http404('Contest does not exist, can not delete.')
     
     # only contest owner can delete
     if request.user == contest.owner:
@@ -244,10 +244,9 @@ def register(request,contest_id):
     except Contest.DoesNotExist:
         logger.warning('Contest: Can not register contest %s! Contest not found!' % contest_id)
         raise Http404('Contest does not exist, can not register.')
+        
     #check if user is not owner or coowner
-    if user_info.has_c_ownership(request.user,contest):
-        logger.info('Contest: User %s is owner or coowner! Can not register!' % request.user.username)
-    else:
+    if not user_info.has_c_ownership(request.user,contest):
         #check contestant existance
         if Contestant.objects.filter(contest = contest,user = request.user).exists():
             #if user has attended

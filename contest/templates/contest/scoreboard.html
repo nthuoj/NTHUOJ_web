@@ -57,7 +57,8 @@ SOFTWARE.
             <td>{{ key }}</td>
 
             {% for problem in contest.problem.all %}
-            <td>{{ contestant_scoreboard.contestant_scoreboard.status|get_value:problem.id }}/{{ contestant_scoreboard.contestant_scoreboard.number|get_value:problem.id }}</td>
+            <td>{{ contestant_scoreboard.contestant_scoreboard.status|get_value:problem.id }}/
+              {{ contestant_scoreboard.contestant_scoreboard.number|get_value:problem.id }}</td>
             {% endfor %}
           </tr>
           {% endfor %}
