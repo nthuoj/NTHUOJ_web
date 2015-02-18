@@ -67,7 +67,6 @@ def show_submission(submission, user):
     contests = Contest.objects.filter(
         is_homework=False,
         problem=submission.problem,
-        start_time__lt=datetime.now(),
         end_time__gt=datetime.now())
 
     if contests:
