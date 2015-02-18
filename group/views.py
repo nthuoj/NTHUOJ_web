@@ -151,6 +151,7 @@ def new(request):
             form = GroupForm(request.POST)
             if form.is_valid():
                 new_group = form.save()
+                logger.info('Group: Create a new group %s!' % new_group.id)
                 return HttpResponseRedirect('/group/list')
             else:
                 raise Http404('Cannot create group! Info is blank!')
