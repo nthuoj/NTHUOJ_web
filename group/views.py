@@ -33,13 +33,17 @@ from general_tools import log
 
 logger = log.get_logger()
 
-def get_running_contest(request, group_id):
-        
+def getGroup(id, group_id):
     try:
         group = Group.objects.get(id = group_id)
     except Group.DoesNotExist:
-        logger.warning('Group: group does not exist - gid: %s!' % group_id)
-        raise Http404('Group does not exist')
+        logger.warning('Group: Can not edit group %s! Group is not exist!' % group_id)
+        raise Http404("Group does not exist!")
+    return group
+
+def get_running_contest(request, group_id):
+        
+    group = getGroup(id, group_id)
 
     all_contest = group.trace_contest.all()
     all_running_contest_list = []
@@ -58,11 +62,7 @@ def get_running_contest(request, group_id):
 
 def get_ended_contest(request, group_id):
         
-    try:
-        group = Group.objects.get(id = group_id)
-    except Group.DoesNotExist:
-        logger.warning('Group: group does not exist - gid: %s!' % group_id)
-        raise Http404('Group does not exist')
+    group = getGroup(id, group_id)
 
     all_contest = group.trace_contest.all()
     all_ended_contest_list = []
@@ -81,11 +81,7 @@ def get_ended_contest(request, group_id):
 
 def get_all_announce(request, group_id):
 
-    try:
-        group = Group.objects.get(id = group_id)
-    except Group.DoesNotExist:
-        logger.warning('Group: group does not exist - gid: %s!' % group_id)
-        raise Http404('Group does not exist')
+    group = getGroup(id, group_id)
 
     all_announce_list = group.announce.all()
     return render(
@@ -98,11 +94,7 @@ def get_all_announce(request, group_id):
     
 def detail(request, group_id):
     
-    try:
-        group = Group.objects.get(id = group_id)
-    except Group.DoesNotExist:
-        logger.warning('Group: group does not exist - gid: %s!' % group_id)
-        raise Http404('Group does not exist')
+    group = getGroup(id, group_id)
 
     all_contest = group.trace_contest.all()[0:5]
     annowence_list = group.announce.all()[0:5]
@@ -161,11 +153,7 @@ def new(request):
 def delete(request, group_id):
 
     if request.user.has_judge_auth():
-        try:
-            group = Group.objects.get(id = group_id)
-        except Group.DoesNotExist:
-            logger.warning('Group: Can not delete group %s! Group is not exist!' % group_id)
-            raise Http404("Group does not exist!")
+        getGroup(id, group_id)
         deleted_gid = group.id
         group.delete()
         logger.info('Group: Delete group %s!' % deleted_gid)
@@ -175,18 +163,15 @@ def delete(request, group_id):
 
 def edit(request, group_id):
 
-        try:
-            group = Group.objects.get(id = group_id)
-        except Group.DoesNotExist:
-            logger.warning('Group: Can not edit group %s! Group is not exist!' % group_id)
-            raise Http404("Group does not exist!")
+        group = getGroup(id, group_id)
         
         coowner_list = []
         all_coowner = group.coowner.all()
         for coowner in all_coowner:
             coowner_list.append(coowner.username)
 
-        if request.user.username == group.owner.username or request.user.username in coowner_list:
+        if request.user.username == group.owner.username or \
+           request.user.username in coowner_list:
             if request.method == 'GET':        
                 group_dic = model_to_dict(group)
                 form = GroupFormEdit(initial = group_dic)

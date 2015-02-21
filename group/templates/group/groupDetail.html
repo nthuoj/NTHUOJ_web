@@ -59,14 +59,12 @@ SOFTWARE.
           </span>
           <span style="width:50%; float:right">
               <p>Owner/TA</p>
-              <button class="btn btn-default btn-sm" data-toggle="modal" 
-                      data-target="#setOwnerModal" style="float:right">+</button>
-              <h2>
+              <h3>
                 {{ owner }}
                 {% for coowner in coowner_list %}
                   {{ coowner.username }}
                 {% endfor %} 
-              </h2>
+              </h3>
               </span>
           <br>
           <br>
@@ -76,8 +74,6 @@ SOFTWARE.
         <div class="Description">
           <p style="font-size:16px;color:gray">
             {{ group_description }}
-            <a href="" class="btn btn-sm btn-default" data-toggle="modal" 
-               data-target="#editGroupDescriptionModal" style="float:right">Edit</a>
           </p>
         </div>
       </div>
@@ -86,8 +82,6 @@ SOFTWARE.
   <hr> 
   <div class="contest">
     <p style="border-bottom:1px solid; padding:2px; float:left; font-family:sans-serif">contest</p>
-    <a href="" class="btn btn-sm btn-default" data-toggle="modal" 
-       data-target="#addContestModal" style="float:right">Add contest</a>
     <br>
     <br>
     <div class="panel-group" id="accordion">
@@ -159,8 +153,6 @@ SOFTWARE.
   <div class="announce">
     <p style="border-bottom:1px solid; padding:2px; float:left; font-family:sans-serif">
       Announce</p>
-    <a href="" class="btn btn-sm btn-default" data-toggle="modal" 
-       data-target="#addAnnowenceModal" style="float:right">Add announce</a>
     <table class="table table-hover">
       <thead>
         <tr>
@@ -178,7 +170,7 @@ SOFTWARE.
             <a href="" class="btn btn-sm btn-default" data-toggle="modal" 
                data-target="#annowenceContentModal{{annowence.id}}" 
                style="float:right">Detail</a>
-            <!--1. Modal for Edit Annowence button-->
+            <!--1. Modal for Annowence Detail button-->
             <div class="modal fade" id="annowenceContentModal{{annowence.id}}" 
                  role="dialog" aria-hidden="true">
               <div class="modal-dialog">
@@ -186,20 +178,13 @@ SOFTWARE.
                   <div class="modal-header">
                     <button type="btn-default" class="close" data-dismiss="modal" 
                             aria-hidden="true">&times;</button>
-                    <h4 class="modal-title">Edit Annowence</h4>
-                  </div>
+                    <h5 class="modal-title">{{annowence.title}}</h4>
                   <div class="modal-body">
-                    <div class="input-group">
-                      <span class="input-group-addon">Title</span>
-                      <input type="text" class="form-control" value="{{annowence.title}}">
-                    </div>
-                    <textarea class="form-control input-sm" type="text" style="height:200px;">
-                    {{ annowence.content }}</textarea>
+                    <p>{{ annowence.content }}</p>
                   </div>
                   <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">
-                      Cancel</button>
-                    <button type="button" class="btn btn-primary">Confirm</button>
+                      Close</button>
                   </div>
                 </div>
               </div>
@@ -215,7 +200,7 @@ SOFTWARE.
   </div>
   <hr> 
   <div class="member">
-    <p style="border-bottom:1px solid; padding:2px; float:left; font-family:sans-serif">  Member</p>
+    <p style="border-bottom:1px solid; padding:2px; float:left; font-family:sans-serif">Member</p>
     <div class="btn-group" style="float:right">
       <a href="#" class="btn btn-default btn-sm">+</a>
       <a href="#" class="btn btn-defalut dropdown-toggle btn-sm" data-toggle="dropdown">
@@ -245,14 +230,12 @@ SOFTWARE.
       <thead>
         <tr>
           <th>Name</th>
-          <th>Adding time</th>
         </tr>
       </thead>
       <tbody>
         {% for student in s_list %}
         <tr>
           <td>{{ student.username }}</td>
-          <td>{{ student.register_date }}</td>
         </tr>
         {% endfor %}
       </tbody>
@@ -260,121 +243,7 @@ SOFTWARE.
   </div>
   <hr>
   <!--Modal Section-->
-  <!--2. Modal for Adding Annowence button-->
-  <div class="modal fade" id="addAnnowenceModal" role="dialog" aria-hidden="true">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <button type="btn-default" class="close" data-dismiss="modal" 
-                  aria-hidden="true">&times;</button>
-          <h4 class="modal-title">Add Annowence</h4>
-        </div>
-        <div class="modal-body">
-          <div class="input-group">
-            <span class="input-group-addon">Title</span>
-            <input type="text" class="form-control">
-          </div>
-          <textarea class="form-control input-sm" type="text" style="height:200px;">
-          </textarea>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-default" data-dismiss="modal">
-            Cancel</button>
-          <button type="button" class="btn btn-primary">Confirm</button>
-        </div>
-      </div>
-    </div>
-  </div>
-  <!--3. Modal for Adding Contest button-->
-  <div class="modal fade" id="addContestModal" role="dialog" aria-hidden="true">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <button type="btn-default" class="close" data-dismiss="modal" 
-                  aria-hidden="true">&times;</button>
-          <h4 class="modal-title">Add/Trace new contest</h4>
-        </div>
-        <div class="modal-body">
-          <div class="input-group">
-            <span class="input-group-addon">Add contest by cid</span>
-            <input type="text" class="form-control">
-          </div>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-default" data-dismiss="modal">
-            Cancel</button>
-          <button type="button" class="btn btn-primary">Confirm</button>
-        </div>
-      </div>
-    </div>
-  </div>
-  <!--4. Modal for Add/Delete Co-owner button-->
-  <div class="modal fade" id="setOwnerModal" role="dialog" aria-hidden="true">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <button type="btn-default" class="close" data-dismiss="modal" 
-                  aria-hidden="true">&times;</button>
-          <h4 class="modal-title">Add/Delete Coowner</h4>
-        </div>
-        <div class="modal-body">
-          <div class="input-group">
-            <span class="input-group-addon">Add co-owner by uid</span>
-            <input type="text" class="form-control">
-            <span class="input-group-btn">
-              <button class="btn btn-default btn-sm" type="button">ADD</button>
-            </span>
-          </div>
-          <br>
-          <table class="table table-hover">
-            <thead>
-              <tr>
-                <label class="control-label">Co-Owner List</label>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>{{ owner }}</td>
-                <td><p style="color:gray;float:right">owner cannot be delete</p></td>
-              </tr>
-              <tr>
-                {% for coowner in coowner_list %}
-                <td>{{ coowner.username }}</td>
-                <td><a class="btn btn-default btn-sm" href="#" style="float:right">x</a>
-              </tr>
-              {% endfor %}
-            </tbody>
-          </table>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-          <button type="button" class="btn btn-primary"> Confirm </button>
-        </div>
-      </div>
-    </div>
-  </div>
-  <!--5. Modal for Edit Group Description button-->
-  <div class="modal fade" id="editGroupDescriptionModal" role="dialog" aria-hidden="true">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <button type="btn-default" class="close" data-dismiss="modal" 
-                  aria-hidden="true">&times;</button>
-          <h4 class="modal-title"> Edit about group</h4>
-        </div>
-        <div class="modal-body">
-          <textarea class="form-control input-sm" type="text" style="height:200px;">
-            {{ group_description }}</textarea>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-default" data-dismiss="modal">
-            Cancel</button>
-          <button type="button" class="btn btn-primary">Confirm</button>
-        </div>
-      </div>
-    </div>
-  </div>
-  <!--6. Modal for Downloading student data-->
+  <!--1. Modal for Downloading student data-->
   <div class="modal fade" id="studentDataDownloadModal" role="dialog" aria-hidden="true">
     <div class="modal-dialog">
       <div class="modal-content">
