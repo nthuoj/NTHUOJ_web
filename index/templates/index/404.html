@@ -27,8 +27,6 @@ SOFTWARE.
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  {% block title_name %}
-  {% endblock title_name %}
   <!-- necessarily jQeuery -->
   <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js">
   </script>
@@ -40,21 +38,15 @@ SOFTWARE.
   <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js">
   </script>
   <link rel="stylesheet" href={% static "./css/index.css"%} media="screen">
-  {% block import_source %}
-  {% endblock import_source %}
 </head>
 <body>
-  <div style="background-color:#fcfcfc;border-radius:10px;">
-    <div style="position:relative;bottom:0px;">
-      <p style="text-align:center" class="err1" >4&nbsp0&nbsp4</p>
-    </div>
-    <p style="text-align:center" class="err2">Page Not Found</p>
-    <p style="text-align:center" class="err3">
-      Sorry , the page you are looking for seems to be missing.
-    </p>
-  </div>  
-  {% block body_block %}
-  {% endblock body_block %} 
-
+  <div style="position:relative;bottom:0px;">
+    <p style="text-align:center" class="err1" >4&nbsp0&nbsp4</p>
+  </div>
+  <p style="text-align:center" class="err2">Page Not Found</p>
+  <p style="text-align:center" class="err2">{{ error_message }}</p>
+  <p style="text-align:center" class="err3">
+    Sorry , the page you are looking for seems to be missing.
+  </p>
 </body>
 </html>
