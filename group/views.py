@@ -33,7 +33,7 @@ from general_tools import log
 
 logger = log.get_logger()
 
-def getGroup(id, group_id):
+def get_group(group_id):
     try:
         group = Group.objects.get(id = group_id)
     except Group.DoesNotExist:
@@ -43,7 +43,7 @@ def getGroup(id, group_id):
 
 def get_running_contest(request, group_id):
         
-    group = getGroup(id, group_id)
+    group = get_group(group_id)
 
     all_contest = group.trace_contest.all()
     all_running_contest_list = []
@@ -62,7 +62,7 @@ def get_running_contest(request, group_id):
 
 def get_ended_contest(request, group_id):
         
-    group = getGroup(id, group_id)
+    group = get_group(group_id)
 
     all_contest = group.trace_contest.all()
     all_ended_contest_list = []
@@ -81,7 +81,7 @@ def get_ended_contest(request, group_id):
 
 def get_all_announce(request, group_id):
 
-    group = getGroup(id, group_id)
+    group = get_group(group_id)
 
     all_announce_list = group.announce.all()
     return render(
@@ -94,7 +94,7 @@ def get_all_announce(request, group_id):
     
 def detail(request, group_id):
     
-    group = getGroup(id, group_id)
+    group = get_group(group_id)
 
     all_contest = group.trace_contest.all()[0:5]
     annowence_list = group.announce.all()[0:5]
@@ -153,7 +153,7 @@ def new(request):
 def delete(request, group_id):
 
     if request.user.has_judge_auth():
-        getGroup(id, group_id)
+        get_group(group_id)
         deleted_gid = group.id
         group.delete()
         logger.info('Group: Delete group %s!' % deleted_gid)
@@ -163,7 +163,7 @@ def delete(request, group_id):
 
 def edit(request, group_id):
 
-        group = getGroup(id, group_id)
+        group = get_group(group_id)
         
         coowner_list = []
         all_coowner = group.coowner.all()
