@@ -22,6 +22,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 '''
 from django.db import models
+from users.models import User
 from group.models import Group
 from contest.models import Contest
 from problem.models import Problem
@@ -38,7 +39,7 @@ def has_c_ownership(curr_user, curr_contest):
     except Contest.DoesNotExist:
         logger.warning('Contest id %ld does not exsit!' % curr_contest.id)
 
-    ownership = (curr_user.username == curr_contest.owner)
+    ownership = (curr_user == curr_contest.owner)
     if curr_contest.coowner.all().count() != 0:
         for coowner in curr_contest.coowner.all():
             if curr_user == coowner:
@@ -54,7 +55,7 @@ def has_g_ownership(curr_user, curr_group):
     except Group.DoesNotExist:
         logger.warning('Group id %ld does not exsit!' % curr_group.id)
 
-    ownership = (curr_user.username == curr_group.owner)
+    ownership = (curr_user == curr_group.owner)
     if curr_group.coowner.all().count() != 0:
         for coowner in curr_group.coowner.all():
             if curr_user == coowner:
@@ -70,7 +71,7 @@ def has_p_ownership(curr_user, curr_problem):
     except Problem.DoesNotExist:
         logger.warning('Problem id %ld does not exsit!' % curr_problem.id)
 
-    ownership = (curr_user.username == curr_problem.owner)
+    ownership = (curr_user == curr_problem.owner)
     return ownership
 
 def user_is_valid(curr_user):
