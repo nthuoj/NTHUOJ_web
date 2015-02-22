@@ -39,12 +39,12 @@ def has_c_ownership(curr_user, curr_contest):
     except Contest.DoesNotExist:
         logger.warning('Contest id %ld does not exsit!' % curr_contest.id)
 
-    isOwner = (curr_user == curr_contest.owner)
+    is_owner = (curr_user.username == curr_contest.owner.username)
     if curr_contest.coowner.all().count() != 0:
         for coowner in curr_contest.coowner.all():
             if curr_user == coowner:
-                isOwner = True
-    return isOwner
+                is_owner = True
+    return is_owner
 
 #group ownership
 def has_g_ownership(curr_user, curr_group):
@@ -55,12 +55,12 @@ def has_g_ownership(curr_user, curr_group):
     except Group.DoesNotExist:
         logger.warning('Group id %ld does not exsit!' % curr_group.id)
 
-    isOwner = (curr_user == curr_group.owner)
+    is_owner = (curr_user.username == curr_group.owner.username)
     if curr_group.coowner.all().count() != 0:
         for coowner in curr_group.coowner.all():
             if curr_user == coowner:
-                isOwner = True
-    return isOwner
+                is_owner = True
+    return is_owner
 
 #problem ownership
 def has_p_ownership(curr_user, curr_problem):
@@ -71,8 +71,8 @@ def has_p_ownership(curr_user, curr_problem):
     except Problem.DoesNotExist:
         logger.warning('Problem id %ld does not exsit!' % curr_problem.id)
 
-    isOwner = (curr_user == curr_problem.owner)
-    return isOwner
+    is_owner = (curr_user.username == curr_problem.owner.username)
+    return is_owner
 
 def user_is_valid(curr_user):
     try:
