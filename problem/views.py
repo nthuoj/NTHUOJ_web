@@ -23,6 +23,7 @@ SOFTWARE.
 '''
 from django.http import HttpResponse, HttpResponseBadRequest, Http404
 from django.shortcuts import render, redirect
+from django.core.exceptions import PermissionDenied
 
 from users.models import User
 from problem.models import Problem, Tag, Testcase
@@ -73,8 +74,7 @@ def edit(request, pid):
 
 def new(request):
     if not request.user.has_subjudge_auth():
-        logger.warning("user %s has no auth to add new problem" % (request.user))
-        raise Http404("you can't add new problem")
+        raise PermissionDenied()
     if request.method == 'GET':
         form = ProblemForm()
     if request.method == 'POST':
