@@ -184,4 +184,3 @@ def edit(request, group_id):
                     return HttpResponseRedirect('/group/detail/%s' % modified_group.id)
         else:
             raise PermissionDenied
-        
