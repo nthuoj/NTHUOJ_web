@@ -23,6 +23,7 @@ SOFTWARE.
 '''
 from django.http import HttpResponse, HttpResponseBadRequest, Http404
 from django.shortcuts import render, redirect
+from django.core.exceptions import PermissionDenied
 
 from users.models import User
 from problem.models import Problem, Tag, Testcase
@@ -71,8 +72,7 @@ def edit(request, pid):
     try:
         problem = Problem.objects.get(pk=pid)
         if not request.user.is_admin or request.user != problem.owner:
-            logger.warning("user %s has no auth to edit problem %s" % (request.user, pid))
-            raise Http404("you can't edit this problem")
+            raise PermissionDenied()
     except Problem.DoesNotExist:
         logger.warning("problem %s does not exist" % (pid))
         raise Http404("problem %s does not exist" % (pid))
@@ -152,8 +152,7 @@ def delete_tag(request, pid, tag_id):
         logger.warning("tag %s does not exist" % (tag_id))
         raise Http404("tag %s does not exist" % (tag_id))
     if not request.user.is_admin and request.user != problem.owner:
-        logger.warning("user %s has no auth to delete the tag" % (request.user))
-        raise Http404("user %s has no auth to delete the tag" % (request.user))
+        raise PermissionDenied()
     logger.info("tag %d deleted" % (tag.pk))
     problem.tags.remove(tag)
     return HttpResponse()
@@ -196,8 +195,7 @@ def delete_testcase(request, pid, tid):
         logger.warning("testcase %s does not exist" % (tid))
         raise Http404("testcase %s does not exist" % (tid))
     if not request.user.is_admin and request.user != problem.owner:
-        logger.warning("user %s has no auth to delete the testcase" % (request.user))
-        raise Http404("user %s has no auth to delete the testcase" % (request.user))
+        raise PermissionDenied
     logger.info("testcase %d deleted" % (testcase.pk))
     testcase.delete()
     return HttpResponse()
