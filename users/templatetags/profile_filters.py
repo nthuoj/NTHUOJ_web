@@ -50,7 +50,9 @@ def can_change_userlevel(user, profile_user):
     if user.has_admin_auth():
         return True
     # judge can change user to sub-judge, user
-    if user.has_judge_auth() and not profile_user.has_judge_auth():
+    user_level = profile_user.user_level
+    if user.has_judge_auth() and \
+        (user_level == User.SUB_JUDGE or user_level == User.USER):
         return True
 
     return False

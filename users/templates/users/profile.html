@@ -82,8 +82,9 @@ $(function() {
               </div>
               {% endfor %}
               <div class="modal-footer">
-                <div class='col-lg-4'>{{ profile_message }}</div>
-                <button type="submit" class="btn btn-primary">Submit</button>
+                <div class='col-lg-8'>{{ profile_message }}</div>
+                <button type="submit" name="profile_form"
+                  class="btn btn-primary">Submit</button>
               </div>
             </form>
           {% else %}
@@ -93,7 +94,8 @@ $(function() {
                   <label class="control-label">Username</label>
                 </div>
                 <div class='col-lg-5'>
-                  <input class="form-control" readonly="True" type="text" value="{{ profile_user.username }}">
+                  <input class="form-control" readonly="True" type="text"
+                    value="{{ profile_user.username }}">
                 </div>
               </div>
             </div>
@@ -125,15 +127,18 @@ $(function() {
                 {% if field.errors %}
                 <ul>
                   {% for error in field.errors %}
-                    <li class='col-lg-offset-2'><strong style="color:red">{{ error|escape }}</strong></li>
+                    <li class='col-lg-offset-2'>
+                      <strong style="color:red">{{ error|escape }}</strong>
+                    </li>
                   {% endfor %}
                 </ul>
                 {% endif %}
               </div>
               {% endfor %}
               <div class="modal-footer">
-                <div class='col-lg-4'>{{ userlevel_message }}</div>
-                <button type="submit" class="btn btn-primary">Submit</button>
+                <div class='col-lg-8'>{{ userlevel_message }}</div>
+                <button type="submit" name="userlevel_form"
+                  class="btn btn-primary">Submit</button>
               </div>
             </form>
           {% endif %}

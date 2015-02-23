@@ -82,7 +82,7 @@ def profile(request, username):
         if can_change_userlevel(request.user, profile_user):
             render_data['userlevel_form'] = UserLevelForm(instance=profile_user)
 
-        if request.method == 'POST':
+        if request.method == 'POST' and 'profile_form' in request.POST:
             profile_form = UserProfileForm(request.POST, instance=profile_user)
             render_data['profile_form'] = profile_form
             if profile_form.is_valid() and request.user == profile_user:
@@ -90,22 +90,20 @@ def profile(request, username):
                 profile_form.save()
                 render_data['profile_message'] = 'Update successfully'
 
-            userlevel_form = UserLevelForm(request.POST, instance=profile_user)
+        if request.method == 'POST' and 'userlevel_form' in request.POST:
+            userlevel_form = UserLevelForm(request.POST)
             if can_change_userlevel(request.user, profile_user):
                 if userlevel_form.is_valid(request.user):
                     user_level = userlevel_form.cleaned_data['user_level']
                     logger.info('User %s update %s\'s user_level to %s' %
                         (request.user, username, user_level))
-                    userlevel_form.save()
+                    profile_user.user_level = user_level
+                    profile_user.save()
                     render_data['userlevel_message'] = 'Update successfully'
                 else:
-                    #profile_user = User.objects.get(username=username)
-                    print 'f'
-                    print profile_user.user_level
-                    render_data['userlevel_message'] = 'Update fail'
-                render_data['profile_form'] = UserProfileForm(instance=profile_user)
-                render_data['userlevel_form'] = userlevel_form
-
+                    user_level = userlevel_form.cleaned_data['user_level']
+                    render_data['userlevel_message'] = 'You can\'t switch user %s to %s' % \
+                        (profile_user, user_level)
 
         return render(
             request,
