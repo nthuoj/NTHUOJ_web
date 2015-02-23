@@ -35,6 +35,7 @@ from index.views import custom_proc
 from users.forms import UserProfileForm, UserLevelForm
 from users.models import User
 from utils.log_info import get_logger, get_client_ip
+from users.templatetags.profile_filters import can_change_userlevel
 # Create your views here.
 
 logger = get_logger()
@@ -78,7 +79,7 @@ def profile(request, username):
         render_data['piechart_data'] = json.dumps(piechart_data)
         if request.user == profile_user:
             render_data['profile_form'] = UserProfileForm(instance=profile_user)
-        if request.user.has_judge_auth():
+        if can_change_userlevel(request.user, profile_user):
             render_data['userlevel_form'] = UserLevelForm(instance=profile_user)
 
         if request.method == 'POST':
@@ -87,27 +88,31 @@ def profile(request, username):
             if profile_form.is_valid() and request.user == profile_user:
                 logger.info('User %s update profile' % username)
                 profile_form.save()
-                render_data['message'] = 'Update successfully'
+                render_data['profile_message'] = 'Update successfully'
 
             userlevel_form = UserLevelForm(request.POST, instance=profile_user)
-            if userlevel_form.is_valid() and request.user.has_judge_auth():
-                user_level = userlevel_form.cleaned_data['user_level']
-                # admin can change user to all levels
-                # judge can change user to sub-judge, user
-                if request.user.has_admin_auth() or \
-                    request.user.has_judge_auth and \
-                    (user_level == User.SUB_JUDGE or user_level == User.USER):
+            if can_change_userlevel(request.user, profile_user):
+                if userlevel_form.is_valid(request.user):
+                    user_level = userlevel_form.cleaned_data['user_level']
                     logger.info('User %s update %s\'s user_level to %s' %
                         (request.user, username, user_level))
-                    render_data['userlevel_form'] = userlevel_form
                     userlevel_form.save()
-        
+                    render_data['userlevel_message'] = 'Update successfully'
+                else:
+                    #profile_user = User.objects.get(username=username)
+                    print 'f'
+                    print profile_user.user_level
+                    render_data['userlevel_message'] = 'Update fail'
+                render_data['profile_form'] = UserProfileForm(instance=profile_user)
+                render_data['userlevel_form'] = userlevel_form
+
+
         return render(
             request,
             'users/profile.html',
             render_data,
             context_instance=RequestContext(request, processors=[custom_proc]))
-    
+
     except User.DoesNotExist:
         logger.warning('User %s does not exist' % username)
         return render(

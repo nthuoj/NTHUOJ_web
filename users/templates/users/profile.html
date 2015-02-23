@@ -23,6 +23,7 @@ SOFTWARE.
 -->
 {% extends "index/base.html" %}
 {% load static %}
+{% load profile_filters %}
 
 {% block body_block %}
 
@@ -39,6 +40,7 @@ $(function() {
 <div class="bs-docs-section container">
   <div class="row">
     <div class="col-lg-6">
+      {% block statistic_block %}
       <div class="panel panel-default">
         <div class="panel-heading">Statistics</div>
         <div class="panel-body">
@@ -48,11 +50,9 @@ $(function() {
               <div id="piechart" style="width:320px;height:250px;"></div>
             </div>
           </div>
-          {% block statistic_block %}
-
-          {% endblock statistic_block %}
         </div>
       </div>
+      {% endblock statistic_block %}
     </div>
     <div class="col-lg-6">
       {% block profile_field_block %}
@@ -72,13 +72,6 @@ $(function() {
                     {{ field }}
                   </div>
                 </div>
-                {% if form.non_field_errors %}
-                <ul>
-                  {% for error in form.non_field_errors %}
-                    <li class='col-lg-offset-2'><strong style="color:red">{{ error|escape }}</strong></li>
-                  {% endfor %}
-                </ul>
-                {% endif %} 
                 {% if field.errors %}
                 <ul>
                   {% for error in field.errors %}
@@ -89,7 +82,7 @@ $(function() {
               </div>
               {% endfor %}
               <div class="modal-footer">
-                <div id='msg' class='col-lg-4'>{{ message }}</div>
+                <div class='col-lg-4'>{{ profile_message }}</div>
                 <button type="submit" class="btn btn-primary">Submit</button>
               </div>
             </form>
@@ -116,7 +109,7 @@ $(function() {
             </div>
           {% endif %}
 
-          {% if user.has_judge_auth %}
+          {% if user|can_change_userlevel:profile_user %}
             <form class="form-horizontal" action="" method="post" style="margin:10px;">
               {% csrf_token %}
               {% for field in userlevel_form %}
@@ -129,9 +122,19 @@ $(function() {
                     {{ field }}
                   </div>
                 </div>
+                {% if field.errors %}
+                <ul>
+                  {% for error in field.errors %}
+                    <li class='col-lg-offset-2'><strong style="color:red">{{ error|escape }}</strong></li>
+                  {% endfor %}
+                </ul>
+                {% endif %}
               </div>
               {% endfor %}
-              <button type="submit" class="btn btn-primary">Submit</button>
+              <div class="modal-footer">
+                <div class='col-lg-4'>{{ userlevel_message }}</div>
+                <button type="submit" class="btn btn-primary">Submit</button>
+              </div>
             </form>
           {% endif %}
         </div>

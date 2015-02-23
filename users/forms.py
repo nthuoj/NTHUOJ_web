@@ -76,8 +76,24 @@ class UserLevelForm(forms.ModelForm):
     user_level = forms.ChoiceField(label='Userlevel',
         choices=User.USER_LEVEL_CHOICE,
         widget=forms.Select(attrs={'class': 'form-control'}))
-    
+
     class Meta:
         model = User
         fields = ('user_level',)
+
+    def is_valid(self, user):
+        # run the parent validation first
+        valid = super(UserLevelForm, self).is_valid()
+        # we're done now if not valid
+        if not valid:
+            return valid
+        # admin can change user to all levels
+        if user.has_admin_auth():
+            return True
+        # judge can change user to sub-judge, user
+        user_level = self.cleaned_data['user_level']
+        if user.has_judge_auth() and \
+            (user_level == User.SUB_JUDGE or user_level == User.USER):
+            return True
+        return False
 
