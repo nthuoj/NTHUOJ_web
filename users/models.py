@@ -80,7 +80,7 @@ class User(AbstractBaseUser):
     active = models.BooleanField(default=False)
     user_level = models.CharField(max_length=9, choices=USER_LEVEL_CHOICE, default=USER)
     theme = models.CharField(max_length=8, choices=THEME_CHOICE, default=PAPER)
-    
+
     USERNAME_FIELD = 'username'
     is_active = models.BooleanField(default=True)
     is_admin = models.BooleanField(default=False)
@@ -92,6 +92,7 @@ class User(AbstractBaseUser):
 
     def has_judge_auth(self):
         has_auth = ((self.user_level == self.ADMIN) or (self.user_level == self.JUDGE))
+
         return has_auth
 
     def has_subjudge_auth(self):
