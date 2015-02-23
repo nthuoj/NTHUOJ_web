@@ -21,9 +21,9 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 -->
-{% extends 'problem/base.html' %} 
+{% extends "problem/base.html" %} 
 {% block body_block %} {% load staticfiles %}
-<script src='http://cdn.ckeditor.com/4.4.6/standard/ckeditor.js'></script>
+<script src="http://cdn.ckeditor.com/4.4.6/standard/ckeditor.js"></script>
 <script src="{% static 'problem/js/edit.js' %}"></script>
 <div class="container" id="Body">
   <input type="hidden" name="owner" value="{{ user.pk }}">
@@ -52,18 +52,18 @@ SOFTWARE.
     }
     </style>
     <div class="tab-content">
-      <form method="POST" action='' enctype="multipart/form-data">
+      <form method="POST" action="" enctype="multipart/form-data">
         <div>
-          <a class='btn btn-success' target='_blank' id='preview_button'>Preview</a>
+          <a class="btn btn-success" target="_blank" id="preview_button">Preview</a>
           <input type="submit" value="Save" class="btn btn-primary" 
             style="width:100px" href="{% url 'problem:problem.views.problem' %}">
         </div>
         {% csrf_token %}
         <div class="tab-pane active" id="info">
           {% if owner %}
-          <input type='hidden' name='owner' value='{{owner}}'>
+          <input type="hidden" name="owner" value="{{owner}}">
           {% endif %}
-          {% include 'problem/editTab/info.html' with form=form %}
+          {% include "problem/editTab/info.html" with form=form %}
         </div>
         <div class="tab-pane" id="description">
           <strong>Description</strong>
@@ -74,38 +74,38 @@ SOFTWARE.
           <textarea cols="80" rows="20" id="outText" name="output_description">{{output}}</textarea>
 
           <script>
-          CKEDITOR.replace('des')
-          CKEDITOR.replace('inText')
-          CKEDITOR.replace('outText')
+          CKEDITOR.replace("des")
+          CKEDITOR.replace("inText")
+          CKEDITOR.replace("outText")
           </script>
         </div>
         <div class="tab-pane" id="sample_io">
-          <div class='panel panel-default' style='float:left;width:47%'>
-            <div class='panel-heading'>Sample Input</div>
-            <textarea name='sample_in' class='panel-body' 
-              style='width:100%' rows='20'>{{sample_in}}</textarea>
+          <div class="panel panel-default" style="float:left;width:47%">
+            <div class="panel-heading">Sample Input</div>
+            <textarea name="sample_in" class="panel-body" 
+              style="width:100%" rows="20">{{sample_in}}</textarea>
           </div>
-          <div class='panel panel-default' style='float:right;width:47%'>
-            <div class='panel-heading'>Sample Output</div>
-            <textarea name='sample_out' class='panel-body' 
-              style='width:100%' rows='20'>{{sample_out}}</textarea>
+          <div class="panel panel-default" style="float:right;width:47%">
+            <div class="panel-heading">Sample Output</div>
+            <textarea name="sample_out" class="panel-body" 
+              style="width:100%" rows="20">{{sample_out}}</textarea>
           </div>
         </div>
       </form>
       <div class="tab-pane" id="tag">
-        {% include 'problem/editTab/tag.html' with pid=pid %}
+        {% include "problem/editTab/tag.html" with pid=pid %}
       </div>
       <div class="tab-pane" id="testcase">
-        {% include 'problem/editTab/testcase.html' with pid=pid %}
+        {% include "problem/editTab/testcase.html" with pid=pid %}
       </div>
     </div>
   </div>
 </div>
 </body>
 <script>
-$('#preview_button').click(function() {
+$("#preview_button").click(function() {
   MyWindow = window.open('{% url "problem:problem.views.preview" %}',
-    'MyWindow',
+    "MyWindow",
     "toolbar=no,location=no,directories=no,status=no,menubar=no, \
     scrollbars=yes,resizable=yes,width=600,height=30"
   );
