@@ -28,12 +28,12 @@ from django.core.exceptions import PermissionDenied
 from users.models import User
 from problem.models import Problem, Tag, Testcase
 from problem.forms import ProblemForm
-from general_tools import log
+from utils import log_info
 
 import os
 import json
 
-logger = log.get_logger()
+logger = log_info.get_logger()
 
 # Create your views here.
 def problem(request):
