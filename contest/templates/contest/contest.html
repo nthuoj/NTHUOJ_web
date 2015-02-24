@@ -40,12 +40,12 @@ SOFTWARE.
         <h1 class="panel-title" style="text-align:center;">Time</h1>
       </div>
       <div class="panel-body inline">
-        <a id="server_time" hidden>{{ server_time }}</a>
+        <a id="server_time" hidden>{{ tstr }}</a>
         <table style="width:100%;text-align:center;">
           <tr>
-            <td id="start" style="text-align:left;">{{ contest.start_time }}</td>
+            <td id="start" style="text-align:left;">{{ contest.start_time|date:"Y-m-d H:i:s" }}</td>
             <td id="clock"></td>
-            <td id="end" style="text-align:right;">{{ contest.end_time }}</td>
+            <td id="end" style="text-align:right;">{{ contest.end_time|date:"Y-m-d H:i:s" }}</td>
           </tr>
         </table>
       </div>

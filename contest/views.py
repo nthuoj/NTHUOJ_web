@@ -58,8 +58,6 @@ def archive(request):
         context_instance = RequestContext(request, processors = [custom_proc]))
 
 def contest(request,contest_id):
-
-    serverTime = datetime.now().strftime('%Y/%m/%d %H:%M:%S')
     try:
         contest = Contest.objects.get(id = contest_id)
     except Contest.DoesNotExist: 
@@ -71,7 +69,7 @@ def contest(request,contest_id):
     scoreboard = get_scoreboard(contest)
     
     return render(request, 'contest/contest.html',{'contest':contest,'clarification_list':clarification_list,
-        'scoreboard':scoreboard,'server_time':serverTime},
+        'scoreboard':scoreboard},
         context_instance = RequestContext(request, processors = [custom_proc]))
 
 def new(request):
