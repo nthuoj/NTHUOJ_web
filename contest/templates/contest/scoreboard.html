@@ -87,7 +87,7 @@ SOFTWARE.
             <td>{{ forloop.counter }}</td>
             <td>{{ user.username }}</td>
             {% for problem in scoreboard.problems %}
-            <td>{{ user|get_problem:problem.pname|solved }}/{{ user|get_problem:problem.pname|submit_times  }}</td>
+            <td>{{ user|get_problem:problem.pname|solved }}/{{ user|get_problem:problem.pname|submit_times }}</td>
             {% endfor %}
             <td>{{ user|problem_solved }}</td>
             <td>{{ user|penalty:scoreboard.start_time }}</td>

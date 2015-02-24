@@ -81,6 +81,8 @@ def get_scoreboard(contest):
                 passed_testcases = get_passed_testcases(submission)
                 new_submission = Scoreboard_Submission(submission.submit_time,passed_testcases)
                 new_problem.add_submission(new_submission)
+            if new_problem.solved():
+                scoreboard.get_problem(new_problem.pname).add_pass_user()
             new_contestant.add_problem(new_problem)
         scoreboard.add_user(new_contestant)
 

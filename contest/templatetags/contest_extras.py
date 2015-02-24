@@ -81,10 +81,3 @@ def penalty(user,start_time):
     return user.penalty(start_time)
 
 register.filter("penalty",penalty)
-
-@register.filter
-def passrate(problem):
-    return problem.passrate()
-
-register.filter("passrate",passrate)
-

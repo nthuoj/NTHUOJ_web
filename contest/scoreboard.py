@@ -61,8 +61,7 @@ class Problem:
         self.submissions = []
         self.pname = pname
         self.total_testcase = total_testcase
-    def __str__(self):
-        return str(self.solved_testcase())+'/'+str(self.total_testcase)
+        self.pass_user = 0
     def solved(self):
         for submission in self.submissions:
             if submission.solved(self.total_testcase):
@@ -85,14 +84,15 @@ class Problem:
         penalty = sys.maxsize
         for submission in self.submissions:
             if submission.solved:
-                penalty = min(penalty,(submission.submit_time - start_time).total_seconds()/60)
+                penalty = min(penalty,(submission.submit_time - start_time).total_seconds()/minute)
             else:
                 addtional_penalty += not_pass_penalty_unit
         if(penalty == sys.maxsize):
             return 0
         return penalty + addtional_penalty
-    def passrate(self):
-        return '3' + '/' + '5'
+    def add_pass_user(self):
+        self.pass_user += 1
+
 class Submission:
     def __init__(self,submit_time,pass_testcase):
         self.submit_time = submit_time

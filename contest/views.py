@@ -67,13 +67,10 @@ def contest(request,contest_id):
         raise Http404('Contest does not exist')
     
     clarification_list = Clarification.objects.filter(contest = contest)
-    contestant_list = get_contestant_list(contest)
-    
-    ### get scoreboard ###
+
     scoreboard = get_scoreboard(contest)
     
     return render(request, 'contest/contest.html',{'contest':contest,'clarification_list':clarification_list,
-        'contestant_list':contestant_list,'contestant_number':contestant_list.__len__(),
         'scoreboard':scoreboard,'server_time':serverTime},
         context_instance = RequestContext(request, processors = [custom_proc]))
 
