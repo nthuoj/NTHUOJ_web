@@ -42,10 +42,10 @@ def index(request):
                 context_instance=RequestContext(request, processors=[custom_proc]))
 
 def custom_404(request):
-    return render(request, 'index/404.html')
+    return render(request, 'index/404.html', status=404)
 
 def custom_500(request):
-    return render(request, 'index/500.html',{'error_message':'error'})
+    return render(request, 'index/500.html',{'error_message':'error'}, status=500)
 
 def base(request):
     return render(request, 'index/base.html',{},
