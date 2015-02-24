@@ -1,4 +1,4 @@
-<!--
+'''
 The MIT License (MIT)
 
 Copyright (c) 2014 NTHUOJ team
@@ -20,35 +20,33 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
--->
-<!DOCTYPE html>
-{% load static %}
+'''
+from django.shortcuts import render
+from index.views import custom_proc
+from django.template import RequestContext
 
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <!-- necessarily jQeuery -->
-  <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js">
-  </script>
-  <!-- bootstrap, bootwatch JS & CSS -->
-  <link rel="stylesheet" 
-        href="http://bootswatch.com/paper/bootstrap.css" media="screen">
-  <link rel="stylesheet" 
-        href="http://bootswatch.com/assets/css/bootswatch.min.css">
-  <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js">
-  </script>
-  <link rel="stylesheet" href={% static "./css/index.css"%} media="screen">
-</head>
-<body>
-  <div style="background-color:#fcfcfc;border-radius:10px;">
-    <div style="position:relative;bottom:0px;">
-      <p style="text-align:center" class="err1" >5&nbsp0&nbsp0</p>
-    </div>
-    <p style="text-align:center" class="err2">Some errors occurred</p>
-    <p style="text-align:center" class="err2">{{ error_message }}</p>
-    <p style="text-align:center" class="err3">
-      Oops , there was an error.
-    </p>
-  </div>
-</body>
-</html>
+def render_404(request, message):
+    '''Help to render 404 page
+
+    example: 
+        render_404(request, 'Page not found')
+    '''
+    return render(request, 'index/404.html',
+        {'error_message': message}, status=500)
+
+
+def render_500(request, message):
+    '''Help to render 500 page
+
+    example: 
+        render_500(request, 'Request query does not exist')
+    '''
+    return render(request, 'index/500.html',
+        {'error_message': message}, status=500)
+
+def render_index(request, *args, **kwargs):
+    '''Helper to render index page with custom_proc'''
+    # add context_instance keyword
+    kwargs.update({'context_instance': RequestContext(request, processors=[custom_proc])})
+
+    return render(request, *args, **kwargs)
