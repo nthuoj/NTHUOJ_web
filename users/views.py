@@ -29,6 +29,7 @@ from django.template import RequestContext
 from django.core.urlresolvers import reverse
 from django.shortcuts import render, redirect
 from utils.log_info import get_logger, get_client_ip
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login, logout
 from users.admin import UserCreationForm, AuthenticationForm
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
@@ -36,6 +37,7 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 # Create your views here.
 
 logger = get_logger()
+
 
 def list(request):
     users = User.objects.all()
@@ -57,6 +59,8 @@ def list(request):
         {'users': user},
         context_instance=RequestContext(request, processors=[custom_proc]))
 
+
+@login_required()
 def submit(request):
     return render(
         request,
