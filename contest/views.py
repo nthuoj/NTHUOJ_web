@@ -34,9 +34,7 @@ from contest.forms import ContestForm
 
 from contest.contest_info import get_contestant_list
 from contest.contest_info import get_contest_submission_list
-from contest.contest_info import get_penalty_scoreboard
-from contest.contest_info import get_testcase_scoreboard
-from contest.contest_info import get_contest_problem_passrate
+from contest.contest_info import get_scoreboard
 
 from utils.log_info import get_logger
 from utils import user_info
@@ -71,19 +69,12 @@ def contest(request,contest_id):
     clarification_list = Clarification.objects.filter(contest = contest)
     contestant_list = get_contestant_list(contest)
     
-    ### get penalty scoreboard ###
-    scoreboard = get_penalty_scoreboard(contest)
-
-    ### get testcase scoreboard ###
-    testcase_scoreboard = get_testcase_scoreboard(contest)
-
-    ### get passrate info ###
-    problem_pass_rate = get_contest_problem_passrate(contest)
+    ### get scoreboard ###
+    scoreboard = get_scoreboard(contest)
     
     return render(request, 'contest/contest.html',{'contest':contest,'clarification_list':clarification_list,
         'contestant_list':contestant_list,'contestant_number':contestant_list.__len__(),
-        'scoreboard':scoreboard,'testcase_scoreboard':testcase_scoreboard,
-        'server_time':serverTime,'problem_pass_rate':problem_pass_rate},
+        'scoreboard':scoreboard,'server_time':serverTime},
         context_instance = RequestContext(request, processors = [custom_proc]))
 
 def new(request):

@@ -44,21 +44,22 @@ SOFTWARE.
           <tr>
             <th>Rank</th>
             <th>User</th>
-            {% for problem in contest.problem.all %}
+            {% for problem in scoreboard.problems %}
             <th><b data-toggle="tooltip" title="{{ problem.pname }}">{{ forloop.counter }}</b>
             </th>
             {% endfor %}
           </tr>
         </thead>
         <tbody>
-          {% for key,contestant_scoreboard in testcase_scoreboard.iteritems %}
+          {% for user in scoreboard.users %}
           <tr>
             <td>{{ forloop.counter }}</td>
-            <td>{{ key }}</td>
+            <td>{{ user.username }}</td>
 
-            {% for problem in contest.problem.all %}
-            <td>{{ contestant_scoreboard.contestant_scoreboard.status|get_value:problem.id }}/
-              {{ contestant_scoreboard.contestant_scoreboard.number|get_value:problem.id }}</td>
+            {% for problem in scoreboard.problems %}
+            <td>
+              {{ user|get_problem:problem.pname|testcase_solved }}/{{ problem.total_testcase }}
+            </td>
             {% endfor %}
           </tr>
           {% endfor %}
@@ -72,7 +73,7 @@ SOFTWARE.
           <tr>
             <th>Rank</th>
             <th>User</th>
-            {% for problem in contest.problem.all %}
+            {% for problem in scoreboard.problems %}
             <th><b data-toggle="tooltip" title="{{ problem.pname }}">{{ forloop.counter }}</b>
             </th>
             {% endfor %}
@@ -81,15 +82,15 @@ SOFTWARE.
           </tr>
         </thead>
         <tbody>
-          {% for contestant_scoreboard in scoreboard %}
+          {% for user in scoreboard.users %}
           <tr>
             <td>{{ forloop.counter }}</td>
-            <td>{{ contestant_scoreboard.contestant.username }}</td>
-            {% for problem in contest.problem.all %}
-            <td>{{ contestant_scoreboard.contestant_scoreboard.status|get_value:problem.id }}/{{ contestant_scoreboard.contestant_scoreboard.times|get_value:problem.id  }}</td>
+            <td>{{ user.username }}</td>
+            {% for problem in scoreboard.problems %}
+            <td>{{ user|get_problem:problem.pname|solved }}/{{ user|get_problem:problem.pname|submit_times  }}</td>
             {% endfor %}
-            <td>{{ contestant_scoreboard.contestant_scoreboard.solved }}</td>
-            <td>{{ contestant_scoreboard.contestant_scoreboard.penalty }}</td>
+            <td>{{ user|problem_solved }}</td>
+            <td>{{ user|penalty:scoreboard.start_time }}</td>
           </tr>
           {% endfor %}
         </tbody>

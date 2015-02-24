@@ -21,12 +21,15 @@ from django import template
 from utils import user_info
 from contest.models import Contest
 
+from contest.scoreboard import Problem
+from contest.scoreboard import User
+
 register = template.Library()
 
-# get value['key']
+# get field['key']
 @register.filter
-def get_value(value,key):
-	return value.get(key,0)
+def get_value(field,key):
+	return field.get(key,0)
 
 register.filter('get_value', get_value)
 
@@ -37,3 +40,51 @@ def has_auth(user,contest_id):
     return user_info.has_c_ownership(user,contest)
 
 register.filter("has_auth",has_auth)
+
+#scoreboard
+@register.filter
+def solved(problem):
+    if(problem.solved() == True):
+        return 1
+    else:
+        return 0
+
+register.filter("solved",solved)
+
+@register.filter
+def testcase_solved(problem):
+    return problem.testcase_solved()
+
+register.filter("testcase_solved",testcase_solved)
+
+
+@register.filter
+def get_problem(user,pname):
+    return user.get_problem(pname)
+
+register.filter("get_problem",get_problem)
+
+@register.filter
+def submit_times(problem):
+    return problem.submit_times()
+
+register.filter("submit_times",submit_times)
+
+@register.filter
+def problem_solved(user):
+    return user.solved()
+
+register.filter("problem_solved",problem_solved)
+
+@register.filter
+def penalty(user,start_time):
+    return user.penalty(start_time)
+
+register.filter("penalty",penalty)
+
+@register.filter
+def passrate(problem):
+    return problem.passrate()
+
+register.filter("passrate",passrate)
+
