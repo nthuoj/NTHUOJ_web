@@ -36,7 +36,7 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'general_tools',
+    'utils',
     'problem',
     'index',
     'contest',
@@ -44,6 +44,7 @@ INSTALLED_APPS = (
     'team',
     'group',
     'status',
+    'axes',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -54,6 +55,7 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'axes.middleware.FailedLoginMiddleware',
 )
 
 ROOT_URLCONF = 'nthuoj.urls'
@@ -74,6 +76,13 @@ DATABASES = {
     }
 }
 
+# Custom User auth
+
+AUTH_USER_MODEL = 'users.User'
+# where @login_required will redirect to
+LOGIN_URL = '/users/login/' 
+
+
 # Internationalization
 # https://docs.djangoproject.com/en/1.7/topics/i18n/
 
@@ -85,10 +94,18 @@ USE_I18N = True
 
 USE_L10N = True
 
-USE_TZ = True
+USE_TZ = False
 
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.7/howto/static-files/
 
 STATIC_URL = '/static/'
+
+# django-axes 1.3.8 configurations
+# https://pypi.python.org/pypi/django-axes/
+
+# redirect to broken page when exceed wrong-try limits
+AXES_LOCKOUT_TEMPLATE = 'index/404.html' 
+# freeze login access for that ip for 0.1*60 = 6 minites
+AXES_COOLOFF_TIME = 0.1

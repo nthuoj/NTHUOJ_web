@@ -21,32 +21,32 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 '''
-import logging
+from django.shortcuts import render
+from index.views import custom_proc
+from django.template import RequestContext
 
+def render_404(request, message):
+    '''Help to render 404 page
 
-def get_logger(name='NTHU OJ'):
-    '''Return a logger with specified settings
-
-    Args:
-        name: the name of the module.
-    Returns:
-        the logger with specified format.
+    example: 
+        render_404(request, 'Page not found')
     '''
-    # create logger
-    logger = logging.getLogger(name)
-    logger.setLevel(logging.DEBUG)
+    return render(request, 'index/404.html',
+        {'error_message': message}, status=500)
 
-    # create console handler and set level to debug
-    ch = logging.StreamHandler()
-    ch.setLevel(logging.DEBUG)
 
-    # create formatter
-    formatter = logging.Formatter('[%(asctime)s] %(levelname)s: %(message)s')
+def render_500(request, message):
+    '''Help to render 500 page
 
-    # add formatter to ch
-    ch.setFormatter(formatter)
+    example: 
+        render_500(request, 'Request query does not exist')
+    '''
+    return render(request, 'index/500.html',
+        {'error_message': message}, status=500)
 
-    # add ch to logger
-    logger.addHandler(ch)
+def render_index(request, *args, **kwargs):
+    '''Helper to render index page with custom_proc'''
+    # add context_instance keyword
+    kwargs.update({'context_instance': RequestContext(request, processors=[custom_proc])})
 
-    return logger
+    return render(request, *args, **kwargs)

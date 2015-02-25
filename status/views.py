@@ -22,15 +22,27 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 '''
 from django.shortcuts import render
-from django.template import RequestContext
-import logging
-
-from problem.models import Submission, SubmissionDetail
 from index.views import custom_proc
-from general_tools.log import get_logger
+from utils.log_info import get_logger
+from django.template import RequestContext
+from problem.models import Submission, SubmissionDetail
+from django.contrib.auth.decorators import login_required
+from status.templatetags.status_filters import show_detail
+
 # Create your views here.
 
 logger = get_logger()
+
+
+def regroup_submission(submissions, submission_details):
+    submission_groups = []
+    for submission in submissions:
+        submission_groups.append({
+            'grouper': submission,
+            'list': submission_details.filter(sid=submission)
+            })
+
+    return submission_groups
 
 
 def status(request):
@@ -39,22 +51,57 @@ def status(request):
     submission_details = SubmissionDetail. \
         objects.filter(sid__in=submissions_id).order_by('-sid')
 
+    submissions = regroup_submission(submissions, submission_details)
+    print submissions
     return render(
         request,
         'status/status.html',
-        {'submission_details': submission_details},
+        {'submissions': submissions},
         context_instance=RequestContext(request, processors=[custom_proc]))
 
 
 def error_message(request, sid):
+
     try:
         submission = Submission.objects.get(id=sid)
         error_msg = submission.error_msg
+        if show_detail(submission, request.user):
+            return render(
+                request,
+                'status/error_message.html',
+                {'error_message': error_msg})
+        else:
+            logger.warning('User %s attempt to view detail of SID %s' % (request.user, sid))
+            return render(
+                request,
+                'index/500.html',
+                {'error_message': 'You don\'t have permission to view detail of SID %s' % sid})
+
+    except Submission.DoesNotExist:
+        logger.warning('SID %s Not Found!' % sid)
         return render(
             request,
-            'status/error_message.html',
-            {'error_message': error_msg})
+            'index/500.html',
+            {'error_message': 'SID %s Not Found!' % sid})
 
+
+@login_required()
+def view_code(request, sid):
+    try:
+        submission = Submission.objects.get(id=sid)
+        # TODO:
+        # fetch code from file system
+        if show_detail(submission, request.user):
+            return render(
+                request,
+                'users/submit.html',
+                {})
+        else:
+            logger.warning('User %s attempt to view detail of SID %s' % (request.user, sid))
+            return render(
+                request,
+                'index/500.html',
+                {'error_message': 'You don\'t have permission to view detail of SID %s' % sid})
     except Submission.DoesNotExist:
         logger.warning('SID %s Not Found!' % sid)
         return render(

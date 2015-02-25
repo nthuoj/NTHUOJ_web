@@ -32,6 +32,7 @@ body {
 .wrap-body {
   min-height: 100%;
   height: auto;
+  margin-bottom: 35px; 
 }
 .gray {
   background-color: #E5E5E5;
