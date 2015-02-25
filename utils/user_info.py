@@ -79,3 +79,9 @@ def user_is_valid(curr_user):
         User.objects.get(username=curr_user.username)
     except User.DoesNotExist:
         logger.warning('User username %s does not exsit!' % curr_user.username)
+
+def validate_user(user):
+    # an anonymous user is treated as a normal user
+    if user.is_anonymous():
+        user = User()  # create a temporary user instance with on attribute
+    return user

@@ -24,15 +24,9 @@ SOFTWARE.
 from django import template
 from users.models import User
 from datetime import datetime
+from utils.user_info import validate_user
 
 register = template.Library()
-
-
-def validate_user(user):
-    # an anonymous user is treated as a normal user
-    if user.is_anonymous():
-        user = User()  # create a temporary user instance with on attribute
-    return user
 
 
 @register.filter()
