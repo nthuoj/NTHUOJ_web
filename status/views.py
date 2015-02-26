@@ -36,16 +36,29 @@ from status.templatetags.status_filters import show_detail
 logger = get_logger()
 
 
+def regroup_submission(submissions, submission_details):
+    submission_groups = []
+    for submission in submissions:
+        submission_groups.append({
+            'grouper': submission,
+            'list': submission_details.filter(sid=submission)
+            })
+
+    return submission_groups
+
+
 def status(request):
     submissions = Submission.objects.order_by('-id')[0:50]
     submissions_id = map(lambda submission: submission.id, submissions)
     submission_details = SubmissionDetail. \
         objects.filter(sid__in=submissions_id).order_by('-sid')
 
+    submissions = regroup_submission(submissions, submission_details)
+
     return render(
         request,
         'status/status.html',
-        {'submission_details': submission_details},
+        {'submissions': submissions},
         context_instance=RequestContext(request, processors=[custom_proc]))
 
 

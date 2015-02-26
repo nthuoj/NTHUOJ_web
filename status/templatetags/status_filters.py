@@ -27,15 +27,9 @@ from datetime import datetime
 from contest.models import Contest
 from team.models import TeamMember
 from django.core.urlresolvers import reverse
+from utils.user_info import validate_user
 
 register = template.Library()
-
-
-def validate_user(user):
-    # an anonymous user is treated as a normal user
-    if user.is_anonymous():
-        user = User()  # create a temporary user instance with on attribute
-    return user
 
 
 def show_submission(submission, user):
@@ -63,11 +57,13 @@ def show_submission(submission, user):
     if submission.problem.owner_id == user.username:
         return True
 
-    # contest owner & coowner's submission can't be seen until the end
+    # contest owner/coowner's submission can't be seen before the end of contest
     contests = Contest.objects.filter(
         is_homework=False,
         problem=submission.problem,
-        end_time__gt=datetime.now())
+        creation_time__lte=submission.submit_time,
+        end_time__gte=datetime.now())
+
     if contests:
         owners = []
         for contest in contests:
@@ -81,14 +77,13 @@ def show_submission(submission, user):
             # to see submission, submission.user must not be owners
             return submission.user not in owners
 
-    valid = True
     # an invisible problem's submission can't be seen
     if not submission.problem.visible:
-        valid = False
+        return False
     # problem owner's submission can't be seen
     if submission.user.username == submission.problem.owner_id:
-        valid = False
-    return valid
+        return False
+    return True
 
 
 @register.filter()
@@ -115,9 +110,9 @@ def show_detail(submission, user):
 
         contests = Contest.objects.filter(
             is_homework=False,
-            start_time__lt=datetime.now(),
-            end_time__gt=datetime.now())
-        # during the contest, only owner/coowner with user level sub-judge/judge 
+            start_time__lte=datetime.now(),
+            end_time__gte=datetime.now())
+        # during the contest, only owner/coowner with user level sub-judge/judge
         # can view the detail
         if contests:
             contests = contests.filter(problem=submission.problem)
@@ -125,7 +120,7 @@ def show_detail(submission, user):
             for contest in contests:
                 owners.append(contest.owner)
                 owners.extend(contest.coowner.all())
-            if user.has_subjudge_auth() and user in owners:
+            if user in owners:
                 return True
             else:
                 return False

@@ -1,4 +1,4 @@
-<!--
+'''
 The MIT License (MIT)
 
 Copyright (c) 2014 NTHUOJ team
@@ -20,35 +20,34 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
--->
-<!DOCTYPE html>
-{% load static %}
+'''
+from django import template
+from users.models import User
+from datetime import datetime
+from utils.user_info import validate_user
 
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <!-- necessarily jQeuery -->
-  <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js">
-  </script>
-  <!-- bootstrap, bootwatch JS & CSS -->
-  <link rel="stylesheet"
-        href="http://bootswatch.com/paper/bootstrap.css" media="screen">
-  <link rel="stylesheet"
-        href="http://bootswatch.com/assets/css/bootswatch.min.css">
-  <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js">
-  </script>
-  <link rel="stylesheet" href={% static "./css/index.css"%} media="screen">
-</head>
-<body>
-  <div style="background-color:#fcfcfc;border-radius:10px;">
-    <div style="position:relative;bottom:0px;">
-      <p style="text-align:center" class="err1" >5&nbsp0&nbsp0</p>
-    </div>
-    <p style="text-align:center" class="err2">Some errors occurred</p>
-    <p style="text-align:center" class="err2">{{ error_message }}</p>
-    <p style="text-align:center" class="err3">
-      Oops , there was an error.
-    </p>
-  </div>
-</body>
-</html>
+register = template.Library()
+
+
+@register.filter()
+def can_change_userlevel(user, profile_user):
+    '''Test if the user can change user_level
+    of profile_user
+    Args:
+        submission: a Submission object
+        user: an User object
+    Returns:
+        a boolean of the judgement
+    '''
+    user = validate_user(user)
+    # admin can change user to all levels
+    if user.has_admin_auth():
+        return True
+    # judge can change user to sub-judge, user
+    user_level = profile_user.user_level
+    if user.has_judge_auth() and \
+        (user_level == User.SUB_JUDGE or user_level == User.USER):
+        return True
+
+    return False
+
