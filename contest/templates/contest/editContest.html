@@ -17,20 +17,29 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 -->
-{% extends "index/base.html" %} 
-
-{% block title_name %}
+{% extends "index/base.html" %} {% load staticfiles %} {% block title_name %}
 <title>New Contest</title>
-{% endblock title_name %}
+{% endblock title_name %} {% block import_source %}
 
- {% block body_block %}
-
-<div class="container">
-  <form action="." method="POST">
-    {% csrf_token %} 
-    {{ form.as_p }}
-    <input type="submit">
-  </form>
+<script src="{% static 'contest/js/jquery.multi-select.js' %}" type="text/javascript"></script>
+<script src="{% static 'contest/js/editContest.js' %}" type="text/javascript"></script>
+<script src="{% static 'contest/js/jquery.quicksearch.js' %}" type="text/javascript"></script>
+<script src="{% static 'contest/js/search.js' %}" type="text/javascript"></script>
+<link href="{% static 'contest/css/multi-select.css'%}" media="screen" rel="stylesheet" type="text/css"> 
+{% endblock import_source %} 
+{% block body_block %}
+<div class="container" style="width:40%;">
+    <form action="." method="POST">
+        {% csrf_token %}
+        {% for field in form %}
+        <div class="form-group">
+            {{ field.errors }}
+            {{ field.label_tag }}
+            {{ field }}
+        </div>
+        {% endfor %}
+        <input class="btn btn-primary" type="submit">
+    </form>
 </div>
 
 {% endblock body_block %}
