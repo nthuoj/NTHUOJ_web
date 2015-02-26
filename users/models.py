@@ -88,16 +88,16 @@ class User(AbstractBaseUser):
     objects = UserManager()
 
     def has_admin_auth(self):
-        has_auth = (self.user_level == ADMIN)
+        has_auth = (self.user_level == self.ADMIN)
         return has_auth
 
     def has_judge_auth(self):
-        has_auth = ((self.user_level == ADMIN) or ( self.user_level == JUDGE))
+        has_auth = ((self.user_level == self.ADMIN) or ( self.user_level == self.JUDGE))
         return has_auth
 
     def has_subjudge_auth(self):
-        has_auth = ((self.user_level == ADMIN) or ( self.user_level == JUDGE) \
-                    or (self.user_level == SUB_JUDGE))
+        has_auth = ((self.user_level == self.ADMIN) or ( self.user_level == self.JUDGE) \
+                    or (self.user_level == self.SUB_JUDGE))
         return has_auth
 
     def get_full_name(self):
