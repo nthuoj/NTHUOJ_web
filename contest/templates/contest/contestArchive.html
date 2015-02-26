@@ -104,7 +104,7 @@ SOFTWARE.
 
           </script>
           {% endif %}
-          {% if user.is_authenticated %}
+          {% if user.is_authenticated and contest.contest.open_register%}
           <a href="{% url 'contest:register' contest.contest.id %}">
             <button type="button" class="btn btn-success btn-xs" >
               <span class="glyphicon glyphicon-plus"></span>
