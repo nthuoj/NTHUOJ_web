@@ -52,7 +52,7 @@ def status(request):
         objects.filter(sid__in=submissions_id).order_by('-sid')
 
     submissions = regroup_submission(submissions, submission_details)
-    print submissions
+
     return render(
         request,
         'status/status.html',
