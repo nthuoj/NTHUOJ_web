@@ -328,17 +328,19 @@ SOFTWARE.
             </table>
           </div>
           <div class="tab-pane" id="contest_others{{ contest.contest.id }}">
-            <label>Freeze：</label>
-            <input type="text" class="form-control" value="{{ contest.contest.freeze_time}}"></input>
-            <div class="checkbox">
-              <label>
-                <input type="checkbox">Homework</input>
-              </label>
-              <br>
-              <label>
-                <input type="checkbox">Open Register</input>
-              </label>
-            </div>
+            <label>Freeze Time：</label>
+            <h4>{{ contest.contest.freeze_time }} mins</h4>
+            {% if contest.contest.is_homework %}
+              <span class="glyphicon glyphicon-ok green" aria-hidden="true"></span>Is Homework
+            {% else %}
+              <span class="glyphicon glyphicon-remove red" aria-hidden="true"></span>Not Homework
+            {% endif %}
+            <br>
+            {% if contest.contest.open_register %}
+              <span class="glyphicon glyphicon-ok green" aria-hidden="true"></span>Can Register
+            {% else %}
+              <span class="glyphicon glyphicon-remove red" aria-hidden="true"></span>Can Not Register
+            {% endif %}
           </div>
         </div>
       </div>
