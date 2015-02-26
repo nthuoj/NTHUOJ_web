@@ -22,7 +22,6 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 '''
 import json
-import random
 
 from django.contrib.auth import authenticate, login, logout
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
@@ -35,6 +34,7 @@ from index.views import custom_proc
 from users.forms import UserProfileForm, UserLevelForm
 from users.models import User
 from utils.log_info import get_logger, get_client_ip
+from utils.user_info import get_user_statistics
 from users.templatetags.profile_filters import can_change_userlevel
 # Create your views here.
 
@@ -70,9 +70,7 @@ def submit(request):
 def profile(request, username):
     try:
         profile_user = User.objects.get(username=username)
-        piechart_data = []
-        for l in ['WA', 'AC', 'RE', 'TLE', 'MLE', 'OLE', 'Others']:
-            piechart_data += [{'label': l, 'data': random.randint(50, 100)}]
+        piechart_data = get_user_statistics(profile_user)
 
         render_data = {}
         render_data['profile_user'] = profile_user

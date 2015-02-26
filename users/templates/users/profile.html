@@ -27,15 +27,28 @@ SOFTWARE.
 
 {% block body_block %}
 
-<script language="javascript" type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/flot/0.8.2/jquery.flot.min.js"></script>
-<script language="javascript" type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/flot/0.8.2/jquery.flot.pie.min.js"></script>
-
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/1.0.1/Chart.min.js"></script>
 <script src={% static "js/piechartsettings.js"%}></script>
 <script type="text/javascript">
 $(function() {
   plot_piechart({{ piechart_data|safe }});
 });
 </script>
+<style type="text/css">
+  #piechart {
+    width: 100% !important;
+    height: auto !important;
+  }
+  .pie-legend li span {
+    width: 1em;
+    height: 1em;
+    display: inline-block;
+    margin-right: 5px;
+  }
+  .pie-legend {
+    list-style: none;
+  }
+</style>
 
 <div class="bs-docs-section container">
   <div class="row">
@@ -46,8 +59,11 @@ $(function() {
         <div class="panel-body">
           <div class="form-group">
             <label class="col-lg-2 col-lg-offset-1 control-label">Piechart</label>
-            <div class="col-lg-9">
-              <div id="piechart" style="width:320px;height:250px;"></div>
+            <div id="statistics" class="row">
+              <div class="col-lg-9">
+                <canvas id="piechart"><canvas>
+              </div>
+              <div id="piechart-legend" class="col-lg-3"></div>
             </div>
           </div>
         </div>

@@ -25,7 +25,7 @@ from django.db import models
 from users.models import User
 from group.models import Group
 from contest.models import Contest
-from problem.models import Problem
+from problem.models import Problem, Submission, SubmissionDetail
 from utils.log_info import get_logger
 
 logger = get_logger()
@@ -85,3 +85,37 @@ def validate_user(user):
     if user.is_anonymous():
         user = User()  # create a temporary user instance with on attribute
     return user
+
+def get_user_statistics(user):
+    '''Find the statistics of the given user'''
+    # fetch some status labels in Submissions
+    # here, we only concern about COMPILE_ERROR, RESTRICTED_FUNCTION,
+    # and JUDGE_ERROR since ACCEPTED, NOT_ACCEPTED, etc will appear in
+    # SubmissionDetail.VIRDECT_CHOICE
+    status_labels = [
+        Submission.COMPILE_ERROR,
+        Submission.RESTRICTED_FUNCTION,
+        Submission.JUDGE_ERROR
+        ]
+    # find all virdect in SubmissionDetail.VIRDECT_CHOICE
+    virdect_labels = [x[0] for x in SubmissionDetail.VIRDECT_CHOICE]
+    statistics = []
+
+    # fetch Submission of the given user
+    submissions = Submission.objects.filter(user=user)
+    for label in status_labels:
+        statistics += [{
+            'label': label,
+            'value': submissions.filter(status=label).count()
+        }]
+
+    # fetch Submission of the given user
+    submissions_id = map(lambda submission: submission.id, submissions)
+    submission_details = SubmissionDetail.objects.filter(sid__in=submissions_id)
+    for label in virdect_labels:
+        statistics += [{
+            'label': label,
+            'value': submission_details.filter(virdect=label).count()
+        }]
+
+    return statistics
