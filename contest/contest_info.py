@@ -38,32 +38,17 @@ def get_testcases_quantity(problem):
     testcases = Testcase.objects.filter(problem = problem)
     return testcases.__len__()
 
-def get_contest_submission_list(contest):
-    contestant_list = get_contestant_list(contest)
-    submission_list = []
-    
-    for contestant in contestant_list:
-        contestant_submission_list = []
-        for problem in contest.problem.all():
-            submissions = get_contestant_problem_submission_list(contest,contestant,problem)
-            
-            contestant_submission_list.append(submissions)
-        
-        submission_list.append(contestant_submission_list)
-    return submission_list
-
 def get_contestant_problem_submission_list(contest,contestant,problem):
-    return Submission.objects.filter(problem = problem , submit_time__lte = contest.end_time,
-                                                   submit_time__gte = contest.start_time , user = contestant.user) 
+    return Submission.objects.filter(problem = problem, submit_time__lte = contest.end_time,
+                                     submit_time__gte = contest.start_time, user = contestant.user) 
 
 def get_passed_testcases(submission):
-    passed_testcases = SubmissionDetail.objects.filter(sid = submission,virdect = SubmissionDetail.AC)
+    passed_testcases = SubmissionDetail.objects.filter(sid = submission, virdect = SubmissionDetail.AC)
     return passed_testcases.__len__()
 
 def get_scoreboard(contest):
     
     contestant_list = get_contestant_list(contest)
-    submission_list = get_contest_submission_list(contest)
     
     scoreboard = Scoreboard(contest.start_time)
     for problem in contest.problem.all():

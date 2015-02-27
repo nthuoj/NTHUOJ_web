@@ -33,7 +33,6 @@ from contest.models import Clarification
 from contest.forms import ContestForm
 
 from contest.contest_info import get_contestant_list
-from contest.contest_info import get_contest_submission_list
 from contest.contest_info import get_scoreboard
 
 from utils.log_info import get_logger
@@ -75,7 +74,7 @@ def contest(request,contest_id):
 def new(request):
     if request.user.has_judge_auth():
         if request.method == 'GET':
-            form = ContestForm()
+            form = ContestForm(initial={'owner':request.user})
             return render(request,'contest/editContest.html',{'form':form})
         if request.method == 'POST':
             form = ContestForm(request.POST)

@@ -34,6 +34,10 @@ function add_form_control(id) {
     add_attribute(id, 'class', 'form-control');
 }
 
+function disable(id){
+    document.getElementById(id).disabled = true;
+}
+
 function enable_search() {
     $('.searchable').multiSelect({
         selectableHeader: "<input type='text' class='search-input form-control' autocomplete='off'>",
@@ -77,6 +81,7 @@ function enable_search() {
 function bootstraptify() {
     add_form_control('id_cname');
     add_form_control('id_owner');
+    disable('id_owner');
     add_form_control('id_start_time');
     add_form_control('id_end_time');
     add_form_control('id_freeze_time');

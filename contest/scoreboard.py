@@ -42,8 +42,6 @@ class User:
         for problem in self.problems:
             if(problem.pname == pname):
                 return problem
-    def __str__(self):
-        return self.username
     def solved(self):
         count = 0
         for problem in self.problems:
