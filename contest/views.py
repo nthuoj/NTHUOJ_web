@@ -26,6 +26,8 @@ from index.views import custom_proc
 from django.template import RequestContext
 from django.forms.models import model_to_dict
 
+from contest.contestArchive import get_contests
+
 from contest.models import Contest
 from contest.models import Contestant
 from contest.models import Clarification
@@ -39,18 +41,11 @@ from utils import user_info
 logger = get_logger()
 
 def archive(request):
-    #to store contest basic info and contestants
-    contest_list = []
-    #store contest basic info only
-    contest_info_list = Contest.objects.order_by('-start_time')
-    for contest in contest_info_list:
-        contestants = Contestant.objects.filter(contest = contest)
-        contest_list.append({'contest':contest,'contestants':contestants})
+    contests = get_contests()
 
     user = request.user
 
-    return render(request, 'contest/contestArchive.html',
-        {'contest_list':contest_list,'user':user},
+    return render(request, 'contest/contestArchive.html',{'contests':contests,'user':user},
         context_instance = RequestContext(request, processors = [custom_proc]))
 
 def contest(request,contest_id):
