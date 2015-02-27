@@ -37,6 +37,10 @@ if not os.path.isfile('nthuoj.ini'):
     pwd = getpass.getpass()
     write_ini_file(host, db, user, pwd)
 
+if not os.path.isfile('nthucsoj.py'):
+    # Setting nthucsoj.py
+    email_host_pwd = getpass.getpass('nthucsoj@gmail.com password : ')
+    write_email_file(email_host_pwd)
 
 # Database Migratinos
 db_migrate()

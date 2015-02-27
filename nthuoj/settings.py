@@ -10,6 +10,7 @@ https://docs.djangoproject.com/en/1.7/ref/settings/
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
+from nthucsoj import EMAIL_HOST_PASSWORD
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
 
@@ -109,3 +110,8 @@ STATIC_URL = '/static/'
 AXES_LOCKOUT_TEMPLATE = 'index/404.html' 
 # freeze login access for that ip for 0.1*60 = 6 minites
 AXES_COOLOFF_TIME = 0.1
+
+EMAIL_USE_TLS = True
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_HOST_USER = 'nthucsoj@gmail.com'
+EMAIL_PORT = 587

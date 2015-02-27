@@ -132,3 +132,13 @@ class Notification(models.Model):
 
     def __unicode__(self):
         return str(self.id)
+
+class UserProfile(models.Model):
+    user = models.OneToOneField(User)
+    activation_key = models.CharField(max_length=40, blank=True)    
+      
+    def __str__(self):
+        return self.user.username
+
+    class Meta:
+        verbose_name_plural=u'User profiles'

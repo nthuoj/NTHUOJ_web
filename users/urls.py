@@ -33,4 +33,5 @@ urlpatterns = patterns('',
     url(r'^list/$', views.list, name='list'),
     url(r'^submit/$', views.submit, name='submit'),
     url(r'^profile/$', views.profile, name='profile'),
+    url(r'^confirm/(?P<activation_key>\w+)/', ('users.views.register_confirm'), name="confirm"),
 )

@@ -43,7 +43,7 @@ def volume(request):
                 end_id = i * 100
             problem_id.append(str(start_id) + ' ~ ' + str(end_id))
 
-    return render(request, 'problem/category.html', {'problem_id':problem_id})
+    return render(request, 'problem/volume.html', {'problem_id':problem_id})
 
 def detail(request, problem_id):
     p = {
