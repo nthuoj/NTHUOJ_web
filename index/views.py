@@ -32,7 +32,7 @@ from django.http import HttpResponse
 from django.template import RequestContext
 
 # Create your views here.
-def index(request):    
+def index(request):
 
     present = timezone.now()
     c_runnings = Contest.objects.filter(start_time__lt=present, end_time__gt=present)

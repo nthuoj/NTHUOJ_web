@@ -157,9 +157,7 @@ SOFTWARE.
               <li><a href="{% url 'users:list' %}">user list</a></li>
               {% if user.is_authenticated %}
                 <li>
-                  <a href={% url "users:profile" user.username %}>
-                    <p class="p2">user profile</p>
-                  </a>
+                  <a href={% url "users:profile" user.username %}>user profile</a>                  
                 </li>
               {% endif %}
             </ul>
