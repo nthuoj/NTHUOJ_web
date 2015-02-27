@@ -1,4 +1,3 @@
-
 '''
 The MIT License (MIT)
 
@@ -24,10 +23,12 @@ SOFTWARE.
 '''
 from django import forms
 from django.contrib import admin
-from users.models import User, Notification
-from django.contrib.auth.models import Group
 from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.forms import ReadOnlyPasswordHashField, AuthenticationForm
+from django.contrib.auth.models import Group
+from django.core.validators  import RegexValidator
+
+from users.models import User, Notification
 
 # Register your models here.
 
@@ -36,7 +37,9 @@ admin.site.register(Notification)
 class UserCreationForm(forms.ModelForm):
     """A form for creating new users. Includes all the required
     fields, plus a repeated password."""
-    username = forms.CharField(label='Username', widget=forms.TextInput(attrs={'class': 'form-control'}))
+    username = forms.CharField(label='Username', 
+        widget=forms.TextInput(attrs={'class': 'form-control'}),
+        validators=[RegexValidator(regex='^\w+$', message='Username must be Alphanumeric')])
     email = forms.EmailField(label='Email', widget=forms.TextInput(attrs={'class': 'form-control'}))
     password1 = forms.CharField(label='Password', widget=forms.PasswordInput(attrs={'class': 'form-control'}))
     password2 = forms.CharField(label='Password Confirmation', widget=forms.PasswordInput(attrs={'class': 'form-control'}))

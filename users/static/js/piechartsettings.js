@@ -23,28 +23,27 @@ SOFTWARE.
 */
 var plot_piechart;
 $(function() {
-    function labelFormatter(label, series) {
-        return '<div style="font-size:10pt;text-align:center;padding:2px;">' +
-            label + '<br/>' + Math.round(series.percent) + '%</div>';
-    }
-
     plot_piechart = function(data) {
-        var placeholder = $('#piechart');
-        $.plot(placeholder, data, {
-            series: {
-                pie: {
-                    show: true,
-                    radius: 180,
-                    label: {
-                        show: true,
-                        radius: 0.6,
-                        formatter: labelFormatter,
-                        background: {
-                            opacity: 0
-                        }
-                    }
-                }
-            }
+        var statisticsTotal = 0;
+        for(var i = 0; i < data.length; i++) {
+            statisticsTotal += data[i].value;
+            // Generate random color to each data
+            data[i].color = "#" + Math.random().toString(16).slice(2, 8);
+        }
+        var ctx = $("#piechart").get(0).getContext("2d");
+        // This will get the first returned node in the jQuery collection.
+        var pieChart = new Chart(ctx).Pie(data, {
+            legendTemplate: '<ul class="pie-legend">' +
+                '<% for (var i=0; i<segments.length; i++){%><li>' +
+                '<span style="background-color:<%=segments[i].fillColor%>"></span>' +
+                '<%if(segments[i].label){%><%=segments[i].label%>: <%=segments[i].value%><%}%>' +
+                '</li><%}%></ul>'
         });
+        var legend = pieChart.generateLegend();
+        $("#piechart-legend").html(legend);
+        if(statisticsTotal == 0) {
+            // If no statistics available, appear this notification.
+            $('#statistics').html('No statistics yet.');
+        }
     }
 })
