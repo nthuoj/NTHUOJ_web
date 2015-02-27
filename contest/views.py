@@ -32,9 +32,6 @@ from contest.models import Clarification
 
 from contest.forms import ContestForm
 
-from contest.contest_info import get_contestant_list
-from contest.contest_info import get_scoreboard
-
 from utils.log_info import get_logger
 from utils import user_info
 
@@ -64,11 +61,8 @@ def contest(request,contest_id):
         raise Http404('Contest does not exist')
     
     clarification_list = Clarification.objects.filter(contest = contest)
-
-    scoreboard = get_scoreboard(contest)
     
-    return render(request, 'contest/contest.html',{'contest':contest,'clarification_list':clarification_list,
-        'scoreboard':scoreboard},
+    return render(request, 'contest/contest.html',{'contest':contest,'clarification_list':clarification_list},
         context_instance = RequestContext(request, processors = [custom_proc]))
 
 def new(request):
@@ -97,13 +91,13 @@ def edit(request,contest_id):
         if request.method == 'GET':        
             contest_dic = model_to_dict(contest)
             form = ContestForm(initial = contest_dic)
-            return render(request,'contest/editContest.html',{'form':form})
+            return render(request,'contest/editContest.html',{'form':form,'user':request.user})
         if request.method == 'POST':
             form = ContestForm(request.POST, instance = contest)
             if form.is_valid():
                 modified_contest = form.save()
                 logger.info('Contest: Modified contest %s!' % modified_contest.id)
-                return HttpResponseRedirect('/contest/')
+            return HttpResponseRedirect('/contest/')
     else:
         raise PermissionDenied
 
