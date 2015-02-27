@@ -23,7 +23,15 @@ SOFTWARE.
 -->
 {% extends "index/base.html" %}
 {% load static %}
-
+{% block import_source %}
+<script>
+function active_link() {
+    message = 'Please go to your mailbox and click the confirmation link' + 
+    '\;otherwise , your account would not be activated!';
+    alert(message);  
+}
+</script>
+{% endblock import_source %}
 {% block body_block %}
 <div class="container" style="width:40%">
   <h3>{{ title }}</h3>
@@ -57,7 +65,7 @@ SOFTWARE.
     {% endfor %}
     <div class="modal-footer">
       <div id='msg' class='col-md-4'>{{ message }}</div>
-      <button type="submit" class="btn btn-primary">Submit</button>
+      <button type="submit" class="btn btn-primary" onclick="active_link();">Submit</button>
     </div>
     <hr>
     <div class="poptxt_login">
