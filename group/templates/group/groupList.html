@@ -28,6 +28,7 @@ SOFTWARE.-->
 <div class="container-fluid">
   <div class="row-fluid">
     <div class="span12">
+      <!-- Create/Delete group need judge auth -->
       {% if user.has_judge_auth %}
       <div class="form-group">
         <a class="btn btn-sm btn-default" style="float:right" 
@@ -71,7 +72,7 @@ SOFTWARE.-->
           <a href="{% url 'group:detail' group.id %}">{{ group.gname }}</a>
         </td>
         <td>{{ group.owner }}</td>
-        <td>{{ group.description }}</td>
+        <td>{{ group.description|truncatechars:70 }}</td>
         <td>
           {% if user.has_judge_auth %}
           <a href="{% url 'group:delete' group.id %}">

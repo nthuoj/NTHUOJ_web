@@ -31,23 +31,14 @@ SOFTWARE.
        data-toggle="modal" style="float:left, margin-right:5px">
       return
     </a>
-    <!--Check if user is owner/coowner, if yes then display edit button-->
-    {% ifequal user.username|upper owner|upper %}
+    <!--Check if user is owner/coowner, if true then display edit button-->
+    {% if isOwner %}
     <a href="{% url 'group:edit' group_id %}">
       <button type="button" class="btn btn-sm btn-default">
         Edit
       </button>
     </a>
-    {% endifequal %}
-    {% for coowner in coowner_list %}
-      {% ifequal user.username|upper coowner.username|upper %}
-      <a href="{% url 'group:edit' group_id %}">
-        <button type="button" class="btn btn-sm btn-default">
-          Edit
-        </button>
-      </a>
-      {% endifequal %}
-    {% endfor %}
+    {% endif %}
     <br>
     <br> 
     <div class="span12">
@@ -164,8 +155,8 @@ SOFTWARE.
       <tbody>
         {% for annowence in an_list %}
         <tr>
-          <td>{{ annowence.title }}</td>
-          <td>{{ annowence.content }}</td>
+          <td>{{ annowence.title|truncatechars:25 }}</td>
+          <td>{{ annowence.content|truncatechars:70 }}</td>
           <td>
             <a href="" class="btn btn-sm btn-default" data-toggle="modal" 
                data-target="#annowenceContentModal{{annowence.id}}" 
