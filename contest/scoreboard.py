@@ -18,6 +18,7 @@
     SOFTWARE.
     '''
 import sys
+from operator import methodcaller
 class Scoreboard:
     def __init__(self,start_time):
         self.users = []
@@ -34,6 +35,12 @@ class Scoreboard:
         for scoreboard_problem in self.problems:
             if (scoreboard_problem.id == id):
                 return scoreboard_problem
+
+    #sort by solved descending. if same sort by penalty
+    def sort_users(self):
+        self.users = sorted(self.users, key=methodcaller('penalty',self.start_time))
+        self.users = sorted(self.users, key=methodcaller('solved'), reverse=True)
+
 #for scoreboard
 class Scoreboard_Problem:
     def __init__(self,id,pname,total_testcase):
@@ -115,7 +122,7 @@ class Submission:
         self.submit_time = submit_time
         self.pass_testcase = pass_testcase
         self.total_testcase = total_testcase
-        
+
     def is_solved(self):
         if(self.pass_testcase == self.total_testcase):
             return True

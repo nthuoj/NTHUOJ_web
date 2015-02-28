@@ -55,7 +55,6 @@ SOFTWARE.
           <tr>
             <td>{{ forloop.counter }}</td>
             <td>{{ user.username }}</td>
-
             {% for problem in user.problems %}
             <td>
               {{ problem|testcase_solved }}/{{ scoreboard|get_problem:problem.id|total_testcase }}
@@ -63,6 +62,15 @@ SOFTWARE.
             {% endfor %}
           </tr>
           {% endfor %}
+          <tr>
+            <td>Total</td>
+            <td></td>
+            {% for problem in scoreboard.problems %}
+              <td>
+                {{ problem.pass_user }}
+              </td>
+            {% endfor %}
+          </tr>
         </tbody>
       </table>
     </div>
@@ -93,6 +101,17 @@ SOFTWARE.
             <td>{{ user|penalty:scoreboard.start_time }}</td>
           </tr>
           {% endfor %}
+          <tr>
+            <td>Total</td>
+            <td></td>
+            {% for problem in scoreboard.problems %}
+              <td>
+                {{ problem.pass_user }}
+              </td>
+            {% endfor %}
+            <td></td>
+            <td></td>
+          </tr>
         </tbody>
       </table>
     </div>

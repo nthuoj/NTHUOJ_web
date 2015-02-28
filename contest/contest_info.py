@@ -71,4 +71,5 @@ def get_scoreboard(contest):
             new_contestant.add_problem(new_problem)
         scoreboard.add_user(new_contestant)
 
+    scoreboard.sort_users()
     return scoreboard
