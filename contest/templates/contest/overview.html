@@ -29,7 +29,7 @@ SOFTWARE.
   <tbody>
     {% for problem in scoreboard.problems %}
     <tr>
-      <td>{{ forloop.counter }}</td>
+      <td>{{ problem.id }}</td>
       <td><a href="#">{{ problem.pname }}</td>
         <td>
           <div class="progress">

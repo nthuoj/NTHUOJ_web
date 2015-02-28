@@ -45,7 +45,7 @@ SOFTWARE.
             <th>Rank</th>
             <th>User</th>
             {% for problem in scoreboard.problems %}
-            <th><b data-toggle="tooltip" title="{{ problem.pname }}">{{ forloop.counter }}</b>
+            <th><b data-toggle="tooltip" title="{{ problem.pname }}">{{ problem.id }}</b>
             </th>
             {% endfor %}
           </tr>
@@ -56,9 +56,9 @@ SOFTWARE.
             <td>{{ forloop.counter }}</td>
             <td>{{ user.username }}</td>
 
-            {% for problem in scoreboard.problems %}
+            {% for problem in user.problems %}
             <td>
-              {{ user|get_problem:problem.pname|testcase_solved }}/{{ problem.total_testcase }}
+              {{ problem|testcase_solved }}/{{ scoreboard|get_problem:problem.id|total_testcase }}
             </td>
             {% endfor %}
           </tr>
@@ -74,7 +74,7 @@ SOFTWARE.
             <th>Rank</th>
             <th>User</th>
             {% for problem in scoreboard.problems %}
-            <th><b data-toggle="tooltip" title="{{ problem.pname }}">{{ forloop.counter }}</b>
+            <th><b data-toggle="tooltip" title="{{ problem.pname }}">{{ problem.id }}</b>
             </th>
             {% endfor %}
             <th>Solved</th>
@@ -86,8 +86,8 @@ SOFTWARE.
           <tr>
             <td>{{ forloop.counter }}</td>
             <td>{{ user.username }}</td>
-            {% for problem in scoreboard.problems %}
-            <td>{{ user|get_problem:problem.pname|solved }}/{{ user|get_problem:problem.pname|submit_times }}</td>
+            {% for problem in user.problems %}
+            <td>{{ problem|is_solved }}/{{ problem|submit_times }}</td>
             {% endfor %}
             <td>{{ user|problem_solved }}</td>
             <td>{{ user|penalty:scoreboard.start_time }}</td>

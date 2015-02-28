@@ -23,7 +23,8 @@ from contest.models import Clarification
 
 from contest.scoreboard import Scoreboard
 from contest.scoreboard import User
-from contest.scoreboard import Problem as Scoreboard_Problem
+from contest.scoreboard import Scoreboard_Problem
+from contest.scoreboard import Problem as User_Problem
 from contest.scoreboard import Submission as Scoreboard_Submission
 
 from problem.models import Problem
@@ -34,7 +35,7 @@ from problem.models import SubmissionDetail
 def get_contestant_list(contest):
     return Contestant.objects.filter(contest = contest)
 
-def get_testcases_quantity(problem):
+def get_total_testcases(problem):
     testcases = Testcase.objects.filter(problem = problem)
     return testcases.__len__()
 
@@ -47,27 +48,26 @@ def get_passed_testcases(submission):
     return passed_testcases.__len__()
 
 def get_scoreboard(contest):
-    
     contestant_list = get_contestant_list(contest)
     
     scoreboard = Scoreboard(contest.start_time)
     for problem in contest.problem.all():
-        testcases_quantity = get_testcases_quantity(problem);
-        new_problem = Scoreboard_Problem(problem.pname,testcases_quantity)
+        testcases_quantity = get_total_testcases(problem);
+        new_problem = Scoreboard_Problem(problem.id,problem.pname,testcases_quantity)
         scoreboard.add_problem(new_problem)
 
     for contestant in contestant_list:
         new_contestant = User(contestant.user.username)
         for problem in contest.problem.all():
-            submissions = get_contestant_problem_submission_list(contest,contestant,problem)
-            testcases_quantity = get_testcases_quantity(problem)
-            new_problem = Scoreboard_Problem(problem.pname,testcases_quantity)
+            submissions = get_contestant_problem_submission_list(contest,contestant,problem)    
+            new_problem = User_Problem(problem.id)
+            total_testcases = get_total_testcases(problem)
             for submission in submissions:
                 passed_testcases = get_passed_testcases(submission)
-                new_submission = Scoreboard_Submission(submission.submit_time,passed_testcases)
+                new_submission = Scoreboard_Submission(submission.submit_time,passed_testcases,total_testcases)
                 new_problem.add_submission(new_submission)
-            if new_problem.solved():
-                scoreboard.get_problem(new_problem.pname).add_pass_user()
+            if new_problem.is_solved():
+                scoreboard.get_problem(new_problem.id).add_pass_user()
             new_contestant.add_problem(new_problem)
         scoreboard.add_user(new_contestant)
 

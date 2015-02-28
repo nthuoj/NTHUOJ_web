@@ -21,6 +21,7 @@ from django import template
 from utils import user_info
 from contest.models import Contest
 
+from contest.scoreboard import Scoreboard_Problem
 from contest.scoreboard import Problem
 from contest.scoreboard import User
 
@@ -43,13 +44,13 @@ register.filter("has_auth",has_auth)
 
 #scoreboard
 @register.filter
-def solved(problem):
-    if(problem.solved() == True):
+def is_solved(problem):
+    if problem.is_solved():
         return 1
     else:
         return 0
 
-register.filter("solved",solved)
+register.filter("is_solved",is_solved)
 
 @register.filter
 def testcase_solved(problem):
@@ -59,10 +60,16 @@ register.filter("testcase_solved",testcase_solved)
 
 
 @register.filter
-def get_problem(user,pname):
-    return user.get_problem(pname)
+def get_problem(scoreboard,id):
+    return scoreboard.get_problem(id)
 
 register.filter("get_problem",get_problem)
+
+@register.filter
+def total_testcase(scoreboard_problem):
+    return scoreboard_problem.total_testcase
+
+register.filter("total_testcase",total_testcase)
 
 @register.filter
 def submit_times(problem):
