@@ -23,10 +23,13 @@ class Scoreboard:
         self.users = []
         self.problems = []
         self.start_time = start_time
+
     def add_user(self,user):
         self.users.append(user)
+
     def add_problem(self,scoreboard_problem):
         self.problems.append(scoreboard_problem)
+
     def get_problem(self,id):
         for scoreboard_problem in self.problems:
             if (scoreboard_problem.id == id):
@@ -38,6 +41,7 @@ class Scoreboard_Problem:
         self.pname = pname
         self.total_testcase = total_testcase
         self.pass_user = 0
+
     def add_pass_user(self):
         self.pass_user += 1
 
@@ -45,42 +49,52 @@ class User:
     def __init__(self,username):
         self.username = username
         self.problems = []
+
     def add_problem(self,problem):
         self.problems.append(problem)
+
     def get_problem(self,id):
         for problem in self.problems:
             if(problem.id == id):
                 return problem
+
     def solved(self):
         count = 0
         for problem in self.problems:
             if(problem.is_solved() == True):
                 count += 1
         return count
+
     def penalty(self,start_time):
         penalty = 0
         for problem in self.problems:
             penalty += problem.penalty(start_time);
-        return penalty  
+        return penalty
+
 #for each user
 class Problem:
     def __init__(self,id):
         self.submissions = []
         self.id = id
+
     def is_solved(self):
         for submission in self.submissions:
             if submission.is_solved():
                 return True
         return False
+
     def testcase_solved(self):
         testcase_solved = 0
         for submission in self.submissions:
             testcase_solved = max(testcase_solved,submission.pass_testcase)
         return testcase_solved
+
     def add_submission(self,submission):
         self.submissions.append(submission)
+
     def submit_times(self):
         return self.submissions.__len__()
+
     def penalty(self,start_time):
         minute = 60
         #every not passed submission should add addtional penalty
@@ -94,13 +108,14 @@ class Problem:
                 addtional_penalty += not_pass_penalty_unit
         if(penalty == sys.maxsize):
             return 0
-        return penalty + addtional_penalty
+        return int(penalty) + addtional_penalty
 
 class Submission:
     def __init__(self,submit_time,pass_testcase,total_testcase):
         self.submit_time = submit_time
         self.pass_testcase = pass_testcase
         self.total_testcase = total_testcase
+        
     def is_solved(self):
         if(self.pass_testcase == self.total_testcase):
             return True

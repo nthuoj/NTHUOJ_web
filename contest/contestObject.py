@@ -28,19 +28,26 @@ class Contest:
         self.freeze_time = 0
         self.is_homework = False
         self.open_register = True
+
     def set_time(self,start_time,end_time):
         self.start_time = start_time
         self.end_time = end_time
+
     def set_freeze_time(self,freeze_time):
         self.freeze_time = freeze_time
+
     def set_homework(self,boolean):
         self.is_homework = boolean
+
     def set_open_register(self,boolean):
         self.open_register = boolean
+
     def add_coowner(self,coowner):
         self.coowners.append(coowner)
+
     def add_contestant(self,contestant):
         self.contestants.append(contestant)
+        
     def add_problem(self,problem):
         self.problems.append(problem)
 
