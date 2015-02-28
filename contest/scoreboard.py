@@ -37,9 +37,12 @@ class Scoreboard:
                 return scoreboard_problem
 
     #sort by solved descending. if same sort by penalty
-    def sort_users(self):
+    def sort_users_by_penalty(self):
         self.users = sorted(self.users, key=methodcaller('penalty',self.start_time))
         self.users = sorted(self.users, key=methodcaller('solved'), reverse=True)
+
+    def sort_users_by_solved_testcases(self):
+        self.users = sorted(self.users, key=methodcaller('testcases_solved'), reverse=True)
 
 #for scoreboard
 class Scoreboard_Problem:
@@ -72,6 +75,12 @@ class User:
                 count += 1
         return count
 
+    def testcases_solved(self):
+        count = 0
+        for problem in self.problems:
+            count += problem.testcases_solved()
+        return count
+
     def penalty(self,start_time):
         penalty = 0
         for problem in self.problems:
@@ -90,11 +99,11 @@ class Problem:
                 return True
         return False
 
-    def testcase_solved(self):
-        testcase_solved = 0
+    def testcases_solved(self):
+        testcases_solved = 0
         for submission in self.submissions:
-            testcase_solved = max(testcase_solved,submission.pass_testcase)
-        return testcase_solved
+            testcases_solved = max(testcases_solved,submission.pass_testcases)
+        return testcases_solved
 
     def add_submission(self,submission):
         self.submissions.append(submission)
@@ -118,13 +127,13 @@ class Problem:
         return int(penalty) + addtional_penalty
 
 class Submission:
-    def __init__(self,submit_time,pass_testcase,total_testcase):
+    def __init__(self,submit_time,pass_testcases,total_testcases):
         self.submit_time = submit_time
-        self.pass_testcase = pass_testcase
-        self.total_testcase = total_testcase
+        self.pass_testcases = pass_testcases
+        self.total_testcases = total_testcases
 
     def is_solved(self):
-        if(self.pass_testcase == self.total_testcase):
+        if(self.pass_testcases == self.total_testcases):
             return True
         else:
             return False

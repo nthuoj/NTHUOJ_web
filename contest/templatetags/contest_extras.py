@@ -57,22 +57,20 @@ register.filter("has_judge_auth",has_judge_auth)
 
 #scoreboard
 @register.filter
-def is_solved(problem):
-    if problem.is_solved():
-        return 1
-    return 0
-register.filter("is_solved",is_solved)
+def users_sorted_by_penalty(scoreboard):
+    scoreboard.sort_users_by_penalty()
+    return scoreboard.users
+register.filter("users_sorted_by_penalty",users_sorted_by_penalty)
+
+@register.filter
+def users_sorted_by_solved_testcases(scoreboard):
+    scoreboard.sort_users_by_solved_testcases()
+    return scoreboard.users
+register.filter("users_sorted_by_solved_testcases",users_sorted_by_solved_testcases)
 
 def total_contestant(scoreboard):
     return scoreboard.users.__len__()
 register.filter("total_contestant",total_contestant)
-
-@register.filter
-def testcase_solved(problem):
-    return problem.testcase_solved()
-
-register.filter("testcase_solved",testcase_solved)
-
 
 @register.filter
 def get_problem(scoreboard,id):
@@ -85,6 +83,19 @@ def total_testcase(scoreboard_problem):
     return scoreboard_problem.total_testcase
 
 register.filter("total_testcase",total_testcase)
+
+@register.filter
+def is_solved(problem):
+    if problem.is_solved():
+        return 1
+    return 0
+register.filter("is_solved",is_solved)
+
+@register.filter
+def testcases_solved(problem):
+    return problem.testcases_solved()
+
+register.filter("testcases_solved",testcases_solved)
 
 @register.filter
 def submit_times(problem):

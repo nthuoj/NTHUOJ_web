@@ -48,18 +48,20 @@ SOFTWARE.
             <th><b data-toggle="tooltip" title="{{ problem.pname }}">{{ problem.id }}</b>
             </th>
             {% endfor %}
+            <th>Total</th>
           </tr>
         </thead>
         <tbody>
-          {% for user in scoreboard.users %}
+          {% for user in scoreboard|users_sorted_by_solved_testcases %}
           <tr>
             <td>{{ forloop.counter }}</td>
             <td>{{ user.username }}</td>
             {% for problem in user.problems %}
             <td>
-              {{ problem|testcase_solved }}/{{ scoreboard|get_problem:problem.id|total_testcase }}
+              {{ problem|testcases_solved }}/{{ scoreboard|get_problem:problem.id|total_testcase }}
             </td>
             {% endfor %}
+            <td>{{ user|testcases_solved }}</td>
           </tr>
           {% endfor %}
           <tr>
@@ -90,7 +92,7 @@ SOFTWARE.
           </tr>
         </thead>
         <tbody>
-          {% for user in scoreboard.users %}
+          {% for user in scoreboard|users_sorted_by_penalty %}
           <tr>
             <td>{{ forloop.counter }}</td>
             <td>{{ user.username }}</td>
