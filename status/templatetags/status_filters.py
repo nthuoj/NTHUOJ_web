@@ -27,15 +27,9 @@ from datetime import datetime
 from contest.models import Contest
 from team.models import TeamMember
 from django.core.urlresolvers import reverse
+from utils.user_info import validate_user
 
 register = template.Library()
-
-
-def validate_user(user):
-    # an anonymous user is treated as a normal user
-    if user.is_anonymous():
-        user = User()  # create a temporary user instance with on attribute
-    return user
 
 
 def show_submission(submission, user):
@@ -118,7 +112,7 @@ def show_detail(submission, user):
             is_homework=False,
             start_time__lte=datetime.now(),
             end_time__gte=datetime.now())
-        # during the contest, only owner/coowner with user level sub-judge/judge 
+        # during the contest, only owner/coowner with user level sub-judge/judge
         # can view the detail
         if contests:
             contests = contests.filter(problem=submission.problem)
