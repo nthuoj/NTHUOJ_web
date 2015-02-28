@@ -54,7 +54,7 @@ SOFTWARE.
     <thead>
       <tr>
         <th>
-          {% if user.has_judge_auth %}
+          {% if user|has_judge_auth %}
           <a href="{% url 'contest:new' %}">
             <button type="button" class="btn btn-success btn-xs" >
               <span class="glyphicon glyphicon-plus"></span>
@@ -70,17 +70,17 @@ SOFTWARE.
       </tr>
     </thead>
     <tbody>
-      {% for contest in contest_list %}
+      {% for contest in contests %}
       <tr>
         <td>
 
-          {% if user|has_auth:contest.contest.id %}
-          <a href="{% url 'contest:delete' contest.contest.id %}">
+          {% if user|has_auth:contest.id %}
+          <a href="{% url 'contest:delete' contest.id %}">
             <button type="button" class="btn btn-danger btn-xs">
               <span class="glyphicon glyphicon-remove"></span>
             </button>
           </a>
-          <a href="{% url 'contest:edit' contest.contest.id %}">
+          <a href="{% url 'contest:edit' contest.id %}">
             <button type="button" class="btn btn-info btn-xs">
               <span class="glyphicon glyphicon-pencil"></span>
             </button>
@@ -92,8 +92,9 @@ SOFTWARE.
             <span class="glyphicon glyphicon-play"></span>
           </button>
           
+          {% endif %}
           <button type="button" class="btn btn-info btn-xs" data-toggle="modal" 
-                  data-target="#contestInfo{{ contest.contest.cname }}">
+                  data-target="#contestInfo{{ contest.id }}">
             <span class="glyphicon glyphicon-info-sign"></span>
           </button>
 
@@ -103,21 +104,22 @@ SOFTWARE.
           });
 
           </script>
-          {% endif %}
-          {% if user.is_authenticated and contest.contest.open_register%}
-          <a href="{% url 'contest:register' contest.contest.id %}">
+          {% if not user|has_auth:contest.id %}
+          {% if user.is_authenticated and contest.open_register %}
+          <a href="{% url 'contest:register' contest.id %}">
             <button type="button" class="btn btn-success btn-xs" >
               <span class="glyphicon glyphicon-plus"></span>
             </button>
           </a>
-          {% endif%}
+          {% endif %}
+          {% endif %}
         </td>
         <td>{{ forloop.counter }}</td>
-        <td><a href="{% url 'contest:contest' contest.contest.id %}">{{ contest.contest.cname }}</a>
+        <td><a href="{% url 'contest:contest' contest.id %}">{{ contest.cname }}</a>
         </td>
-        <td>{{ contest.contest.start_time }}</td>
-        <td>{{ contest.contest.end_time }}</td>
-        <td>{{ contest.contest.owner }}</td>
+        <td>{{ contest.start_time }}</td>
+        <td>{{ contest.end_time }}</td>
+        <td>{{ contest.owner }}</td>
       </tr>
       {% endfor %}
     </tbody>
@@ -125,8 +127,8 @@ SOFTWARE.
 </div>
 <!-- /.container -->
 <!-- Contest detail info-->
-{% for contest in contest_list %}
-<div class="modal fade" id="contestInfo{{ contest.contest.cname }}" tabindex="-1" 
+{% for contest in contests %}
+<div class="modal fade" id="contestInfo{{ contest.id }}" tabindex="-1" 
      role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
@@ -136,42 +138,29 @@ SOFTWARE.
           <span class="sr-only">Close</span>
         </button>
         <h2 class="modal-title" id="myModalLabel">
-            {% if user|has_auth:contest.contest.id %}
-            <table style="table-layout:fixed;width: 100%;text-align:center">
-              <tr>
-                <td>
-                  <input class="form-control" value="{{ contest.contest.cname }}">
-                </td>
-                <td>
-                  <button type="button" class="btn btn-primary">Submit</button>
-                </td>
-              </tr>
-            </table>
-            {% else %}
-            {{ contest.contest.cname }}
-            {% endif %}
+            {{ contest.cname }}
           </h2>
       </div>
       <div class="modal-body">
         <ul class="nav nav-tabs" role="tablist" name="infoTab">
-          <li role="presentation" class="active"><a href="#problem{{ contest.contest.id }}" 
+          <li role="presentation" class="active"><a href="#problem{{ contest.id }}" 
               data-toggle="tab">Problem</a>
           </li>
-          <li role="presentation"><a href="#contestant{{ contest.contest.id }}" data-toggle="tab">Contestant</a>
+          <li role="presentation"><a href="#contestant{{ contest.id }}" data-toggle="tab">Contestant</a>
           </li>
-          <li role="presentation"><a href="#contest_time{{ contest.contest.id }}" data-toggle="tab">Time</a>
+          <li role="presentation"><a href="#contest_time{{ contest.id }}" data-toggle="tab">Time</a>
           </li>
-          <li role="presentation"><a href="#contest_coowner{{ contest.contest.id }}" data-toggle="tab">Coowner</a>
+          <li role="presentation"><a href="#contest_coowner{{ contest.id }}" data-toggle="tab">Coowner</a>
           </li>
-          <li role="presentation"><a href="#contest_others{{ contest.contest.id }}" data-toggle="tab">Others</a>
+          <li role="presentation"><a href="#contest_others{{ contest.id }}" data-toggle="tab">Others</a>
           </li>
         </ul>
         <div class="tab-content">
-          <div class="tab-pane active" id="problem{{ contest.contest.id }}">
+          <div class="tab-pane active" id="problem{{ contest.id }}">
             <table class="table" style="text-align:center">
               <thead>
                 <tr>
-                  {% if user|has_auth:contest.contest.id %}
+                  {% if user|has_auth:contest.id %}
                   <th style="text-align:center">Rejudge</th>
                   {% endif %}
                   <th style="text-align:center">#</th>
@@ -179,9 +168,9 @@ SOFTWARE.
                 </tr>
               </thead>
               <tbody>
-                {% for problem in contest.contest.problem.all %}
+                {% for problem in contest.problems %}
                 <tr>
-                  {% if user|has_auth:contest.contest.id %}
+                  {% if user|has_auth:contest.id %}
                   <td>
                     <button type="button" class="btn btn-warning btn-xs">
                       <span class="glyphicon glyphicon-refresh"></span>
@@ -192,31 +181,17 @@ SOFTWARE.
                   </td>
                   {% endif %}
                   <td>{{ forloop.counter }}</td>
-                  <td>{{ problem.pname }}</td>
+                  <td>{{ problem }}</td>
                 </tr>
                 {% endfor %}
-
-                {% if user|has_auth:contest.contest.id %}
-                <tr>
-                  <td style="width:10%">
-                    <button type="button" class="btn btn-success btn-xs">
-                      <span class="glyphicon glyphicon-plus"></span>
-                    </button>
-                  </td>
-                  <td></td>
-                  <td style="width:60%">
-                    <input class="form-control">
-                  </td>
-                </tr>
-                {% endif %}
               </tbody>
             </table>
           </div>
-          <div class="tab-pane" id="contestant{{ contest.contest.id }}">
+          <div class="tab-pane" id="contestant{{ contest.id }}">
             <table class="table" style="text-align:center">
               <thead>
                 <tr>
-                  {% if user|has_auth:contest.contest.id %}
+                  {% if user|has_auth:contest.id %}
                   <th></th>
                   {% endif %}
                   <th style="text-align:center">#</th>
@@ -226,7 +201,7 @@ SOFTWARE.
               <tbody>
                 {% for contestant in contest.contestants %}
                 <tr>
-                    {% if user|has_auth:contest.contest.id %}
+                    {% if user|has_auth:contest.id %}
                     <td>
                       <button type="button" class="btn btn-danger btn-xs">
                         <span class="glyphicon glyphicon-minus"></span>
@@ -234,62 +209,35 @@ SOFTWARE.
                     </td>
                     {% endif %}
                     <td>{{ forloop.counter }}</td>
-                    <td>{{ contestant.user.username }}</td>
+                    <td>{{ contestant }}</td>
                 </tr>
                 {% endfor %}
                 <tr>
-                  {% if user|has_auth:contest.contest.id %}
-                  <td style="width:10%">
-                    <button type="button" class="btn btn-success btn-xs">
-                      <span class="glyphicon glyphicon-plus"></span>
-                    </button>
-                  </td>
-                  <td>
-                    <select class="form-control">
-                      <option value="#">Single Contestant</option>
-                      <option value="#">Group</option>
-                      <option value="#">Anonymous Account</option>
-                    </select>
-                  </td>
-                  <td style="width:60%">
-                    <input class="form-control">
-                  </td>
-                  {% endif %}
                 </tr>
               </tbody>
             </table>
           </div>
-          <div class="tab-pane" id="contest_time{{ contest.contest.id }}">
+          <div class="tab-pane" id="contest_time{{ contest.id }}">
             <table class="table">
               <tr>
                 <td>Start Time</td>
                 <td>
-                  {% if user|has_auth:contest.contest.id %}
-                  <input class="form-control" value="{{ contest.contest.start_time }}"></input>
-                  {% else %}
-                  <h3>{{ contest.contest.start_time }}</h3>
-                  <!-- -->
-                  {% endif %}
+                  <h3>{{ contest.start_time }}</h3>
                 </td>
               </tr>
               <tr>
                 <td>End Time</td>
                 <td>
-                  {% if user|has_auth:contest.contest.id %}
-                  <input class="form-control" value="{{ contest.contest.end_time }}"></input>
-                  {% else %}
-                  <h3>{{ contest.contest.end_time }}</h3>
-                  <!-- -->
-                  {% endif %}
+                  <h3>{{ contest.end_time }}</h3>
                 </td>
               </tr>
             </table>
           </div>
-          <div class="tab-pane" id="contest_coowner{{ contest.contest.id }}">
+          <div class="tab-pane" id="contest_coowner{{ contest.id }}">
             <table class="table" style="text-align:center">
               <thead>
                 <tr>
-                  {% if user|has_auth:contest.contest.id %}
+                  {% if user|has_auth:contest.id %}
                   <th></th>
                   {% endif %}
                   <th style="text-align:center">#</th>
@@ -297,9 +245,9 @@ SOFTWARE.
                 </tr>
               </thead>
               <tbody>
-                {% for coowner in contest.contest.coowner.all %}
+                {% for coowner in contest.coowners %}
                 <tr>
-                  {% if user|has_auth:contest.contest.id %}
+                  {% if user|has_auth:contest.id %}
                   <td>
                     <button type="button" class="btn btn-danger btn-xs">
                       <span class="glyphicon glyphicon-minus"></span>
@@ -307,36 +255,22 @@ SOFTWARE.
                   </td>
                   {% endif %}
                   <td>{{ forloop.counter }}</td>
-                  <td>{{ coowner.username }}</td>
+                  <td>{{ coowner }}</td>
                 </tr>
                 {% endfor %}
-                <!-- -->
-                {% if user|has_auth:contest.contest.id %}
-                <tr>
-                  <td style="width:10%">
-                    <button type="button" class="btn btn-success btn-xs">
-                      <span class="glyphicon glyphicon-plus"></span>
-                    </button>
-                  </td>
-                  <td></td>
-                  <td style="width:60%">
-                    <input class="form-control">
-                  </td>
-                </tr>
-                {% endif %}
               </tbody>
             </table>
           </div>
-          <div class="tab-pane" id="contest_others{{ contest.contest.id }}">
+          <div class="tab-pane" id="contest_others{{ contest.id }}">
             <label>Freeze Time：</label>
-            <h4>{{ contest.contest.freeze_time }} mins</h4>
-            {% if contest.contest.is_homework %}
+            <h4>{{ contest.freeze_time }} mins</h4>
+            {% if contest.is_homework %}
               <span class="glyphicon glyphicon-ok green" aria-hidden="true"></span>Is Homework
             {% else %}
               <span class="glyphicon glyphicon-remove red" aria-hidden="true"></span>Not Homework
             {% endif %}
             <br>
-            {% if contest.contest.open_register %}
+            {% if contest.open_register %}
               <span class="glyphicon glyphicon-ok green" aria-hidden="true"></span>Can Register
             {% else %}
               <span class="glyphicon glyphicon-remove red" aria-hidden="true"></span>Can Not Register

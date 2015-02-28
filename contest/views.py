@@ -26,13 +26,14 @@ from index.views import custom_proc
 from django.template import RequestContext
 from django.forms.models import model_to_dict
 
+from contest.contestArchive import get_contests
+
 from contest.models import Contest
 from contest.models import Contestant
 from contest.models import Clarification
 
 from contest.forms import ContestForm
 
-from contest.contest_info import get_contestant_list
 from contest.contest_info import get_scoreboard
 
 from utils.log_info import get_logger
@@ -42,18 +43,11 @@ from utils import user_info
 logger = get_logger()
 
 def archive(request):
-    #to store contest basic info and contestants
-    contest_list = []
-    #store contest basic info only
-    contest_info_list = Contest.objects.order_by('-start_time')
-    for contest in contest_info_list:
-        contestants = Contestant.objects.filter(contest = contest)
-        contest_list.append({'contest':contest,'contestants':contestants})
+    contests = get_contests()
 
     user = request.user
 
-    return render(request, 'contest/contestArchive.html',
-        {'contest_list':contest_list,'user':user},
+    return render(request, 'contest/contestArchive.html',{'contests':contests,'user':user},
         context_instance = RequestContext(request, processors = [custom_proc]))
 
 def contest(request,contest_id):
@@ -63,9 +57,9 @@ def contest(request,contest_id):
         logger.warning('Contest: Can not find contest %s!' % contest_id)
         raise Http404('Contest does not exist')
     
-    clarification_list = Clarification.objects.filter(contest = contest)
-
     scoreboard = get_scoreboard(contest)
+
+    clarification_list = Clarification.objects.filter(contest = contest)
     
     return render(request, 'contest/contest.html',{'contest':contest,'clarification_list':clarification_list,
         'scoreboard':scoreboard},
@@ -97,13 +91,13 @@ def edit(request,contest_id):
         if request.method == 'GET':        
             contest_dic = model_to_dict(contest)
             form = ContestForm(initial = contest_dic)
-            return render(request,'contest/editContest.html',{'form':form})
+            return render(request,'contest/editContest.html',{'form':form,'user':request.user})
         if request.method == 'POST':
             form = ContestForm(request.POST, instance = contest)
             if form.is_valid():
                 modified_contest = form.save()
                 logger.info('Contest: Modified contest %s!' % modified_contest.id)
-                return HttpResponseRedirect('/contest/')
+            return HttpResponseRedirect('/contest/')
     else:
         raise PermissionDenied
 

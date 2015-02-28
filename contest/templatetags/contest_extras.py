@@ -21,9 +21,13 @@ from django import template
 from utils import user_info
 from contest.models import Contest
 
+from contest.scoreboard import Scoreboard
 from contest.scoreboard import Scoreboard_Problem
 from contest.scoreboard import Problem
 from contest.scoreboard import User
+
+from users.models import User
+
 
 register = template.Library()
 
@@ -42,15 +46,26 @@ def has_auth(user,contest_id):
 
 register.filter("has_auth",has_auth)
 
+#check if user is judge or admin
+@register.filter
+def has_judge_auth(user):
+    if user.is_authenticated():
+        return user.has_judge_auth()
+    else:
+        return False
+register.filter("has_judge_auth",has_judge_auth)
+
 #scoreboard
 @register.filter
 def is_solved(problem):
     if problem.is_solved():
         return 1
-    else:
-        return 0
-
+    return 0
 register.filter("is_solved",is_solved)
+
+def total_contestant(scoreboard):
+    return scoreboard.users.__len__()
+register.filter("total_contestant",total_contestant)
 
 @register.filter
 def testcase_solved(problem):
