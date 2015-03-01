@@ -35,6 +35,12 @@ def write_ini_file(host, db, user, pwd):
     ini_file.write('default-character-set = utf8\n')
     ini_file.close()
 
+def write_nthuoj_path_file(submission_code_path):
+    path_file = open('nthuoj/nthuoj_path.py', 'w')
+    path_file.write('SUBMISSION_CODE_PATH = \'%s\'\n' % submission_code_path)
+    path_file.close()
+
+
 def django_manage(args):
     cmd = 'python ./manage.py ' + args
     os.system(cmd)

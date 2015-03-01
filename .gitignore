@@ -3,6 +3,8 @@ migrations/
 
 # Config files
 nthuoj.ini
+nthuoj_path.py
+
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

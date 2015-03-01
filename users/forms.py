@@ -46,7 +46,7 @@ class CodeSubmitForm(forms.Form):
             problem=problem,
             language=language)
         try:
-            f = open('%s%s.cpp' % (settings.SUBMIT_CODE_PATH, submission.id), 'w')
+            f = open('%s%s.cpp' % (settings.SUBMISSION_CODE_PATH, submission.id), 'w')
             f.write(code)
             f.close()
         except IOError:

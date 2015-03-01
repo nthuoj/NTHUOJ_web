@@ -92,7 +92,7 @@ def view_code(request, sid):
     try:
         submission = Submission.objects.get(id=sid)
         if show_detail(submission, request.user):
-            f = open('%s%s.cpp' % (settings.SUBMIT_CODE_PATH, sid), 'r')
+            f = open('%s%s.cpp' % (settings.SUBMISSION_CODE_PATH, sid), 'r')
             code = f.read()
             f.close()
             codesubmitform = CodeSubmitForm(
@@ -118,4 +118,4 @@ def view_code(request, sid):
         return render(
             request,
             'index/500.html',
-            {'error_message': 'File of SID %s Not Found!' % sid})        
+            {'error_message': 'File of SID %s Not Found!' % sid})

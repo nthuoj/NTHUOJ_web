@@ -10,6 +10,7 @@ https://docs.djangoproject.com/en/1.7/ref/settings/
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
+import nthuoj_path
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
 
@@ -76,13 +77,14 @@ DATABASES = {
     }
 }
 
-SUBMIT_CODE_PATH = '/Users/henryyang/Desktop/code/'
+# Judge path
+SUBMISSION_CODE_PATH = nthuoj_path.SUBMISSION_CODE_PATH
 
 # Custom User auth
 
 AUTH_USER_MODEL = 'users.User'
 # where @login_required will redirect to
-LOGIN_URL = '/users/login/' 
+LOGIN_URL = '/users/login/'
 
 
 # Internationalization
@@ -108,6 +110,6 @@ STATIC_URL = '/static/'
 # https://pypi.python.org/pypi/django-axes/
 
 # redirect to broken page when exceed wrong-try limits
-AXES_LOCKOUT_TEMPLATE = 'index/404.html' 
+AXES_LOCKOUT_TEMPLATE = 'index/404.html'
 # freeze login access for that ip for 0.1*60 = 6 minites
 AXES_COOLOFF_TIME = 0.1

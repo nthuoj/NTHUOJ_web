@@ -37,6 +37,11 @@ if not os.path.isfile('nthuoj.ini'):
     pwd = getpass.getpass()
     write_ini_file(host, db, user, pwd)
 
+if not os.path.isfile('nthuoj/nthuoj_path.py'):
+    # Setting nthuoj judge path
+    submission_code_path = raw_input('Submission code path: ')
+    write_nthuoj_path_file(submission_code_path)
+
 
 # Database Migratinos
 db_migrate()
