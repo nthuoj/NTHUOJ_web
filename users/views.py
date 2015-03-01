@@ -22,22 +22,23 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 '''
 import json
-import random
-from users.models import User
-from index.views import custom_proc
-from django.template import RequestContext
+
+from django.contrib.auth import authenticate, login, logout
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.core.urlresolvers import reverse
 from django.shortcuts import render, redirect
-from utils.log_info import get_logger, get_client_ip
-from django.contrib.auth.decorators import login_required
-from django.contrib.auth import authenticate, login, logout
+from django.template import RequestContext
 from users.admin import UserCreationForm, AuthenticationForm
-from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
+from index.views import custom_proc
+from users.forms import UserProfileForm, UserLevelForm
+from users.models import User
+from utils.log_info import get_logger, get_client_ip
+from utils.user_info import get_user_statistics
+from users.templatetags.profile_filters import can_change_userlevel
 # Create your views here.
 
 logger = get_logger()
-
 
 def list(request):
     users = User.objects.all()
@@ -59,8 +60,6 @@ def list(request):
         {'users': user},
         context_instance=RequestContext(request, processors=[custom_proc]))
 
-
-@login_required()
 def submit(request):
     return render(
         request,
@@ -68,15 +67,54 @@ def submit(request):
         context_instance=RequestContext(request, processors=[custom_proc]))
 
 
-def profile(request):
-    piechart_data = []
-    for l in ['WA', 'AC', 'RE', 'TLE', 'MLE', 'OLE', 'Others']:
-        piechart_data += [{'label': l, 'data': random.randint(50, 100)}]
-    return render(
-        request,
-        'users/profile.html',
-        {'piechart_data': json.dumps(piechart_data)},
-        context_instance=RequestContext(request, processors=[custom_proc]))
+def profile(request, username):
+    try:
+        profile_user = User.objects.get(username=username)
+        piechart_data = get_user_statistics(profile_user)
+
+        render_data = {}
+        render_data['profile_user'] = profile_user
+        render_data['piechart_data'] = json.dumps(piechart_data)
+        if request.user == profile_user:
+            render_data['profile_form'] = UserProfileForm(instance=profile_user)
+        if can_change_userlevel(request.user, profile_user):
+            render_data['userlevel_form'] = UserLevelForm(instance=profile_user)
+
+        if request.method == 'POST' and 'profile_form' in request.POST:
+            profile_form = UserProfileForm(request.POST, instance=profile_user)
+            render_data['profile_form'] = profile_form
+            if profile_form.is_valid() and request.user == profile_user:
+                logger.info('User %s update profile' % username)
+                profile_form.save()
+                render_data['profile_message'] = 'Update successfully'
+
+        if request.method == 'POST' and 'userlevel_form' in request.POST:
+            userlevel_form = UserLevelForm(request.POST)
+            if can_change_userlevel(request.user, profile_user):
+                if userlevel_form.is_valid(request.user):
+                    user_level = userlevel_form.cleaned_data['user_level']
+                    logger.info('User %s update %s\'s user_level to %s' %
+                        (request.user, username, user_level))
+                    profile_user.user_level = user_level
+                    profile_user.save()
+                    render_data['userlevel_message'] = 'Update successfully'
+                else:
+                    user_level = userlevel_form.cleaned_data['user_level']
+                    render_data['userlevel_message'] = 'You can\'t switch user %s to %s' % \
+                        (profile_user, user_level)
+
+        return render(
+            request,
+            'users/profile.html',
+            render_data,
+            context_instance=RequestContext(request, processors=[custom_proc]))
+
+    except User.DoesNotExist:
+        logger.warning('User %s does not exist' % username)
+        return render(
+            request,
+            'index/500.html',
+            {'error_message': 'User %s does not exist' % username})
 
 
 def user_create(request):
