@@ -35,9 +35,10 @@ def write_ini_file(host, db, user, pwd):
     ini_file.write('default-character-set = utf8\n')
     ini_file.close()
 
-def write_email_file(pwd):
-    email_file = open('nthucsoj.py', 'w')    
-    email_file.write('EMAIL_HOST_PASSWORD = \'%s\'\n' % pwd)     
+def write_email_file(user, pwd):
+    email_file = open('emailInfo.py', 'w') 
+    email_file.write('EMAIL_HOST_USER = \'%s\'\n' % user)
+    email_file.write('EMAIL_HOST_PASSWORD = \'%s\'\n' % pwd)
     email_file.close()
 
 def django_manage(args):

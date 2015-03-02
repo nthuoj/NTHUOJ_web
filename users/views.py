@@ -216,7 +216,7 @@ def register_confirm(request, activation_key):
     user = user_profile.user
     user.is_active = True
     user.save()
-    User.objects.filter(username=user.username).update(active=True)
+    
     return render(
         request,
         'users/confirm.html',
