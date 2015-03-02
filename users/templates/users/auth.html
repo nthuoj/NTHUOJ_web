@@ -65,7 +65,11 @@ function active_link() {
     {% endfor %}
     <div class="modal-footer">
       <div id='msg' class='col-md-4'>{{ message }}</div>
+      {% if title == 'Sign Up' %}
       <button type="submit" class="btn btn-primary" onclick="active_link();">Submit</button>
+      {% else %}
+      <button type="submit" class="btn btn-primary">Submit</button>
+      {% endif %}
     </div>
     <hr>
     <div class="poptxt_login">
