@@ -22,16 +22,15 @@ from contest.models import Contest
 from contest.models import Contestant
 
 def get_contests(user):
-    now = datetime.date.today()
     if user.is_authenticated():
         if user.has_judge_auth:
             #admin or judge show all
             contests_info = Contest.objects.order_by('-start_time')
         else:
-            contests_info = get_started_contests(now)
+            contests_info = get_started_contests()
     else:
         #user not logged in
-        contests_info = get_started_contests(now)
+        contests_info = get_started_contests()
 
     contests = []
     for contest in contests_info:
@@ -39,7 +38,8 @@ def get_contests(user):
         contests.append(new_contest)
     return contests
 
-def get_started_contests(now):
+def get_started_contests():
+    now = datetime.date.today()
     return Contest.objects.order_by('-start_time').filter(start_time__lte = now)
 
 def add_contestants(contest):
