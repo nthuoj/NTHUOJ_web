@@ -17,29 +17,35 @@
     OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
     SOFTWARE.
     '''
-from contest.contestObject import Contest
-from contest.models import Contest as ContestModels
+import datetime
+from contest.models import Contest 
 from contest.models import Contestant
 
-def get_contests():
-    contests_info = ContestModels.objects.order_by('-start_time')
+def get_contests(user):
+    now = datetime.date.today()
+    if user.is_authenticated():
+        if user.has_judge_auth:
+            #admin or judge show all
+            contests_info = Contest.objects.order_by('-start_time')
+        else:
+            contests_info = get_started_contests(now)
+    else:
+        #user not logged in
+        contests_info = get_started_contests(now)
+
     contests = []
     for contest in contests_info:
-        new_contest = get_contest(contest)
+        new_contest = add_contestants(contest)
         contests.append(new_contest)
     return contests
 
-def get_contest(contest):
-    new_contest = Contest(contest.id,contest.cname,contest.owner) 
-    new_contest.set_time(contest.start_time,contest.end_time)
-    new_contest.set_freeze_time(contest.freeze_time)
-    new_contest.set_homework(contest.is_homework)
-    new_contest.set_open_register(contest.open_register)
-    for problem in contest.problem.all():
-        new_contest.add_problem(problem.pname)
-    for coowner in contest.coowner.all():
-        new_contest.add_coowner(coowner.username)
+def get_started_contests(now):
+    return Contest.objects.order_by('-start_time').filter(start_time__lte = now)
+
+def add_contestants(contest):
     contestants = Contestant.objects.filter(contest = contest)
+    contest.contestants = []
     for contestant in contestants:
-        new_contest.add_contestant(contestant.user.username)
-    return new_contest
+        contest.contestants.append(contestant.user.username)
+    return contest
+    

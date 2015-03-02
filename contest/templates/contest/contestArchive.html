@@ -54,7 +54,7 @@ SOFTWARE.
     <thead>
       <tr>
         <th>
-          {% if user|has_judge_auth %}
+          {% if user.has_judge_auth %}
           <a href="{% url 'contest:new' %}">
             <button type="button" class="btn btn-success btn-xs" >
               <span class="glyphicon glyphicon-plus"></span>

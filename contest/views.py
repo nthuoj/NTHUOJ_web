@@ -40,9 +40,8 @@ from utils import user_info
 logger = get_logger()
 
 def archive(request):
-    contests = get_contests()
-
     user = request.user
+    contests = get_contests(user)
 
     return render(request, 'contest/contestArchive.html',{'contests':contests,'user':user},
         context_instance = RequestContext(request, processors = [custom_proc]))
@@ -130,4 +129,3 @@ def register(request,contest_id):
                 contestant.save()
                 logger.info('Contest: User %s attends Contest %s!' % (request.user.username,contest.id))
     return HttpResponseRedirect('/contest/')
-    
