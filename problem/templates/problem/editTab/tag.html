@@ -24,12 +24,10 @@ SOFTWARE.
 <br>
 {% if not is_new %}
 <strong>Current Tags</strong>
-<button id='merge_tag' class='btn btn-default'>Merge tags</button>
 <table>
   <tbody id="tagTable">
     {% for t in tags %}
       <tr data-target="{{t.pk}}">
-        <td><input type="checkbox"></td>
         <td>{{t.tag_name}}</td>
         <td><button class="btn btn-primary del_tag_btn">Delete</button></td>
       </tr>
