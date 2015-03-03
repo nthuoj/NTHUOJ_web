@@ -55,13 +55,13 @@ def contest(request,contest_id):
         raise Http404('Contest does not exist')
 
     now = datetime.now()
-    #if contest has started or user is the owner
-    if ((contest.start_time < now) or user_info.has_c_ownership(request.user,contest)):
+    #if contest has not started and user is not the owner
+    if ((contest.start_time > now) and not user_info.has_c_ownership(request.user,contest)):
+        raise PermissionDenied
+    else:
         clarification_list = Clarification.objects.filter(contest = contest)
         return render(request, 'contest/contest.html',{'contest':contest,'clarification_list':clarification_list},
                 context_instance = RequestContext(request, processors = [custom_proc]))
-    else:
-        raise PermissionDenied
     
     
 

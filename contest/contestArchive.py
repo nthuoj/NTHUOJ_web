@@ -48,7 +48,8 @@ def get_owned_or_started_contests(user):
 
 #both owned and coowned
 def get_owned_contests(user):
-    owned_contests = Contest.objects.order_by('-start_time').filter(Q(owner = user)|Q(coowner = user))
+    request = Q(owner = user)|Q(coowner = user)
+    owned_contests = Contest.objects.order_by('-start_time').filter(request)
     return owned_contests
 
 def get_started_contests():
