@@ -48,8 +48,7 @@ function add_new_tag(pid) {
         data: $("#addTag").serialize(),
         type: "POST",
         success: function(msg) {
-          var new_tag_row = $("<tr>");
-          new_tag_row.append($("<td><input type='checkbox'></td>"));
+          var new_tag_row = $("<tr data-target='"+msg.tag_id+"'>");
           new_tag_row.append($("<td>"+new_tag+"</td>"));
           new_tag_row.append($("<td><button class='btn btn-primary del_tag_btn'>Delete</button></td>"));
           $("#tagTable").append(new_tag_row);

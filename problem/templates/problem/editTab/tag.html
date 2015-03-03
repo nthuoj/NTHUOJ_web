@@ -56,9 +56,14 @@ SOFTWARE.
 $(document).ready(function() {
     $("#addTag").submit(function(e) {
         e.preventDefault();
-        return add_new_tag({{pid}});
+        var ret = add_new_tag({{pid}});
+        refreshEventListener();
+        return ret;
     });
-    $(".del_tag_btn").click(function (e) {
+    refreshEventListener();
+});
+function refreshEventListener() {
+    $('body').on('click', '.del_tag_btn', function(e) {
         var row = $(this).parents("tr");
         var tid = $(this).parents("tr").attr('data-target');
         $.ajax({
@@ -70,7 +75,7 @@ $(document).ready(function() {
         });
         return false;
     });
-});
+}
 </script>
 {% else %}
 <strong>Save your problem before editing the tags</strong>

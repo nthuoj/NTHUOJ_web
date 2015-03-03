@@ -137,7 +137,8 @@ def tag(request, pid):
             new_tag, created = Tag.objects.get_or_create(tag_name=tag)
             problem.tags.add(new_tag)
             problem.save()
-            return HttpResponse()
+            return HttpResponse(json.dumps({'tag_id': new_tag.pk}),
+                                content_type="application/json")
         return HttpRequestBadRequest()
     return HttpResponse()
 
