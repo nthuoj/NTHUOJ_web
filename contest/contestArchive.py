@@ -17,7 +17,7 @@
     OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
     SOFTWARE.
     '''
-import datetime
+from datetime import datetime
 from django.db.models import Q
 from contest.models import Contest 
 from contest.models import Contestant
@@ -52,7 +52,7 @@ def get_owned_contests(user):
     return owned_contests
 
 def get_started_contests():
-    now = datetime.date.today()
+    now = datetime.now()
     return Contest.objects.order_by('-start_time').filter(start_time__lte = now)
 
 def add_contestants(contest):
