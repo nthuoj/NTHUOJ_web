@@ -18,14 +18,17 @@
     SOFTWARE.
     '''
 import datetime
+from django.db.models import Q
 from contest.models import Contest 
 from contest.models import Contestant
 
 def get_contests(user):
     if user.is_authenticated():
-        if user.has_judge_auth:
-            #admin or judge show all
+        if user.has_admin_auth():
+            #admin show all
             contests_info = Contest.objects.order_by('-start_time')
+        elif user.has_subjudge_auth():
+            contests_info = get_owned_or_started_contests(user)
         else:
             contests_info = get_started_contests()
     else:
@@ -37,6 +40,16 @@ def get_contests(user):
         new_contest = add_contestants(contest)
         contests.append(new_contest)
     return contests
+
+def get_owned_or_started_contests(user):
+    owned_contests = get_owned_contests(user)
+    started_contests = get_started_contests()
+    return owned_contests | started_contests
+
+#both owned and coowned
+def get_owned_contests(user):
+    owned_contests = Contest.objects.order_by('-start_time').filter(Q(owner = user)|Q(coowner = user))
+    return owned_contests
 
 def get_started_contests():
     now = datetime.date.today()
