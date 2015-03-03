@@ -73,6 +73,8 @@ def edit(request, pid):
     return render(request, 'problem/edit.html')
 
 def new(request):
+    if request.user.is_anonymous():
+        raise PermissionDenied()
     if not request.user.has_subjudge_auth():
         raise PermissionDenied()
     if request.method == 'GET':
