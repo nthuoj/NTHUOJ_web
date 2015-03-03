@@ -61,4 +61,3 @@ def add_contestants(contest):
     for contestant in contestants:
         contest.contestants.append(contestant.user.username)
     return contest
-    
