@@ -25,7 +25,11 @@ SOFTWARE.
 <div style='height:90px;' class='panel panel-default'>
   <div style='padding-left:10px;padding-right:10px'>
     <div style='float:left;width:60%;'>
-      <h2>{{ title }} &nbsp;&nbsp;<a href="{% url 'problem:problem.views.edit' pid%}">EDIT</a></h2>
+      <h2>{{problem.pname}} &nbsp;&nbsp;
+        {% if problem.owner == user or user.user_level == 'ADMIN' %}
+          <a href="{% url 'problem:edit' problem.pk %}">EDIT</a>
+        {% endif %}
+      </h2>
     </div>
     <div class="problem-option" style="float:right;">
       <h5>
@@ -58,9 +62,9 @@ SOFTWARE.
               <th>Memory</th>
               {% for t in testcase %}
               <tr>
-                <th>Case {{t.num}}</th>
-                <td>{{t.time}} sec</td>
-                <td>{{t.memory}} MB</td>
+                <th>Case {{forloop.counter}}</th>
+                <td>{{t.time_limit}} sec</td>
+                <td>{{t.memory_limit}} MB</td>
               </tr>
               {% endfor %}
           </tbody>
@@ -72,15 +76,15 @@ SOFTWARE.
 
 <div style="width:75%; float:left">
   <h3>Description</h3>
-  <p>{{description}}</p>
+  <p>{{problem.description|safe}}</p>
   <h3>Input</h3>
-  <p>{{input}}</p>
+  <p>{{problem.input|safe}}</p>
   <h3>Output</h3>
-  <p>{{output}}</p>
+  <p>{{problem.output|safe}}</p>
   <h3>Sample Input</h3>
   <div class='panel panel-default'>
     <div class='panel-body'>
-      <samp id='sampinText'>{{samp_input|linebreaksbr}}</samp>
+      <samp id='sampinText'>{{problem.sample_in|linebreaksbr}}</samp>
       <br>
       <span class='label label-danger'>EOF</span>
     </div>
@@ -88,15 +92,15 @@ SOFTWARE.
   <h3>Sample Output</h3>
   <div class='panel panel-default'>
     <div class='panel-body'>
-      <samp id='sampoutText' name='sampoutText'>{{samp_output|linebreaksbr}}</samp>
+      <samp id='sampoutText' name='sampoutText'>{{problem.sample_out|linebreaksbr}}</samp>
       <br>
       <span class='label label-danger'>EOF</span>
     </div>
   </div>
   <h3>Tags</h3>
   <div id='tags' style='float:left;width:60%'>
-    {% for t in tag %}
-      <span class='label label-info'>{{t}}</span>
+    {% for tag in tags %}
+      <span class='label label-info'>{{tag.tag_name}}</span>
     {% endfor %}
   </div>
   <div class='input-group' style='float:right;width:30%'>

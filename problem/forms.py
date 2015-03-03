@@ -21,14 +21,23 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 '''
-from django.conf.urls import patterns, include, url
-from problem import views
+from django import forms
+from problem.models import Problem
 
-urlpatterns = patterns('',
-    url(r'^$', views.problem, name='problem'),  # /problem  : problem panel
-    url(r'^volume/$', views.volume, name='volume'),
-    url(r'^(?P<pid>\d+)/$', views.detail, name='detail'),   # /problem/10 : detail of problem 10
-    url(r'^(?P<pid>\d+)/edit/$', views.edit, name='edit'),  # /problem/10/edit : edit problem 10
-    url(r'^new/$', views.new, name='new'), # /problem/new : create new problem
-    url(r'^preview/$', views.preview, name='new'),  # /problem/preview  :  preview problem when editting
-)
+class ProblemForm(forms.ModelForm):
+    partial_judge_code = forms.FileField(required=False)
+    class Meta:
+        model = Problem
+        fields = [
+            'pname',
+            'owner',
+            'visible',
+            'error_torrence',
+            'judge_source',
+            'other_judge_id',
+            'partial_judge_code',
+        ]
+        labels = {
+            'pname': 'Problem Name'
+        }
+
