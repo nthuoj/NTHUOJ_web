@@ -79,6 +79,7 @@ $(document).ready(function() {
     $("#add_testcase").submit(function (e) {
         e.preventDefault();
         add_new_testcase({{pid}}, new FormData(this));
+        //refreshTestcaseEvent();
     });
     $("#update_testcase").submit(function (e) {
         e.preventDefault();
@@ -89,14 +90,17 @@ $(document).ready(function() {
           processData: false,
           contentType: false,
           success: function(data) {
-            alert("update success");
+            alert("testcase updated");
           }
         });
     });
-    $(".reupload_btn").click(function (e) {
+    refreshTestcaseEvent();
+});
+function refreshTestcaseEvent() {
+    $("body").on('click', '.reupload_btn', function(e) {
         update_tid = $(this).parents("tr").attr('data-target');
     });
-    $(".update_btn").click(function (e) {
+    $("body").on('click', '.update_btn', function(e) {
         var tid = $(this).parents("tr").attr('data-target');
         var time = $("#"+tid+"_time").serialize();
         var memory = $("#"+tid+"_memory").serialize();
@@ -111,7 +115,7 @@ $(document).ready(function() {
         });
         return false;
     });
-    $(".del_testcase_btn").click(function (e) {
+    $("body").on('click', '.del_testcase_btn', function(e) {
         var row = $(this).parents("tr");
         var tid = $(this).parents("tr").attr('data-target');
         $.ajax({
@@ -123,7 +127,7 @@ $(document).ready(function() {
         });
         return false;
     });
-});
+}
 </script>
 {% else %}
 <strong>Save your problem before uploading testcases</strong>
