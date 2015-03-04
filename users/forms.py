@@ -4,7 +4,7 @@ from django.forms import ModelForm
 
 from users.models import User
 from problem.models import Problem, Submission, SubmissionDetail, Testcase
-from utils import log_info
+from utils import log_info, user_info
 
 logger = log_info.get_logger()
 
@@ -27,14 +27,16 @@ class CodeSubmitForm(forms.Form):
     def clean_pid(self):
         pid = self.cleaned_data['pid']
         try:
-            Problem.objects.get(id=pid)
+            problem = Problem.objects.get(id=pid)
+            if not user_info.has_p_auth(self.user, problem):
+                raise forms.ValidationError('You don\'t have permission to submit that problem')
         except Problem.DoesNotExist:
             logger.warning('Pid %s doe not exist' % pid)
             raise forms.ValidationError('Problem of this pid does not exist')
 
         return pid
 
-    def submit(self, user):
+    def submit(self):
         pid = self.cleaned_data['pid']
         code = self.cleaned_data['code']
         language = self.cleaned_data['language']
@@ -42,7 +44,7 @@ class CodeSubmitForm(forms.Form):
         problem = Problem.objects.get(id=pid)
         testcases = Testcase.objects.filter(problem=problem)
         submission = Submission.objects.create(
-            user=user,
+            user=self.user,
             problem=problem,
             language=language)
         try:
@@ -55,6 +57,9 @@ class CodeSubmitForm(forms.Form):
         for testcase in testcases:
             SubmissionDetail.objects.create(tid=testcase, sid=submission)
 
+    def __init__(self, *args, **kwargs):
+        self.user = kwargs.pop('user', User())
+        super(CodeSubmitForm, self).__init__(*args, **kwargs)
 
 class UserProfileForm(forms.ModelForm):
     """A form for updating user's profile. Includes all the required

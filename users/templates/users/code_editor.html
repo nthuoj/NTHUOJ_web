@@ -44,7 +44,8 @@ SOFTWARE.
     <div class="row" style="margin:10px;">
       <div class="form-group col-lg-2">
         <label class="control-label">PID:</label>
-        {{ form.pid }} {{ form.pid.errors }}
+        {{ form.pid }}
+        <strong style="color:red">{{ form.pid.errors }}</strong>
       </div>
       <div class="col-lg-8">
         <label class="control-label col-lg-1">Language:</label>
@@ -53,7 +54,8 @@ SOFTWARE.
         </div>
       </div>
     </div>
-      {{ form.code }} {{ form.code.errors }}
+      {{ form.code }}
+      <strong style="color:red">{{ form.code.errors }}</strong>
     <div class="form-group row">
       <div style="float:left;margin:30px;">
         <input type="file" data-filename-placement="inside" id="fileinput">

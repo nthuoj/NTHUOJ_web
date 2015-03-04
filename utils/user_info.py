@@ -21,6 +21,8 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 '''
+from datetime import datetime
+
 from django.db import models
 from users.models import User
 from group.models import Group
@@ -73,6 +75,32 @@ def has_p_ownership(curr_user, curr_problem):
 
     is_owner = (curr_user.username == curr_problem.owner.username)
     return is_owner
+
+def has_p_auth(user, problem):
+    '''Check if user has authority to see/submit that problem'''
+    user = validate_user(user)
+
+    if not problem.visible:  # only check the invisible problem
+        # To see/submit a invisible problem, user must
+        # 1. has admin auth
+        if user.has_admin_auth():
+            return True
+        # 2. be the problem owner
+        if has_p_ownership(user, problem):
+            return True
+        # 3. be a contest owner/coowner
+        contests = Contest.objects.filter(
+            is_homework=False,
+            start_time__lte=datetime.now(),
+            end_time__gte=datetime.now(),
+            problem=problem)
+        for contest in contests:
+            if has_c_ownership(user, contest):
+                return True
+        # None of the condition is satisfied
+        return False
+    else:
+        return True
 
 def user_is_valid(curr_user):
     try:

@@ -171,15 +171,16 @@ def user_login(request):
 @login_required()
 def submit(request, pid=None):
     if request.method=='POST':
-        codesibmitform = CodeSubmitForm(request.POST)
+        codesibmitform = CodeSubmitForm(request.POST, user=request.user)
         if codesibmitform.is_valid():
-            codesibmitform.submit(request.user)
+            codesibmitform.submit()
             return redirect(reverse('status:status'))
         else:
             return render(
                 request,
                 'users/submit.html', {'form': codesibmitform},
                 context_instance=RequestContext(request, processors=[custom_proc]))
+
     return render(
         request,
         'users/submit.html', {'form': CodeSubmitForm(initial={'pid': pid})},
