@@ -28,10 +28,10 @@ from django.forms.models import model_to_dict
 from group.forms import GroupForm, GroupFormEdit
 from group.models import Group
 from utils.user_info import has_g_ownership
-from general_tools import log
+from utils.log_info import get_logger
 
 
-logger = log.get_logger()
+logger = get_logger()
 
 def get_group(group_id):
     try:
