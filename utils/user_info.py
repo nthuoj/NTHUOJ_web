@@ -80,27 +80,26 @@ def has_p_auth(user, problem):
     '''Check if user has authority to see/submit that problem'''
     user = validate_user(user)
 
-    if not problem.visible:  # only check the invisible problem
-        # To see/submit an invisible problem, user must
-        # 1. has admin auth
-        if user.has_admin_auth():
-            return True
-        # 2. be the problem owner
-        if has_p_ownership(user, problem):
-            return True
-        # 3. be a contest owner/coowner
-        contests = Contest.objects.filter(
-            is_homework=False,
-            start_time__lte=datetime.now(),
-            end_time__gte=datetime.now(),
-            problem=problem)
-        for contest in contests:
-            if has_c_ownership(user, contest):
-                return True
-        # None of the condition is satisfied
-        return False
-    else:
+    if problem.visible:
+        reutnr True
+    # check the invisible problem
+    # To see/submit an invisible problem, user must
+    # 1. has admin auth
+    if user.has_admin_auth():
         return True
+    # 2. be the problem owner
+    if has_p_ownership(user, problem):
+        return True
+    # 3. be a contest owner/coowner
+    contests = Contest.objects.filter(
+        start_time__lte=datetime.now(),
+        end_time__gte=datetime.now(),
+        problem=problem)
+    for contest in contests:
+        if has_c_ownership(user, contest):
+            return True
+    # None of the condition is satisfied
+    return False
 
 def user_is_valid(curr_user):
     try:
