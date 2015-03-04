@@ -101,7 +101,7 @@ def detail(request, group_id):
     student_list = group.member.all()
     coowner_list = group.coowner.all()
     owner = group.owner
-    isOwner = has_g_ownership(request.user, group)
+    user_is_owner = has_g_ownership(request.user, group)
 
     running_contest_list = []
     ended_contest_list = []
@@ -123,7 +123,7 @@ def detail(request, group_id):
             'group_name': group.gname, 
             'group_description': group.description,
             'group_id': group.id,
-            'isOwner': isOwner,
+            'user_is_owner': user_is_owner,
         })
 
 

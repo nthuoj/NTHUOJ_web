@@ -31,8 +31,7 @@ SOFTWARE.
        data-toggle="modal" style="float:left, margin-right:5px">
       return
     </a>
-    <!--Check if user is owner/coowner, if true then display edit button-->
-    {% if isOwner %}
+    {% if user_is_owner %}
     <a href="{% url 'group:edit' group_id %}">
       <button type="button" class="btn btn-sm btn-default">
         Edit
