@@ -81,7 +81,7 @@ def has_p_auth(user, problem):
     user = validate_user(user)
 
     if not problem.visible:  # only check the invisible problem
-        # To see/submit a invisible problem, user must
+        # To see/submit an invisible problem, user must
         # 1. has admin auth
         if user.has_admin_auth():
             return True
