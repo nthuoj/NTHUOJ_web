@@ -17,11 +17,11 @@
     OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
     SOFTWARE.
     '''
+from datetime import datetime
 from django.core.exceptions import PermissionDenied
 from django.http import HttpResponseRedirect
 from django.http import Http404
-from django.shortcuts import render,get_object_or_404
-from datetime import datetime
+from django.shortcuts import render
 from index.views import custom_proc
 from django.template import RequestContext
 from django.forms.models import model_to_dict
@@ -43,9 +43,8 @@ from utils import user_info
 logger = get_logger()
 
 def archive(request):
-    contests = get_contests()
-
     user = request.user
+    contests = get_contests(user)
 
     return render(request, 'contest/contestArchive.html',{'contests':contests,'user':user},
         context_instance = RequestContext(request, processors = [custom_proc]))
@@ -56,14 +55,17 @@ def contest(request,contest_id):
     except Contest.DoesNotExist: 
         logger.warning('Contest: Can not find contest %s!' % contest_id)
         raise Http404('Contest does not exist')
-    
-    scoreboard = get_scoreboard(contest)
 
-    clarification_list = Clarification.objects.filter(contest = contest)
-    
-    return render(request, 'contest/contest.html',{'contest':contest,'clarification_list':clarification_list,
-        'scoreboard':scoreboard},
-        context_instance = RequestContext(request, processors = [custom_proc]))
+    now = datetime.now()
+    #if contest has not started and user is not the owner
+    if ((contest.start_time > now) and not user_info.has_c_ownership(request.user,contest)):
+        raise PermissionDenied
+    else:
+        scoreboard = get_scoreboard(contest)
+        clarification_list = Clarification.objects.filter(contest = contest)
+        return render(request, 'contest/contest.html',{'contest':contest,
+            'clarification_list':clarification_list,'scoreboard':scoreboard},
+                context_instance = RequestContext(request, processors = [custom_proc]))
 
 def new(request):
     if request.user.has_judge_auth():
@@ -136,4 +138,3 @@ def register(request,contest_id):
                 contestant.save()
                 logger.info('Contest: User %s attends Contest %s!' % (request.user.username,contest.id))
     return HttpResponseRedirect('/contest/')
-    

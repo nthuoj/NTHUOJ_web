@@ -31,13 +31,6 @@ from users.models import User
 
 register = template.Library()
 
-# get field['key']
-@register.filter
-def get_value(field,key):
-	return field.get(key,0)
-
-register.filter('get_value', get_value)
-
 # check if user has contest ownership
 @register.filter
 def has_auth(user,contest_id):
