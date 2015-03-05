@@ -216,6 +216,7 @@ def register_confirm(request, activation_key):
     user = user_profile.user
     user.is_active = True
     user.save()
+    logger.info('user %s has already been activated' % user.username)
     
     return render(
         request,
