@@ -24,13 +24,7 @@ SOFTWARE.
 {% extends "index/base.html" %}
 {% load static %}
 {% block import_source %}
-<script type="text/javascript">
-function active_link() {
-    message = 'Please go to your mailbox and click the confirmation link' + 
-    '\;otherwise , your account would not be activated!';
-    alert(message);  
-}
-</script>
+<script src={% static "js/auth.js"%}></script>
 {% endblock import_source %}
 {% block body_block %}
 <div class="container" style="width:40%">
