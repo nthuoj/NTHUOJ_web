@@ -34,8 +34,8 @@ ul.center {
 </style>
 <div>
   <ul class="pagination center">
-    {% for problem in problem_list %}
-    <li><a href="#" data-toggle="tooltip" title="{{ problem.name }}">{{ problem.id }}</a>
+    {% for problem in contest.problem.all %}
+    <li><a href="#" data-toggle="tooltip" title="{{ problem.pname }}">{{ forloop.counter }}</a>
     </li>
     {% endfor %}
   </ul>
