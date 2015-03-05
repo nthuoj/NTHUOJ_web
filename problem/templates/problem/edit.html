@@ -23,7 +23,8 @@ SOFTWARE.
 -->
 {% extends "problem/base.html" %} 
 {% block body_block %} {% load staticfiles %}
-<script src="http://cdn.ckeditor.com/4.4.6/standard/ckeditor.js"></script>
+<!--script src="http://cdn.ckeditor.com/4.4.6/standard/ckeditor.js"></script-->
+<script src="http://cdn.ckeditor.com/4.4.7/full/ckeditor.js"></script>
 <script src="{% static 'problem/js/edit.js' %}"></script>
 <div class="container" id="Body">
   <input type="hidden" name="owner" value="{{ user.pk }}">
