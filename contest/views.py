@@ -34,6 +34,8 @@ from contest.models import Clarification
 
 from contest.forms import ContestForm
 
+from contest.contest_info import get_scoreboard
+
 from utils.log_info import get_logger
 from utils import user_info
 
@@ -59,11 +61,11 @@ def contest(request,contest_id):
     if ((contest.start_time > now) and not user_info.has_c_ownership(request.user,contest)):
         raise PermissionDenied
     else:
+        scoreboard = get_scoreboard(contest)
         clarification_list = Clarification.objects.filter(contest = contest)
-        return render(request, 'contest/contest.html',{'contest':contest,'clarification_list':clarification_list},
+        return render(request, 'contest/contest.html',{'contest':contest,
+            'clarification_list':clarification_list,'scoreboard':scoreboard},
                 context_instance = RequestContext(request, processors = [custom_proc]))
-    
-    
 
 def new(request):
     if request.user.has_judge_auth():
