@@ -1,4 +1,4 @@
-/*
+'''
 The MIT License (MIT)
 
 Copyright (c) 2014 NTHUOJ team
@@ -20,40 +20,24 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
-*/
-var displayInfo = false;
-var loginInfo = false;
+'''
+from django import forms
+from problem.models import Problem
 
-window.onload = function() {
-    //alert("You have new messages!");
-}
-
-function info() {
-    if(displayInfo == false){
-        document.getElementById("information").style.display = "block";
-        displayInfo = !displayInfo;
-    }
-    else{
-        document.getElementById("information").style.display = "none";
-        displayInfo = !displayInfo;
-    }
-}
-$(function() {
-    var one_minute = 60*1000;
-    setInterval(function() {
-        $.get('/get_time/', function(data) {
-            $('#time').html(data);
-        });
-    }, one_minute);
-
-    // Let footer hide before the page hits the bottom.
-    $(".footer").hide();
-    $(window).scroll(function() {
-        if($(window).scrollTop() + $(window).height()
-           > $(document).height() - $(".footer").height()) {
-            $(".footer").fadeIn(250);
-        } else {
-            $(".footer").fadeOut(250);
+class ProblemForm(forms.ModelForm):
+    partial_judge_code = forms.FileField(required=False)
+    class Meta:
+        model = Problem
+        fields = [
+            'pname',
+            'owner',
+            'visible',
+            'error_torrence',
+            'judge_source',
+            'other_judge_id',
+            'partial_judge_code',
+        ]
+        labels = {
+            'pname': 'Problem Name'
         }
-    });
-})
+

@@ -21,8 +21,18 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 '''
-from django.shortcuts import render
-from problem.models import Problem
+from django.http import HttpResponse, HttpResponseBadRequest, Http404
+from django.shortcuts import render, redirect
+
+from users.models import User
+from problem.models import Problem, Tag, Testcase
+from problem.forms import ProblemForm
+from utils import log_info
+
+import os
+import json
+
+logger = log_info.get_logger()
 
 # Create your views here.
 def problem(request):
@@ -45,21 +55,19 @@ def volume(request):
 
     return render(request, 'problem/category.html', {'problem_id':problem_id})
 
-def detail(request, problem_id):
-    p = {
-      'pid': problem_id,
-      'title': 'A a+b problem',
-      'description': 'Given a, b, output a+b.',
-      'input': 'a, b <= 100000000',
-      'output': 'a+b',
-      'samp_input': '1 2\n4 5',
-      'samp_output': '3\n9\n',
-      'tag': [''],
-      'testcase': [{'num': 1, 'time': 1, 'memory': 32}, {'num': 2, 'time': 3, 'memory': 100}],
-    }
-    return render(request, 'problem/detail.html', p)
+def detail(request, pid):
+    user = request.user
+    try:
+        problem = Problem.objects.get(pk=pid)
+    except Problem.DoesNotExist:
+        logger.warning('problem %s not found' % (pid))
+        raise Http404('problem %s does not exist' % (pid))
+    testcase = Testcase.objects.filter(problem=problem)
+    tag = problem.tags.all()
+    return render(request, 'problem/detail.html',
+                  {'problem': problem, 'tags': tag, 'testcase': testcase})
 
-def edit(request, problem_id):
+def edit(request, pid):
     return render(request, 'problem/edit.html')
 
 def new(request):
