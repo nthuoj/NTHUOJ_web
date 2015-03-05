@@ -32,8 +32,8 @@ class ProblemForm(forms.ModelForm):
             'pname',
             'owner',
             'visible',
-            'error_torrence',
             'judge_source',
+            'error_torrence',
             'other_judge_id',
             'partial_judge_code',
         ]

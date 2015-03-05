@@ -69,6 +69,8 @@ def detail(request, pid):
                   {'problem': problem, 'tag': tag, 'testcase': testcase})
 
 def edit(request, pid):
+    if request.user.is_anonymous():
+        raise PermissionDenied()
     try:
         problem = Problem.objects.get(pk=pid)
         if not request.user.is_admin or request.user != problem.owner:
@@ -102,6 +104,8 @@ def edit(request, pid):
                    'testcase': testcase })
 
 def new(request):
+    if request.user.is_anonymous():
+        raise PermissionDenied()
     if not request.user.has_subjudge_auth():
         logger.warning("user %s has no auth to add new problem" % (request.user))
         raise Http404("you can't add new problem")
