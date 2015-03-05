@@ -26,6 +26,8 @@ from index.views import custom_proc
 from django.template import RequestContext
 from django.forms.models import model_to_dict
 
+from contest.contest_info import get_clarifications
+
 from contest.contestArchive import get_contests
 
 from contest.models import Contest
@@ -33,6 +35,7 @@ from contest.models import Contestant
 from contest.models import Clarification
 
 from contest.forms import ContestForm
+from contest.forms import ClarificationForm
 
 from utils.log_info import get_logger
 from utils import user_info
@@ -59,8 +62,10 @@ def contest(request,contest_id):
     if ((contest.start_time > now) and not user_info.has_c_ownership(request.user,contest)):
         raise PermissionDenied
     else:
-        clarification_list = Clarification.objects.filter(contest = contest)
-        return render(request, 'contest/contest.html',{'contest':contest,'clarification_list':clarification_list},
+        clarifications = get_clarifications(contest)
+        clarification_form =  ClarificationForm()
+        return render(request, 'contest/contest.html',{'contest':contest,'clarifications':clarifications,
+            'clarification_form':clarification_form},
                 context_instance = RequestContext(request, processors = [custom_proc]))
     
     

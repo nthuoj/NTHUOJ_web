@@ -16,33 +16,8 @@
     LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
     OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
     SOFTWARE.
-    '''
-from django import forms
-from contest.models import Contest
+    ''' 
 from contest.models import Clarification
 
-class ContestForm(forms.ModelForm):
-    class Meta:
-        model = Contest
-        fields = [
-            'cname',
-            'owner',
-            'coowner',
-            'start_time',
-            'end_time',
-            'freeze_time',
-            'problem',
-            'is_homework',
-            'open_register',
-        ]
-
-class ClarificationForm(forms.ModelForm):
-    class Meta:
-        model = Clarification
-        fields = [
-            'contest',
-            'problem',
-            'content',
-            'asker',
-            'reply_all',
-        ]
+def get_clarifications(contest):
+    return Clarification.objects.filter(contest = contest)
