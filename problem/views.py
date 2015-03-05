@@ -86,16 +86,11 @@ def edit(request, pid):
         form = ProblemForm(request.POST, instance=problem)
         if form.is_valid():
             problem = form.save()
-            if 'description' in request.POST:
-                problem.description = request.POST['description']
-            if 'input_description' in request.POST:
-                problem.input= request.POST['input_description']
-            if 'output_description' in request.POST:
-                problem.output = request.POST['output_description']
-            if 'sample_input' in request.POST:
-                problem.sample_in = request.POST['sample_input']
-            if 'sample_output' in request.POST:
-                problem.sample_out = request.POST['sample_output']
+            problem.description = request.POST['description']
+            problem.input= request.POST['input_description']
+            problem.output = request.POST['output_description']
+            problem.sample_in = request.POST['sample_input']
+            problem.sample_out = request.POST['sample_output']
             problem.save()
             logger.info('edit problem, pid = %d' % (problem.pk))
             return redirect('/problem/%d' % (problem.pk))
@@ -120,16 +115,11 @@ def new(request):
         form = ProblemForm(request.POST)
         if form.is_valid():
             problem = form.save()
-            if 'description' in request.POST:
-                problem.description = request.POST['description']
-            if 'input_description' in request.POST:
-                problem.input= request.POST['input_description']
-            if 'output_description' in request.POST:
-                problem.output = request.POST['output_description']
-            if 'sample_input' in request.POST:
-                problem.sample_in = request.POST['sample_input']
-            if 'sample_output' in request.POST:
-                problem.sample_out = request.POST['sample_output']
+            problem.description = request.POST['description']
+            problem.input= request.POST['input_description']
+            problem.output = request.POST['output_description']
+            problem.sample_in = request.POST['sample_input']
+            problem.sample_out = request.POST['sample_output']
             problem.save()
             logger.info('post new problem, pid = %d' % (problem.pk))
             return redirect('/problem/%d' % (problem.pk))
