@@ -17,11 +17,12 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
-$('#infoTab a').click(function(e) {
+
+$('[name=infoTab] a').click(function(e) {
     e.preventDefault()
-    $('#infoTab a[href="#problem"]').tab('show')
-    $('#infoTab a[href="#contestant"]').tab('show')
-    $('#infoTab a[href="#time"]').tab('show')
-    $('#infoTab a[href="#coowner"]').tab('show')
-    $('#infoTab a[href="#others"]').tab('show')
+    $('[name=infoTab] a[href="#problem"]').tab('show')
+    $('[name=infoTab] a[href="#contestant"]').tab('show')
+    $('[name=infoTab] a[href="#time"]').tab('show')
+    $('[name=infoTab] a[href="#coowner"]').tab('show')
+    $('[name=infoTab] a[href="#others"]').tab('show')
 })
