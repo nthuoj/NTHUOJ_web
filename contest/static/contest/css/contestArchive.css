@@ -28,3 +28,11 @@ tr.past, tr.past>td>a {
   color: #d8d8d8;
   background-color: #f8f8f8;
 }
+
+.green {
+    color: green;
+}
+
+.red {
+    color: red;
+}
