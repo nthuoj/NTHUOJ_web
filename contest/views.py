@@ -17,65 +17,122 @@
     OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
     SOFTWARE.
     '''
-
-from django.http import HttpResponse
-from django.shortcuts import render,get_object_or_404
 from datetime import datetime
+from django.core.exceptions import PermissionDenied
+from django.http import HttpResponseRedirect
+from django.http import Http404
+from django.shortcuts import render
 from index.views import custom_proc
 from django.template import RequestContext
+from django.forms.models import model_to_dict
 
-def index(request):
-    
-    problem1 = {'id':1,'name':'First Problem','ppl_pass':2,'ppl_not_pass':4}
-    problem2 = {'id':2,'name':'Second Problem','ppl_pass':1,'ppl_not_pass':8}
-    problem3 = {'id':3,'name':'third Problem','ppl_pass':5,'ppl_not_pass':1}
-    problemList = [problem1,problem2,problem3]
+from contest.contestArchive import get_contests
 
-    ppl1 = {'name':'naruto'}
-    ppl2 = {'name':'obama'}
-    
-    contestantList = [ppl1,ppl2]
+from contest.models import Contest
+from contest.models import Contestant
+from contest.models import Clarification
 
-    ppl3 = {'name':'forest'}
-    ppl4 = {'name':'gump'}
+from contest.forms import ContestForm
 
-    coownerList = [ppl3,ppl4]
+from utils.log_info import get_logger
+from utils import user_info
 
-    contest1 = {'id':1,'name':'First contest','start_time':'2014/11/29 10:11:22','end_time':'2014/12/05 02:12:50',
-                'contestant_number':200,'owner':'ma in joe','problem_list':problemList,'contestant_list':contestantList,
-                'coowner_list':coownerList}
 
-    contestList = [contest1]
+logger = get_logger()
 
-    #contest_list = Contest.objects.order_by('-contest_id')
-    #problem_list = Problem.objects.all()
-    #contestant_list = {1:'naruto',2:'obama'}
-    #coowner_list = {1:'teemo',2:'lux',3:'jinx'}
-    return render(request, 'contest/contestArchive.html',{'contest_list':contestList,'admin':1},
-                context_instance = RequestContext(request, processors = [custom_proc]))
+def archive(request):
+    user = request.user
+    contests = get_contests(user)
+
+    return render(request, 'contest/contestArchive.html',{'contests':contests,'user':user},
+        context_instance = RequestContext(request, processors = [custom_proc]))
 
 def contest(request,contest_id):
+    try:
+        contest = Contest.objects.get(id = contest_id)
+    except Contest.DoesNotExist: 
+        logger.warning('Contest: Can not find contest %s!' % contest_id)
+        raise Http404('Contest does not exist')
 
-    serverTime = datetime.now().strftime('%Y/%m/%d %H:%M:%S')
-
-    problem1 = {'id':1,'name':'First Problem','ppl_pass':2,'ppl_not_pass':4}
-    problem2 = {'id':2,'name':'Second Problem','ppl_pass':1,'ppl_not_pass':8}
-    problem3 = {'id':3,'name':'third Problem','ppl_pass':5,'ppl_not_pass':1}
-    problemList = [problem1,problem2,problem3]
-
-    ppl1 = {'name':'naruto','score':['0/3','1/2','1/4'],'solved':'2','panalty':'833'}
-    ppl2 = {'name':'obama','score':['0/2','1/5','1/3'],'solved':'2','panalty':'83'}
+    now = datetime.now()
+    #if contest has not started and user is not the owner
+    if ((contest.start_time > now) and not user_info.has_c_ownership(request.user,contest)):
+        raise PermissionDenied
+    else:
+        clarification_list = Clarification.objects.filter(contest = contest)
+        return render(request, 'contest/contest.html',{'contest':contest,'clarification_list':clarification_list},
+                context_instance = RequestContext(request, processors = [custom_proc]))
     
-    contestantList = [ppl1,ppl2]
+    
 
-    clarification1 = {'id':1,'name':'First Problem','asker':'obama','content':'i have some problem','reply':'shut up'}
+def new(request):
+    if request.user.has_judge_auth():
+        if request.method == 'GET':
+            form = ContestForm(initial={'owner':request.user})
+            return render(request,'contest/editContest.html',{'form':form})
+        if request.method == 'POST':
+            form = ContestForm(request.POST)
+            if form.is_valid():
+                new_contest = form.save()
+                logger.info('Contest: Create a new contest %s!' % new_contest.id)
+                return HttpResponseRedirect('/contest/')
+    else:
+        raise PermissionDenied
+    
 
-    clarificationList = [clarification1]
+def edit(request,contest_id):
+    try:
+        contest = Contest.objects.get(id = contest_id)
+    except Contest.DoesNotExist:
+        logger.warning('Contest: Can not edit contest %s! Contest not found!' % contest_id)
+        raise Http404('Contest does not exist, can not edit.')
 
-    contest1 = {'name':'First contest','start_time':'2014/12/27 15:30:00','end_time':'2014/12/27 16:00:00',
-                    'contest_contestant':200,'contest_owner':'ma in joe','problem_list':problemList,'contestant_list':contestantList
-                    ,'clarification_list':clarificationList}
+    if user_info.has_c_ownership(request.user,contest):
+        if request.method == 'GET':        
+            contest_dic = model_to_dict(contest)
+            form = ContestForm(initial = contest_dic)
+            return render(request,'contest/editContest.html',{'form':form,'user':request.user})
+        if request.method == 'POST':
+            form = ContestForm(request.POST, instance = contest)
+            if form.is_valid():
+                modified_contest = form.save()
+                logger.info('Contest: Modified contest %s!' % modified_contest.id)
+            return HttpResponseRedirect('/contest/')
+    else:
+        raise PermissionDenied
 
-    return render(request, 'contest/contest.html',{'contest':contest1,'problem_list':problemList,
-        'contestant_list':contestantList,'server_time':serverTime},
-        context_instance = RequestContext(request, processors = [custom_proc]))
+def delete(request,contest_id):
+    try:
+        contest = Contest.objects.get(id = contest_id)
+    except Contest.DoesNotExist:
+        logger.warning('Contest: Can not delete contest %s! Contest not found!' % contest_id)
+        raise Http404('Contest does not exist, can not delete.')
+    
+    # only contest owner can delete
+    if request.user == contest.owner:
+        deleted_contest_id = contest.id
+        contest.delete()
+        logger.info('Contest: Delete contest %s!' % deleted_contest_id)
+        return HttpResponseRedirect('/contest/')
+    else:
+        raise PermissionDenied
+
+def register(request,contest_id):
+    #check contest's existance
+    try:
+        contest = Contest.objects.get(id = contest_id)
+    except Contest.DoesNotExist:
+        logger.warning('Contest: Can not register contest %s! Contest not found!' % contest_id)
+        raise Http404('Contest does not exist, can not register.')
+    if contest.open_register:
+        #check if user is not owner or coowner
+        if not user_info.has_c_ownership(request.user,contest):
+            #check contestant existance
+            if Contestant.objects.filter(contest = contest,user = request.user).exists():
+                #if user has attended
+                logger.info('Contest: User %s has already attended Contest %s!' % (request.user.username,contest.id))
+            else:
+                contestant = Contestant(contest = contest,user = request.user)
+                contestant.save()
+                logger.info('Contest: User %s attends Contest %s!' % (request.user.username,contest.id))
+    return HttpResponseRedirect('/contest/')
