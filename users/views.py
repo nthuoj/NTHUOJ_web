@@ -146,8 +146,8 @@ def user_create(request):
 
             #Send email with activation key
             email_subject = 'Account confirmation'
-            email_body = "Hey %s, thanks for signing up.\n \
-To activate your account, click the link below.\n" % (username) + \
+            email_body = 'Hey %s, thanks for signing up.\n ' % (username) + \
+            'To activate your account, click the link below.\n'  + \
             request.META['HTTP_HOST'] + \
             reverse('users:confirm', kwargs={'activation_key': activation_key})
 
@@ -155,7 +155,7 @@ To activate your account, click the link below.\n" % (username) + \
 
             user.backend = 'django.contrib.auth.backends.ModelBackend'
             logger.info('user %s created' % str(user))
-            login(request, user)
+            
             return redirect(reverse('index:index'))
         else:
             return render(
