@@ -24,20 +24,6 @@ $(document).ready(function() {
     bootstraptify();
 });
 
-function add_attribute(id, attribute, value) {
-    var att = document.createAttribute(attribute);
-    att.value = value;
-    document.getElementById(id).setAttributeNode(att);
-}
-
-function add_form_control(id) {
-    add_attribute(id, 'class', 'form-control');
-}
-
-function hide(id){
-    add_attribute(id,'type','hidden');
-}
-
 function enable_search() {
     $('.searchable').multiSelect({
         selectableHeader: "<input type='text' class='search-input form-control' autocomplete='off'>",

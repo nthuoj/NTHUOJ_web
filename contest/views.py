@@ -63,12 +63,10 @@ def contest(request,contest_id):
         raise PermissionDenied
     else:
         clarifications = get_clarifications(contest)
-        clarification_form =  ClarificationForm()
-        return render(request, 'contest/contest.html',{'contest':contest,'clarifications':clarifications,
-            'clarification_form':clarification_form},
-                context_instance = RequestContext(request, processors = [custom_proc]))
-    
-    
+        form =  ClarificationForm()
+        return render(request, 'contest/contest.html',{'contest':contest,
+            'clarifications':clarifications,'form':form},
+            context_instance = RequestContext(request, processors = [custom_proc]))
 
 def new(request):
     if request.user.has_judge_auth():

@@ -17,11 +17,11 @@
     OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
     SOFTWARE.
     '''
-from django import forms
+from django.forms import ModelForm,Textarea
 from contest.models import Contest
 from contest.models import Clarification
 
-class ContestForm(forms.ModelForm):
+class ContestForm(ModelForm):
     class Meta:
         model = Contest
         fields = [
@@ -36,13 +36,17 @@ class ContestForm(forms.ModelForm):
             'open_register',
         ]
 
-class ClarificationForm(forms.ModelForm):
+class ClarificationForm(ModelForm):
     class Meta:
         model = Clarification
-        fields = [
+        fields = (
             'contest',
             'problem',
             'content',
             'asker',
-            'reply_all',
-        ]
+            'reply_all'
+        )
+        widgets = {
+            'content': Textarea(),
+        }
+
