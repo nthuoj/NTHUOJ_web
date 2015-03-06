@@ -22,8 +22,8 @@ from utils import user_info
 from contest.models import Contest
 
 from contest.scoreboard import Scoreboard
-from contest.scoreboard import Scoreboard_Problem
-from contest.scoreboard import Problem
+from contest.scoreboard import ScoreboardProblem
+from contest.scoreboard import UserProblem
 from contest.scoreboard import User
 
 from users.models import User

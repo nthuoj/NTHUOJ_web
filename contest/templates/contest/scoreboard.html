@@ -58,7 +58,7 @@ SOFTWARE.
             <td>{{ user.username }}</td>
             {% for problem in user.problems %}
             <td>
-              {{ problem|testcases_solved }}/{{ scoreboard|get_problem:problem.id|total_testcase }}
+              {{ problem|testcases_solved }}/{{ problem.total_testcases }}
             </td>
             {% endfor %}
             <td>{{ user|testcases_solved }}</td>

@@ -31,9 +31,9 @@ class Scoreboard:
     def add_problem(self,scoreboard_problem):
         self.problems.append(scoreboard_problem)
 
-    def get_problem(self,id):
+    def get_problem(self,problem_id):
         for scoreboard_problem in self.problems:
-            if (scoreboard_problem.id == id):
+            if (scoreboard_problem.id == problem_id):
                 return scoreboard_problem
 
     #sort by solved descending. if same sort by penalty
@@ -44,8 +44,7 @@ class Scoreboard:
     def sort_users_by_solved_testcases(self):
         self.users = sorted(self.users, key=methodcaller('testcases_solved'), reverse=True)
 
-#for scoreboard
-class Scoreboard_Problem:
+class ScoreboardProblem:
     def __init__(self,id,pname,total_testcase):
         self.id = id
         self.pname = pname
@@ -87,15 +86,15 @@ class User:
             penalty += problem.penalty(start_time);
         return penalty
 
-#for each user
-class Problem:
-    def __init__(self,id):
+class UserProblem:
+    def __init__(self,id,total_testcases):
         self.submissions = []
         self.id = id
+        self.total_testcases = total_testcases
 
     def is_solved(self):
         for submission in self.submissions:
-            if submission.is_solved():
+            if submission.is_solved(self.total_testcases):
                 return True
         return False
 
@@ -112,28 +111,24 @@ class Problem:
         return self.submissions.__len__()
 
     def penalty(self,start_time):
-        minute = 60
         #every not passed submission should add addtional penalty
-        not_pass_penalty_unit = 20
-        addtional_penalty = 0
-        penalty = sys.maxsize
+        NOT_PASS_PENALTY_UNIT = 20
+        wrong_try = 0
         for submission in self.submissions:
-            if submission.is_solved():
-                penalty = min(penalty,(submission.submit_time - start_time).total_seconds()/minute)
+            if submission.is_solved(self.total_testcases):
+                return wrong_try * NOT_PASS_PENALTY_UNIT + submission.penalty(start_time)
             else:
-                addtional_penalty += not_pass_penalty_unit
-        if(penalty == sys.maxsize):
-            return 0
-        return int(penalty) + addtional_penalty
+                wrong_try += 1
+        return 0
 
 class Submission:
-    def __init__(self,submit_time,pass_testcases,total_testcases):
+    def __init__(self,submit_time,pass_testcases):
         self.submit_time = submit_time
         self.pass_testcases = pass_testcases
-        self.total_testcases = total_testcases
 
-    def is_solved(self):
-        if(self.pass_testcases == self.total_testcases):
-            return True
-        else:
-            return False
+    def is_solved(self,total_testcases):
+        return (self.pass_testcases == total_testcases)
+
+    def penalty(self,start_time):
+        MINUTE = 60
+        return ((self.submit_time - start_time).total_seconds()/MINUTE)
