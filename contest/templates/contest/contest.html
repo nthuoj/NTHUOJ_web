@@ -17,7 +17,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 -->
-{% extends "index/base.html" %} {% load staticfiles %} 
+{% extends "index/base.html" %} {% load staticfiles %} {% load contest_extras %}
 
 {% block title_name %}
 <title>Contest</title>
@@ -89,10 +89,12 @@ SOFTWARE.
             {% endfor %}
           </tbody>
         </table>
+        {% if user|is_contestant:contest %}
         <div align="center">
           <button type="button" class="btn btn-primary btn-lg" data-toggle="modal" 
                   data-target="#clarification">Clarify</button>
         </div>
+        {% endif %}
       </div>
     </div>
     <hr>
@@ -121,8 +123,10 @@ SOFTWARE.
         <div class="tab-pane" id="status">4</div>
       </div>
     </div>
+    {% if user|is_contestant:contest %}
     <!--Clarification Modal-->
     {% include "contest/clarification.html" %}
+    {% endif %}
   </div>
 </body>
 {% endblock body_block %}

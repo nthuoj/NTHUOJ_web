@@ -26,8 +26,7 @@ def get_clarifications(contest):
     return Clarification.objects.filter(contest = contest)
 
 def is_contestant(user,contest):
-    if type(contest) is Contest:
-        contestant = Contestant.objects.filter(contest = contest,user = user)
-        if len(contestant) >= 1:
-            return True
+    contestant = Contestant.objects.filter(contest = contest,user = user)
+    if len(contestant) >= 1:
+        return True
     return False

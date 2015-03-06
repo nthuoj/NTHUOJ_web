@@ -21,6 +21,8 @@ from django import template
 from utils import user_info
 from contest.models import Contest
 
+from contest import contest_info
+
 from users.models import User
 
 register = template.Library()
@@ -30,5 +32,9 @@ register = template.Library()
 def has_auth(user,contest_id):
     contest = Contest.objects.get(id = contest_id)
     return user_info.has_c_ownership(user,contest)
-
 register.filter("has_auth",has_auth)
+
+@register.filter
+def is_contestant(user,contest):
+    return contest_info.is_contestant(user,contest)
+register.filter("is_contestant",is_contestant)
