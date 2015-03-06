@@ -151,7 +151,13 @@ def user_create(request):
             request.META['HTTP_HOST'] + \
             reverse('users:confirm', kwargs={'activation_key': activation_key})
 
-            send_mail(email_subject, email_body, 'nthucsoj@gmail.com', [email], fail_silently=False)
+            try:
+                send_mail(email_subject, email_body, 'nthucsoj@gmail.com', [email], fail_silently=False)
+            except:
+                return render(
+                    request,
+                    'index/500.html',
+                    {'error_message': 'There is an error when sending email to %s\' mailbox' % username})
 
             user.backend = 'django.contrib.auth.backends.ModelBackend'
             logger.info('user %s created' % str(user))
