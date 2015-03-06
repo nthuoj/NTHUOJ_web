@@ -56,7 +56,7 @@ def contest(request,contest_id):
 
     now = datetime.now()
     #if contest has not started and user is not the owner
-    if ((contest.start_time > now) and not user_info.has_c_ownership(request.user,contest)):
+    if ((contest.start_time > now) and not user_info.has_contest_ownership(request.user,contest)):
         raise PermissionDenied
     else:
         clarification_list = Clarification.objects.filter(contest = contest)
@@ -87,7 +87,7 @@ def edit(request,contest_id):
         logger.warning('Contest: Can not edit contest %s! Contest not found!' % contest_id)
         raise Http404('Contest does not exist, can not edit.')
 
-    if user_info.has_c_ownership(request.user,contest):
+    if user_info.has_contest_ownership(request.user,contest):
         if request.method == 'GET':        
             contest_dic = model_to_dict(contest)
             form = ContestForm(initial = contest_dic)
@@ -126,7 +126,7 @@ def register(request,contest_id):
         raise Http404('Contest does not exist, can not register.')
     if contest.open_register:
         #check if user is not owner or coowner
-        if not user_info.has_c_ownership(request.user,contest):
+        if not user_info.has_contest_ownership(request.user,contest):
             #check contestant existance
             if Contestant.objects.filter(contest = contest,user = request.user).exists():
                 #if user has attended

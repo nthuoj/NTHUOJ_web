@@ -28,7 +28,7 @@ class CodeSubmitForm(forms.Form):
         pid = self.cleaned_data['pid']
         try:
             problem = Problem.objects.get(id=pid)
-            if not user_info.has_p_auth(self.user, problem):
+            if not user_info.has_problem_auth(self.user, problem):
                 raise forms.ValidationError('You don\'t have permission to submit that problem')
         except Problem.DoesNotExist:
             logger.warning('Pid %s doe not exist' % pid)

@@ -33,7 +33,7 @@ from utils.log_info import get_logger
 logger = get_logger()
 
 #contest ownership
-def has_c_ownership(curr_user, curr_contest):
+def has_contest_ownership(curr_user, curr_contest):
     user_is_valid(curr_user) #check user
     #check contset
     try:
@@ -49,7 +49,7 @@ def has_c_ownership(curr_user, curr_contest):
     return is_owner
 
 #group ownership
-def has_g_ownership(curr_user, curr_group):
+def has_group_ownership(curr_user, curr_group):
     user_is_valid(curr_user) #check user
     #check group
     try:
@@ -65,7 +65,7 @@ def has_g_ownership(curr_user, curr_group):
     return is_owner
 
 #problem ownership
-def has_p_ownership(curr_user, curr_problem):
+def has_problem_ownership(curr_user, curr_problem):
     user_is_valid(curr_user) #check user
     #check problem
     try:
@@ -76,7 +76,7 @@ def has_p_ownership(curr_user, curr_problem):
     is_owner = (curr_user.username == curr_problem.owner.username)
     return is_owner
 
-def has_p_auth(user, problem):
+def has_problem_auth(user, problem):
     '''Check if user has authority to see/submit that problem'''
     user = validate_user(user)
 
@@ -88,7 +88,7 @@ def has_p_auth(user, problem):
     if user.has_admin_auth():
         return True
     # 2. be the problem owner
-    if has_p_ownership(user, problem):
+    if has_problem_ownership(user, problem):
         return True
     # 3. be a contest owner/coowner
     contests = Contest.objects.filter(
@@ -96,7 +96,7 @@ def has_p_auth(user, problem):
         end_time__gte=datetime.now(),
         problem=problem)
     for contest in contests:
-        if has_c_ownership(user, contest):
+        if has_contest_ownership(user, contest):
             return True
     # None of the condition is satisfied
     return False
