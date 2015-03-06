@@ -24,7 +24,6 @@ SOFTWARE.
 import json
 from threading import Thread
 import hashlib, datetime, random
-from django.contrib import messages
 from index.views import custom_proc
 from django.core.mail import send_mail
 from users.models import User, UserProfile
