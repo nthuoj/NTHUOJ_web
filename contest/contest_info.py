@@ -18,6 +18,16 @@
     SOFTWARE.
     ''' 
 from contest.models import Clarification
+from contest.models import Contestant
+from contest.models import Contest
 
+from users.models import User
 def get_clarifications(contest):
     return Clarification.objects.filter(contest = contest)
+
+def is_contestant(user,contest):
+    if type(contest) is Contest:
+        contestant = Contestant.objects.filter(contest = contest,user = user)
+        if len(contestant) >= 1:
+            return True
+    return False

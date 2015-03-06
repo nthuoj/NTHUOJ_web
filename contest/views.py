@@ -37,6 +37,8 @@ from contest.models import Clarification
 from contest.forms import ContestForm
 from contest.forms import ClarificationForm
 
+from contest.contest_info import is_contestant
+
 from utils.log_info import get_logger
 from utils import user_info
 
@@ -142,12 +144,13 @@ def register(request,contest_id):
     return HttpResponseRedirect('/contest/')
 
 def ask(request):
-    if request.method == 'POST':
-        form = ClarificationForm(request.POST)
+    if request.user.is_authenticated():
         contest = request.POST['contest']
-        if form.is_valid():
-            new_clarification = form.save()
-            logger.info('Clarification: User %s create Clarification %s!' % (request.user.username, new_clarification.id))
-            
-            return HttpResponseRedirect('/contest/'+contest)
-        return HttpResponseRedirect('/contest/'+contest)
+        if is_contestant(request.user,contest):
+            if request.method == 'POST':
+                form = ClarificationForm(request.POST)
+                if form.is_valid():
+                    new_clarification = form.save()
+                    logger.info('Clarification: User %s create Clarification %s!' % (request.user.username, new_clarification.id))
+                return HttpResponseRedirect('/contest/' + contest)
+    return HttpResponseRedirect('/contest/')
