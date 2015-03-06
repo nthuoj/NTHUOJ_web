@@ -116,7 +116,7 @@ class UserProblem:
         wrong_try = 0
         for submission in self.submissions:
             if submission.is_solved(self.total_testcases):
-                return wrong_try * NOT_PASS_PENALTY_UNIT + submission.penalty(start_time)
+                return int(wrong_try * NOT_PASS_PENALTY_UNIT + submission.penalty(start_time))
             else:
                 wrong_try += 1
         return 0
