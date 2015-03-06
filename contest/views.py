@@ -144,8 +144,13 @@ def register(request,contest_id):
     return HttpResponseRedirect('/contest/')
 
 def ask(request):
-    if request.user.is_authenticated():
+    try:
         contest = request.POST['contest']
+    except:
+        logger.warning('Clarification: Can not create Clarification!')
+        return HttpResponseRedirect('/contest/')
+
+    if request.user.is_authenticated():
         if is_contestant(request.user,contest):
             if request.method == 'POST':
                 form = ClarificationForm(request.POST)
