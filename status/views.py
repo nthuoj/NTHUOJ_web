@@ -97,10 +97,7 @@ def view_code(request, sid):
             f.close()
             codesubmitform = CodeSubmitForm(
                 initial={'code': code, 'pid': submission.problem.id})
-            return render(
-                request,
-                'users/submit.html',
-                {'form': codesubmitform})
+            return render(request, 'users/submit.html', {'form': codesubmitform})
         else:
             logger.warning('User %s attempt to view detail of SID %s' % (request.user, sid))
             return render(
