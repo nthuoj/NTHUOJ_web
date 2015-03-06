@@ -33,6 +33,13 @@ SOFTWARE.
 
 {% block body_block %}
   <!-- clock -->
+  <script>
+      if ('{{ alert_info }}' == 'mailbox'){
+          message = 'Please go to your mailbox and click the confirmation ' + 
+          'link;otherwise , your account would not be activated!';
+          alert(message);
+      }
+  </script>
   <div class="gray">
   </div>
 

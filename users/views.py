@@ -22,7 +22,9 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 '''
 import json
+from threading import Thread
 import hashlib, datetime, random
+from django.contrib import messages
 from index.views import custom_proc
 from django.core.mail import send_mail
 from users.models import User, UserProfile
@@ -152,7 +154,9 @@ def user_create(request):
             reverse('users:confirm', kwargs={'activation_key': activation_key})
 
             try:
-                send_mail(email_subject, email_body, 'nthucsoj@gmail.com', [email], fail_silently=False)
+                Thread(
+                    target=send_mail,
+                    args=(email_subject, email_body, 'nthucsoj@gmail.com',[email])).start()
             except:
                 return render(
                     request,
@@ -161,8 +165,7 @@ def user_create(request):
 
             user.backend = 'django.contrib.auth.backends.ModelBackend'
             logger.info('user %s created' % str(user))
-            
-            return redirect(reverse('index:index'))
+            return redirect(reverse('index:alert', kwargs={'alert_info': 'mailbox'}))
         else:
             return render(
                 request, 'users/auth.html',
