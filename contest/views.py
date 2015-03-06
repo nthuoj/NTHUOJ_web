@@ -64,11 +64,12 @@ def contest(request,contest_id):
     if ((contest.start_time > now) and not user_info.has_c_ownership(request.user,contest)):
         raise PermissionDenied
     else:
-        clarifications = get_clarifications(contest)
-        initial_form = {'contest':contest,'asker':request.user}
+        user = request.user
+        clarifications = get_clarifications(contest,user)
+        initial_form = {'contest':contest,'asker':user}
         form = ClarificationForm(initial=initial_form)
         return render(request, 'contest/contest.html',{'contest':contest,
-            'clarifications':clarifications,'form':form,'user':request.user},
+            'clarifications':clarifications,'form':form,'user':user},
             context_instance = RequestContext(request, processors = [custom_proc]))
 
 def new(request):

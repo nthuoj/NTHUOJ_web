@@ -22,8 +22,10 @@ from contest.models import Contestant
 from contest.models import Contest
 
 from users.models import User
-def get_clarifications(contest):
-    return Clarification.objects.filter(contest = contest)
+def get_clarifications(contest,user):
+    reply_all = Clarification.objects.filter(contest = contest,reply_all = True)
+    user_ask = Clarification.objects.filter(contest = contest,asker = user)
+    return reply_all | user_ask
 
 def is_contestant(user,contest):
     contestant = Contestant.objects.filter(contest = contest,user = user)
