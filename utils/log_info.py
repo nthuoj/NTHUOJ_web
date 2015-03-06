@@ -23,7 +23,7 @@ SOFTWARE.
 '''
 import logging
 
-
+logger = None
 def get_logger(name='NTHU OJ'):
     '''Return a logger with specified settings
 
@@ -32,22 +32,24 @@ def get_logger(name='NTHU OJ'):
     Returns:
         the logger with specified format.
     '''
-    # create logger
-    logger = logging.getLogger(name)
-    logger.setLevel(logging.DEBUG)
+    global logger
+    if not logger:
+        # create logger
+        logger = logging.getLogger(name)
+        logger.setLevel(logging.DEBUG)
 
-    # create console handler and set level to debug
-    ch = logging.StreamHandler()
-    ch.setLevel(logging.DEBUG)
+        # create console handler and set level to debug
+        ch = logging.StreamHandler()
+        ch.setLevel(logging.DEBUG)
 
-    # create formatter
-    formatter = logging.Formatter('[%(asctime)s] %(levelname)s: %(message)s')
+        # create formatter
+        formatter = logging.Formatter('[%(asctime)s] %(levelname)s: %(message)s')
 
-    # add formatter to ch
-    ch.setFormatter(formatter)
+        # add formatter to ch
+        ch.setFormatter(formatter)
 
-    # add ch to logger
-    logger.addHandler(ch)
+        # add ch to logger
+        logger.addHandler(ch)
 
     return logger
 
