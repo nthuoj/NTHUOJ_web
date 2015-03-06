@@ -48,15 +48,15 @@ def get_passed_testcases(submission):
     return passed_testcases.__len__()
 
 def get_scoreboard(contest):
-    contestant_list = get_contestant_list(contest)
+    contestants = get_contestant_list(contest)
     
     scoreboard = Scoreboard(contest.start_time)
     for problem in contest.problem.all():
-        testcases_quantity = get_total_testcases(problem);
+        total_testcases = get_total_testcases(problem);
         new_problem = Scoreboard_Problem(problem.id,problem.pname,testcases_quantity)
         scoreboard.add_problem(new_problem)
 
-    for contestant in contestant_list:
+    for contestant in contestants:
         new_contestant = User(contestant.user.username)
         for problem in contest.problem.all():
             submissions = get_contestant_problem_submission_list(contest,contestant,problem)    
