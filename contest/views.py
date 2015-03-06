@@ -63,7 +63,8 @@ def contest(request,contest_id):
         raise PermissionDenied
     else:
         clarifications = get_clarifications(contest)
-        form =  ClarificationForm()
+        initial_form = {'contest':contest,'asker':request.user}
+        form = ClarificationForm(initial=initial_form)
         return render(request, 'contest/contest.html',{'contest':contest,
             'clarifications':clarifications,'form':form},
             context_instance = RequestContext(request, processors = [custom_proc]))
@@ -133,9 +134,20 @@ def register(request,contest_id):
             #check contestant existance
             if Contestant.objects.filter(contest = contest,user = request.user).exists():
                 #if user has attended
-                logger.info('Contest: User %s has already attended Contest %s!' % (request.user.username,contest.id))
+                logger.info('Contest: User %s has already attended Contest %s!' % (request.user.username, contest.id))
             else:
                 contestant = Contestant(contest = contest,user = request.user)
                 contestant.save()
-                logger.info('Contest: User %s attends Contest %s!' % (request.user.username,contest.id))
+                logger.info('Contest: User %s attends Contest %s!' % (request.user.username, contest.id))
     return HttpResponseRedirect('/contest/')
+
+def ask(request):
+    if request.method == 'POST':
+        form = ClarificationForm(request.POST)
+        contest = request.POST['contest']
+        if form.is_valid():
+            new_clarification = form.save()
+            logger.info('Clarification: User %s create Clarification %s!' % (request.user.username, new_clarification.id))
+            
+            return HttpResponseRedirect('/contest/'+contest)
+        return HttpResponseRedirect('/contest/'+contest)

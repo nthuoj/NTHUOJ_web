@@ -17,8 +17,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 -->
-{% load staticfiles %} 
-{% block import_source %}
+{% load staticfiles %} {% block import_source %}
 <script src="{%static 'contest/js/clarification.js'%}"></script>
 <script src="{%static 'contest/js/function.js'%}"></script>
 {% endblock import_source %}
@@ -33,27 +32,26 @@ SOFTWARE.
         <h4 class="modal-title" id="myModalLabel">Ask Question</h4>
       </div>
       <div class="modal-body">
-        <form action="" method="post" role="form">
-          {{ form.contest.as_hidden }}
-          {{ form.asker.as_hidden }}
+        <form action="{% url 'contest:ask' %}" method="POST" role="form">
+          {% csrf_token %} {{ form.contest.as_hidden }} {{ form.asker.as_hidden }}
           <label for="pid">Problem name</label>
           <div id="pid" class="fieldWrapper form-group">
-             {{ form.problem }}
+            {{ form.problem }}
           </div>
           <div class="form-group fieldWrapper">
             <label>Description</label>
             {{ form.content }}
           </div>
-          <div class="checkbox">
+          <div class="fieldWrapper checkbox">
             <label>
               {{ form.reply_all }}reply all
             </label>
           </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            <input type="submit" class="btn btn-primary" value="Send">
+          </div>
         </form>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary">Send</button>
       </div>
     </div>
   </div>
