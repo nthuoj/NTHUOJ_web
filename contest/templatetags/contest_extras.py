@@ -36,7 +36,6 @@ register = template.Library()
 def has_auth(user,contest_id):
     contest = Contest.objects.get(id = contest_id)
     return user_info.has_c_ownership(user,contest)
-
 register.filter("has_auth",has_auth)
 
 #check if user is judge or admin
@@ -62,48 +61,34 @@ def users_sorted_by_solved_testcases(scoreboard):
 register.filter("users_sorted_by_solved_testcases",users_sorted_by_solved_testcases)
 
 def total_contestant(scoreboard):
-    return scoreboard.users.__len__()
+    return len(scoreboard.users)
 register.filter("total_contestant",total_contestant)
-
-@register.filter
-def get_problem(scoreboard,id):
-    return scoreboard.get_problem(id)
-
-register.filter("get_problem",get_problem)
 
 @register.filter
 def total_testcase(scoreboard_problem):
     return scoreboard_problem.total_testcase
-
 register.filter("total_testcase",total_testcase)
-
-@register.filter
-def is_solved(problem):
-    if problem.is_solved():
-        return 1
-    return 0
-register.filter("is_solved",is_solved)
 
 @register.filter
 def testcases_solved(problem):
     return problem.testcases_solved()
-
 register.filter("testcases_solved",testcases_solved)
 
 @register.filter
 def submit_times(problem):
     return problem.submit_times()
-
 register.filter("submit_times",submit_times)
 
 @register.filter
 def problem_solved(user):
     return user.solved()
-
 register.filter("problem_solved",problem_solved)
 
 @register.filter
-def penalty(user,start_time):
-    return user.penalty(start_time)
-
+def penalty(obj,start_time):
+    penalty = obj.penalty(start_time)
+    if penalty == 0:
+        return '--'
+    else:
+        return penalty
 register.filter("penalty",penalty)

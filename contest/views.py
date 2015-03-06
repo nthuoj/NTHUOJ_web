@@ -64,8 +64,8 @@ def contest(request,contest_id):
         scoreboard = get_scoreboard(contest)
         clarification_list = Clarification.objects.filter(contest = contest)
         return render(request, 'contest/contest.html',{'contest':contest,
-            'clarification_list':clarification_list,'scoreboard':scoreboard},
-                context_instance = RequestContext(request, processors = [custom_proc]))
+               'clarification_list':clarification_list,'scoreboard':scoreboard},
+               context_instance = RequestContext(request, processors = [custom_proc]))
 
 def new(request):
     if request.user.has_judge_auth():

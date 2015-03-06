@@ -37,7 +37,7 @@ def get_contestant_list(contest):
 
 def get_total_testcases(problem):
     testcases = Testcase.objects.filter(problem = problem)
-    return testcases.__len__()
+    return len(testcases)
 
 def get_contestant_problem_submission_list(contest,contestant,problem):
     return Submission.objects.filter(problem = problem, submit_time__lte = contest.end_time,
@@ -45,7 +45,7 @@ def get_contestant_problem_submission_list(contest,contestant,problem):
 
 def get_passed_testcases(submission):
     passed_testcases = SubmissionDetail.objects.filter(sid = submission, virdect = SubmissionDetail.AC)
-    return passed_testcases.__len__()
+    return len(passed_testcases)
 
 def get_scoreboard(contest):
     contestants = get_contestant_list(contest)

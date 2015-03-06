@@ -108,7 +108,7 @@ class UserProblem:
         self.submissions.append(submission)
 
     def submit_times(self):
-        return self.submissions.__len__()
+        return len(self.submissions)
 
     def penalty(self,start_time):
         #every not passed submission should add addtional penalty
