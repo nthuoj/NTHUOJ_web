@@ -62,11 +62,6 @@ class User:
     def add_problem(self,problem):
         self.problems.append(problem)
 
-    def get_problem(self,id):
-        for problem in self.problems:
-            if(problem.id == id):
-                return problem
-
     def solved(self):
         count = 0
         for problem in self.problems:
