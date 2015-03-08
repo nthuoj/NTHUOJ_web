@@ -58,10 +58,10 @@ SOFTWARE.
             <td>{{ user.username }}</td>
             {% for problem in user.problems %}
             <td>
-              {{ problem|testcases_solved }}/{{ problem.total_testcases }}
+              {{ problem.testcases_solved }}/{{ problem.total_testcases }}
             </td>
             {% endfor %}
-            <td>{{ user|testcases_solved }}</td>
+            <td>{{ user.testcases_solved }}</td>
           </tr>
           {% endfor %}
           <tr>
@@ -98,10 +98,10 @@ SOFTWARE.
             <td>{{ forloop.counter }}</td>
             <td>{{ user.username }}</td>
             {% for problem in user.problems %}
-            <td>{{ problem|penalty:scoreboard.start_time }}/{{ problem|submit_times }}</td>
+            <td>{{ problem.penalty }}/{{ problem.submit_times }}</td>
             {% endfor %}
-            <td>{{ user|problem_solved }}</td>
-            <td>{{ user|penalty:scoreboard.start_time }}</td>
+            <td>{{ user.solved }}</td>
+            <td>{{ user.penalty }}</td>
           </tr>
           {% endfor %}
           <tr>

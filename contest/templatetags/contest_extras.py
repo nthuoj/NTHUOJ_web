@@ -63,32 +63,3 @@ register.filter("users_sorted_by_solved_testcases",users_sorted_by_solved_testca
 def total_contestant(scoreboard):
     return len(scoreboard.users)
 register.filter("total_contestant",total_contestant)
-
-@register.filter
-def total_testcase(scoreboard_problem):
-    return scoreboard_problem.total_testcase
-register.filter("total_testcase",total_testcase)
-
-@register.filter
-def testcases_solved(problem):
-    return problem.testcases_solved()
-register.filter("testcases_solved",testcases_solved)
-
-@register.filter
-def submit_times(problem):
-    return problem.submit_times()
-register.filter("submit_times",submit_times)
-
-@register.filter
-def problem_solved(user):
-    return user.solved()
-register.filter("problem_solved",problem_solved)
-
-@register.filter
-def penalty(obj,start_time):
-    penalty = obj.penalty(start_time)
-    if penalty == 0:
-        return '--'
-    else:
-        return penalty
-register.filter("penalty",penalty)

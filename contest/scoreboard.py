@@ -38,11 +38,11 @@ class Scoreboard:
 
     #sort by solved descending. if same sort by penalty
     def sort_users_by_penalty(self):
-        self.users = sorted(self.users, key=methodcaller('penalty',self.start_time))
-        self.users = sorted(self.users, key=methodcaller('solved'), reverse=True)
+        self.users = sorted(self.users, key=methodcaller('get_penalty',self.start_time))
+        self.users = sorted(self.users, key=methodcaller('get_solved'), reverse=True)
 
     def sort_users_by_solved_testcases(self):
-        self.users = sorted(self.users, key=methodcaller('testcases_solved'), reverse=True)
+        self.users = sorted(self.users, key=methodcaller('get_testcases_solved'), reverse=True)
 
 class ScoreboardProblem:
     def __init__(self,id,pname,total_testcase):
@@ -62,23 +62,23 @@ class User:
     def add_problem(self,problem):
         self.problems.append(problem)
 
-    def solved(self):
+    def get_solved(self):
         count = 0
         for problem in self.problems:
-            if(problem.is_solved() == True):
+            if problem.is_solved():
                 count += 1
         return count
 
-    def testcases_solved(self):
+    def get_testcases_solved(self):
         count = 0
         for problem in self.problems:
-            count += problem.testcases_solved()
+            count += problem.get_testcases_solved()
         return count
 
-    def penalty(self,start_time):
+    def get_penalty(self,start_time):
         penalty = 0
         for problem in self.problems:
-            penalty += problem.penalty(start_time);
+            penalty += problem.get_penalty(start_time);
         return penalty
 
 class UserProblem:
@@ -93,7 +93,7 @@ class UserProblem:
                 return True
         return False
 
-    def testcases_solved(self):
+    def get_testcases_solved(self):
         testcases_solved = 0
         for submission in self.submissions:
             testcases_solved = max(testcases_solved,submission.pass_testcases)
@@ -105,13 +105,13 @@ class UserProblem:
     def submit_times(self):
         return len(self.submissions)
 
-    def penalty(self,start_time):
+    def get_penalty(self,start_time):
         #every not passed submission should add addtional penalty
         NOT_PASS_PENALTY_UNIT = 20
         wrong_try = 0
         for submission in self.submissions:
             if submission.is_solved(self.total_testcases):
-                return int(wrong_try * NOT_PASS_PENALTY_UNIT + submission.penalty(start_time))
+                return int(wrong_try * NOT_PASS_PENALTY_UNIT + submission.get_penalty(start_time))
             else:
                 wrong_try += 1
         return 0
@@ -124,6 +124,6 @@ class Submission:
     def is_solved(self,total_testcases):
         return (self.pass_testcases == total_testcases)
 
-    def penalty(self,start_time):
+    def get_penalty(self,start_time):
         MINUTE = 60
         return ((self.submit_time - start_time).total_seconds()/MINUTE)

@@ -37,7 +37,7 @@ def get_contestant_list(contest):
 
 def get_total_testcases(problem):
     testcases = Testcase.objects.filter(problem = problem)
-    return len(testcases)
+    return testcases.count()
 
 def get_contestant_problem_submission_list(contest,contestant,problem):
     return Submission.objects.filter(problem = problem, submit_time__lte = contest.end_time,
@@ -45,7 +45,14 @@ def get_contestant_problem_submission_list(contest,contestant,problem):
 
 def get_passed_testcases(submission):
     passed_testcases = SubmissionDetail.objects.filter(sid = submission, virdect = SubmissionDetail.AC)
-    return len(passed_testcases)
+    return passed_testcases.count()
+
+def get_penalty(obj,start_time):
+    penalty = obj.get_penalty(start_time)
+    if penalty == 0:
+        return '--'
+    else:
+        return penalty
 
 def get_scoreboard(contest):
     contestants = get_contestant_list(contest)
@@ -70,7 +77,17 @@ def get_scoreboard(contest):
                     break
             if new_problem.is_solved():
                 scoreboard.get_problem(new_problem.id).add_pass_user()
+            #setup problem attribute
+            new_problem.penalty = get_penalty(new_problem,scoreboard.start_time)
+            new_problem.submit_times = new_problem.submit_times()
+            new_problem.solved = new_problem.is_solved()
+            new_problem.testcases_solved = new_problem.get_testcases_solved()
+
             new_contestant.add_problem(new_problem)
+        #setup contestant attribute
+        new_contestant.solved = new_contestant.get_solved()
+        new_contestant.penalty = get_penalty(new_contestant,scoreboard.start_time)
+        new_contestant.testcases_solved = new_contestant.get_testcases_solved()
         scoreboard.add_user(new_contestant)
 
     return scoreboard
