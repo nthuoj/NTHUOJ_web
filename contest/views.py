@@ -66,17 +66,16 @@ def contest(request,contest_id):
     
 
 def new(request):
-    if request.user.is_authenticated():
-        if request.user.has_judge_auth():
-            if request.method == 'GET':
-                form = ContestForm(initial={'owner':request.user})
-                return render(request,'contest/editContest.html',{'form':form})
-            if request.method == 'POST':
-                form = ContestForm(request.POST)
-                if form.is_valid():
-                    new_contest = form.save()
-                    logger.info('Contest: Create a new contest %s!' % new_contest.id)
-                    return HttpResponseRedirect('/contest/')
+    if request.user.is_authenticated() and request.user.has_judge_auth():
+        if request.method == 'GET':
+            form = ContestForm(initial={'owner':request.user})
+            return render(request,'contest/editContest.html',{'form':form})
+        if request.method == 'POST':
+            form = ContestForm(request.POST)
+            if form.is_valid():
+                new_contest = form.save()
+                logger.info('Contest: Create a new contest %s!' % new_contest.id)
+                return HttpResponseRedirect('/contest/')
     raise PermissionDenied
     
 
