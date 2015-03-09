@@ -24,10 +24,12 @@ SOFTWARE.
 {% extends 'problem/base.html' %}
 {% block body_block %}
 <div class="container" id="Body">
-
   <h2>Problem Panel</h2>
   <div>
-    <a style='float:left' class="btn btn-primary" href="{% url 'problem:problem.views.new' %}">Add Problem</a>
+    {% if can_add_problem %}
+    <a style='float:left' class="btn btn-warning" href="{% url 'problem:problem.views.new' %}"
+      data-toggle="tooltip" data-placement="right" title="add problem">+</a>
+    {% endif %}
     <div style='float:right; width:50%'>
       <div class="input-group">
         <input type="text" class="form-control" placeholder="Search" />
@@ -40,12 +42,14 @@ SOFTWARE.
     </div>
   </div>
   <div style='padding-top: 50px;'>
+    {% if user.is_authenticated %}
     <span class='btn-group' role='group'>
       <button type='button' class='btn btn-default' 
       id='my_problem' onclick="switch_problem('my')">my problem</button>
       <button type='button' class='btn btn-default' 
       id='all_problem' onclick="switch_problem('all')">all problem</button>
     </span>
+    {% endif %}
     <div id='all-problem'>
       {% include 'problem/problem_list.html' with problem=all_problem %}
     </div>
@@ -53,15 +57,6 @@ SOFTWARE.
       {% include 'problem/problem_list.html' with problem=my_problem %}
     </div>
   </div>
-  <nav>
-    <ul class='pager'>
-      <li class='previous'>
-        <a href='#'>&larr; Previous</a>
-      </li>
-      <li class='next'>
-        <a href='#'>next &rarr;</a>
-      </li>
-  </nav>
 </div>
 <script>
 $('#my-problem').hide();
@@ -76,6 +71,7 @@ function switch_problem(s) {
     $('#all-problem').show();
   }
 }
+$('[data-toggle="tooltip"]').tooltip();
 </script>
 
 {% endblock %}

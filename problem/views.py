@@ -24,6 +24,7 @@ SOFTWARE.
 from django.http import HttpResponse, HttpResponseBadRequest, Http404
 from django.shortcuts import render, redirect
 from django.core.exceptions import PermissionDenied
+from django.db.models import Q
 
 from users.models import User
 from problem.models import Problem, Tag, Testcase
@@ -37,9 +38,19 @@ logger = log_info.get_logger()
 
 # Create your views here.
 def problem(request):
-    a = {'name': 'my_problem', 'pid': 1, 'pass': 60, 'not_pass': 40}
-    b = {'name': 'all_problem', 'pid': 1, 'pass': 60, 'not_pass': 40}
-    return render(request, 'problem/panel.html', {'my_problem':[a,a,a], 'all_problem':[a,a,a,b,b,b]})
+    can_add_problem = False
+    my_problem = Problem.objects.filter(owner=request.user)
+    if request.user.is_anonymous():
+        all_problem = Problem.objects.all(visible=False)
+    else:
+        can_add_problem = request.user.has_subjudge_auth()
+        if request.user.is_admin:
+            all_problem = Problem.objects.all()
+        else:
+            all_problem = Problem.objects.filter(Q(visible=False) | Q(owner=request.user))
+
+    return render(request, 'problem/panel.html', 
+                  {'my_problem': my_problem, 'all_problem': all_problem, 'can_add_problem': can_add_problem})
 
 def volume(request):
     problem_id=[]
@@ -204,6 +215,18 @@ def delete_testcase(request, pid, tid):
     logger.info("testcase %d deleted" % (testcase.pk))
     testcase.delete()
     return HttpResponse()
+
+def delete_problem(request, pid):
+    try:
+        problem = Problem.objects.get(pk=pid)
+    except Problem.DoesNotExist:
+        logger.warning("problem %s does not exist" % (pid))
+        raise Http404("problem %s does not exist" % (pid))
+    if not request.user.is_admin and request.user != problem.owner:
+        raise PermissionDenied
+    logger.info("problem %d deleted" % (problem.pk))
+    problem.delete()
+    return redirect('/problem/')
 
 def preview(request):
     return render(request, 'problem/preview.html')
