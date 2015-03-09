@@ -21,9 +21,9 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 '''
+from datetime import date
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 from django.db import models
-from datetime import date
 
 # Create your models here.
 class UserManager(BaseUserManager):
@@ -48,7 +48,6 @@ class UserManager(BaseUserManager):
         user.is_admin = True
         user.save(using=self._db)
         return user
-
 
 
 class User(AbstractBaseUser):
@@ -81,23 +80,24 @@ class User(AbstractBaseUser):
     active = models.BooleanField(default=False)
     user_level = models.CharField(max_length=9, choices=USER_LEVEL_CHOICE, default=USER)
     theme = models.CharField(max_length=8, choices=THEME_CHOICE, default=PAPER)
-    
+
     USERNAME_FIELD = 'username'
     is_active = models.BooleanField(default=True)
     is_admin = models.BooleanField(default=False)
     objects = UserManager()
 
     def has_admin_auth(self):
-        has_auth = (self.user_level == ADMIN)
+        has_auth = (self.user_level == self.ADMIN)
         return has_auth
 
     def has_judge_auth(self):
-        has_auth = ((self.user_level == ADMIN) or ( self.user_level == JUDGE))
+        has_auth = ((self.user_level == self.ADMIN) or (self.user_level == self.JUDGE))
+
         return has_auth
 
     def has_subjudge_auth(self):
-        has_auth = ((self.user_level == ADMIN) or ( self.user_level == JUDGE) \
-                    or (self.user_level == SUB_JUDGE))
+        has_auth = ((self.user_level == self.ADMIN) or ( self.user_level == self.JUDGE) \
+                    or (self.user_level == self.SUB_JUDGE))
         return has_auth
 
     def get_full_name(self):

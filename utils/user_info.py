@@ -22,9 +22,10 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 '''
 from django.db import models
+from users.models import User
 from group.models import Group
 from contest.models import Contest
-from problem.models import Problem
+from problem.models import Problem, Submission, SubmissionDetail
 from utils.log_info import get_logger
 
 logger = get_logger()
@@ -38,12 +39,12 @@ def has_c_ownership(curr_user, curr_contest):
     except Contest.DoesNotExist:
         logger.warning('Contest id %ld does not exsit!' % curr_contest.id)
 
-    ownership = (curr_user.username == curr_contest.owner)
+    is_owner = (curr_user.username == curr_contest.owner.username)
     if curr_contest.coowner.all().count() != 0:
         for coowner in curr_contest.coowner.all():
             if curr_user == coowner:
-                ownership = True
-    return ownership
+                is_owner = True
+    return is_owner
 
 #group ownership
 def has_g_ownership(curr_user, curr_group):
@@ -54,12 +55,12 @@ def has_g_ownership(curr_user, curr_group):
     except Group.DoesNotExist:
         logger.warning('Group id %ld does not exsit!' % curr_group.id)
 
-    ownership = (curr_user.username == curr_group.owner)
+    is_owner = (curr_user.username == curr_group.owner.username)
     if curr_group.coowner.all().count() != 0:
         for coowner in curr_group.coowner.all():
             if curr_user == coowner:
-                ownership = True
-    return ownership
+                is_owner = True
+    return is_owner
 
 #problem ownership
 def has_p_ownership(curr_user, curr_problem):
@@ -70,11 +71,51 @@ def has_p_ownership(curr_user, curr_problem):
     except Problem.DoesNotExist:
         logger.warning('Problem id %ld does not exsit!' % curr_problem.id)
 
-    ownership = (curr_user.username == curr_problem.owner)
-    return ownership
+    is_owner = (curr_user.username == curr_problem.owner.username)
+    return is_owner
 
 def user_is_valid(curr_user):
     try:
         User.objects.get(username=curr_user.username)
     except User.DoesNotExist:
         logger.warning('User username %s does not exsit!' % curr_user.username)
+
+def validate_user(user):
+    # an anonymous user is treated as a normal user
+    if user.is_anonymous():
+        user = User()  # create a temporary user instance with on attribute
+    return user
+
+def get_user_statistics(user):
+    '''Find the statistics of the given user'''
+    # fetch some status labels in Submissions
+    # here, we only concern about COMPILE_ERROR, RESTRICTED_FUNCTION,
+    # and JUDGE_ERROR since ACCEPTED, NOT_ACCEPTED, etc will appear in
+    # SubmissionDetail.VIRDECT_CHOICE
+    status_labels = [
+        Submission.COMPILE_ERROR,
+        Submission.RESTRICTED_FUNCTION,
+        Submission.JUDGE_ERROR
+        ]
+    # find all virdect in SubmissionDetail.VIRDECT_CHOICE
+    virdect_labels = [x[0] for x in SubmissionDetail.VIRDECT_CHOICE]
+    statistics = []
+
+    # fetch Submission of the given user
+    submissions = Submission.objects.filter(user=user)
+    for label in status_labels:
+        statistics += [{
+            'label': label,
+            'value': submissions.filter(status=label).count()
+        }]
+
+    # fetch Submission of the given user
+    submissions_id = map(lambda submission: submission.id, submissions)
+    submission_details = SubmissionDetail.objects.filter(sid__in=submissions_id)
+    for label in virdect_labels:
+        statistics += [{
+            'label': label,
+            'value': submission_details.filter(virdect=label).count()
+        }]
+
+    return statistics
