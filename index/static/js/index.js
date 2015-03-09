@@ -24,10 +24,6 @@ SOFTWARE.
 var displayInfo = false;
 var loginInfo = false;
 
-window.onload = function() {
-    //alert("You have new messages!");
-}
-
 function info() {
     if(displayInfo == false){
         document.getElementById("information").style.display = "block";
@@ -38,6 +34,7 @@ function info() {
         displayInfo = !displayInfo;
     }
 }
+
 $(function() {
     var one_minute = 60*1000;
     setInterval(function() {
