@@ -138,7 +138,7 @@ class SubmissionDetail(models.Model):
     sid = models.ForeignKey(Submission)
     cpu = models.FloatField(default=0)
     memory = models.IntegerField(default=0)
-    virdect = models.CharField(max_length=3, choices=VIRDECT_CHOICE, default='')
+    verdict = models.CharField(max_length=3, choices=VERDICT_CHOICE, default='')
 
     class Meta:
         unique_together = (('tid', 'sid'),)
