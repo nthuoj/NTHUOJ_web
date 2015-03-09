@@ -17,6 +17,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 -->
+{% load contest_extras %}
 <table class="table table-striped">
   <thead>
     <tr>
@@ -26,18 +27,20 @@ SOFTWARE.
     </tr>
   </thead>
   <tbody>
-    {% for problem in problem_list %}
+    {% for problem in contest.problem.all %}
     <tr>
-      <td>{{ problem.id }}</td>
-      <td><a href="#">{{ problem.name }}</td>
+      <td>{{ forloop.counter }}</td>
+      <td><a href="#">{{ problem.pname }}</td>
         <td>
           <div class="progress">
             <div name="pass" class="progress-bar progress-bar-success" role="progressbar" 
-            aria-valuenow="30" aria-valuemin="0" aria-valuemax="100" style="width: 50%;">
-              <span name="pass_ratio">{{ problem.ppl_pass }} / {{ problem.ppl_not_pass|add:problem.ppl_pass }}</span>
+                 aria-valuenow="30" aria-valuemin="0" aria-valuemax="100" style="width: 0%;">
+              <span name="pass_ratio">
+               
+              </span>
             </div>
             <div name="not_pass" class="progress-bar progress-bar-danger" role="progressbar"
-             aria-valuenow="30" aria-valuemin="0" aria-valuemax="100" style="width: 50%;">
+                 aria-valuenow="30" aria-valuemin="0" aria-valuemax="100" style="width: 0%;">
             </div>
           </div>
         </td>

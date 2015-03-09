@@ -33,19 +33,19 @@ SOFTWARE.
   <div class="container">
     <!--Title-->
     <div class="well">
-      <h1>{{ contest.name }}</h1>
+      <h1>{{ contest.cname }}</h1>
     </div>
     <div class="panel panel-info">
       <div class="panel-heading">
         <h1 class="panel-title" style="text-align:center;">Time</h1>
       </div>
       <div class="panel-body inline">
-        <a id="server_time" hidden>{{ server_time }}</a>
+        <a id="server_time" hidden>{{ tstr }}</a>
         <table style="width:100%;text-align:center;">
           <tr>
-            <td id="start" style="text-align:left;">{{ contest.start_time }}</td>
+            <td id="start" style="text-align:left;">{{ contest.start_time|date:"Y-m-d H:i:s" }}</td>
             <td id="clock"></td>
-            <td id="end" style="text-align:right;">{{ contest.end_time }}</td>
+            <td id="end" style="text-align:right;">{{ contest.end_time|date:"Y-m-d H:i:s" }}</td>
           </tr>
         </table>
       </div>
@@ -56,7 +56,7 @@ SOFTWARE.
         </div>
       </div>
     </div>
-    <!-- clarification -->
+    <!-- Clarification -->
     <div class="panel panel-primary">
       <div class="panel-heading">
         <h1 class="panel-title" style="text-align:center;">Clarification</h1>
@@ -73,10 +73,10 @@ SOFTWARE.
             </tr>
           </thead>
           <tbody>
-            {% for clarification in contest.clarification_list %}
+            {% for clarification in clarification_list %}
             <tr>
               <td>{{ clarification.id }}</td>
-              <td>{{ clarification.name }}</td>
+              <td>{{ clarification.problem }}</td>
               <td>{{ clarification.asker }}</td>
               <td>{{ clarification.content }}</td>
               <td>{{ clarification.reply }}</td>
@@ -91,7 +91,7 @@ SOFTWARE.
       </div>
     </div>
     <hr>
-    <!--contest detail-->
+    <!--Contest detail-->
     <div id="detail">
       <ul class="nav nav-tabs" role="tablist" id="myTab">
         <li class="active"><a href="#overview" role="tab" data-toggle="tab">Overview</a>
@@ -111,13 +111,13 @@ SOFTWARE.
           {% include "contest/problem.html" %}
         </div>
         <div class="tab-pane" id="scoreboard">
-          {% include "contest/scoreboard.html" %}
+          3
         </div>
         <div class="tab-pane" id="status">4</div>
       </div>
     </div>
 
-    <!-- Modal -->
+    <!-- Clarification Modal -->
     <div class="modal fade" id="myModal" tabindex="-1" 
     role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
       <div class="modal-dialog">
@@ -134,8 +134,8 @@ SOFTWARE.
               <label for="pid">Problem name</label>
               <div id="pid" class="form-group">
                 <select class="form-control">
-                  {% for problem in contest.problem_list %}
-                  <option>{{ problem.name }}</option>
+                  {% for problem in contest.problem.all %}
+                  <option>{{ problem.pname }}</option>
                   {% endfor %}
                 </select>
               </div>

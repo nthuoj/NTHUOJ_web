@@ -23,156 +23,141 @@ SOFTWARE.
 -->
 {% extends "index/base.html" %}
 {% load static %}
+{% load profile_filters %}
 
 {% block body_block %}
 
-<script language="javascript" type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/flot/0.8.2/jquery.flot.min.js"></script>
-<script language="javascript" type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/flot/0.8.2/jquery.flot.pie.min.js"></script>
-
-<!-- conform password modal -->
-<div class="modal fade" id="passwd-modal" role="dialog" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal">
-          <span aria-hidden="true">&times;</span>
-          <span class="sr-only">Close</span>
-        </button>
-        <h4 class="modal-title">Please Enter Your Current Password</h4>
-      </div>
-      <div class="modal-body">
-        <form class="form-horizontal">
-          <div class="form-group">
-            <label class="control-label">Current Password</label>
-            <input class="form-control input-sm" type="password">
-          </div>
-        </form>
-      </div>
-      <div class="modal-footer">
-        <button class="btn btn-default" data-dismiss="modal">Close</button>
-        <button class="btn btn-primary">Save changes</button>
-      </div>
-    </div>
-  </div>
-</div>
-
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/1.0.1/Chart.min.js"></script>
 <script src={% static "js/piechartsettings.js"%}></script>
 <script type="text/javascript">
 $(function() {
   plot_piechart({{ piechart_data|safe }});
 });
 </script>
+<style type="text/css">
+  #piechart {
+    width: 100% !important;
+    height: auto !important;
+  }
+  .pie-legend li span {
+    width: 1em;
+    height: 1em;
+    display: inline-block;
+    margin-right: 5px;
+  }
+  .pie-legend {
+    list-style: none;
+  }
+</style>
 
-<div class="bs-docs-section">
+<div class="bs-docs-section container">
   <div class="row">
-    <div class="col-lg-6" style="width:49%;height:70%;float:left;">
+    <div class="col-lg-6">
+      {% block statistic_block %}
       <div class="panel panel-default">
         <div class="panel-heading">Statistics</div>
         <div class="panel-body">
           <div class="form-group">
-            <label class="col-lg-2 control-label">Piechart</label>
-            <div class="col-lg-10">
-              <div id="piechart" style="width:500px;height:400px;"></div>
+            <label class="col-lg-2 col-lg-offset-1 control-label">Piechart</label>
+            <div id="statistics" class="row">
+              <div class="col-lg-9">
+                <canvas id="piechart"><canvas>
+              </div>
+              <div id="piechart-legend" class="col-lg-3"></div>
             </div>
           </div>
-          {% block statistic_block %}
-
-          {% endblock statistic_block %}
         </div>
       </div>
+      {% endblock statistic_block %}
     </div>
-    <div class="col-lg-6" style="width:49%;height:70%;float:right;">
+    <div class="col-lg-6">
       {% block profile_field_block %}
       <div class="panel panel-default">
         <div class="panel-heading">Profile</div>
         <div class="panel-body">
-          <form class="form-horizontal" style="width:60%; padding: 5px;">
-            <fieldset>
+          {% if user == profile_user %}
+            <form class="form-horizontal" action="" method="post" style="margin:10px;">
+              {% csrf_token %}
+              {% for field in profile_form %}
               <div class="form-group">
-                <label class="col-lg-4 control-label">User ID</label>
-                <div class="col-lg-8">
-                  <input type="text" class="form-control" value="" disabled>
+                <div class='row'>
+                  <div class='col-lg-2 col-lg-offset-1'>
+                    <label class="control-label">{{ field.label }}</label>
+                  </div>
+                  <div class='col-lg-5'>
+                    {{ field }}
+                  </div>
+                </div>
+                {% if field.errors %}
+                <ul>
+                  {% for error in field.errors %}
+                    <li class='col-lg-offset-2'><strong style="color:red">{{ error|escape }}</strong></li>
+                  {% endfor %}
+                </ul>
+                {% endif %}
+              </div>
+              {% endfor %}
+              <div class="modal-footer">
+                <div class='col-lg-8'>{{ profile_message }}</div>
+                <button type="submit" name="profile_form"
+                  class="btn btn-primary">Submit</button>
+              </div>
+            </form>
+          {% else %}
+            <div class="form-group">
+              <div class='row'>
+                <div class='col-lg-2 col-lg-offset-1'>
+                  <label class="control-label">Username</label>
+                </div>
+                <div class='col-lg-5'>
+                  <input class="form-control" readonly="True" type="text"
+                    value="{{ profile_user.username }}">
                 </div>
               </div>
-              <div class="form-group">
-                <label class="col-lg-4 control-label">Nickname</label>
-                <div class="col-lg-8">
-                  <input type="text" class="form-control" value="">
+            </div>
+            <div class="form-group">
+              <div class='row'>
+                <div class='col-lg-2 col-lg-offset-1'>
+                  <label class="control-label">Email</label>
+                </div>
+                <div class='col-lg-5'>
+                  <input class="form-control" readonly="True" type="email" value="{{ profile_user.email }}">
                 </div>
               </div>
-              <div class="form-group">
-                <label class="col-lg-4 control-label">Email</label>
-                <div class="col-lg-8">
-                  <input type="text" class="form-control" value="">
-                </div>
-              </div>
+            </div>
+          {% endif %}
 
+          {% if user|can_change_userlevel:profile_user %}
+            <form class="form-horizontal" action="" method="post" style="margin:10px;">
+              {% csrf_token %}
+              {% for field in userlevel_form %}
               <div class="form-group">
-                <label class="col-lg-4 control-label">New Password</label>
-                <div class="col-lg-8">
-                  <input type="password" class="form-control" placeholder="Password">
+                <div class='row'>
+                  <div class='col-lg-2 col-lg-offset-1'>
+                    <label class="control-label">{{ field.label }}</label>
+                  </div>
+                  <div class='col-lg-5'>
+                    {{ field }}
+                  </div>
                 </div>
+                {% if field.errors %}
+                <ul>
+                  {% for error in field.errors %}
+                    <li class='col-lg-offset-2'>
+                      <strong style="color:red">{{ error|escape }}</strong>
+                    </li>
+                  {% endfor %}
+                </ul>
+                {% endif %}
               </div>
-              <div class="form-group">
-                <label class="col-lg-4 control-label">Conform Password</label>
-                <div class="col-lg-8">
-                  <input type="password" class="form-control" placeholder="Password">
-                </div>
+              {% endfor %}
+              <div class="modal-footer">
+                <div class='col-lg-8'>{{ userlevel_message }}</div>
+                <button type="submit" name="userlevel_form"
+                  class="btn btn-primary">Submit</button>
               </div>
-              <div class="form-group">
-                <label class="col-lg-4 control-label">Class Participatd</label>
-                <div class="col-lg-8 col-lg-offset-4" style="margin-bottom:2px">
-                  <input type="text" class="form-control" value="" disabled>
-                </div>
-                <div class="col-lg-8 col-lg-offset-4" style="margin-bottom:2px">
-                  <input type="text" class="form-control" value="" disabled>
-                </div>
-              </div>
-              <div class="form-group">
-                <label class="col-lg-4 control-label">Team Participatd</label>
-                <div class="col-lg-8 col-lg-offset-4" style="margin-bottom:2px">
-                  <input type="text" class="form-control" value="" disabled="">
-                </div>
-              </div>
-              <div class="form-group">
-                <label class="col-lg-4 control-label">Registration Date</label>
-                <div class="col-lg-8">
-                  <input type="text" class="form-control" value="" disabled>
-                </div>
-              </div>
-              <div class="form-group">
-                <label for="select" class="col-lg-4 control-label">User Level</label>
-                <div class="col-lg-8">
-                  <select class="form-control" id="select">
-                    <option>admin</option>
-                    <option>judge</option>
-                    <option>sub-judge</option>
-                    <option>user</option>
-                  </select>
-                </div>
-              </div>
-              <legend>OJ Settings</legend>
-              <div class="form-group">
-                <label for="select" class="col-lg-4 control-label">Theme</label>
-                <div class="col-lg-8">
-                  <select class="form-control" id="select">
-                    <option>Paper</option>
-                    <option>Readable</option>
-                    <option>Cosmo</option>
-                    <option>Default</option>
-                    <option>Lumen</option>
-                  </select>
-                </div>
-              </div>
-              <hr>
-              <div class="form-group">
-                <div class="col-lg-10">
-                  <a href="#passwd-popup" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#passwd-modal">Update</a>
-                  <span class="help-block">To update, it requires your current password.</span>
-                </div>
-              </div>
-            </fieldset>
-          </form>
+            </form>
+          {% endif %}
         </div>
       </div>
       {% endblock profile_field_block %}

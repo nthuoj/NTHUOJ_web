@@ -25,35 +25,33 @@ SOFTWARE.
 {% load static %}
 
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  {% block title_name %}
-  {% endblock title_name %}
-  <!-- necessarily jQeuery -->
-  <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js">
-  </script>
-  <!-- bootstrap, bootwatch JS & CSS -->
-  <link rel="stylesheet" 
-            href="http://bootswatch.com/paper/bootstrap.css" media="screen">
-  <link rel="stylesheet" 
-            href="http://bootswatch.com/assets/css/bootswatch.min.css">
-  <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js">
-  </script>
-  <!-- Magnific Popup core JS & CSS -->
-  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/magnific-popup.js/0.9.9/magnific-popup.css">
-  <script src="//cdnjs.cloudflare.com/ajax/libs/magnific-popup.js/0.9.9/jquery.magnific-popup.min.js">
-  </script>
-  <link rel="stylesheet" href={% static "./css/mfp-fade.css"%}>
-  <script src={% static "./js/popup-setting.js"%}></script>
-  <script src={% static "./js/index.js"%}></script>
-  <link rel="stylesheet" href={% static "./css/index.css"%} media="screen">
-  {% block import_source %}
-  {% endblock import_source %}
-</head>
-<body>
+  <head>
+    <meta charset="UTF-8">
+    {% block title_name %}
+    {% endblock title_name %}
+    <!-- necessarily jQeuery -->
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js">
+    </script>
+    <!-- bootstrap, bootwatch JS & CSS -->
+    <link rel="stylesheet" 
+    href="http://bootswatch.com/paper/bootstrap.css" media="screen">
+    <link rel="stylesheet" 
+    href="http://bootswatch.com/assets/css/bootswatch.min.css">
+    <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js">
+    </script>
+    <!-- Magnific Popup core JS & CSS -->
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/magnific-popup.js/0.9.9/magnific-popup.css">
+    <script src="//cdnjs.cloudflare.com/ajax/libs/magnific-popup.js/0.9.9/jquery.magnific-popup.min.js">
+    </script>
+    <link rel="stylesheet" href={% static "./css/mfp-fade.css"%}>
+    <script src={% static "./js/popup-setting.js"%}></script>
+    <script src={% static "./js/index.js"%}></script>
+    <link rel="stylesheet" href={% static "./css/index.css"%} media="screen">
+    {% block import_source %}
+    {% endblock import_source %}
+  </head>
+  <body>
 
-  <!-- wrap all page elements to div -->
-  <div class="wrap-body">
     <!-- feedback-popup -->
     <div id="feedback-popup" class="mfp-hide">
       <div class="jumbotron popdiv">
@@ -69,8 +67,8 @@ SOFTWARE.
               </a>
             </div>
           </div>
-        </form>
-      </div>
+        </div>
+      </form>
     </div>
 
     <!-- forget_password popup -->
@@ -160,42 +158,46 @@ SOFTWARE.
           <li><a href={% url "status:status" %}><p class="p2">Status</p></a></li>
           <li><a href="/index/group_list"><p class="p2">Group</p></a></li>
           <li><a href={% url "team:list" %}><p class="p2">Team</p></a></li>
-          <li><a href={% url "users:profile" %}><p class="p2">Personal</p></a></li>
+          {% if user.is_authenticated %}
+            <li><a href={% url "users:profile" user.username %}><p class="p2">Personal</p></a></li>
+          {% endif %}
           <li><a href="#"><p class="p2">User Rank</p></a></li>
         </ul>
         <ul class="nav navbar-nav navbar-right">
           <li >
           <img src={% static "./images/14.png "%} height="50" width="50" 
-               onclick="info();" class="ring">
+          onclick="info();" class="ring">
           </li>
           {% if user.is_authenticated %}
-            <li><a href={% url "users:logout" %}><p class="p3">Logout</p></a></li>
+          <li><a href={% url "users:logout" %}><p class="p3">Logout</p></a></li>
           {% else %}
-            <li><a href={% url "users:login" %}><p class="p3">Login</p></a></li>
-            <li><a href={% url "users:create" %}><p class="p3">Register</p></a></li>
+          <li><a href={% url "users:login" %}><p class="p3">Login</p></a></li>
+          <li><a href={% url "users:create" %}><p class="p3">Register</p></a></li>
           {% endif %}
         </ul>
       </div>
     </div>
 
-    <!--information-->
-    <div class="information" id="information" style="display:none";>
-      <li class="divider">{{ info1 }}</li>
-      <li class="divider">{{ info2 }}</li>
+    <!-- wrap all page elements to div -->
+    <div class="wrap-body container-fluid">
+      <!--information-->
+      <div class="information" id="information" style="display:none";>
+        <li class="divider">{{ info1 }}</li>
+        <li class="divider">{{ info2 }}</li>
+      </div>
+      {% block body_block %}
+      {% endblock body_block %}
     </div>
-    {% block body_block %}
-    {% endblock body_block %}
-  </div>
-  <!-- footer -->
-  <div class="footer sticky-footer" style="height: 35px">
-    <a href="" class="p11" style="position:relative;left:30px;">Contact us</a>
-    <p class="p10" style="position:relative;left:400px;">
-    © NTHU Online Judge 2014, Templates are from Bootstrap Project</p> 
-    <p id='time' 
-    style="font-size: 18px;color:white;position:relative;float:right;right:30px;">
-    {{ tstr }}
-    </p>
-  </div>
+    <!-- footer -->
+    <div class="footer sticky-footer">
+      <a href="" class="p11" style="position:relative;left:30px;">Contact us</a>
+      <p class="p10" style="position:relative;left:400px;">
+      © NTHU Online Judge 2014, Templates are from Bootstrap Project</p> 
+      <p id='time' 
+      style="font-size: 18px;color:white;position:relative;float:right;right:30px;">
+      {{ tstr }}
+      </p>
+    </div>
 
-</body>
+  </body>
 </html>
