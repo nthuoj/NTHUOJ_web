@@ -30,7 +30,7 @@ from users.models import User
 # Create your models here.
 
 class Tag(models.Model):
-    
+
     tag_name = models.CharField(max_length=20, default='')
 
     def __unicode__(self):
@@ -113,10 +113,10 @@ class Submission(models.Model):
     error_msg = models.TextField(blank=True)
     status = models.CharField(max_length=7, choices=STATUS_CHOICE, default=WAIT)
     language = models.CharField(max_length=5, choices=LANGUAGE_CHOICE, default=C)
-         
+
     def __unicode__(self):
         return str(self.id)
- 
+
 
 class SubmissionDetail(models.Model):
     AC = 'AC'
@@ -125,7 +125,7 @@ class SubmissionDetail(models.Model):
     MLE = 'MLE'
     RE = 'RE'
     PE = 'PE'
-    VIRDECT_CHOICE = (
+    VERDICT_CHOICE = (
         (AC, 'Accepted'),
         (WA, 'Wrong Answer'),
         (TLE, 'Time Limit Exceeded'),

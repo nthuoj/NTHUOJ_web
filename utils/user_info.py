@@ -118,14 +118,14 @@ def get_user_statistics(user):
     # fetch some status labels in Submissions
     # here, we only concern about COMPILE_ERROR, RESTRICTED_FUNCTION,
     # and JUDGE_ERROR since ACCEPTED, NOT_ACCEPTED, etc will appear in
-    # SubmissionDetail.VIRDECT_CHOICE
+    # SubmissionDetail.VERDICT_CHOICE
     status_labels = [
         Submission.COMPILE_ERROR,
         Submission.RESTRICTED_FUNCTION,
         Submission.JUDGE_ERROR
         ]
-    # find all virdect in SubmissionDetail.VIRDECT_CHOICE
-    virdect_labels = [x[0] for x in SubmissionDetail.VIRDECT_CHOICE]
+    # find all verdict in SubmissionDetail.VERDICT_CHOICE
+    verdict_labels = [x[0] for x in SubmissionDetail.VERDICT_CHOICE]
     statistics = []
 
     # fetch Submission of the given user
@@ -139,10 +139,10 @@ def get_user_statistics(user):
     # fetch Submission of the given user
     submissions_id = map(lambda submission: submission.id, submissions)
     submission_details = SubmissionDetail.objects.filter(sid__in=submissions_id)
-    for label in virdect_labels:
+    for label in verdict_labels:
         statistics += [{
             'label': label,
-            'value': submission_details.filter(virdect=label).count()
+            'value': submission_details.filter(verdict=label).count()
         }]
 
     return statistics
