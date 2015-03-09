@@ -32,6 +32,7 @@ def get_logger(name='NTHU OJ'):
     Returns:
         the logger with specified format.
     '''
+
     global logger
     if not logger:
         # create logger
