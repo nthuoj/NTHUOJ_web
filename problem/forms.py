@@ -23,6 +23,20 @@ SOFTWARE.
 '''
 from django import forms
 from problem.models import Problem
+from users.models import User
+
+import autocomplete_light
+
+# create autocomplete interface and register
+class UserAutocomplete(autocomplete_light.AutocompleteModelBase):
+    search_fields = ['^username']
+    choices = User.objects.all()
+    model = User
+    attrs = {
+        'placeholder': '',
+        'data-autocomplete-minimum-characters': 1
+    }
+autocomplete_light.register(UserAutocomplete)
 
 class ProblemForm(forms.ModelForm):
     partial_judge_code = forms.FileField(required=False)
@@ -39,5 +53,8 @@ class ProblemForm(forms.ModelForm):
         ]
         labels = {
             'pname': 'Problem Name'
+        }
+        widgets = {
+            'owner': autocomplete_light.TextWidget('UserAutocomplete')
         }
 

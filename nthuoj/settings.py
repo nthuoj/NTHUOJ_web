@@ -30,6 +30,7 @@ ALLOWED_HOSTS = ['*']
 # Application definition
 
 INSTALLED_APPS = (
+    'autocomplete_light',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -109,3 +110,5 @@ STATIC_URL = '/static/'
 AXES_LOCKOUT_TEMPLATE = 'index/404.html' 
 # freeze login access for that ip for 0.1*60 = 6 minites
 AXES_COOLOFF_TIME = 0.1
+TESTCASE_PATH= "media/testcase/"
+SPECIAL_PATH = "/"
