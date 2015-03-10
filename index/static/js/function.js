@@ -17,15 +17,33 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
+
+/*
+To add attribute to designated element
+
+Usage: add_attribute(element_id, attribute_to_set, value_attribute_should_be); 
+*/
 function add_attribute(id, attribute, value) {
     var att = document.createAttribute(attribute);
     att.value = value;
     document.getElementById(id).setAttributeNode(att);
 }
 
+/*
+add class="form-control" to designated element.
+Simple way to bootstraptify element
+
+Usage: add_form_control(id_of_element_to_bootstraptify)
+*/
+
 function add_form_control(id) {
     add_attribute(id, 'class', 'form-control');
 }
+
+/*
+to hide designated element
+Usage: hide(id_of_element_to_hide)
+*/
 
 function hide(id){
     add_attribute(id,'type','hidden');

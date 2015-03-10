@@ -19,7 +19,6 @@ SOFTWARE.
 -->
 {% load staticfiles %} {% block import_source %}
 <script src="{%static 'contest/js/clarification.js'%}"></script>
-<script src="{%static 'contest/js/function.js'%}"></script>
 {% endblock import_source %}
 <div class="modal fade" id="clarification" tabindex="-1" role="dialog">
   <div class="modal-dialog">
@@ -34,18 +33,12 @@ SOFTWARE.
       <div class="modal-body">
         <form action="{% url 'contest:ask' %}" method="POST" role="form">
           {% csrf_token %} {{ form.contest.as_hidden }} {{ form.asker.as_hidden }}
-          <label for="pid">Problem name</label>
-          <div id="pid" class="fieldWrapper form-group">
-            {{ form.problem }}
+          <div class="form-group" style="width:50%">
+            Problem name {{ form.problem }}
           </div>
           <div class="form-group fieldWrapper">
             <label>Description</label>
             {{ form.content }}
-          </div>
-          <div class="fieldWrapper checkbox">
-            <label>
-              {{ form.reply_all }}reply all
-            </label>
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
