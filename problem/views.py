@@ -29,6 +29,7 @@ from users.models import User
 from problem.models import Problem, Tag, Testcase
 from problem.forms import ProblemForm
 from utils import log_info
+from nthuoj.settings import TESTCASE_PATH
 
 import os
 import json
@@ -70,10 +71,12 @@ def detail(request, pid):
 
 def edit(request, pid):
     if request.user.is_anonymous():
+        logger.warning("user un-login")
         raise PermissionDenied()
     try:
         problem = Problem.objects.get(pk=pid)
-        if not request.user.is_admin or request.user != problem.owner:
+        if not request.user.is_admin and request.user != problem.owner:
+            logger.warning("user %s has no permission to edit problem %s" % (request.user, pid))
             raise PermissionDenied()
     except Problem.DoesNotExist:
         logger.warning("problem %s does not exist" % (pid))
@@ -101,7 +104,7 @@ def edit(request, pid):
                    'tags': tags, 'description': problem.description,
                    'input': problem.input, 'output': problem.output,
                    'sample_in': problem.sample_in, 'sample_out': problem.sample_out,
-                   'testcase': testcase })
+                   'testcase': testcase, 'TESTCASE_PATH': TESTCASE_PATH})
 
 def new(request):
     if request.user.is_anonymous():
@@ -186,7 +189,14 @@ def testcase(request, pid, tid=None):
             testcase.memory_limit = request.POST['memory_limit']
             testcase.save()
             logger.info("testcase saved, tid = %s" % (testcase.pk))
-            return HttpResponse(json.dumps({'tid': testcase.pk}), content_type="application/json")
+        if 't_in' in request.FILES:
+            with open('%s%s.in' % (TESTCASE_PATH, testcase.pk), 'w') as t_in:
+                for chunk in request.FILES['t_in'].chunks():
+                    t_in.write(chunk)
+            with open('%s%s.out' % (TESTCASE_PATH, testcase.pk), 'w') as t_out:
+                for chunk in request.FILES['t_out'].chunks():
+                    t_out.write(chunk)
+        return HttpResponse(json.dumps({'tid': testcase.pk}), content_type="application/json")
     return HttpResponse()
 
 def delete_testcase(request, pid, tid):

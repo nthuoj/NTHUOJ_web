@@ -51,3 +51,10 @@ if ans == '' or ans == 'y' or ans == 'Y':
 
 # django-axes
 django_manage('syncdb')
+
+with open("nthuoj/settings.py", "a") as settings_file:
+    testcase_path = raw_input("testcase path: ")
+    special_path = raw_input("special judge path: ")
+    settings_file.write("TESTCASE_PATH= \"%s\"\n" % (testcase_path))
+    settings_file.write("SPECIAL_PATH = \"%s\"\n" % (special_path))
+
