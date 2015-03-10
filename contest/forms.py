@@ -37,16 +37,23 @@ class ContestForm(forms.ModelForm):
         ]
 
 class ClarificationForm(forms.ModelForm):
-    #only problems contest contains will be shown in list
-    def __init__(self, contest_id, *args, **kwargs):
+    
+    def __init__(self, *args, **kwargs):
         super(ClarificationForm, self).__init__(*args, **kwargs)
-        the_contest = Contest.objects.get(id=contest_id)
-        self.fields['problem'] = forms.ChoiceField(choices=[(problem.id,problem.pname) 
-            for problem in the_contest.problem.all()])
+        #only problems contest contains will be shown in list
+        initial = kwargs.get('initial',{})
+        contest = initial.get('contest',{})
+        if type(contest) is Contest:
+            contest_id = contest.id
+            the_contest = Contest.objects.get(id=contest_id)
+            self.fields['problem'] = forms.ChoiceField(choices=[(problem.id,problem.pname) 
+                for problem in the_contest.problem.all()])
+
     class Meta:
         model = Clarification
         fields = (
             'contest',
+            'problem',
             'content',
             'asker',
             'reply_all'

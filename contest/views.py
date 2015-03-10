@@ -67,7 +67,7 @@ def contest(request,contest_id):
         user = request.user
         clarifications = get_clarifications(contest,user)
         initial_form = {'contest':contest,'asker':user}
-        form = ClarificationForm(contest.id,initial=initial_form)
+        form = ClarificationForm(initial=initial_form)
         return render(request, 'contest/contest.html',{'contest':contest,
             'clarifications':clarifications,'form':form,'user':user},
             context_instance = RequestContext(request, processors = [custom_proc]))
