@@ -70,10 +70,12 @@ def detail(request, pid):
 
 def edit(request, pid):
     if request.user.is_anonymous():
+        logger.warning("user un-login")
         raise PermissionDenied()
     try:
         problem = Problem.objects.get(pk=pid)
-        if not request.user.is_admin or request.user != problem.owner:
+        if not request.user.is_admin and request.user != problem.owner:
+            logger.warning("user %s has no permission to edit problem %s" % (request.user, pid))
             raise PermissionDenied()
     except Problem.DoesNotExist:
         logger.warning("problem %s does not exist" % (pid))
