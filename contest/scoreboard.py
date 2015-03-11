@@ -50,6 +50,7 @@ class ScoreboardProblem:
         self.pname = pname
         self.total_testcase = total_testcase
         self.pass_user = 0
+        self.total_solved = 0
 
     def add_pass_user(self):
         self.pass_user += 1

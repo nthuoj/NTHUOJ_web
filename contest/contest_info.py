@@ -82,6 +82,9 @@ def get_scoreboard(contest):
             new_problem.submit_times = new_problem.submit_times()
             new_problem.solved = new_problem.is_solved()
             new_problem.testcases_solved = new_problem.get_testcases_solved()
+            #to get single problem's total passed submission
+            scoreboard_problem = scoreboard.get_problem(problem.id)
+            scoreboard_problem.total_solved += new_problem.testcases_solved
 
             new_contestant.add_problem(new_problem)
         #setup contestant attribute
