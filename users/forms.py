@@ -4,16 +4,13 @@ from django.forms import ModelForm
 
 from users.models import User
 from problem.models import Problem, Submission, SubmissionDetail, Testcase
-from utils import log_info, user_info
+from utils import log_info, user_info, config_info
 
 logger = log_info.get_logger()
 
 class CodeSubmitForm(forms.Form):
-    LANGUAGE_CHOICE = (
-        ('C', 'C: -O2 -lm -std=c99'),
-        ('CPP', 'C++:  -O2 -lm -std=c++'),
-        ('CPP11', 'C++11: -O2 -lm -std=c++11'),
-    )
+    SUBMIT_PATH = config_info.get_config('path', 'submission_code_path')
+    LANGUAGE_CHOICE = tuple(config_info.get_config_items('compiler_option'))
 
     pid = forms.CharField(
         widget=forms.TextInput(attrs={'class': 'form-control', 'type': 'number'}))
@@ -48,7 +45,7 @@ class CodeSubmitForm(forms.Form):
             problem=problem,
             language=language)
         try:
-            f = open('%s%s.cpp' % (settings.SUBMISSION_CODE_PATH, submission.id), 'w')
+            f = open('%s%s.cpp' % (self.SUBMIT_PATH, submission.id), 'w')
             f.write(code)
             f.close()
         except IOError:

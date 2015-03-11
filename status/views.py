@@ -42,7 +42,7 @@ def regroup_submission(submissions, submission_details):
         submission_groups.append({
             'grouper': submission,
             'list': submission_details.filter(sid=submission)
-            })
+        })
 
     return submission_groups
 
@@ -92,7 +92,7 @@ def view_code(request, sid):
     try:
         submission = Submission.objects.get(id=sid)
         if show_detail(submission, request.user):
-            f = open('%s%s.cpp' % (settings.SUBMISSION_CODE_PATH, sid), 'r')
+            f = open('%s%s.cpp' % (CodeSubmitForm.SUBMIT_PATH, sid), 'r')
             code = f.read()
             f.close()
             codesubmitform = CodeSubmitForm(
