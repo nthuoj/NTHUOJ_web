@@ -79,8 +79,8 @@ class Clarification(models.Model):
     asker = models.ForeignKey(User, related_name='asker')
     replyer = models.ForeignKey(User, related_name='replyer', blank=True, null=True)
     ask_time = models.DateTimeField(default=datetime.now, auto_now=True)
-    reply_time = models.DateTimeField(blank=True)
-    realy_all = models.BooleanField(default=False)
+    reply_time = models.DateTimeField(blank=True, null=True)
+    reply_all = models.BooleanField(default=False)
 
     def __unicode__(self):
         return str(self.id)
