@@ -53,13 +53,13 @@ def base(request):
 
 def get_time(request):
     t = time.time()
-    tstr = datetime.datetime.fromtimestamp(t).strftime('%Y-%m-%d %H:%M:%S')
+    tstr = datetime.datetime.fromtimestamp(t).strftime('%Y/%m/%d %H:%M:%S')
     return HttpResponse(tstr)
 
 def custom_proc(request):
 
     t = time.time()
-    tstr = datetime.datetime.fromtimestamp(t).strftime('%Y-%m-%d %H:%M:%S')
+    tstr = datetime.datetime.fromtimestamp(t).strftime('%Y/%m/%d %H:%M:%S')
     people = 0
     people = random.randint(100,999)
     return {
