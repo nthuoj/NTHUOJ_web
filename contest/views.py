@@ -19,7 +19,7 @@
     '''
 from datetime import datetime
 from django.core.exceptions import PermissionDenied
-from django.http import HttpResponseRedirect
+from django.shortcuts import redirect
 from django.http import Http404
 from django.shortcuts import render
 from index.views import custom_proc
@@ -63,8 +63,6 @@ def contest(request,contest_id):
         return render(request, 'contest/contest.html',{'contest':contest,'clarification_list':clarification_list},
                 context_instance = RequestContext(request, processors = [custom_proc]))
     
-    
-
 def new(request):
     if request.user.is_authenticated() and request.user.has_judge_auth():
         if request.method == 'GET':
@@ -75,7 +73,7 @@ def new(request):
             if form.is_valid():
                 new_contest = form.save()
                 logger.info('Contest: Create a new contest %s!' % new_contest.id)
-                return HttpResponseRedirect('/contest/')
+                return redirect('contest:archive')
     raise PermissionDenied
     
 
@@ -97,7 +95,7 @@ def edit(request,contest_id):
                 if form.is_valid():
                     modified_contest = form.save()
                     logger.info('Contest: Modified contest %s!' % modified_contest.id)
-                return HttpResponseRedirect('/contest/')
+                return redirect('contest:archive')
     raise PermissionDenied
 
 def delete(request,contest_id):
@@ -113,7 +111,7 @@ def delete(request,contest_id):
             deleted_contest_id = contest.id
             contest.delete()
             logger.info('Contest: Delete contest %s!' % deleted_contest_id)
-            return HttpResponseRedirect('/contest/')
+            return redirect('contest:archive')
     raise PermissionDenied
 
 def register(request,contest_id):
@@ -135,5 +133,5 @@ def register(request,contest_id):
                     contestant = Contestant(contest = contest,user = request.user)
                     contestant.save()
                     logger.info('Contest: User %s attends Contest %s!' % (request.user.username,contest.id))
-        return HttpResponseRedirect('/contest/')
+        return redirect('contest:archive')
     raise PermissionDenied
