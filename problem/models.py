@@ -22,15 +22,15 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 '''
 
-from django.db import models
-from users.models import User
-from team.models import Team
 from datetime import datetime
+from django.db import models
+from team.models import Team
+from users.models import User
 
 # Create your models here.
 
 class Tag(models.Model):
-    
+
     tag_name = models.CharField(max_length=20, default='')
 
     def __unicode__(self):
@@ -113,10 +113,10 @@ class Submission(models.Model):
     error_msg = models.TextField(blank=True)
     status = models.CharField(max_length=7, choices=STATUS_CHOICE, default=WAIT)
     language = models.CharField(max_length=5, choices=LANGUAGE_CHOICE, default=C)
-         
+
     def __unicode__(self):
         return str(self.id)
- 
+
 
 class SubmissionDetail(models.Model):
     AC = 'AC'
@@ -125,7 +125,7 @@ class SubmissionDetail(models.Model):
     MLE = 'MLE'
     RE = 'RE'
     PE = 'PE'
-    VIRDECT_CHOICE = (
+    VERDICT_CHOICE = (
         (AC, 'Accepted'),
         (WA, 'Wrong Answer'),
         (TLE, 'Time Limit Exceeded'),
@@ -138,7 +138,7 @@ class SubmissionDetail(models.Model):
     sid = models.ForeignKey(Submission)
     cpu = models.FloatField(default=0)
     memory = models.IntegerField(default=0)
-    virdect = models.CharField(max_length=3, choices=VIRDECT_CHOICE, default='')
+    verdict = models.CharField(max_length=3, choices=VERDICT_CHOICE, default='')
 
     class Meta:
         unique_together = (('tid', 'sid'),)

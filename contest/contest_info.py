@@ -44,7 +44,7 @@ def get_contestant_problem_submission_list(contest,contestant,problem):
         submit_time__gte = contest.start_time,user = contestant.user).order_by('submit_time')
 
 def get_passed_testcases(submission):
-    passed_testcases = SubmissionDetail.objects.filter(sid = submission, virdect = SubmissionDetail.AC)
+    passed_testcases = SubmissionDetail.objects.filter(sid = submission, verdict = SubmissionDetail.AC)
     return passed_testcases.count()
 
 def get_penalty(obj,start_time):
