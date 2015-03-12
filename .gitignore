@@ -3,6 +3,7 @@ migrations/
 
 # Config files
 nthuoj.ini
+emailInfo.py
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

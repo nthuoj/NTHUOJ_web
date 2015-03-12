@@ -300,3 +300,6 @@ textarea#inputSmall {
 .p10 {
   display: inline;
 }
+#alert_info{
+  display:none;
+}
