@@ -22,6 +22,7 @@ from django.conf.urls import patterns, url
 import views
 
 urlpatterns = patterns('',
-    url(r'^$', views.index, name='index'),    
+    url(r'^$', views.index, name='index'),
+    url(r'^index/(?P<alert_info>\w+)/$', views.index, name='alert'),
     url(r'^get_time/$', views.get_time),
 )
