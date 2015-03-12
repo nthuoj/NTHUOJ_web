@@ -22,7 +22,12 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 -->
 {% extends "problem/base.html" %} 
-{% block body_block %} {% load staticfiles %}
+{% load staticfiles %}
+{% block import_source %}
+  {{block.super}}
+  <link rel="stylesheet" href="{% static 'problem/css/edit.css' %}">
+{% endblock %}
+{% block body_block %} 
 <script src="http://cdn.ckeditor.com/4.4.6/standard/ckeditor.js"></script>
 <script src="{% static 'problem/js/edit.js' %}"></script>
 <div class="container" id="Body">
@@ -47,9 +52,6 @@ SOFTWARE.
     </ul>
 
     <style>
-    .tab-pane {
-      padding-top: 10px;
-    }
     </style>
     <div class="tab-content">
       <form method="POST" action="" enctype="multipart/form-data">
@@ -103,13 +105,5 @@ SOFTWARE.
 </div>
 </body>
 <script>
-$("#preview_button").click(function() {
-  MyWindow = window.open('{% url "problem:problem.views.preview" %}',
-    "MyWindow",
-    "toolbar=no,location=no,directories=no,status=no,menubar=no, \
-    scrollbars=yes,resizable=yes,width=600,height=30"
-  );
-  return false;
-});
 </script>
 {% endblock %}
