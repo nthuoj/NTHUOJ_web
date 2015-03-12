@@ -44,8 +44,9 @@ class UserManager(BaseUserManager):
         """
         Creates and saves a Superser with the given username and password.
         """
-        user = self.create_user(username=username, password=password, email=email)
+        user = self.create_user(username=username, password=password)
         user.is_admin = True
+        user.is_active = True
         user.save(using=self._db)
         return user
 
