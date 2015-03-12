@@ -1,30 +1,62 @@
-
-'''
-The MIT License (MIT)
-
-Copyright (c) 2014 NTHUOJ team
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
-'''
 from django import forms
+from django.conf import settings
+from django.forms import ModelForm
 
 from users.models import User
+from problem.models import Problem, Submission, SubmissionDetail, Testcase
+from utils import log_info, user_info, config_info
+
+logger = log_info.get_logger()
+
+class CodeSubmitForm(forms.Form):
+    SUBMIT_PATH = config_info.get_config('path', 'submission_code_path')
+    LANGUAGE_CHOICE = tuple(config_info.get_config_items('compiler_option'))
+
+    pid = forms.CharField(
+        widget=forms.TextInput(attrs={'class': 'form-control'}))
+    language = forms.ChoiceField(choices=LANGUAGE_CHOICE, initial='CPP',
+        widget=forms.RadioSelect())
+    code = forms.CharField(max_length=10000,
+        widget=forms.Textarea(
+            attrs={'class': 'form-control', 'rows': 20,
+                'id': 'code_editor'}))
+
+    def clean_pid(self):
+        pid = self.cleaned_data['pid']
+        try:
+            problem = Problem.objects.get(id=pid)
+            if not user_info.has_problem_auth(self.user, problem):
+                raise forms.ValidationError('You don\'t have permission to submit that problem')
+        except Problem.DoesNotExist:
+            logger.warning('Pid %s doe not exist' % pid)
+            raise forms.ValidationError('Problem of this pid does not exist')
+
+        return pid
+
+    def submit(self):
+        pid = self.cleaned_data['pid']
+        code = self.cleaned_data['code']
+        language = self.cleaned_data['language']
+
+        problem = Problem.objects.get(id=pid)
+        testcases = Testcase.objects.filter(problem=problem)
+        submission = Submission.objects.create(
+            user=self.user,
+            problem=problem,
+            language=language)
+        try:
+            f = open('%s%s.cpp' % (self.SUBMIT_PATH, submission.id), 'w')
+            f.write(code)
+            f.close()
+        except IOError:
+            logger.warning('Sid %s fail to save code' % submission.id)
+
+        for testcase in testcases:
+            SubmissionDetail.objects.create(tid=testcase, sid=submission)
+
+    def __init__(self, *args, **kwargs):
+        self.user = kwargs.pop('user', User())
+        super(CodeSubmitForm, self).__init__(*args, **kwargs)
 
 class UserProfileForm(forms.ModelForm):
     """A form for updating user's profile. Includes all the required
@@ -96,4 +128,3 @@ class UserLevelForm(forms.ModelForm):
             (user_level == User.SUB_JUDGE or user_level == User.USER):
             return True
         return False
-

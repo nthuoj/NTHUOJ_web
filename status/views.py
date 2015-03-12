@@ -24,6 +24,8 @@ SOFTWARE.
 from django.shortcuts import render
 from index.views import custom_proc
 from utils.log_info import get_logger
+from django.conf import settings
+from users.forms import CodeSubmitForm
 from django.template import RequestContext
 from problem.models import Submission, SubmissionDetail
 from django.contrib.auth.decorators import login_required
@@ -40,7 +42,7 @@ def regroup_submission(submissions, submission_details):
         submission_groups.append({
             'grouper': submission,
             'list': submission_details.filter(sid=submission)
-            })
+        })
 
     return submission_groups
 
@@ -89,13 +91,13 @@ def error_message(request, sid):
 def view_code(request, sid):
     try:
         submission = Submission.objects.get(id=sid)
-        # TODO:
-        # fetch code from file system
         if show_detail(submission, request.user):
-            return render(
-                request,
-                'users/submit.html',
-                {})
+            f = open('%s%s.cpp' % (CodeSubmitForm.SUBMIT_PATH, sid), 'r')
+            code = f.read()
+            f.close()
+            codesubmitform = CodeSubmitForm(
+                initial={'code': code, 'pid': submission.problem.id})
+            return render(request, 'users/submit.html', {'form': codesubmitform})
         else:
             logger.warning('User %s attempt to view detail of SID %s' % (request.user, sid))
             return render(
@@ -108,3 +110,9 @@ def view_code(request, sid):
             request,
             'index/500.html',
             {'error_message': 'SID %s Not Found!' % sid})
+    except IOError:
+        logger.warning('File %s.cpp Not Found!' % sid)
+        return render(
+            request,
+            'index/500.html',
+            {'error_message': 'File of SID %s Not Found!' % sid})

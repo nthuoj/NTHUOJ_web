@@ -21,7 +21,7 @@
 from django.conf.urls import patterns, url
 from contest import views
 
-urlpatterns = patterns('',
+urlpatterns = patterns('contest.views',
     url(r'^$',views.archive,name='archive'),
     #create new contest
     url(r'^new/$',views.new,name='new'),
