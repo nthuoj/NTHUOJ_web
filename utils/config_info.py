@@ -1,4 +1,4 @@
-<!--
+'''
 The MIT License (MIT)
 
 Copyright (c) 2014 NTHUOJ team
@@ -20,35 +20,29 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
--->
-<!DOCTYPE html>
-{% load static %}
+'''
+import ConfigParser
+from django.conf import settings
 
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <!-- necessarily jQeuery -->
-  <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js">
-  </script>
-  <!-- bootstrap, bootwatch JS & CSS -->
-  <link rel="stylesheet"
-        href="http://bootswatch.com/paper/bootstrap.css" media="screen">
-  <link rel="stylesheet"
-        href="http://bootswatch.com/assets/css/bootswatch.min.css">
-  <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js">
-  </script>
-  <link rel="stylesheet" href={% static "./css/index.css"%} media="screen">
-</head>
-<body>
-  <div style="background-color:#fcfcfc;border-radius:10px;">
-    <div style="position:relative;bottom:0px;">
-      <p style="text-align:center" class="err1" >5&nbsp0&nbsp0</p>
-    </div>
-    <p style="text-align:center" class="err2">Some errors occurred</p>
-    <p style="text-align:center" class="err2">{{ error_message }}</p>
-    <p style="text-align:center" class="err3">
-      Oops , there was an error.
-    </p>
-  </div>
-</body>
-</html>
+
+def get_config(section, option):
+    '''Return a config in that section'''
+    try:
+        config = ConfigParser.ConfigParser()
+        config.optionxform = str
+        config.read(settings.BASE_DIR + '/nthuoj/nthuoj.cfg')
+        return config.get(section, option)
+    except:
+        # no config found
+        return None
+
+def get_config_items(section):
+    '''Return all config in that section'''
+    try:
+        config = ConfigParser.ConfigParser()
+        config.optionxform = str
+        config.read(settings.BASE_DIR + '/nthuoj/nthuoj.cfg')
+        return config.items(section)
+    except:
+        # no config found
+        return None

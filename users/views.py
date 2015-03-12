@@ -21,26 +21,29 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 '''
-import json
-from threading import Thread
-import hashlib, datetime, random
-from index.views import custom_proc
+
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required
+from django.core.context_processors import csrf
 from django.core.mail import send_mail
-from users.models import User, UserProfile
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.core.urlresolvers import reverse
-from utils.user_info import get_user_statistics
-from django.template import RequestContext
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404
-from django.core.context_processors import csrf
-from utils.log_info import get_logger, get_client_ip
-from users.forms import UserProfileForm, UserLevelForm
-from django.contrib.auth.decorators import login_required
-from django.contrib.auth import authenticate, login, logout
-from users.admin import UserCreationForm, AuthenticationForm
 from django.shortcuts import render, redirect, render_to_response
+from django.template import RequestContext
+from index.views import custom_proc
+from threading import Thread
+from users.admin import UserCreationForm, AuthenticationForm
+from users.forms import CodeSubmitForm
+from users.forms import UserProfileForm, UserLevelForm
+from users.models import User
+from users.models import User, UserProfile
 from users.templatetags.profile_filters import can_change_userlevel
-from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from utils.log_info import get_logger, get_client_ip
+from utils.user_info import get_user_statistics
+import hashlib, datetime, random
+import json
 
 # Create your views here.
 
@@ -64,12 +67,6 @@ def list(request):
         request,
         'users/userList.html',
         {'users': user},
-        context_instance=RequestContext(request, processors=[custom_proc]))
-
-def submit(request):
-    return render(
-        request,
-        'users/submit.html', {},
         context_instance=RequestContext(request, processors=[custom_proc]))
 
 
@@ -136,8 +133,8 @@ def user_create(request):
             email = user_form.cleaned_data['email']
             salt = hashlib.sha1(str(random.random())).hexdigest()[:5]
             activation_key = hashlib.sha1(salt+email).hexdigest()
-            
-            
+
+
             #Get user by username
             user=User.objects.get(username=username)
 
@@ -209,15 +206,35 @@ def user_login(request):
         {'form': AuthenticationForm(), 'title': 'Login'},
         context_instance=RequestContext(request, processors=[custom_proc]))
 
+
+@login_required()
+def submit(request, pid=None):
+    if request.method=='POST':
+        codesibmitform = CodeSubmitForm(request.POST, user=request.user)
+        if codesibmitform.is_valid():
+            codesibmitform.submit()
+            return redirect(reverse('status:status'))
+        else:
+            return render(
+                request,
+                'users/submit.html', {'form': codesibmitform},
+                context_instance=RequestContext(request, processors=[custom_proc]))
+
+    return render(
+        request,
+        'users/submit.html', {'form': CodeSubmitForm(initial={'pid': pid})},
+        context_instance=RequestContext(request, processors=[custom_proc]))
+
+
 def register_confirm(request, activation_key):
 
-    '''check if user is already logged in and if he 
+    '''check if user is already logged in and if he
     is redirect him to some other url, e.g. home
     '''
     if request.user.is_authenticated():
         HttpResponseRedirect(reverse('index:index'))
 
-    '''check if there is UserProfile which matches 
+    '''check if there is UserProfile which matches
     the activation key (if not then display 404)
     '''
     user_profile = get_object_or_404(UserProfile, activation_key=activation_key)
@@ -225,7 +242,7 @@ def register_confirm(request, activation_key):
     user.is_active = True
     user.save()
     logger.info('user %s has already been activated' % user.username)
-    
+
     return render(
         request,
         'users/confirm.html',

@@ -234,18 +234,6 @@ body {
 .forget {
   font-size: 20px; 
 }
-.p10 {
-  font-size: 18px;
-  color: white;
-  margin: 0px;
-  padding: 0px;
-}
-.p11 {
-  font-size: 18px;
-  color: white;
-  margin: 3px;
-  padding: 0px;
-}
 .popdiv{
   padding:30px;
 }
@@ -296,9 +284,28 @@ textarea#inputSmall {
 #time {
   margin-bottom: 0px;
   display: inline;
+  font-size: 18px;
+  color: white;
+  position: relative;
+  float: right;
+  right: 30px;
 }
-.p10 {
+#footer_text {
+  font-size: 18px;
+  color: white;
+  margin: 0px;
+  padding: 0px;
   display: inline;
+  position: relative;
+  left: 400px;
+}
+#contact_us {
+  font-size: 18px;
+  color: white;
+  margin: 3px;
+  padding: 0px;
+  position: relative;
+  left: 30px;
 }
 #alert_info{
   display:none;

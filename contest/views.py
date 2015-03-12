@@ -50,7 +50,7 @@ def archive(request):
 def contest(request,contest_id):
     try:
         contest = Contest.objects.get(id = contest_id)
-    except Contest.DoesNotExist: 
+    except Contest.DoesNotExist:
         logger.warning('Contest: Can not find contest %s!' % contest_id)
         raise Http404('Contest does not exist')
 
@@ -62,7 +62,7 @@ def contest(request,contest_id):
         clarification_list = Clarification.objects.filter(contest = contest)
         return render(request, 'contest/contest.html',{'contest':contest,'clarification_list':clarification_list},
                 context_instance = RequestContext(request, processors = [custom_proc]))
-    
+
 def new(request):
     if request.user.is_authenticated() and request.user.has_judge_auth():
         if request.method == 'GET':
@@ -75,7 +75,7 @@ def new(request):
                 logger.info('Contest: Create a new contest %s!' % new_contest.id)
                 return redirect('contest:archive')
     raise PermissionDenied
-    
+
 
 def edit(request,contest_id):
     if request.user.is_authenticated():
@@ -86,7 +86,7 @@ def edit(request,contest_id):
             raise Http404('Contest does not exist, can not edit.')
 
         if user_info.has_contest_ownership(request.user,contest):
-            if request.method == 'GET':        
+            if request.method == 'GET':
                 contest_dic = model_to_dict(contest)
                 form = ContestForm(initial = contest_dic)
                 return render(request,'contest/editContest.html',{'form':form,'user':request.user})
@@ -105,7 +105,7 @@ def delete(request,contest_id):
         except Contest.DoesNotExist:
             logger.warning('Contest: Can not delete contest %s! Contest not found!' % contest_id)
             raise Http404('Contest does not exist, can not delete.')
-        
+
         # only contest owner can delete
         if request.user == contest.owner:
             deleted_contest_id = contest.id
