@@ -29,6 +29,6 @@ register = template.Library()
 @register.filter
 def has_auth(user,contest_id):
     contest = Contest.objects.get(id = contest_id)
-    return user_info.has_c_ownership(user,contest)
+    return user_info.has_contest_ownership(user,contest)
 
 register.filter("has_auth",has_auth)

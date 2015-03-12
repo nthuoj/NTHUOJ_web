@@ -37,42 +37,32 @@ SOFTWARE.
 <!-- file input -->
 <script src="http://gregpike.net/demos/bootstrap-file-input/bootstrap.file-input.js"></script>
 
-<!-- textarea -->
-<form class="form-horizontal" style="width:80%;margin:0 auto;">
-  <div class="form-group" style="margin:50px;">
-
-    <div class="col-lg-2">
-      <label class="control-label">PID:</label>
-      <input type="text" class="form-control input-sm col-lg-2" id="pid">
-    </div>
-
-    <div class="col-lg-8">
-      <label class="control-label col-lg-2">Language:</label>
-      <div class="col-lg-4">
-        <div class="radio">
-          <label id="cpp">
-            <input type="radio" name="optionsRadios" value="cpp" checked>
-            C++: -O2 -lm -std=c++11
-          </label>
-        </div>
-        <div class="radio">
-          <label id="c" data-placement="right">
-            <input type="radio" name="optionsRadios" value="c">
-            C: -O2 -lm -std=c99
-          </label>
+<div class="container">
+  <h3>Submit Code</h3>
+  <form class="form-horizontal" action="/users/submit/" method="post">
+    {% csrf_token %}
+    <div class="row" style="margin:10px;">
+      <div class="form-group col-lg-2">
+        <label class="control-label">PID:</label>
+        {{ form.pid }}
+        <strong style="color:red">{{ form.pid.errors }}</strong>
+      </div>
+      <div class="col-lg-8">
+        <label class="control-label col-lg-1">Language:</label>
+        <div class="col-lg-11 radio">
+          {{ form.language }}
         </div>
       </div>
     </div>
-  </div>
-
-  <textarea id="code_editor" name="code"></textarea>
-  <div class="form-group">
-    <div style="float:left;margin-left:30px;">
-      <input type="file" data-filename-placement="inside" id="fileinput">
+      {{ form.code }}
+      <strong style="color:red">{{ form.code.errors }}</strong>
+    <div class="form-group row">
+      <div style="float:left;margin:30px;">
+        <input type="file" data-filename-placement="inside" id="fileinput">
+      </div>
+      <div style="float:right;margin:30px;">
+        <button class="btn btn-primary">Submit</button>
+      </div>
     </div>
-    <div style="float:right;margin-right:30px;">
-      <input type="button" class="btn btn-danger" value="Pre Test">
-      <button class="btn btn-primary">Submit</button>
-    </div>
-  </div>
-</form>
+  </form>
+</div>
