@@ -21,16 +21,21 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 '''
-from datetime import datetime
-
-from django.db import models
-from users.models import User
-from group.models import Group
 from contest.models import Contest
+from datetime import datetime
+from django.core.urlresolvers import reverse
+from django.core.mail import send_mail
+from django.db import models
+from group.models import Group
 from problem.models import Problem, Submission, SubmissionDetail
+from threading import Thread
+from users.models import User, UserProfile
 from utils.log_info import get_logger
+import hashlib
+import random
 
 logger = get_logger()
+
 
 #contest ownership
 def has_contest_ownership(curr_user, curr_contest):
@@ -48,6 +53,7 @@ def has_contest_ownership(curr_user, curr_contest):
                 is_owner = True
     return is_owner
 
+
 #group ownership
 def has_group_ownership(curr_user, curr_group):
     user_is_valid(curr_user) #check user
@@ -64,6 +70,7 @@ def has_group_ownership(curr_user, curr_group):
                 is_owner = True
     return is_owner
 
+
 #problem ownership
 def has_problem_ownership(curr_user, curr_problem):
     user_is_valid(curr_user) #check user
@@ -75,6 +82,7 @@ def has_problem_ownership(curr_user, curr_problem):
 
     is_owner = (curr_user.username == curr_problem.owner.username)
     return is_owner
+
 
 def has_problem_auth(user, problem):
     '''Check if user has authority to see/submit that problem'''
@@ -101,6 +109,7 @@ def has_problem_auth(user, problem):
     # None of the condition is satisfied
     return False
 
+
 def user_is_valid(curr_user):
     try:
         User.objects.get(username=curr_user.username)
@@ -112,6 +121,7 @@ def validate_user(user):
     if user.is_anonymous():
         user = User()  # create a temporary user instance with on attribute
     return user
+
 
 def get_user_statistics(user):
     '''Find the statistics of the given user'''
@@ -146,3 +156,28 @@ def get_user_statistics(user):
         }]
 
     return statistics
+
+
+def send_activation_email(request, user):
+    username = user.username
+    email = user.email
+    salt = hashlib.sha1(str(random.random())).hexdigest()[:5]
+    activation_key = hashlib.sha1(salt+email).hexdigest()
+
+    # Create and save user profile
+    new_profile = UserProfile(user=user, activation_key=activation_key)
+    new_profile.save()
+
+    # Send email with activation key
+    email_subject = 'Account confirmation'
+    email_body = 'Hey %s, thanks for signing up.\n ' % (username) + \
+    'To activate your account, click the link below.\n'  + \
+    request.META['HTTP_HOST'] + \
+    reverse('users:confirm', kwargs={'activation_key': activation_key})
+
+    try:
+        Thread(
+            target=send_mail,
+            args=(email_subject, email_body, 'nthucsoj@gmail.com',[email])).start()
+    except:
+         logger.warning('There is an error when sending email to %s\' mailbox' % username)
