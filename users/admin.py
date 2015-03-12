@@ -37,7 +37,7 @@ admin.site.register(Notification)
 class UserCreationForm(forms.ModelForm):
     """A form for creating new users. Includes all the required
     fields, plus a repeated password."""
-    username = forms.CharField(label='Username', 
+    username = forms.CharField(label='Username',
         widget=forms.TextInput(attrs={'class': 'form-control'}),
         validators=[RegexValidator(regex='^\w+$', message='Username must be Alphanumeric')])
     email = forms.EmailField(label='Email', widget=forms.TextInput(attrs={'class': 'form-control'}))
@@ -105,7 +105,7 @@ class UserAdmin(UserAdmin):
     list_display = ('username', 'is_admin')
     list_filter = ('is_admin',)
     fieldsets = (
-        (None, {'fields': ('username', 'password', 'email', 'user_level', 'active', 'theme')}),
+        (None, {'fields': ('username', 'password', 'email', 'user_level', 'theme')}),
         ('Permissions', {'fields': ('is_admin',)}),
     )
     # add_fieldsets is not a standard ModelAdmin attribute. UserAdmin

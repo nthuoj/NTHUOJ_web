@@ -24,7 +24,6 @@ SOFTWARE.
 
 import os
 
-
 def write_ini_file(host, db, user, pwd):
     ini_file = open('nthuoj.ini', 'w')
     ini_file.write('[client]\n')
