@@ -77,12 +77,11 @@ class User(AbstractBaseUser):
     username = models.CharField(max_length=15, default='', unique=True, primary_key=True)
     email = models.CharField(max_length=100, default='')
     register_date = models.DateField(default=date.today, auto_now_add=True)
-    active = models.BooleanField(default=False)
     user_level = models.CharField(max_length=9, choices=USER_LEVEL_CHOICE, default=USER)
     theme = models.CharField(max_length=8, choices=THEME_CHOICE, default=PAPER)
 
     USERNAME_FIELD = 'username'
-    is_active = models.BooleanField(default=True)
+    is_active = models.BooleanField(default=False)
     is_admin = models.BooleanField(default=False)
     objects = UserManager()
 
@@ -132,3 +131,13 @@ class Notification(models.Model):
 
     def __unicode__(self):
         return str(self.id)
+
+class UserProfile(models.Model):
+    user = models.OneToOneField(User)
+    activation_key = models.CharField(max_length=40, blank=True)    
+      
+    def __unicode__(self):
+        return self.user.username
+
+    class Meta:
+        verbose_name_plural=u'User profiles'
