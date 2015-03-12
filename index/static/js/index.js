@@ -24,10 +24,16 @@ SOFTWARE.
 var displayInfo = false;
 var loginInfo = false;
 
-window.onload = function() {
-    //alert("You have new messages!");
-}
+window.onload = index_alert;
+function index_alert(){
+    var alert_info = document.getElementById("alert_info").value;
 
+    if(alert_info == 'mailbox'){
+        message = 'Please go to your mailbox and click the confirmation ' + 
+        'link;otherwise , your account would not be activated!';
+        alert(message);
+    }
+}
 function info() {
     if(displayInfo == false){
         document.getElementById("information").style.display = "block";

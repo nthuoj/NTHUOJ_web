@@ -24,21 +24,27 @@ SOFTWARE.
 
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
+from django.core.context_processors import csrf
+from django.core.mail import send_mail
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.core.urlresolvers import reverse
-from django.shortcuts import render, redirect
+from django.http import HttpResponseRedirect
+from django.shortcuts import get_object_or_404
+from django.shortcuts import render, redirect, render_to_response
 from django.template import RequestContext
-
 from index.views import custom_proc
+from threading import Thread
 from users.admin import UserCreationForm, AuthenticationForm
 from users.forms import CodeSubmitForm
 from users.forms import UserProfileForm, UserLevelForm
 from users.models import User
+from users.models import User, UserProfile
 from users.templatetags.profile_filters import can_change_userlevel
 from utils.log_info import get_logger, get_client_ip
 from utils.user_info import get_user_statistics
-
+import hashlib, datetime, random
 import json
+
 # Create your views here.
 
 logger = get_logger()
@@ -115,14 +121,47 @@ def profile(request, username):
 
 
 def user_create(request):
+    args = {}
+    args.update(csrf(request))
     if request.method == 'POST':
         user_form = UserCreationForm(request.POST)
+        args['user_form'] = user_form
         if user_form.is_valid():
             user = user_form.save()
+
+            username = user_form.cleaned_data['username']
+            email = user_form.cleaned_data['email']
+            salt = hashlib.sha1(str(random.random())).hexdigest()[:5]
+            activation_key = hashlib.sha1(salt+email).hexdigest()
+
+
+            #Get user by username
+            user=User.objects.get(username=username)
+
+            # Create and save user profile
+            new_profile = UserProfile(user=user, activation_key=activation_key)
+            new_profile.save()
+
+            #Send email with activation key
+            email_subject = 'Account confirmation'
+            email_body = 'Hey %s, thanks for signing up.\n ' % (username) + \
+            'To activate your account, click the link below.\n'  + \
+            request.META['HTTP_HOST'] + \
+            reverse('users:confirm', kwargs={'activation_key': activation_key})
+
+            try:
+                Thread(
+                    target=send_mail,
+                    args=(email_subject, email_body, 'nthucsoj@gmail.com',[email])).start()
+            except:
+                return render(
+                    request,
+                    'index/500.html',
+                    {'error_message': 'There is an error when sending email to %s\' mailbox' % username})
+
             user.backend = 'django.contrib.auth.backends.ModelBackend'
             logger.info('user %s created' % str(user))
-            login(request, user)
-            return redirect(reverse('index:index'))
+            return redirect(reverse('index:alert', kwargs={'alert_info': 'mailbox'}))
         else:
             return render(
                 request, 'users/auth.html',
@@ -184,4 +223,28 @@ def submit(request, pid=None):
     return render(
         request,
         'users/submit.html', {'form': CodeSubmitForm(initial={'pid': pid})},
+        context_instance=RequestContext(request, processors=[custom_proc]))
+
+
+def register_confirm(request, activation_key):
+
+    '''check if user is already logged in and if he
+    is redirect him to some other url, e.g. home
+    '''
+    if request.user.is_authenticated():
+        HttpResponseRedirect(reverse('index:index'))
+
+    '''check if there is UserProfile which matches
+    the activation key (if not then display 404)
+    '''
+    user_profile = get_object_or_404(UserProfile, activation_key=activation_key)
+    user = user_profile.user
+    user.is_active = True
+    user.save()
+    logger.info('user %s has already been activated' % user.username)
+
+    return render(
+        request,
+        'users/confirm.html',
+        {'username':user.username},
         context_instance=RequestContext(request, processors=[custom_proc]))

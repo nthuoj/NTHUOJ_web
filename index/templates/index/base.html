@@ -135,39 +135,42 @@ SOFTWARE.
       </div>
       <div class="navbar-collapse collapse navbar-responsive-collapse">
         <ul class="nav navbar-nav">
+          <li><a href="{% url 'contest:archive' %}"><p class="p2">Contest</p></a></li>
+          <li><a href="{% url 'problem:volume' %}"><p class="p2">Problem</p></a></li>
+          <li><a href="{% url 'users:submit' %}"><p class="p2">Submit</p></a></li>
+          <li><a href="{% url 'status:status' %}"><p class="p2">Status</p></a></li>
+          <li><a href="{% url 'group:list' %}"><p class="p2">Group</p></a></li>
           <li class="dropdown">
-          <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-            <p class="p2">Contest<b class="caret"></b></p>
-          </a>
-          <ul class="dropdown-menu">
-            <li><a href="/contest/">contest archive</a></li>
-            <li><a href="#">running contest</a></li>
-          </ul>
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+              <p class="p2">Team<b class="caret"></b></p>
+            </a>
+            <ul class="dropdown-menu">
+              <li><a href="{% url 'team:list' %}">team list</a></li>
+              <li><a href="{% url 'team:profile' %}">team profile</a></li>
+            </ul>
           </li>
           <li class="dropdown">
-          <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-            <p class="p2">Problem<b class="caret"></b></p>
-          </a>
-          <ul class="dropdown-menu" id="volume_num">
-            {% for i in volumes %}
-            <li><a href="#">volume {{ i }}</a></li>
-            {% endfor %}
-          </ul>
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+              <p class="p2">User<b class="caret"></b></p>
+            </a>
+            <ul class="dropdown-menu">
+              <li><a href="{% url 'users:list' %}">user list</a></li>
+              {% if user.is_authenticated %}
+                <li>
+                  <a href={% url "users:profile" user.username %}>user profile</a>
+                </li>
+              {% endif %}
+            </ul>
           </li>
-          <li><a href={% url "users:submit" %}><p class="p2">Submit</p></a></li>
-          <li><a href={% url "status:status" %}><p class="p2">Status</p></a></li>
-          <li><a href="/index/group_list"><p class="p2">Group</p></a></li>
-          <li><a href={% url "team:list" %}><p class="p2">Team</p></a></li>
-          {% if user.is_authenticated %}
-            <li><a href={% url "users:profile" user.username %}><p class="p2">Personal</p></a></li>
-          {% endif %}
           <li><a href="#"><p class="p2">User Rank</p></a></li>
         </ul>
         <ul class="nav navbar-nav navbar-right">
-          <li >
+          {% if user.is_authenticated %}
+          <li>
           <img src={% static "./images/14.png "%} height="50" width="50"
           onclick="info();" class="ring">
           </li>
+          {% endif %}
           {% if user.is_authenticated %}
           <li><a href={% url "users:logout" %}><p class="p3">Logout</p></a></li>
           {% else %}

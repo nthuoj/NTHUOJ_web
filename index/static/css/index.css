@@ -307,3 +307,6 @@ textarea#inputSmall {
   position: relative;
   left: 30px;
 }
+#alert_info{
+  display:none;
+}
