@@ -24,7 +24,8 @@ SOFTWARE.
 from contest.models import Contest
 from datetime import datetime
 from django.core.urlresolvers import reverse
-from django.core.mail import send_mail
+from django.core.mail import EmailMultiAlternatives
+from django.template.loader import render_to_string
 from django.db import models
 from group.models import Group
 from problem.models import Problem, Submission, SubmissionDetail
@@ -169,15 +170,16 @@ def send_activation_email(request, user):
     new_profile.save()
 
     # Send email with activation key
+    activation_link = request.META['HTTP_HOST'] + \
+        reverse('users:confirm', kwargs={'activation_key': activation_key})
     email_subject = 'Account confirmation'
-    email_body = 'Hey %s, thanks for signing up.\n ' % (username) + \
-    'To activate your account, click the link below.\n'  + \
-    request.META['HTTP_HOST'] + \
-    reverse('users:confirm', kwargs={'activation_key': activation_key})
+    email_body = render_to_string('index/activation_email.html',
+                    {'username': username, 'activation_link': activation_link})
+    print email_body
+    msg = EmailMultiAlternatives(email_subject, email_body, 'nthucsoj@gmail.com', [email])
+    msg.attach_alternative(email_body, "text/html")
 
     try:
-        Thread(
-            target=send_mail,
-            args=(email_subject, email_body, 'nthucsoj@gmail.com',[email])).start()
+        Thread(target=msg.send, args=()).start()
     except:
          logger.warning('There is an error when sending email to %s\' mailbox' % username)
