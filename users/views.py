@@ -227,7 +227,6 @@ def submit(request, pid=None):
 
 
 def register_confirm(request, activation_key):
-
     '''check if user is already logged in and if he
     is redirect him to some other url, e.g. home
     '''
@@ -250,7 +249,6 @@ def register_confirm(request, activation_key):
         context_instance=RequestContext(request, processors=[custom_proc]))
 
 def notification(request):
-
     try:
         ur_notifications = Notification.objects.filter \
         (reciver=request.user, read=False).order_by('-id')
@@ -265,7 +263,7 @@ def notification(request):
     except Notification.DoesNotExist:
         waring_message = "User %s has no notifications." % request.user
         logger.warning(waring_message)
-        all_notifications = [] 
+        all_notifications = []
 
     return render(
         request, 'users/notification.html', 
@@ -274,10 +272,8 @@ def notification(request):
         context_instance=RequestContext(request, processors=[custom_proc]))
 
 def u_read_del(request, readlist, dellist):
-    
     read_list = readlist.split(',')
     del_list = dellist.split(',')
-
     if readlist !='':
         for r_id in read_list:
             try:
@@ -294,16 +290,14 @@ def u_read_del(request, readlist, dellist):
 
     '''
     return render(
-        request, 'users/urd.html', 
-        {'x':read_list,'y':del_list},         
+        request, 'users/urd.html',
+        {'x':read_list,'y':del_list},
         context_instance=RequestContext(request, processors=[custom_proc]))
     '''
     return HttpResponseRedirect(reverse('users:notification'))
 
 def all_del(request, dellist):
-        
     del_list = dellist.split(',')
-    
     if dellist != '':
         for d_id in del_list:
             try:
@@ -314,7 +308,7 @@ def all_del(request, dellist):
     '''
     return render(
         request, 'users/urd.html', 
-        {'x':read_list,'y':del_list},         
+        {'x':read_list,'y':del_list},
         context_instance=RequestContext(request, processors=[custom_proc]))
     '''
     return HttpResponseRedirect(reverse('users:notification'))

@@ -45,7 +45,6 @@ def index(request, alert_info='none'):
                 'alert_info':alert_info},
                 context_instance=RequestContext(request, processors=[custom_proc]))
 
-
 def custom_404(request):
     return render(request, 'index/404.html', status=404)
 
@@ -62,7 +61,6 @@ def get_time(request):
     return HttpResponse(tstr)
 
 def custom_proc(request):
-
     try:
         amount = Notification.objects.filter \
         (reciver=request.user, read=False).count()

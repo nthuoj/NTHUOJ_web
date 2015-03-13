@@ -170,6 +170,17 @@ SOFTWARE.
             <a href={% url "users:notification" %} id="notification">
               {% if amount > 0 %}
               <img src={% static "./images/14.png "%} id="notification_img">
+              <div id="notification_circle">
+                <b id="number">
+                  {% if amount < 100 %}
+                    {{ amount }}
+                  {% else %}
+                    99+
+                  {% endif %}
+                </b>
+              </div>
+              {% else %}
+              <img src={% static "./images/14.png "%} id="notification_img">
               {% endif %}
             </a>
           </li>
