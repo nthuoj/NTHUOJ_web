@@ -169,7 +169,8 @@ SOFTWARE.
           <li>
             <a href={% url "users:notification" %} id="notification">
               {% if amount > 0 %}
-              <img src={% static "./images/14.png "%} id="notification_img">
+              <img src={% static "./images/14.png "%} id="notification_img"
+                   title="You have {{ amount }} unread notifications."/>
               <div id="notification_circle">
                 <b id="number">
                   {% if amount < 100 %}
@@ -180,7 +181,8 @@ SOFTWARE.
                 </b>
               </div>
               {% else %}
-              <img src={% static "./images/14.png "%} id="notification_img">
+              <img src={% static "./images/14.png "%} id="notification_img"
+                   title="You have no unread notifications."/>
               {% endif %}
             </a>
           </li>
