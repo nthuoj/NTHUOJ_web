@@ -250,15 +250,23 @@ def register_confirm(request, activation_key):
         context_instance=RequestContext(request, processors=[custom_proc]))
 
 def notification(request):
+
     try:
-        all_notifications = Notification.objects.filter \
-        (reciver=request.user).order_by('-id')
         ur_notifications = Notification.objects.filter \
         (reciver=request.user, read=False).order_by('-id')
     except Notification.DoesNotExist:
-        all_notifications = [] 
+        waring_message = "User %s has no unread notifications." % request.user
+        logger.warning(waring_message)
         ur_notifications = []
-    
+
+    try:
+        all_notifications = Notification.objects.filter \
+        (reciver=request.user).order_by('-id')
+    except Notification.DoesNotExist:
+        waring_message = "User %s has no notifications." % request.user
+        logger.warning(waring_message)
+        all_notifications = [] 
+
     return render(
         request, 'users/notification.html', 
         {'all_notifications':all_notifications, 

@@ -166,8 +166,12 @@ SOFTWARE.
         </ul>
         <ul class="nav navbar-nav navbar-right">
           {% if user.is_authenticated %}
-          <li><a href={% url "users:notification" %} id="notification">
-            <img src={% static "./images/14.png "%} id="notification_img"></a>
+          <li>
+            <a href={% url "users:notification" %} id="notification">
+              {% if amount > 0 %}
+              <img src={% static "./images/14.png "%} id="notification_img">
+              {% endif %}
+            </a>
           </li>
           {% endif %}
           {% if user.is_authenticated %}
