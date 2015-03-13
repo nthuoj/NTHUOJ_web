@@ -27,6 +27,7 @@ from django.core.urlresolvers import reverse
 from django.core.mail import EmailMultiAlternatives
 from django.template.loader import render_to_string
 from django.db import models
+from emailInfo import EMAIL_HOST_USER
 from group.models import Group
 from problem.models import Problem, Submission, SubmissionDetail
 from threading import Thread
@@ -176,7 +177,7 @@ def send_activation_email(request, user):
     email_body = render_to_string('index/activation_email.html',
                     {'username': username, 'activation_link': activation_link})
     print email_body
-    msg = EmailMultiAlternatives(email_subject, email_body, 'nthucsoj@gmail.com', [email])
+    msg = EmailMultiAlternatives(email_subject, email_body, EMAIL_HOST_USER, [email])
     msg.attach_alternative(email_body, "text/html")
 
     try:
