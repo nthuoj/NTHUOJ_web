@@ -258,8 +258,13 @@ textarea#inputSmall {
 .sidebar_color{
   color:white;
 }
-.ring{
+#notification{
+  padding: 0px;
+}
+#notification_img{
   cursor: pointer;
+  height: 50px;
+  width: 50px;  
 }
 .err1 {
   font-size: 120px;

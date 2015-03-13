@@ -67,6 +67,4 @@ def custom_proc(request):
     return {
         'tstr': tstr,
         'people': people,
-        'info1': 123,
-        'info2': 1234567
     }

@@ -1,4 +1,4 @@
-'''
+/*
 The MIT License (MIT)
 
 Copyright (c) 2014 NTHUOJ team
@@ -20,24 +20,61 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
-'''
-from django.conf.urls import patterns, include, url
-from axes.decorators import watch_login
-
-import views
-
-urlpatterns = patterns('',    
-    
-    url(r'^list/$', views.list, name='list'),
-    url(r'^all_del/(?P<dellist>.*)$', views.all_del),
-    url(r'^submit/$', views.submit, name='submit'),
-    url(r'^create/$', views.user_create, name='create'),
-    url(r'^logout/$', views.user_logout, name='logout'),
-    url(r'^login/$', watch_login(views.user_login), name='login'),
-    url(r'^submit/(?P<pid>\d+)$', views.submit, name='submit'),
-    url(r'^notification/$', views.notification, name='notification'),
-    url(r'^profile/(?P<username>\w+)$', views.profile, name='profile'),
-    url(r'^u_read_del/(?P<readlist>.*)/(?P<dellist>.*)$', views.u_read_del),
-    url(r'^confirm/(?P<activation_key>\w+)/', views.register_confirm, name='confirm'),
-
-)
+*/
+ul, li {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.abgne_tab {
+  clear: left;
+  width: 400px;
+  margin: 10px 0;
+}
+ul.tabs {
+  min-width: 1000px;
+  height: 32px;
+  border-bottom: 1px solid #999;
+  border-left: 1px solid #999;
+}
+ul.tabs li {
+  float: left;
+  height: 31px;
+  line-height: 31px;
+  overflow: hidden;
+  position: relative;
+  margin-bottom: -1px;
+  border: 1px solid #999;
+  border-left: none;
+  background: #e1e1e1;
+}
+ul.tabs li a {
+  display: block;
+  padding: 0 20px;
+  color: #000;
+  border: 1px solid #fff;
+  text-decoration: none;
+}
+ul.tabs li a:hover {
+  background: #ccc;
+}
+ul.tabs li.active  {
+  background: #fff;
+  border-bottom: 1px solid #fff;
+}
+ul.tabs li.active a:hover {
+  background: #fff;
+}
+div.tab_container {
+  clear: left;
+  min-width: 1000px;
+  border: 1px solid #999;
+  border-top: none;
+  background: #fff;
+}
+div.tab_container .tab_content {
+  padding: 20px;
+}
+div.tab_container .tab_content h2 {
+  margin: 0 0 20px;
+}

@@ -37,7 +37,7 @@ from threading import Thread
 from users.admin import UserCreationForm, AuthenticationForm
 from users.forms import CodeSubmitForm
 from users.forms import UserProfileForm, UserLevelForm
-from users.models import User
+from users.models import User, Notification
 from users.models import User, UserProfile
 from users.templatetags.profile_filters import can_change_userlevel
 from utils.log_info import get_logger, get_client_ip
@@ -248,3 +248,65 @@ def register_confirm(request, activation_key):
         'users/confirm.html',
         {'username':user.username},
         context_instance=RequestContext(request, processors=[custom_proc]))
+
+def notification(request):
+    try:
+        all_notifications = Notification.objects.filter \
+        (reciver=request.user).order_by('-id')
+        ur_notifications = Notification.objects.filter \
+        (reciver=request.user, read=False).order_by('-id')
+    except Notification.DoesNotExist:
+        all_notifications = [] 
+        ur_notifications = []
+    
+    return render(
+        request, 'users/notification.html', 
+        {'all_notifications':all_notifications, 
+         'ur_notifications':ur_notifications},
+        context_instance=RequestContext(request, processors=[custom_proc]))
+
+def u_read_del(request, readlist, dellist):
+    
+    read_list = readlist.split(',')
+    del_list = dellist.split(',')
+
+    if readlist !='':
+        for r_id in read_list:
+            try:
+                Notification.objects.filter(id=long(r_id)).update(read=True)
+            except Notification.DoesNotExist:
+                logger.warning('Notification id %ld does not exsit!' % r_id)
+
+    if dellist != '':
+        for d_id in del_list:
+            try:
+                Notification.objects.filter(id=long(d_id)).delete()
+            except Notification.DoesNotExist:
+                logger.warning('Notification id %ld does not exsit!' % d_id)
+
+    '''
+    return render(
+        request, 'users/urd.html', 
+        {'x':read_list,'y':del_list},         
+        context_instance=RequestContext(request, processors=[custom_proc]))
+    '''
+    return HttpResponseRedirect(reverse('users:notification'))
+
+def all_del(request, dellist):
+        
+    del_list = dellist.split(',')
+    
+    if dellist != '':
+        for d_id in del_list:
+            try:
+                Notification.objects.filter(id=long(d_id)).delete()
+            except Notification.DoesNotExist:
+                logger.warning('Notification id %ld does not exsit!' % d_id)
+
+    '''
+    return render(
+        request, 'users/urd.html', 
+        {'x':read_list,'y':del_list},         
+        context_instance=RequestContext(request, processors=[custom_proc]))
+    '''
+    return HttpResponseRedirect(reverse('users:notification'))
