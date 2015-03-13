@@ -288,12 +288,6 @@ def u_read_del(request, readlist, dellist):
             except Notification.DoesNotExist:
                 logger.warning('Notification id %ld does not exsit!' % d_id)
 
-    '''
-    return render(
-        request, 'users/urd.html',
-        {'x':read_list,'y':del_list},
-        context_instance=RequestContext(request, processors=[custom_proc]))
-    '''
     return HttpResponseRedirect(reverse('users:notification'))
 
 def all_del(request, dellist):
@@ -305,10 +299,4 @@ def all_del(request, dellist):
             except Notification.DoesNotExist:
                 logger.warning('Notification id %ld does not exsit!' % d_id)
 
-    '''
-    return render(
-        request, 'users/urd.html', 
-        {'x':read_list,'y':del_list},
-        context_instance=RequestContext(request, processors=[custom_proc]))
-    '''
     return HttpResponseRedirect(reverse('users:notification'))

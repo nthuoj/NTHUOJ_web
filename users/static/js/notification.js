@@ -22,7 +22,6 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 $(function(){
-    
     var _showTab = 0;
     var $defaultLi = $('ul.tabs li').eq(_showTab).addClass('active');
     $($defaultLi.find('a').attr('href')).siblings().hide();
@@ -44,7 +43,7 @@ $(function(){
 function u_read_del(r_checkbox, d_checkbox) {
 
     var r_id = "";
-    var d_id = "";    
+    var d_id = "";
     if(r_checkbox.length){
         for(var i=0;i<r_checkbox.length;i++){
             if(r_checkbox[i].checked == true){
@@ -69,14 +68,8 @@ function u_read_del(r_checkbox, d_checkbox) {
             d_id = d_id + d_checkbox.value + ",";
     }
 
-    //if(r_id != ',')
     r_id = r_id.slice(0,-1);
-    //if(d_id != ',')
     d_id = d_id.slice(0,-1);
-    
-    //alert("http://" + window.location.host + "/users/u_read_del/" + r_id + "/" + d_id);
-    //alert("http://" + window.location.host + "/users/u_read_del/" + r_id);
-    //window.location.href = "http://" + window.location.host + "/users/u_read_del/" + r_id;
     window.location.href = "http://" + window.location.host + 
     "/users/u_read_del/" + r_id + "/" + d_id;
 
@@ -96,17 +89,14 @@ function all_del(d_checkbox) {
         if(d_checkbox.checked == true)
             d_id = d_id + d_checkbox.value + ",";
     }
-    
+
     d_id = d_id.slice(0,-1);
-    
-    //alert("http://" + window.location.host + "/users/u_read_del/" + r_id + "/" + d_id);
-    //alert("http://" + window.location.host + "/users/all_del/" + d_id);    
     window.location.href = "http://" + window.location.host + 
     "/users/all_del/" + d_id;
 }
 
 function check_all(obj, names) {
-     var checkboxs = document.getElementsByName(names); 
+     var checkboxs = document.getElementsByName(names);
     for(var i=0;i<checkboxs.length;i++){
         checkboxs[i].checked = obj.checked;
     }
