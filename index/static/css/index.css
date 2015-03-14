@@ -271,7 +271,7 @@ textarea#inputSmall {
 #notification_circle{
   position: relative;
   top :-40px;
-  background-color: red;
+  background-color: #4490DB;
   height: 20px;
   width: 20px;
   border-radius: 25px;
