@@ -61,13 +61,9 @@ def get_time(request):
     return HttpResponse(tstr)
 
 def custom_proc(request):
-    try:
-        amount = Notification.objects.filter \
-        (reciver=request.user, read=False).count()
-    except Notification.DoesNotExist:
-        info = "User %s has no unread notifications." % request.user
-        logger.info(info)
-        amount = 0
+    
+    amount = Notification.objects.filter \
+        (reciver=request.user, read=False).count()    
 
     t = time.time()
     tstr = datetime.datetime.fromtimestamp(t).strftime('%Y/%m/%d %H:%M:%S')

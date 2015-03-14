@@ -248,22 +248,14 @@ def register_confirm(request, activation_key):
         {'username':user.username},
         context_instance=RequestContext(request, processors=[custom_proc]))
 
+@login_required()
 def notification(request):
-    try:
-        ur_notifications = Notification.objects.filter \
+    
+    ur_notifications = Notification.objects.filter \
         (reciver=request.user, read=False).order_by('-id')
-    except Notification.DoesNotExist:
-        waring_message = "User %s has no unread notifications." % request.user
-        logger.warning(waring_message)
-        ur_notifications = []
-
-    try:
-        all_notifications = Notification.objects.filter \
-        (reciver=request.user).order_by('-id')
-    except Notification.DoesNotExist:
-        waring_message = "User %s has no notifications." % request.user
-        logger.warning(waring_message)
-        all_notifications = []
+    
+    all_notifications = Notification.objects.filter \
+        (reciver=request.user).order_by('-id')    
 
     return render(
         request, 'users/notification.html', 
@@ -271,31 +263,36 @@ def notification(request):
          'ur_notifications':ur_notifications},
         context_instance=RequestContext(request, processors=[custom_proc]))
 
+@login_required()
 def u_read_del(request, readlist, dellist):
     read_list = readlist.split(',')
     del_list = dellist.split(',')
     if readlist !='':
         for r_id in read_list:
             try:
-                Notification.objects.filter(id=long(r_id)).update(read=True)
+                Notification.objects.filter \
+                    (id=long(r_id), reciver=request.user).update(read=True)
             except Notification.DoesNotExist:
                 logger.warning('Notification id %ld does not exsit!' % r_id)
 
     if dellist != '':
         for d_id in del_list:
             try:
-                Notification.objects.filter(id=long(d_id)).delete()
+                Notification.objects.filter \
+                    (id=long(d_id), reciver=request.user).delete()
             except Notification.DoesNotExist:
                 logger.warning('Notification id %ld does not exsit!' % d_id)
 
     return HttpResponseRedirect(reverse('users:notification'))
 
+@login_required()
 def all_del(request, dellist):
     del_list = dellist.split(',')
     if dellist != '':
         for d_id in del_list:
             try:
-                Notification.objects.filter(id=long(d_id)).delete()
+                Notification.objects.filter \
+                    (id=long(d_id), reciver=request.user).delete()
             except Notification.DoesNotExist:
                 logger.warning('Notification id %ld does not exsit!' % d_id)
 
