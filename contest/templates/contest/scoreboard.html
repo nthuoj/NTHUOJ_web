@@ -23,34 +23,100 @@ SOFTWARE.
     <span class="glyphicon glyphicon-download"></span>
   </button>
 </div>
-<h4>{{ contest.name }}</h4> {% load staticfiles %}
+<h4>{{ contest.cname }}</h4> {% load staticfiles %}
 <script src="{% static 'contest/js/scoreboard.js' %}"></script>
 <link href="{% static 'contest/css/scoreboard.css' %}" rel="stylesheet">
-
-<table class="table" style="table-layout:fixed">
-  <thead>
-    <tr>
-      <th>Rank</th>
-      <th>User</th>
-      {% for problem in problem_list%}
-      <th><b data-toggle="tooltip" title="{{ problem.name }}">{{ problem.id }}</b>
-      </th>
-      {% endfor %}
-      <th>Solved</th>
-      <th>Penalty</th>
-    </tr>
-  </thead>
-  <tbody>
-    {% for ppl in contestant_list %}
-    <tr>
-      <td>{{ forloop.counter }}</td>
-      <td>{{ ppl.name }}</td>
-      {% for score in ppl.score %}
-      <td>{{ score }}</td>
-      {% endfor %}
-      <td>{{ ppl.solved }}</td>
-      <td>{{ ppl.panalty }}</td>
-    </tr>
-    {% endfor %}
-  </tbody>
-</table>
+{% load contest_extras %}
+<div role="tabpanel">
+  <!-- Nav tabs -->
+  <ul class="nav nav-tabs" role="tablist" id="scoreboardTab">
+    <li role="presentation" class="active"><a href="#testcase" aria-controls="testcase" role="tab" data-toggle="tab">Testcase</a>
+    </li>
+    <li role="presentation"><a href="#penalty" aria-controls="penalty" role="tab" data-toggle="tab">Penalty</a>
+    </li>
+  </ul>
+  <!-- Tab panes -->
+  <div class="tab-content">
+    <!-- testcase -->
+    <div role="tabpanel" class="tab-pane active" id="testcase">
+      <table class="table" style="table-layout:fixed">
+        <thead>
+          <tr>
+            <th>Rank</th>
+            <th>User</th>
+            {% for problem in scoreboard.problems %}
+            <th><b data-toggle="tooltip" title="{{ problem.pname }}">{{ problem.id }}</b>
+            </th>
+            {% endfor %}
+            <th>Total</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for user in scoreboard|users_sorted_by_solved_testcases %}
+          <tr>
+            <td>{{ forloop.counter }}</td>
+            <td>{{ user.username }}</td>
+            {% for problem in user.problems %}
+            <td>
+              {{ problem.testcases_solved }}/{{ problem.total_testcases }}
+            </td>
+            {% endfor %}
+            <td>{{ user.testcases_solved }}</td>
+          </tr>
+          {% endfor %}
+          <tr>
+            <td>Total</td>
+            <td></td>
+            {% for problem in scoreboard.problems %}
+              <td>
+                {{ problem.total_solved }}
+              </td>
+            {% endfor %}
+            <td></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <!-- penalty  -->
+    <div role="tabpanel" class="tab-pane" id="penalty">
+      <table class="table" style="table-layout:fixed">
+        <thead>
+          <tr>
+            <th>Rank</th>
+            <th>User</th>
+            {% for problem in scoreboard.problems %}
+            <th><b data-toggle="tooltip" title="{{ problem.pname }}">{{ problem.id }}</b>
+            </th>
+            {% endfor %}
+            <th>Solved</th>
+            <th>Penalty</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for user in scoreboard|users_sorted_by_penalty %}
+          <tr>
+            <td>{{ forloop.counter }}</td>
+            <td>{{ user.username }}</td>
+            {% for problem in user.problems %}
+            <td>{{ problem.penalty }}/{{ problem.submit_times }}</td>
+            {% endfor %}
+            <td>{{ user.solved }}</td>
+            <td>{{ user.penalty }}</td>
+          </tr>
+          {% endfor %}
+          <tr>
+            <td>Total</td>
+            <td></td>
+            {% for problem in scoreboard.problems %}
+              <td>
+                {{ problem.pass_user }}
+              </td>
+            {% endfor %}
+            <td></td>
+            <td></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

@@ -21,7 +21,11 @@
 from django.conf.urls import patterns, url
 from contest import views
 
-urlpatterns = patterns('',
-    url(r'^$',views.index,name='index'),
+urlpatterns = patterns('contest.views',
+    url(r'^$',views.archive,name='archive'),
+    url(r'^new/$',views.new,name='new'),
+    url(r'^edit/(?P<contest_id>\d+)/$',views.edit,name='edit'),
+    url(r'^delete/(?P<contest_id>\d+)/$',views.delete,name='delete'),
     url(r'^(?P<contest_id>\d+)/$',views.contest,name='contest'),
-    )
+    url(r'^register/(?P<contest_id>\d+)/$',views.register,name='register'),
+)

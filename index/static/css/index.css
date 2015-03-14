@@ -31,7 +31,7 @@ body {
 }
 .wrap-body {
   min-height: 100%;
-  height: auto;
+  margin-bottom: 35px; 
 }
 .gray {
   background-color: #E5E5E5;
@@ -83,14 +83,16 @@ body {
   font-size: 26px;
 }
 .sticky-footer {
-  padding: 0px 0px;
+  padding: 0 auto;
   background-color: #1b2435;
   border-top: 1px solid #dddddd;
   border-bottom-right-radius: -1;
   border-bottom-left-radius: -1;
-  position:fixed; bottom: 0px; 
+  position:relative;
+  bottom: 0px;
   z-index: 1;
   width: 100%;
+  height: 35px;
   border-top-left-radius: 250px;
   border-top-right-radius: 250px;
   border-bottom-right-radius: 0px;
@@ -232,18 +234,6 @@ body {
 .forget {
   font-size: 20px; 
 }
-.p10 {
-  font-size: 18px;
-  color: white;
-  margin: 0px;
-  padding: 0px;
-}
-.p11 {
-  font-size: 18px;
-  color: white;
-  margin: 3px;
-  padding: 0px;
-}
 .popdiv{
   padding:30px;
 }
@@ -294,7 +284,29 @@ textarea#inputSmall {
 #time {
   margin-bottom: 0px;
   display: inline;
+  font-size: 18px;
+  color: white;
+  position: relative;
+  float: right;
+  right: 30px;
 }
-.p10 {
+#footer_text {
+  font-size: 18px;
+  color: white;
+  margin: 0px;
+  padding: 0px;
   display: inline;
+  position: relative;
+  left: 400px;
+}
+#contact_us {
+  font-size: 18px;
+  color: white;
+  margin: 3px;
+  padding: 0px;
+  position: relative;
+  left: 30px;
+}
+#alert_info{
+  display:none;
 }

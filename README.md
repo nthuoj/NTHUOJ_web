@@ -30,3 +30,9 @@ git clone git@github.com:bruce3557/NTHUOJ_web.git
 * After installing, you can modify `'<project/root>/nthuoj.ini'` if your database setting is modified.
 
 
+* After installing, you can modify `'<project/root>/emailInfo.py'` if your email host setting is modified.
+
+###Email host: 
+* The email host should be gmail.
+
+* Your google account seeting 'Access for less secure apps' should turn on.

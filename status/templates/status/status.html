@@ -51,16 +51,16 @@ SOFTWARE.
     </thead>
     <tbody>
       {% for submission in submissions|submission_filter:user %}
-        <tr 
+        <tr
           {% if submission.list %}
             title="
               <ol style='margin:15px'>
                 {% for detail in submission.list %}
-                  <li class='row'>{{ detail.get_virdect_display }} CPU: {{ detail.cpu }}</li>
+                  <li class='row'>{{ detail.get_verdict_display }} CPU: {{ detail.cpu }}</li>
                 {% endfor %}
               </ol>"
             {% endif %}
-          class={% if submission.grouper.status == "AC" %} 
+          class={% if submission.grouper.status == "AC" %}
           "success" {% else %} "danger" {% endif %}>
           <td>
             {% if submission.grouper|show_detail:user %}

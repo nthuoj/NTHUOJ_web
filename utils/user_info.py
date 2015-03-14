@@ -21,17 +21,19 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 '''
+from datetime import datetime
+
 from django.db import models
 from users.models import User
 from group.models import Group
 from contest.models import Contest
-from problem.models import Problem
+from problem.models import Problem, Submission, SubmissionDetail
 from utils.log_info import get_logger
 
 logger = get_logger()
 
 #contest ownership
-def has_c_ownership(curr_user, curr_contest):
+def has_contest_ownership(curr_user, curr_contest):
     user_is_valid(curr_user) #check user
     #check contset
     try:
@@ -47,7 +49,7 @@ def has_c_ownership(curr_user, curr_contest):
     return is_owner
 
 #group ownership
-def has_g_ownership(curr_user, curr_group):
+def has_group_ownership(curr_user, curr_group):
     user_is_valid(curr_user) #check user
     #check group
     try:
@@ -63,7 +65,7 @@ def has_g_ownership(curr_user, curr_group):
     return is_owner
 
 #problem ownership
-def has_p_ownership(curr_user, curr_problem):
+def has_problem_ownership(curr_user, curr_problem):
     user_is_valid(curr_user) #check user
     #check problem
     try:
@@ -74,8 +76,73 @@ def has_p_ownership(curr_user, curr_problem):
     is_owner = (curr_user.username == curr_problem.owner.username)
     return is_owner
 
+def has_problem_auth(user, problem):
+    '''Check if user has authority to see/submit that problem'''
+    user = validate_user(user)
+
+    if problem.visible:
+        return True
+    # check the invisible problem
+    # To see/submit an invisible problem, user must
+    # 1. has admin auth
+    if user.has_admin_auth():
+        return True
+    # 2. be the problem owner
+    if has_problem_ownership(user, problem):
+        return True
+    # 3. be a contest owner/coowner
+    contests = Contest.objects.filter(
+        start_time__lte=datetime.now(),
+        end_time__gte=datetime.now(),
+        problem=problem)
+    for contest in contests:
+        if has_contest_ownership(user, contest):
+            return True
+    # None of the condition is satisfied
+    return False
+
 def user_is_valid(curr_user):
     try:
         User.objects.get(username=curr_user.username)
     except User.DoesNotExist:
         logger.warning('User username %s does not exsit!' % curr_user.username)
+
+def validate_user(user):
+    # an anonymous user is treated as a normal user
+    if user.is_anonymous():
+        user = User()  # create a temporary user instance with on attribute
+    return user
+
+def get_user_statistics(user):
+    '''Find the statistics of the given user'''
+    # fetch some status labels in Submissions
+    # here, we only concern about COMPILE_ERROR, RESTRICTED_FUNCTION,
+    # and JUDGE_ERROR since ACCEPTED, NOT_ACCEPTED, etc will appear in
+    # SubmissionDetail.VERDICT_CHOICE
+    status_labels = [
+        Submission.COMPILE_ERROR,
+        Submission.RESTRICTED_FUNCTION,
+        Submission.JUDGE_ERROR
+        ]
+    # find all verdict in SubmissionDetail.VERDICT_CHOICE
+    verdict_labels = [x[0] for x in SubmissionDetail.VERDICT_CHOICE]
+    statistics = []
+
+    # fetch Submission of the given user
+    submissions = Submission.objects.filter(user=user)
+    for label in status_labels:
+        statistics += [{
+            'label': label,
+            'value': submissions.filter(status=label).count()
+        }]
+
+    # fetch Submission of the given user
+    submissions_id = map(lambda submission: submission.id, submissions)
+    submission_details = SubmissionDetail.objects.filter(sid__in=submissions_id)
+    for label in verdict_labels:
+        statistics += [{
+            'label': label,
+            'value': submission_details.filter(verdict=label).count()
+        }]
+
+    return statistics
