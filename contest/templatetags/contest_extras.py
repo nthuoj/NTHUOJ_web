@@ -21,7 +21,13 @@ from django import template
 from utils import user_info
 from contest.models import Contest
 
+from contest.scoreboard import Scoreboard
+from contest.scoreboard import ScoreboardProblem
+from contest.scoreboard import UserProblem
+from contest.scoreboard import User
+
 from users.models import User
+
 
 register = template.Library()
 
@@ -32,3 +38,29 @@ def has_auth(user,contest_id):
     return user_info.has_contest_ownership(user,contest)
 
 register.filter("has_auth",has_auth)
+
+#check if user is judge or admin
+@register.filter
+def has_judge_auth(user):
+    if user.is_authenticated():
+        return user.has_judge_auth()
+    else:
+        return False
+register.filter("has_judge_auth",has_judge_auth)
+
+#scoreboard
+@register.filter
+def users_sorted_by_penalty(scoreboard):
+    scoreboard.sort_users_by_penalty()
+    return scoreboard.users
+register.filter("users_sorted_by_penalty",users_sorted_by_penalty)
+
+@register.filter
+def users_sorted_by_solved_testcases(scoreboard):
+    scoreboard.sort_users_by_solved_testcases()
+    return scoreboard.users
+register.filter("users_sorted_by_solved_testcases",users_sorted_by_solved_testcases)
+
+def total_contestant(scoreboard):
+    return len(scoreboard.users)
+register.filter("total_contestant",total_contestant)
