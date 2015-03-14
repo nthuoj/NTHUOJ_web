@@ -88,7 +88,7 @@ SOFTWARE.
             {% endfor %}
           </tbody>
         </table>
-        {% if user|is_contestant:contest %}
+        {% if user|can_ask:contest %}
         <div align="center">
           <button type="button" class="btn btn-primary btn-lg" data-toggle="modal" 
                   data-target="#clarification">Clarify</button>
@@ -122,7 +122,7 @@ SOFTWARE.
         <div class="tab-pane" id="status">4</div>
       </div>
     </div>
-    {% if user|is_contestant:contest %}
+    {% if user|can_ask:contest %}
     <!--Clarification Modal-->
     {% include "contest/clarification.html" %}
     {% endif %}

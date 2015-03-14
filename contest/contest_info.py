@@ -32,3 +32,9 @@ def is_contestant(user,contest):
     if len(contestant) >= 1:
         return True
     return False
+
+def can_ask(user,contest):
+    user_is_contestant = is_contestant(user,contest)
+    user_is_owner = (contest.owner == user)
+    user_is_coowner = contest.coowner.filter(pk = user.pk).exists()
+    return  user_is_contestant | user_is_owner | user_is_coowner 

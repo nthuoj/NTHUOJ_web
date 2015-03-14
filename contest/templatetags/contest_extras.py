@@ -36,6 +36,6 @@ def has_auth(user,contest_id):
 register.filter("has_auth",has_auth)
 
 @register.filter
-def is_contestant(user,contest):
-    return contest_info.is_contestant(user,contest)
-register.filter("is_contestant",is_contestant)
+def can_ask(user,contest):
+    return contest_info.can_ask(user,contest)
+register.filter("can_ask",can_ask)

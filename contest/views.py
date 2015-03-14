@@ -37,7 +37,7 @@ from contest.models import Clarification
 from contest.forms import ContestForm
 from contest.forms import ClarificationForm
 
-from contest.contest_info import is_contestant
+from contest.contest_info import can_ask
 
 from utils.log_info import get_logger
 from utils import user_info
@@ -148,12 +148,13 @@ def register(request,contest_id):
 def ask(request):
     try:
         contest = request.POST['contest']
+        contest_obj = Contest.objects.get(pk = contest)
     except:
         logger.warning('Clarification: Can not create Clarification!')
         return HttpResponseRedirect('/contest/')
 
     if request.user.is_authenticated():
-        if is_contestant(request.user,contest):
+        if can_ask(request.user,contest_obj):
             if request.method == 'POST':
                 form = ClarificationForm(request.POST)
                 if form.is_valid():
