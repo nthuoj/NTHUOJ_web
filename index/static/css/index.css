@@ -270,14 +270,17 @@ textarea#inputSmall {
 }
 #notification_circle{
   position: relative;
-  top :-40px;  
-  background-color: #4490DB;  
+  top :-40px;
+  background-color: red;
   height: 20px;
   width: 20px;
   border-radius: 25px;
-  text-align: center;  
+  text-align: center;
 }
 #number{
+  position: relative;
+  top :-2px;
+  left :-1px;
   color: white;
   font-size: 10px;
   -webkit-transform:scale(0.83);
