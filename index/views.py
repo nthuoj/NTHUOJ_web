@@ -60,7 +60,6 @@ def get_time(request):
     return HttpResponse(tstr)
 
 def custom_proc(request):
-    user = validate_user(request.user)
     t = time.time()
     tstr = datetime.datetime.fromtimestamp(t).strftime('%Y/%m/%d %H:%M:%S')
     people = random.randint(100,999)
@@ -68,6 +67,5 @@ def custom_proc(request):
         'tstr': tstr,
         'people': people,
         'info1': 123,
-        'info2': 1234567,
-        'theme': user.theme
+        'info2': 1234567
     }

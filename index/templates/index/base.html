@@ -32,7 +32,11 @@ SOFTWARE.
     <!-- necessarily jQeuery -->
     <script src={% static "jquery/dist/jquery.min.js" %}></script>
     <!-- bootstrap, bootwatch JS & CSS -->
-    <link rel="stylesheet" href="{% static '' %}bootswatch/{{theme}}/bootstrap.css">
+    {% if user.is_authenticated %}
+    <link rel="stylesheet" href="{% static '' %}bootswatch/{{user.theme}}/bootstrap.css">
+    {% else %}
+    <link rel="stylesheet" href="{% static '' %}bootswatch/paper/bootstrap.css">
+    {% endif %}
     <script src={% static "bootstrap/dist/js/bootstrap.min.js" %}></script>
     <!-- Magnific Popup core JS & CSS -->
     <link rel="stylesheet" href={% static "magnific-popup/dist/magnific-popup.css" %}>
