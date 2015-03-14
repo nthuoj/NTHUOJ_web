@@ -24,7 +24,6 @@ SOFTWARE.
 var displayInfo = false;
 var loginInfo = false;
 
-window.onload = index_alert;
 function index_alert(){
     var alert_info = document.getElementById("alert_info").value;
 
@@ -34,6 +33,7 @@ function index_alert(){
         alert(message);
     }
 }
+
 function info() {
     if(displayInfo == false){
         document.getElementById("information").style.display = "block";
@@ -44,6 +44,7 @@ function info() {
         displayInfo = !displayInfo;
     }
 }
+
 $(function() {
     var one_minute = 60*1000;
     setInterval(function() {
@@ -51,15 +52,6 @@ $(function() {
             $('#time').html(data);
         });
     }, one_minute);
-
-    // Let footer hide before the page hits the bottom.
-    $(".footer").hide();
-    $(window).scroll(function() {
-        if($(window).scrollTop() + $(window).height()
-           > $(document).height() - $(".footer").height()) {
-            $(".footer").fadeIn(250);
-        } else {
-            $(".footer").fadeOut(250);
-        }
-    });
+    // Call index_alert after window loaded.
+    index_alert();
 })
