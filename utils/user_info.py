@@ -182,4 +182,4 @@ def send_activation_email(request, user):
     try:
         Thread(target=msg.send, args=()).start()
     except:
-         logger.warning('There is an error when sending email to %s\' mailbox' % username)
+         logger.warning("There is an error when sending email to %s's mailbox" % username)
