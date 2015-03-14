@@ -29,6 +29,8 @@ SOFTWARE.
 <script src="{% static 'contest/js/contestArchive.js' %}"></script>
 {% endblock import_source %} 
 
+{% load contest_extras %}
+
 {% block body_block %}
 
 <div class="container" id="contestArchive">
@@ -52,61 +54,71 @@ SOFTWARE.
     <thead>
       <tr>
         <th>
-          {% if admin %}
-          <button type="button" class="btn btn-success btn-xs" data-toggle="modal" data-target="#contestInfo">
-            <span class="glyphicon glyphicon-plus"></span>
-          </button>
+          {% if user.has_judge_auth %}
+          <a href="{% url 'contest:new' %}">
+            <button type="button" class="btn btn-success btn-xs" >
+              <span class="glyphicon glyphicon-plus"></span>
+            </button>
+          </a>
           {% endif %}
         </th>
         <th>#</th>
         <th>Contest</th>
         <th>Start time</th>
         <th>End time</th>
-        <th>Contestant</th>
         <th>Owner</th>
       </tr>
     </thead>
     <tbody>
-      {% for contest in contest_list %}
+      {% for contest in contests %}
       <tr>
         <td>
-          {% if admin %}
-          <button type="button" class="btn btn-danger btn-xs">
-            <span class="glyphicon glyphicon-remove"></span>
-          </button>
 
-          <button type="button" class="btn btn-info btn-xs" data-toggle="modal" 
-          data-target="#contestInfo{{ contest.id }}">
-            <span class="glyphicon glyphicon-pencil"></span>
-          </button>
+          {% if user|has_auth:contest.id %}
+          <a href="{% url 'contest:delete' contest.id %}">
+            <button type="button" class="btn btn-danger btn-xs">
+              <span class="glyphicon glyphicon-remove"></span>
+            </button>
+          </a>
+          <a href="{% url 'contest:edit' contest.id %}">
+            <button type="button" class="btn btn-warning btn-xs">
+              <span class="glyphicon glyphicon-pencil"></span>
+            </button>
+          </a>
 
           {% else %}
-          <button type="button" class="btn btn-success btn-xs" data-toggle="tooltip" 
-          data-placement="top" title="Start Virtual Contest">
+          <button type="button" class="btn btn-default btn-xs" data-toggle="tooltip" 
+                  data-placement="top" title="Start Virtual Contest">
             <span class="glyphicon glyphicon-play"></span>
           </button>
-
+          
+          {% endif %}
           <button type="button" class="btn btn-info btn-xs" data-toggle="modal" 
-          data-target="#contestInfo{{ contest.id }}">
+                  data-target="#contestInfo{{ contest.id }}">
             <span class="glyphicon glyphicon-info-sign"></span>
           </button>
+
           <script>
           $('[data-toggle="tooltip"]').tooltip({
             'placement': 'top'
           });
 
           </script>
+          {% if not user|has_auth:contest.id %}
+          {% if user.is_authenticated and contest.open_register %}
+          <a href="{% url 'contest:register' contest.id %}">
+            <button type="button" class="btn btn-success btn-xs" >
+              <span class="glyphicon glyphicon-plus"></span>
+            </button>
+          </a>
+          {% endif %}
           {% endif %}
         </td>
         <td>{{ contest.id }}</td>
-        <td><a href="{{ contest.id }}">{{ contest.name }}</a>
+        <td><a href="{% url 'contest:contest' contest.id %}">{{ contest.cname }}</a>
         </td>
         <td>{{ contest.start_time }}</td>
         <td>{{ contest.end_time }}</td>
-        <!--
-          <td>{{ contest.start_time|date:"Y/m/d h:m:s" }}</td>
-          <td>{{ contest.end_time|date:"Y/m/d h:m:s" }}</td> -->
-        <td>{{ contest.contestant_number }}</td>
         <td>{{ contest.owner }}</td>
       </tr>
       {% endfor %}
@@ -115,9 +127,9 @@ SOFTWARE.
 </div>
 <!-- /.container -->
 <!-- Contest detail info-->
-{% for contest in contest_list %}
+{% for contest in contests %}
 <div class="modal fade" id="contestInfo{{ contest.id }}" tabindex="-1" 
-role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+     role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
@@ -126,42 +138,29 @@ role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
           <span class="sr-only">Close</span>
         </button>
         <h2 class="modal-title" id="myModalLabel">
-            {% if admin %}
-            <table style="table-layout:fixed;width: 100%;text-align:center">
-              <tr>
-                <td>
-                  <input class="form-control" value="{{ contest.name }}">
-                </td>
-                <td>
-                  <button type="button" class="btn btn-primary">Submit</button>
-                </td>
-              </tr>
-            </table>
-            {% else %}
-            {{ contest.name }}
-            {% endif %}
+            {{ contest.cname }}
           </h2>
       </div>
       <div class="modal-body">
-        <ul class="nav nav-tabs" role="tablist" id="infoTab">
-          <li role="presentation" class="active"><a href="#problem" 
-            data-toggle="tab">Problem</a>
+        <ul class="nav nav-tabs" role="tablist" name="infoTab">
+          <li role="presentation" class="active"><a href="#problem{{ contest.id }}" 
+              data-toggle="tab">Problem</a>
           </li>
-          <li role="presentation"><a href="#contestant" data-toggle="tab">Contestant</a>
+          <li role="presentation"><a href="#contestant{{ contest.id }}" data-toggle="tab">Contestant</a>
           </li>
-          <li role="presentation"><a href="#contest_time" data-toggle="tab">Time</a>
+          <li role="presentation"><a href="#contest_time{{ contest.id }}" data-toggle="tab">Time</a>
           </li>
-          <li role="presentation"><a href="#contest_coowner" data-toggle="tab">Coowner</a>
+          <li role="presentation"><a href="#contest_coowner{{ contest.id }}" data-toggle="tab">Coowner</a>
           </li>
-          <li role="presentation"><a href="#contest_others" data-toggle="tab">Others</a>
+          <li role="presentation"><a href="#contest_others{{ contest.id }}" data-toggle="tab">Others</a>
           </li>
         </ul>
         <div class="tab-content">
-          <div class="tab-pane active" id="problem">
+          <div class="tab-pane active" id="problem{{ contest.id }}">
             <table class="table" style="text-align:center">
               <thead>
                 <tr>
-                  {% if admin %}
+                  {% if user|has_auth:contest.id %}
                   <th style="text-align:center">Rejudge</th>
                   {% endif %}
                   <th style="text-align:center">#</th>
@@ -169,9 +168,9 @@ role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
                 </tr>
               </thead>
               <tbody>
-                {% for problem in contest.problem_list %}
+                {% for problem in contest.problems %}
                 <tr>
-                  {% if admin %}
+                  {% if user|has_auth:contest.id %}
                   <td>
                     <button type="button" class="btn btn-warning btn-xs">
                       <span class="glyphicon glyphicon-refresh"></span>
@@ -181,32 +180,18 @@ role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
                     </button>
                   </td>
                   {% endif %}
-                  <td>{{ problem.id }}</td>
-                  <td>{{ problem.name }}</td>
+                  <td>{{ forloop.counter }}</td>
+                  <td>{{ problem }}</td>
                 </tr>
                 {% endfor %}
-                <!-- -->
-                {% if admin %}
-                <tr>
-                  <td style="width:10%">
-                    <button type="button" class="btn btn-success btn-xs">
-                      <span class="glyphicon glyphicon-plus"></span>
-                    </button>
-                  </td>
-                  <td></td>
-                  <td style="width:60%">
-                    <input class="form-control">
-                  </td>
-                </tr>
-                {% endif %}
               </tbody>
             </table>
           </div>
-          <div class="tab-pane" id="contestant">
+          <div class="tab-pane" id="contestant{{ contest.id }}">
             <table class="table" style="text-align:center">
               <thead>
                 <tr>
-                  {% if admin %}
+                  {% if user|has_auth:contest.id %}
                   <th></th>
                   {% endif %}
                   <th style="text-align:center">#</th>
@@ -214,71 +199,45 @@ role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
                 </tr>
               </thead>
               <tbody>
-                {% for ppl in contest.contestant_list %}
+                {% for contestant in contest.contestants %}
                 <tr>
-                  {% if admin %}
-                  <td>
-                    <button type="button" class="btn btn-danger btn-xs">
-                      <span class="glyphicon glyphicon-minus"></span>
-                    </button>
-                  </td>
-                  {% endif %}
-                  <td>{{ forloop.counter }}</td>
-                  <td>{{ ppl.name }}</td>
-                </tr>{% endfor %}
+                    {% if user|has_auth:contest.id %}
+                    <td>
+                      <button type="button" class="btn btn-danger btn-xs">
+                        <span class="glyphicon glyphicon-minus"></span>
+                      </button>
+                    </td>
+                    {% endif %}
+                    <td>{{ forloop.counter }}</td>
+                    <td>{{ contestant }}</td>
+                </tr>
+                {% endfor %}
                 <tr>
-                  {% if admin %}
-                  <td style="width:10%">
-                    <button type="button" class="btn btn-success btn-xs">
-                      <span class="glyphicon glyphicon-plus"></span>
-                    </button>
-                  </td>
-                  <td>
-                    <select class="form-control">
-                      <option value="#">Single Contestant</option>
-                      <option value="#">Group</option>
-                      <option value="#">Anonymous Account</option>
-                    </select>
-                  </td>
-                  <td style="width:60%">
-                    <input class="form-control">
-                  </td>
-                  {% endif %}
                 </tr>
               </tbody>
             </table>
           </div>
-          <div class="tab-pane" id="contest_time">
+          <div class="tab-pane" id="contest_time{{ contest.id }}">
             <table class="table">
               <tr>
                 <td>Start Time</td>
                 <td>
-                  {% if admin %}
-                  <input class="form-control" value="{{ contest.start_time }}"></input>
-                  {% else %}
                   <h3>{{ contest.start_time }}</h3>
-                  <!-- -->
-                  {% endif %}
                 </td>
               </tr>
               <tr>
                 <td>End Time</td>
                 <td>
-                  {% if admin %}
-                  <input class="form-control" value="{{ contest.end_time }}"></input>
-                  {% else %}
                   <h3>{{ contest.end_time }}</h3>
-                  <!-- -->
-                  {% endif %}
                 </td>
               </tr>
             </table>
           </div>
-          <div class="tab-pane" id="contest_coowner">
+          <div class="tab-pane" id="contest_coowner{{ contest.id }}">
             <table class="table" style="text-align:center">
               <thead>
                 <tr>
-                  {% if admin %}
+                  {% if user|has_auth:contest.id %}
                   <th></th>
                   {% endif %}
                   <th style="text-align:center">#</th>
@@ -286,9 +245,9 @@ role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
                 </tr>
               </thead>
               <tbody>
-                {% for ppl in contest.coowner_list %}
+                {% for coowner in contest.coowners %}
                 <tr>
-                  {% if admin %}
+                  {% if user|has_auth:contest.id %}
                   <td>
                     <button type="button" class="btn btn-danger btn-xs">
                       <span class="glyphicon glyphicon-minus"></span>
@@ -296,38 +255,26 @@ role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
                   </td>
                   {% endif %}
                   <td>{{ forloop.counter }}</td>
-                  <td>{{ ppl.name }}</td>
+                  <td>{{ coowner }}</td>
                 </tr>
                 {% endfor %}
-                <!-- -->
-                {% if admin %}
-                <tr>
-                  <td style="width:10%">
-                    <button type="button" class="btn btn-success btn-xs">
-                      <span class="glyphicon glyphicon-plus"></span>
-                    </button>
-                  </td>
-                  <td></td>
-                  <td style="width:60%">
-                    <input class="form-control">
-                  </td>
-                </tr>
-                {% endif %}
               </tbody>
             </table>
           </div>
-          <div class="tab-pane" id="contest_others">
-            <label>Freeze：</label>
-            <input type="text" class="form-control"></input>
-            <div class="checkbox">
-              <label>
-                <input type="checkbox">Homework</input>
-              </label>
-              <br>
-              <label>
-                <input type="checkbox">Open Register</input>
-              </label>
-            </div>
+          <div class="tab-pane" id="contest_others{{ contest.id }}">
+            <label>Freeze Time：</label>
+            <h4>{{ contest.freeze_time }} mins</h4>
+            {% if contest.is_homework %}
+              <span class="glyphicon glyphicon-ok green" aria-hidden="true"></span>Is Homework
+            {% else %}
+              <span class="glyphicon glyphicon-remove red" aria-hidden="true"></span>Not Homework
+            {% endif %}
+            <br>
+            {% if contest.open_register %}
+              <span class="glyphicon glyphicon-ok green" aria-hidden="true"></span>Can Register
+            {% else %}
+              <span class="glyphicon glyphicon-remove red" aria-hidden="true"></span>Can Not Register
+            {% endif %}
           </div>
         </div>
       </div>
