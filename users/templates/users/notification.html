@@ -32,116 +32,139 @@ SOFTWARE.
 <div class="container" 
        style="margin-top:50px;margin-bottom:50px;min-height:500px;">
   <h2>User Notification</h2>
-  <div style='padding-top: 25px;'>
-    <div class="abgne_tab" style="font-size:18px;">
+  <div style='padding-top: 25px;'></div>  
 
-      <ul class="tabs">
-        <li><a href="#tab1">Unread</a></li>
-        <li><a href="#tab2">All notifications</a></li>
-      </ul>
+  <div role="tabpanel">
+    <!-- Nav tabs -->
+    <ul class="nav nav-tabs" role="tablist" id="nav_tab">
+      <li role="presentation" class="active">
+        <a href="#unread" aria-controls="unread" role="tab" data-toggle="tab">
+          Unread notifications
+        </a>
+      </li>
+      <li role="presentation">
+        <a href="#all" aria-controls="all" role="tab" data-toggle="tab">
+          All notifications
+        </a>
+      </li>    
+    </ul>
 
-      <div class="tab_container">
-        <div id="tab1" class="tab_content">
-          <table class="table" style="margin-bottom: 0px;">
-            <thead>
+    <!-- Tab panes -->
+    <div class="tab-content">
+      <div role="tabpanel" class="tab-pane fade in active" id="unread">
+        <table class="table tab_content">
+          <thead>
+            <tr>
+              <th></th>              
+              <th style="text-align: right;width: 20%;">Delete the messeage</th>
+            </tr>
+          </thead>
+          <tbody>
+            <form name="urform" method="post">  
+              {% for ur_notification in ur_notifications %}
               <tr>
-                <th>Unread notifications</th>
-                <th style="text-align: right;">Mark as read</th>
-                <th style="text-align: right;width: 20%;">Delete the messeage</th>
+                <td href="#Notification-popup" class="open-popup-link" 
+                    onclick="write_content('{{ ur_notification.id }}');">
+                  <p id="{{ ur_notification.id }}_content" 
+                     class="ellipsis">{{ ur_notification.message}}</p>
+                </td>                
+                <td style="text-align: right;">
+                  <input type="checkbox" style="margin-left:0px;" 
+                         name="del" value={{ ur_notification.id }}>
+                </td>
               </tr>
-            </thead>
-            <tbody>
-              <form name="urform" method="post">  
-                {% for ur_notification in ur_notifications %}
-                <tr>
-                  <td>{{ ur_notification.message }}</td>
-                  <td style="text-align: right;">
-                    <input type="checkbox" style="margin-left:0px;" 
-                           name="read" value={{ ur_notification.id }}>
-                  </td>
-                  <td style="text-align: right;">
-                    <input type="checkbox" style="margin-left:0px;" 
-                           name="del" value={{ ur_notification.id }}>
-                  </td>
-                </tr>
-                {% endfor %}
-                {% if ur_notifications.count < 2 %}
-                <tr style="display:none;">
-                {% else %}
-                <tr>
-                {% endif %}
-                  <td colspan=2 style="text-align: right;">
-                    <i>select all</i>
-                    <input type="checkbox" 
-                           onclick="check_all(this, 'read');"
-                           style="margin-left:0px;margin-top: 0px;" >
-                  </td>
-                
-                  <td style="text-align: right;">
-                    <i>select all</i>
-                    <input type="checkbox" 
-                           onclick="check_all(this, 'del');"
-                           style="margin-left:0px;margin-top: 0px;" >
-                  </td>
-                
-                </tr>
-                <tr>
-                  <td colspan=3 style="text-align: right;">
-                    <input type="button" value="submit" 
-                           onclick="u_read_del(document.urform.read, document.urform.del);"
-                           style="margin-left:0px;margin-top: 30px;" >
-                  </td>
-                </tr>
-              </form>
-            </tbody>
-          </table>
-        </div>
-
-        <div id="tab2" class="tab_content">
-          <table class="table" style="margin-bottom: 0px;">
-            <thead>
+              {% endfor %}
+              {% if ur_notifications.count < 2 %}
+              <tr style="display:none;">
+              {% else %}
               <tr>
-                <th>All notifications</th>
-                <th style="text-align: right;">Delete the messeage</th>
+              {% endif %}                
+                
+                <td colspan=2 style="text-align: right;">
+                  <i>select all</i>
+                  <input type="checkbox" 
+                         onclick="check_all(this, 'del');"
+                         style="margin-left:0px;margin-top: 0px;" >
+                </td>
+                
               </tr>
-            </thead>
-            <tbody>
-              <form name="allform" method="post">  
-                {% for all_notification in all_notifications %}
-                <tr>
-                  <td>{{ all_notification.message }}</td>
-                  <td style="text-align: right;">
-                    <input type="checkbox" style="margin-left:0px;" 
-                           name="del" value={{ all_notification.id }}>
-                  </td>
-                </tr>
-                {% endfor %}
-                {% if all_notifications.count < 2 %}
-                <tr style="display:none;">
-                {% else %}
-                <tr>
-                {% endif %}
-                  <td colspan=2 style="text-align: right;">
-                    <i>select all</i>
-                    <input type="checkbox" 
-                           onclick="check_all(this, 'del');"
-                           style="margin-left:0px;margin-top: 0px;" >
-                  </td>
-                </tr>
-                <tr>
-                  <td colspan=2 style="text-align: right;">
-                    <input type="button" value="submit" 
-                           onclick="all_del(document.allform.del);"
-                           style="margin-left:0px;margin-top: 30px;" >
-                  </td>
-                </tr>
-              </form>
-            </tbody>
-          </table>
-        </div>
+              {% if ur_notifications.count < 1 %}
+              <tr style="display:none;">
+              {% else %}
+              <tr>
+              {% endif %}
+                <td colspan=2 style="text-align: right;">
+                  <input type="button" value="submit" 
+                         onclick="u_read_del(document.urform.del);"
+                         style="margin-left:0px;margin-top: 30px;" >
+                </td>
+              </tr>
+            </form>
+          </tbody>
+        </table>      
       </div>
-
+      <div role="tabpanel" class="tab-pane fade" id="all">
+        <table class="table tab_content">
+          <thead>
+            <tr>
+              <th></th>
+              <th style="text-align: right;">Delete the messeage</th>
+            </tr>
+          </thead>
+          <tbody>
+            <form name="allform" method="post">  
+              {% for all_notification in all_notifications %}
+              <tr>
+                <td href="#Notification-popup" class="open-popup-link" 
+                    onclick="write_content('{{ all_notification.id }}');">
+                  <p id="{{ all_notification.id }}_content" 
+                     class="ellipsis">{{ all_notification.message}}</p>
+                </td>
+                <td style="text-align: right;">
+                  <input type="checkbox" style="margin-left:0px;" 
+                         name="del" value={{ all_notification.id }}>
+                </td>
+              </tr>
+              {% endfor %}
+              {% if all_notifications.count < 2 %}
+              <tr style="display:none;">
+              {% else %}
+              <tr>
+              {% endif %}
+                <td colspan=2 style="text-align: right;">
+                  <i>select all</i>
+                  <input type="checkbox" 
+                         onclick="check_all(this, 'del');"
+                         style="margin-left:0px;margin-top: 0px;" >
+                </td>
+              </tr>
+              {% if all_notifications.count < 1 %}
+              <tr style="display:none;">
+              {% else %}
+              <tr>
+              {% endif %}
+                <td colspan=2 style="text-align: right;">
+                  <input type="button" value="submit" 
+                         onclick="all_del(document.allform.del);"
+                         style="margin-left:0px;margin-top: 30px;" >
+                </td>
+              </tr>
+            </form>
+          </tbody>
+        </table>      
+      </div>    
     </div>
   </div>
+  
+  <!-- feedback-popup -->
+    <div class="mfp-hide">
+      <div class="jumbotron popdiv"  id="Notification-popup">
+        <h2><p class="poptitle"><b>Notification</b></p></h2>        
+        <div class="form-group">
+          <textarea class="form-control input-sm" type="text" id="area">
+          </textarea>
+        </div>
+      </div>      
+    </div>    
 </div>
 {% endblock %}

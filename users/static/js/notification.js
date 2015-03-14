@@ -21,41 +21,25 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
-$(function(){
-    var _showTab = 0;
-    var $defaultLi = $('ul.tabs li').eq(_showTab).addClass('active');
-    $($defaultLi.find('a').attr('href')).siblings().hide();
-
-    $('ul.tabs li').click(function() {
-
-        var $this = $(this),
-        _clickTab = $this.find('a').attr('href');
-
-        $this.addClass('active').siblings('.active').removeClass('active');
-        $(_clickTab).stop(false, true).fadeIn().siblings().hide();
-
-        return false;
-    }).find('a').focus(function(){
-        this.blur();
-    });
-});
-
-function u_read_del(r_checkbox, d_checkbox) {
-
-    var r_id = "";
+var read_id;
+function write_content(id){
+    read_id = id;
+    element = id + '_content';    
+    var message = document.getElementById(element).textContent;    
+    document.getElementById("area").textContent = message;    
+}
+function read(){
+    window.location.href = "http://" + window.location.host + 
+    "/users/u_read_del/" + read_id + "/";
+}
+$.magnificPopup.instance.close = function() {    
+    $(document).trigger('mfp-global-close');
+    $.magnificPopup.proto.close.call();
+    read();
+};
+function u_read_del(d_checkbox) {
+    
     var d_id = "";
-    if(r_checkbox.length){
-        for(var i=0;i<r_checkbox.length;i++){
-            if(r_checkbox[i].checked == true){
-                r_id = r_id + r_checkbox[i].value + ",";
-            }
-        }
-    }
-    else{
-        if(r_checkbox.checked == true)
-            r_id = r_id + r_checkbox.value + ",";
-    }
-
     if(d_checkbox.length){
         for(var i=0;i<d_checkbox.length;i++){
             if(d_checkbox[i].checked == true){
@@ -66,12 +50,10 @@ function u_read_del(r_checkbox, d_checkbox) {
     else{
         if(d_checkbox.checked == true)
             d_id = d_id + d_checkbox.value + ",";
-    }
-
-    r_id = r_id.slice(0,-1);
+    }    
     d_id = d_id.slice(0,-1);
     window.location.href = "http://" + window.location.host + 
-    "/users/u_read_del/" + r_id + "/" + d_id;
+    "/users/u_read_del/" + "/" + d_id;
 
 }
 

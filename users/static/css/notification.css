@@ -21,60 +21,30 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
-ul, li {
-  margin: 0;
-  padding: 0;
-  list-style: none;
+#nav_tab {
+  margin: -1px;
 }
-.abgne_tab {
-  clear: left;
-  width: 400px;
-  margin: 10px 0;
+.tab_content {
+  margin-bottom: 0px;
+  border:2px #cccccc solid;
+  max-width: 900px;
 }
-ul.tabs {
-  min-width: 1000px;
-  height: 32px;
-  border-bottom: 1px solid #999;
-  border-left: 1px solid #999;
+#Notification-popup {
+  height: 530px;
 }
-ul.tabs li {
-  float: left;
-  height: 31px;
-  line-height: 31px;
-  overflow: hidden;
-  position: relative;
-  margin-bottom: -1px;
-  border: 1px solid #999;
-  border-left: none;
-  background: #e1e1e1;
+#area {
+  height: 400px;
 }
-ul.tabs li a {
-  display: block;
-  padding: 0 20px;
-  color: #000;
-  border: 1px solid #fff;
-  text-decoration: none;
+.open-popup-link:hover {
+  cursor: pointer;
+  background-color: #D7E7F3;
 }
-ul.tabs li a:hover {
-  background: #ccc;
-}
-ul.tabs li.active  {
-  background: #fff;
-  border-bottom: 1px solid #fff;
-}
-ul.tabs li.active a:hover {
-  background: #fff;
-}
-div.tab_container {
-  clear: left;
-  min-width: 1000px;
-  border: 1px solid #999;
-  border-top: none;
-  background: #fff;
-}
-div.tab_container .tab_content {
-  padding: 20px;
-}
-div.tab_container .tab_content h2 {
-  margin: 0 0 20px;
+.ellipsis {
+  margin: 0px;
+  max-width: 400px;
+  max-height: 20px;
+  display: inline-block;
+  overflow:hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
