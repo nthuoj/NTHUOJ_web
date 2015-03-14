@@ -61,16 +61,16 @@ class User(AbstractBaseUser):
         (SUB_JUDGE, 'Sub-judge'),
         (USER, 'User'),
     )
-    PAPER = 'PAPER'
-    READABLE = 'READABLE'
-    COSMO = 'COSMO'
-    DEFAULT = 'DEFAULT'
-    LUMEN = 'LUMEN'
+    PAPER = 'paper'
+    READABLE = 'readable'
+    COSMO = 'cosmo'
+    SIMPLEX = 'simplex'
+    LUMEN = 'lumen'
     THEME_CHOICE = (
         (PAPER, 'Paper'),
         (READABLE, 'Readable'),
         (COSMO, 'Cosmo'),
-        (DEFAULT, 'Default'),
+        (SIMPLEX, 'Simplex'),
         (LUMEN, 'Lumen'),
     )
 
@@ -134,8 +134,8 @@ class Notification(models.Model):
 
 class UserProfile(models.Model):
     user = models.OneToOneField(User)
-    activation_key = models.CharField(max_length=40, blank=True)    
-      
+    activation_key = models.CharField(max_length=40, blank=True)
+
     def __unicode__(self):
         return self.user.username
 

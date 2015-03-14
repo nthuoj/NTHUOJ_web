@@ -89,6 +89,7 @@ def profile(request, username):
             if profile_form.is_valid() and request.user == profile_user:
                 logger.info('User %s update profile' % username)
                 profile_form.save()
+                request.user = profile_user
                 render_data['profile_message'] = 'Update successfully'
 
         if request.method == 'POST' and 'userlevel_form' in request.POST:

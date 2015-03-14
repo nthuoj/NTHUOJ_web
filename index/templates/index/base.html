@@ -33,8 +33,13 @@ SOFTWARE.
     <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js">
     </script>
     <!-- bootstrap, bootwatch JS & CSS -->
+    {% if not theme %}
     <link rel="stylesheet"
     href="http://bootswatch.com/paper/bootstrap.css" media="screen">
+    {% else %}
+    <link rel="stylesheet"
+    href="http://bootswatch.com/{{theme}}/bootstrap.css" media="screen">
+    {% endif %}
     <link rel="stylesheet"
     href="http://bootswatch.com/assets/css/bootswatch.min.css">
     <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js">

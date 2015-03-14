@@ -30,6 +30,7 @@ from contest.models import Contest
 from django.shortcuts import render
 from django.http import HttpResponse
 from django.template import RequestContext
+from utils.user_info import validate_user
 
 # Create your views here.
 def index(request, alert_info='none'):
@@ -37,7 +38,7 @@ def index(request, alert_info='none'):
     present = timezone.now()
     c_runnings = Contest.objects.filter(start_time__lt=present, end_time__gt=present)
     c_upcomings = Contest.objects.filter(start_time__gt=present)
-    return render(request, 'index/index.html', 
+    return render(request, 'index/index.html',
                 {'c_runnings':c_runnings, 'c_upcomings':c_upcomings,
                 'alert_info':alert_info},
                 context_instance=RequestContext(request, processors=[custom_proc]))
@@ -59,14 +60,14 @@ def get_time(request):
     return HttpResponse(tstr)
 
 def custom_proc(request):
-
+    user = validate_user(request.user)
     t = time.time()
     tstr = datetime.datetime.fromtimestamp(t).strftime('%Y/%m/%d %H:%M:%S')
-    people = 0
     people = random.randint(100,999)
     return {
         'tstr': tstr,
         'people': people,
         'info1': 123,
-        'info2': 1234567
+        'info2': 1234567,
+        'theme': user.theme
     }
