@@ -31,29 +31,30 @@ $(function () {
         mode: 'text/x-csrc',
         lineWrapping: true,
         tab: 4,
-        indentUnit: 4,
         theme: 'solarized light'
     });
 
-    $('input[type=file]').bootstrapFileInput();
-    $('.file-inputs').bootstrapFileInput();
+    $('#fileinput').bootstrapFileInput();
 
     $('#fileinput').change(function(evt) {
         //Retrieve the first (and only!) File from the FileList object
         var f = evt.target.files[0];
 
         if (f) {
-            var r = new FileReader();
-            r.onload = function(e) {
-                var contents = e.target.result;
-                editor.value = contents;
-                try {
-                    editor.getDoc().setValue(contents);
-                } catch (e) {
+            if (f.size > 10000) {
+                alert('You can\'t upload file over 10000 bytes.');
+            } else {
+                var r = new FileReader();
+                r.onload = function(e) {
+                    var contents = e.target.result;
+                    try {
+                        editor.getDoc().setValue(contents);
+                    } catch (e) {
 
-                }
-            };
-            r.readAsText(f);
+                    }
+                };
+                r.readAsText(f);
+            }
         } else {
             alert('Failed to load file');
         }

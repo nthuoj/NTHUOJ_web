@@ -35,7 +35,13 @@ SOFTWARE.
 <script src={% static "js/editorsettings.js" %}></script>
 <!-- file input -->
 <script src={% static "bootstrap.file-input/index.js" %}></script>
-
+<style>
+  .CodeMirror {
+    border: 2px solid #eee;
+    height: auto;
+    min-height: 400px;
+  }
+</style>
 <div class="container">
   <h3>Submit Code</h3>
   <form class="form-horizontal" action="/users/submit/" method="post">
