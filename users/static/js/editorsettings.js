@@ -22,7 +22,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 var editor;
-
+var adjustEditorSize;
 $(function () {
     editor = CodeMirror.fromTextArea(document.getElementById('code_editor'), {
         lineNumbers: true,
@@ -31,21 +31,38 @@ $(function () {
         mode: 'text/x-csrc',
         lineWrapping: true,
         tab: 4,
-        theme: 'solarized light'
+        smartIndent: false, // Not smart at all!!
+        indentWithTabs: true,
+        theme: 'solarized light',
     });
+
+    adjustEditorSize = function (editor) {
+        // Adjust editor size according to the line count
+        lineCount = editor.lineCount()
+        lineHeight = $('.CodeMirror-gutter-wrapper').height()
+        editorWidth = $('.CodeMirror').width()
+        editorHeight = Math.max(400, Math.min(lineCount*lineHeight + 50, 2000))
+        editor.setSize(editorWidth, editorHeight)
+    }
+
+    // Adjust editor size on load
+    adjustEditorSize(editor)
+
+    // Adjust editor size on change
+    editor.on('change', adjustEditorSize)
 
     $('#fileinput').bootstrapFileInput();
 
     $('#fileinput').change(function(evt) {
         //Retrieve the first (and only!) File from the FileList object
-        var f = evt.target.files[0];
+        var file = evt.target.files[0];
 
-        if (f) {
-            if (f.size > 10000) {
+        if (file) {
+            if (file.size > 10000) {
                 alert('You can\'t upload file over 10000 bytes.');
             } else {
-                var r = new FileReader();
-                r.onload = function(e) {
+                var reader = new FileReader();
+                reader.onload = function(e) {
                     var contents = e.target.result;
                     try {
                         editor.getDoc().setValue(contents);
@@ -53,7 +70,7 @@ $(function () {
 
                     }
                 };
-                r.readAsText(f);
+                reader.readAsText(f);
             }
         } else {
             alert('Failed to load file');
