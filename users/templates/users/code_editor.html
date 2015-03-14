@@ -23,19 +23,18 @@ SOFTWARE.
 -->
 {%load static%}
 <!-- code mirror related -->
-<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/codemirror/4.8.0/codemirror.css">
-<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/codemirror/4.8.0/theme/solarized.css">
-<script src="//cdnjs.cloudflare.com/ajax/libs/codemirror/4.8.0/codemirror.js"></script>
-<script src="//cdnjs.cloudflare.com/ajax/libs/codemirror/4.8.0/mode/javascript/javascript.js"></script>
-<script src="//cdnjs.cloudflare.com/ajax/libs/codemirror/4.8.0/addon/selection/active-line.js"></script>
-<script src="//cdnjs.cloudflare.com/ajax/libs/codemirror/4.8.0/addon/edit/matchbrackets.js"></script>
-<script src="//cdnjs.cloudflare.com/ajax/libs/codemirror/4.8.0/mode/clike/clike.js"></script>
-<script src="//cdnjs.cloudflare.com/ajax/libs/codemirror/4.8.0/addon/selection/active-line.js"></script>
-<script src="//cdnjs.cloudflare.com/ajax/libs/codemirror/4.8.0/addon/edit/matchbrackets.js"></script>
+<link rel="stylesheet" href={% static "codemirror/lib/codemirror.css" %}>
+<link rel="stylesheet" href={% static "codemirror/theme/solarized.css" %}>
+<script src={% static "codemirror/lib/codemirror.js" %}></script>
+<script src={% static "codemirror/addon/selection/active-line.js" %}></script>
+<script src={% static "codemirror/addon/edit/matchbrackets.js" %}></script>
+<script src={% static "codemirror/mode/clike/clike.js" %}></script>
+<script src={% static "codemirror/addon/selection/active-line.js" %}></script>
+<script src={% static "codemirror/addon/edit/matchbrackets.js" %}></script>
 
 <script src={% static "js/editorsettings.js" %}></script>
 <!-- file input -->
-<script src="http://gregpike.net/demos/bootstrap-file-input/bootstrap.file-input.js"></script>
+<script src={% static "bootstrap.file-input/index.js" %}></script>
 
 <div class="container">
   <h3>Submit Code</h3>

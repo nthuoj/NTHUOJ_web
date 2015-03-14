@@ -121,10 +121,13 @@ EMAIL_PORT = 587
 BOWER_COMPONENTS_ROOT = os.path.join(PROJECT_ROOT, 'components')
 
 BOWER_INSTALLED_APPS = (
+    'Chart.js',
     'jquery',
-    'jquery-ui',
+    'jquery-ui#1.9.2',
     'https://github.com/thomaspark/bootswatch.git', # bootswatch
     'https://github.com/dimsemenov/Magnific-Popup.git', # Magnific-Popup
+    'https://github.com/codemirror/CodeMirror.git', # CodeMirror
+    'http://gregpike.net/demos/bootstrap-file-input/bootstrap.file-input.js', # bootstrap fileinput
 )
 
 STATICFILES_FINDERS = (
