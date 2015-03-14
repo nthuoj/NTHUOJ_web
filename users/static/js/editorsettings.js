@@ -25,15 +25,20 @@ var editor;
 var adjustEditorSize;
 $(function () {
     editor = CodeMirror.fromTextArea(document.getElementById('code_editor'), {
-        lineNumbers: true,
-        styleActiveLine: true,
-        matchBrackets: true,
-        mode: 'text/x-csrc',
-        lineWrapping: true,
-        tab: 4,
-        smartIndent: false, // Not smart at all!!
-        indentWithTabs: true,
+        mode: 'text/x-c++src',
         theme: 'solarized light',
+        keyMap: 'sublime',
+        placeholder: 'Code goes here...',
+        // line settings
+        lineNumbers: true,
+        lineWrapping: true,
+        styleActiveLine: true,
+        // indent settings
+        indentUnit: 4,
+        indentWithTabs: true,
+        matchBrackets: true,
+        autoCloseBrackets: true,
+        showCursorWhenSelecting: true
     });
 
     adjustEditorSize = function (editor) {
