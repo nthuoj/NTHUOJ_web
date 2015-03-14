@@ -47,6 +47,7 @@ SOFTWARE.
     color: black !important;
 }
 </style>
+
 <div class="container">
   <h3>Submit Code</h3>
   <form class="form-horizontal" action="/users/submit/" method="post">
@@ -64,8 +65,11 @@ SOFTWARE.
         </div>
       </div>
     </div>
-      {{ form.code }}
-      <strong style="color:red">{{ form.code.errors }}</strong>
+    {{ form.code }}
+    <strong style="color:red">{{ form.code.errors }}</strong>
+    <a class="open-popup-link" href="#keybindings-popup">
+        We support Sublime key bindings!
+      </a>
     <div class="form-group row">
       <div style="float:left;margin:30px;">
         <input type="file" data-filename-placement="inside" id="fileinput">
@@ -75,4 +79,10 @@ SOFTWARE.
       </div>
     </div>
   </form>
+</div>
+
+<div id="keybindings-popup" class="mfp-hide">
+  <div class="jumbotron">
+    {% include "users/keybindings.html" %}
+  </div>
 </div>
