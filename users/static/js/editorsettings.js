@@ -70,7 +70,7 @@ $(function () {
 
                     }
                 };
-                reader.readAsText(f);
+                reader.readAsText(file);
             }
         } else {
             alert('Failed to load file');
