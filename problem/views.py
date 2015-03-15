@@ -109,8 +109,7 @@ def new(request):
     if request.user.is_anonymous():
         raise PermissionDenied()
     if not request.user.has_subjudge_auth():
-        logger.warning("user %s has no auth to add new problem" % (request.user))
-        raise Http404("you can't add new problem")
+        raise PermissionDenied()
     if request.method == 'GET':
         form = ProblemForm()
     if request.method == 'POST':
@@ -120,8 +119,8 @@ def new(request):
             problem.description = request.POST['description']
             problem.input= request.POST['input_description']
             problem.output = request.POST['output_description']
-            problem.sample_in = request.POST['sample_input']
-            problem.sample_out = request.POST['sample_output']
+            problem.sample_in = request.POST['sample_in']
+            problem.sample_out = request.POST['sample_out']
             problem.save()
             logger.info('post new problem, pid = %d' % (problem.pk))
             return redirect('/problem/%d' % (problem.pk))

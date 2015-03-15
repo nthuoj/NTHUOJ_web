@@ -22,7 +22,13 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 -->
 {% extends "problem/base.html" %} 
-{% block body_block %} {% load staticfiles %}
+{% load staticfiles %}
+{% block import_source %}
+  {{block.super}}
+  <link rel="stylesheet" href="{% static 'problem/css/edit.css' %}">
+{% endblock %}
+{% block body_block %} 
+<script src="http://cdn.ckeditor.com/4.4.6/standard/ckeditor.js"></script>
 <script src="http://cdn.ckeditor.com/4.4.7/full/ckeditor.js"></script>
 <script src="{% static 'problem/js/edit.js' %}"></script>
 <div class="container" id="Body">
@@ -36,7 +42,7 @@ SOFTWARE.
         <a href="#description" role="tab" data-toggle="tab">Description</a>
       </li>
       <li>
-        <a href="#sampio" role="tab" data-toggle="tab">Sample IO</a>
+        <a href="#sample_io" role="tab" data-toggle="tab">Sample IO</a>
       </li>
       <li>
         <a href="#tag" role="tab" data-toggle="tab">Tag</a>
@@ -47,9 +53,6 @@ SOFTWARE.
     </ul>
 
     <style>
-    .tab-pane {
-      padding-top: 10px;
-    }
     </style>
     <div class="tab-content">
       <form method="POST" action="" enctype="multipart/form-data">
@@ -79,15 +82,15 @@ SOFTWARE.
           CKEDITOR.replace("outText")
           </script>
         </div>
-        <div class="tab-pane" id="sampio">
+        <div class="tab-pane" id="sample_io">
           <div class="panel panel-default" style="float:left;width:47%">
             <div class="panel-heading">Sample Input</div>
-            <textarea name="sample_input" class="panel-body" 
+            <textarea name="sample_in" class="panel-body" 
               style="width:100%" rows="20">{{sample_in}}</textarea>
           </div>
           <div class="panel panel-default" style="float:right;width:47%">
             <div class="panel-heading">Sample Output</div>
-            <textarea name="sample_output" class="panel-body" 
+            <textarea name="sample_out" class="panel-body" 
               style="width:100%" rows="20">{{sample_out}}</textarea>
           </div>
         </div>
