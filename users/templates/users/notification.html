@@ -37,15 +37,13 @@ SOFTWARE.
   <div role="tabpanel">
     <!-- Nav tabs -->
     <ul class="nav nav-tabs" role="tablist" id="nav_tab">
-      <li role="presentation" class="active">
-        <a href="#unread" aria-controls="unread" role="tab" data-toggle="tab">
-          Unread notifications
-        </a>
+      <li role="presentation" class="active" data-toggle="tab">
+        <a href="#unread" aria-controls="unread" role="tab"
+           data-toggle="tab">Unread notifications</a>
       </li>
-      <li role="presentation">
-        <a href="#all" aria-controls="all" role="tab" data-toggle="tab">
-          All notifications
-        </a>
+      <li role="presentation" data-toggle="tab">
+        <a href="#all" aria-controls="all" role="tab"
+           data-toggle="tab">All notifications</a>
       </li>
     </ul>
 
@@ -61,20 +59,20 @@ SOFTWARE.
           </thead>
           <tbody>
             <form name="urform" method="post">
-              {% for ur_notification in ur_notifications %}
+              {% for unread_notification in unread_notifications %}
               <tr>
                 <td href="#Notification-popup" class="open-popup-link"
-                    onclick="write_content('{{ ur_notification.id }}');">
-                  <p id="{{ ur_notification.id }}_content"
-                     class="ellipsis">{{ ur_notification.message}}</p>
+                    onclick="write_content('{{ unread_notification.id }}');">
+                  <p id="{{ unread_notification.id }}_content"
+                     class="ellipsis">{{ unread_notification.message}}</p>
                 </td>
                 <td style="text-align: right;">
                   <input type="checkbox" style="margin-left:0px;"
-                         name="del" value={{ ur_notification.id }}>
+                         name="del" value={{ unread_notification.id }}>
                 </td>
               </tr>
               {% endfor %}
-              {% if ur_notifications.count < 2 %}
+              {% if unread_notifications.count < 2 %}
               <tr style="display:none;">
               {% else %}
               <tr>
@@ -88,7 +86,7 @@ SOFTWARE.
                 </td>
 
               </tr>
-              {% if ur_notifications.count < 1 %}
+              {% if unread_notifications.count < 1 %}
               <tr style="display:none;">
               {% else %}
               <tr>

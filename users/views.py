@@ -251,7 +251,7 @@ def register_confirm(request, activation_key):
 @login_required()
 def notification(request):
 
-    ur_notifications = Notification.objects.filter \
+    unread_notifications = Notification.objects.filter \
         (reciver=request.user, read=False).order_by('-id')
 
     all_notifications = Notification.objects.filter \
@@ -260,7 +260,7 @@ def notification(request):
     return render(
         request, 'users/notification.html',
         {'all_notifications':all_notifications,
-         'ur_notifications':ur_notifications},
+         'unread_notifications':unread_notifications},
         context_instance=RequestContext(request, processors=[custom_proc]))
 
 @login_required()
