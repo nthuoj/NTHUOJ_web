@@ -235,8 +235,9 @@ def readify(request, read_id):
     try:
         Notification.objects.filter \
             (id=long(read_id), receiver=request.user).update(read=True)
+        logger.info('Notification id %ld updates successfully!' % long(read_id))
     except Notification.DoesNotExist:
-        logger.warning('Notification id %ld does not exsit!' % read_id)
+        logger.warning('Notification id %ld does not exsit!' % long(read_id))
     return HttpResponseRedirect(reverse('users:notification'))
 
 @login_required()
@@ -247,7 +248,8 @@ def delete_notification(request, delete_ids):
             try:
                 Notification.objects.filter \
                     (id=long(delete_id), receiver=request.user).delete()
+                logger.info('Notification id %ld deletes successfully!' % long(delete_id))
             except Notification.DoesNotExist:
-                logger.warning('Notification id %ld does not exsit!' % delete_id)
+                logger.warning('Notification id %ld does not exsit!' % long(delete_id))
 
     return HttpResponseRedirect(reverse('users:notification'))

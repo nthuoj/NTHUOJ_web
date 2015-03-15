@@ -29,8 +29,7 @@ SOFTWARE.
 {% endblock import_source %}
 
 {% block body_block %}
-<div class="container"
-       style="margin-top:50px;margin-bottom:50px;min-height:500px;">
+<div class="container notification-container">
   <h2>User Notification</h2>
   <div style="padding-top:25px;"></div>
 
@@ -111,16 +110,16 @@ SOFTWARE.
           </thead>
           <tbody>
             <form name="allform" method="post">
-              {% for all_notification in all_notifications %}
+              {% for notification in all_notifications %}
               <tr>
                 <td href="#Notification-popup" class="open-popup-link"
-                    onclick="write_content('{{ all_notification.id }}');">
-                  <p id="{{ all_notification.id }}_content"
-                     class="ellipsis">{{ all_notification.message}}</p>
+                    onclick="write_content('{{ notification.id }}');">
+                  <p id="{{ notification.id }}_content"
+                     class="ellipsis">{{ notification.message}}</p>
                 </td>
                 <td style="text-align: right;">
                   <input type="checkbox" style="margin-left:0px;"
-                         name="del" value={{ all_notification.id }}>
+                         name="del" value={{ notification.id }}>
                 </td>
               </tr>
               {% endfor %}
