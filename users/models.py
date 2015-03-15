@@ -46,6 +46,7 @@ class UserManager(BaseUserManager):
         """
         user = self.create_user(username=username, password=password)
         user.is_admin = True
+        user.is_active = True
         user.save(using=self._db)
         return user
 
@@ -123,18 +124,20 @@ class User(AbstractBaseUser):
     def is_staff(self):
         return self.is_admin
 
+
 class Notification(models.Model):
-    reciver = models.ForeignKey(User)
+    receiver = models.ForeignKey(User)
     message = models.TextField(null=True)
     read = models.BooleanField(default=False)
 
     def __unicode__(self):
         return str(self.id)
 
+
 class UserProfile(models.Model):
     user = models.OneToOneField(User)
-    activation_key = models.CharField(max_length=40, blank=True)    
-      
+    activation_key = models.CharField(max_length=40, blank=True)
+
     def __unicode__(self):
         return self.user.username
 
