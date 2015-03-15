@@ -56,17 +56,14 @@ class UserCreationForm(forms.ModelForm):
             raise forms.ValidationError("Passwords don't match")
         return password2
 
-    '''modify save() method so that we can set user.is_active
-    to False when we first create our user
-    '''
     def save(self, commit=True):
         user = super(UserCreationForm, self).save(commit=False)
         user.set_password(self.cleaned_data["password1"])
         user.email = self.cleaned_data["email"]
         if commit:
-            user.is_active = False # not active until he opens activation link
             user.save()
         return user
+
 
 class AuthenticationForm(AuthenticationForm):
     """Extend default AuthenticationForm with prettified bootstrap attribute"""
@@ -75,6 +72,7 @@ class AuthenticationForm(AuthenticationForm):
     def __init__(self, *args, **kwargs):
         super(AuthenticationForm, self).__init__(*args, **kwargs)
         self.error_messages['inactive'] = 'This account is inactive. Check your email to activate the account!'
+
 
 class UserChangeForm(forms.ModelForm):
     """A form for updating users. Includes all the fields on
