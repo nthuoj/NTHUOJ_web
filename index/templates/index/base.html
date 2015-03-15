@@ -67,8 +67,8 @@ SOFTWARE.
               </a>
             </div>
           </div>
-        </div>
-      </form>
+        </form>
+      </div>
     </div>
 
     <!-- forget_password popup -->
@@ -167,8 +167,24 @@ SOFTWARE.
         <ul class="nav navbar-nav navbar-right">
           {% if user.is_authenticated %}
           <li>
-          <img src={% static "./images/14.png "%} height="50" width="50"
-          onclick="info();" class="ring">
+            <a href={% url "users:notification" %} id="notification">
+              {% if amount > 0 %}
+              <img src={% static "./images/bell_blue.png "%} id="notification_img"
+                   title="You have {{ amount }} unread notifications."/>
+              <div id="notification_circle">
+                <b id="number">
+                  {% if amount < 100 %}
+                    {{ amount }}
+                  {% else %}
+                    99+
+                  {% endif %}
+                </b>
+              </div>
+              {% else %}
+              <img src={% static "./images/bell_gray.png "%} id="notification_img"
+                   title="You have no unread notifications."/>
+              {% endif %}
+            </a>
           </li>
           {% endif %}
           {% if user.is_authenticated %}
@@ -183,11 +199,6 @@ SOFTWARE.
 
     <!-- wrap all page elements to div -->
     <div class="wrap-body container-fluid">
-      <!--information-->
-      <div class="information" id="information" style="display:none";>
-        <li class="divider">{{ info1 }}</li>
-        <li class="divider">{{ info2 }}</li>
-      </div>
       {% block body_block %}
       {% endblock body_block %}
     </div>

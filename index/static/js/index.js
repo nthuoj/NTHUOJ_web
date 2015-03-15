@@ -21,30 +21,16 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
-var displayInfo = false;
-var loginInfo = false;
 
 function index_alert(){
     var alert_info = document.getElementById("alert_info").value;
 
     if(alert_info == 'mailbox'){
-        message = 'Please go to your mailbox and click the confirmation ' + 
+        message = 'Please go to your mailbox and click the confirmation ' +
         'link;otherwise , your account would not be activated!';
         alert(message);
     }
 }
-
-function info() {
-    if(displayInfo == false){
-        document.getElementById("information").style.display = "block";
-        displayInfo = !displayInfo;
-    }
-    else{
-        document.getElementById("information").style.display = "none";
-        displayInfo = !displayInfo;
-    }
-}
-
 $(function() {
     var one_minute = 60*1000;
     setInterval(function() {

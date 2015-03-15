@@ -34,7 +34,7 @@ from index.views import custom_proc
 from users.admin import UserCreationForm, AuthenticationForm
 from users.forms import CodeSubmitForm
 from users.forms import UserProfileForm, UserLevelForm
-from users.models import User, UserProfile
+from users.models import User, UserProfile, Notification
 from users.templatetags.profile_filters import can_change_userlevel
 from utils.log_info import get_logger, get_client_ip
 from utils.user_info import get_user_statistics, send_activation_email
@@ -194,7 +194,6 @@ def submit(request, pid=None):
 
 
 def register_confirm(request, activation_key):
-
     '''check if user is already logged in and if he
     is redirect him to some other url, e.g. home
     '''
@@ -215,3 +214,40 @@ def register_confirm(request, activation_key):
         'users/confirm.html',
         {'username':user.username},
         context_instance=RequestContext(request, processors=[custom_proc]))
+
+@login_required()
+def notification(request):
+
+    unread_notifications = Notification.objects.filter \
+        (receiver=request.user, read=False).order_by('-id')
+
+    all_notifications = Notification.objects.filter \
+        (receiver=request.user).order_by('-id')
+
+    return render(
+        request, 'users/notification.html',
+        {'all_notifications':all_notifications,
+         'unread_notifications':unread_notifications},
+        context_instance=RequestContext(request, processors=[custom_proc]))
+
+@login_required()
+def readify(request, read_id):
+    try:
+        Notification.objects.filter \
+            (id=long(read_id), receiver=request.user).update(read=True)
+    except Notification.DoesNotExist:
+        logger.warning('Notification id %ld does not exsit!' % read_id)
+    return HttpResponseRedirect(reverse('users:notification'))
+
+@login_required()
+def delete_notification(request, delete_ids):
+    id_list = delete_ids.split(',')
+    if delete_ids != '':
+        for delete_id in id_list:
+            try:
+                Notification.objects.filter \
+                    (id=long(delete_id), receiver=request.user).delete()
+            except Notification.DoesNotExist:
+                logger.warning('Notification id %ld does not exsit!' % delete_id)
+
+    return HttpResponseRedirect(reverse('users:notification'))
