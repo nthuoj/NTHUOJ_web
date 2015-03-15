@@ -27,7 +27,7 @@ function index_alert(){
     var alert_info = document.getElementById("alert_info").value;
 
     if(alert_info == 'mailbox'){
-        message = 'Please go to your mailbox and click the confirmation ' + 
+        message = 'Please go to your mailbox and click the confirmation ' +
         'link;otherwise , your account would not be activated!';
         alert(message);
     }

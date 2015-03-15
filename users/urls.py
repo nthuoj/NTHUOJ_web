@@ -26,10 +26,10 @@ from axes.decorators import watch_login
 
 import views
 
-urlpatterns = patterns('',    
-    
+urlpatterns = patterns('',
+
     url(r'^list/$', views.list, name='list'),
-    url(r'^all_del/(?P<dellist>.*)$', views.all_del),
+    url(r'^readify/(?P<read_id>.*)$', views.readify),
     url(r'^submit/$', views.submit, name='submit'),
     url(r'^create/$', views.user_create, name='create'),
     url(r'^logout/$', views.user_logout, name='logout'),
@@ -37,7 +37,7 @@ urlpatterns = patterns('',
     url(r'^submit/(?P<pid>\d+)$', views.submit, name='submit'),
     url(r'^notification/$', views.notification, name='notification'),
     url(r'^profile/(?P<username>\w+)$', views.profile, name='profile'),
-    url(r'^u_read_del/(?P<readlist>.*)/(?P<dellist>.*)$', views.u_read_del),
+    url(r'^delete_notification/(?P<delete_ids>.*)$', views.delete_notification),
     url(r'^confirm/(?P<activation_key>\w+)/', views.register_confirm, name='confirm'),
 
 )
