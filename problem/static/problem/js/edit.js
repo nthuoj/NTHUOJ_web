@@ -30,7 +30,7 @@ function switchTab(t) {
     $($(t).attr("href")).show();
 }
 
-$(document).ready(function() {
+//$(document).ready(function() {
     $(".tab-pane").hide();
     $("#info").show();
     hide_field();
@@ -61,7 +61,7 @@ $(document).ready(function() {
         });
     });
     refreshTestcaseEvent();
-});
+//});
 
 
 function add_new_tag(pid) {
@@ -112,7 +112,7 @@ function add_new_testcase(pid, data) {
           }
       });
 }
-:
+
 $("#preview_button").click(function() {
   MyWindow = window.open('{% url "problem:problem.views.preview" %}',
     "MyWindow",

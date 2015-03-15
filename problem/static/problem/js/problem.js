@@ -1,4 +1,4 @@
-$(document).ready(function() {
+//$(document).ready(function() {
     $("#addTagButton").click(function() {
         var new_tag = $('#newTag').val().trim();
         if (new_tag == '') return false;
@@ -14,5 +14,5 @@ $(document).ready(function() {
         $("#newTag").val("");
         return false;
     });
-});
+//});
 
