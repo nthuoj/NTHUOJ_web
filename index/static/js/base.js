@@ -22,14 +22,10 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 $(function() {
-    index_alert();
+    var one_minute = 60*1000;
+    setInterval(function() {
+        $.get('/get_time/', function(data) {
+            $('#time').html(data);
+        });
+    }, one_minute);
 })
-function index_alert(){
-    var alert_info = document.getElementById("alert_info").value;
-
-    if(alert_info == 'mailbox'){
-        message = 'Please go to your mailbox and click the confirmation ' +
-        'link;otherwise , your account would not be activated!';
-        alert(message);
-    }
-}
