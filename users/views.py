@@ -219,10 +219,10 @@ def register_confirm(request, activation_key):
 def notification(request):
 
     unread_notifications = Notification.objects.filter \
-        (reciver=request.user, read=False).order_by('-id')
+        (receiver=request.user, read=False).order_by('-id')
 
     all_notifications = Notification.objects.filter \
-        (reciver=request.user).order_by('-id')
+        (receiver=request.user).order_by('-id')
 
     return render(
         request, 'users/notification.html',
@@ -234,7 +234,7 @@ def notification(request):
 def readify(request, read_id):
     try:
         Notification.objects.filter \
-            (id=long(read_id), reciver=request.user).update(read=True)
+            (id=long(read_id), receiver=request.user).update(read=True)
     except Notification.DoesNotExist:
         logger.warning('Notification id %ld does not exsit!' % read_id)
     return HttpResponseRedirect(reverse('users:notification'))
@@ -246,7 +246,7 @@ def delete_notification(request, delete_ids):
         for delete_id in id_list:
             try:
                 Notification.objects.filter \
-                    (id=long(delete_id), reciver=request.user).delete()
+                    (id=long(delete_id), receiver=request.user).delete()
             except Notification.DoesNotExist:
                 logger.warning('Notification id %ld does not exsit!' % delete_id)
 
