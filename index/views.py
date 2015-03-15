@@ -40,7 +40,7 @@ def index(request, alert_info='none'):
     present = timezone.now()
     c_runnings = Contest.objects.filter(start_time__lt=present, end_time__gt=present)
     c_upcomings = Contest.objects.filter(start_time__gt=present)
-    return render(request, 'index/index.html', 
+    return render(request, 'index/index.html',
                 {'c_runnings':c_runnings, 'c_upcomings':c_upcomings,
                 'alert_info':alert_info},
                 context_instance=RequestContext(request, processors=[custom_proc]))
@@ -61,9 +61,9 @@ def get_time(request):
     return HttpResponse(tstr)
 
 def custom_proc(request):
-    
+
     amount = Notification.objects.filter \
-        (reciver=request.user, read=False).count()    
+        (receiver=request.user, read=False).count()
 
     t = time.time()
     tstr = datetime.datetime.fromtimestamp(t).strftime('%Y/%m/%d %H:%M:%S')

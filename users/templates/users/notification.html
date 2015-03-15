@@ -92,7 +92,7 @@ SOFTWARE.
               <tr>
               {% endif %}
                 <td colspan=2 style="text-align: right;">
-                  <input type="button" value="submit"
+                  <input type="button" value="delete" class="btn btn-default"
                          onclick="delete_notification(document.urform.del);"
                          style="margin-left:0px;margin-top: 30px;" >
                 </td>
@@ -142,7 +142,7 @@ SOFTWARE.
               <tr>
               {% endif %}
                 <td colspan=2 style="text-align: right;">
-                  <input type="button" value="submit"
+                  <input type="button" value="delete" class="btn btn-default"
                          onclick="delete_notification(document.allform.del);"
                          style="margin-left:0px;margin-top: 30px;" >
                 </td>
@@ -159,7 +159,8 @@ SOFTWARE.
       <div class="jumbotron popdiv"  id="Notification-popup">
         <h2><p class="poptitle"><b>Notification</b></p></h2>
         <div class="form-group">
-          <textarea class="form-control input-sm" type="text" id="area">
+          <textarea class="form-control input-sm" type="text"
+                    id="area" readonly="true">
           </textarea>
         </div>
       </div>
