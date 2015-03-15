@@ -28,9 +28,6 @@ SOFTWARE.
   <link rel="stylesheet" href="{% static 'problem/css/edit.css' %}">
 {% endblock %}
 {% block body_block %} 
-<script src="http://cdn.ckeditor.com/4.4.6/standard/ckeditor.js"></script>
-<script src="http://cdn.ckeditor.com/4.4.7/full/ckeditor.js"></script>
-<script src="{% static 'problem/js/edit.js' %}"></script>
 <div class="container" id="Body">
   <input type="hidden" name="owner" value="{{ user.pk }}">
   <div style="width:80%; float:left;">
@@ -52,8 +49,6 @@ SOFTWARE.
       </li>
     </ul>
 
-    <style>
-    </style>
     <div class="tab-content">
       <form method="POST" action="" enctype="multipart/form-data">
         <div>
@@ -76,11 +71,6 @@ SOFTWARE.
           <br><strong>Output</strong>
           <textarea cols="80" rows="20" id="outText" name="output_description">{{output}}</textarea>
 
-          <script>
-          CKEDITOR.replace("des")
-          CKEDITOR.replace("inText")
-          CKEDITOR.replace("outText")
-          </script>
         </div>
         <div class="tab-pane" id="sample_io">
           <div class="panel panel-default" style="float:left;width:47%">
@@ -104,15 +94,7 @@ SOFTWARE.
     </div>
   </div>
 </div>
+<script src="http://cdn.ckeditor.com/4.4.7/full/ckeditor.js"></script>
+<script src="{% static 'problem/js/edit.js' %}"></script>
 </body>
-<script>
-$("#preview_button").click(function() {
-  MyWindow = window.open('{% url "problem:problem.views.preview" %}',
-    "MyWindow",
-    "toolbar=no,location=no,directories=no,status=no,menubar=no, \
-    scrollbars=yes,resizable=yes,width=600,height=30"
-  );
-  return false;
-});
-</script>
 {% endblock %}

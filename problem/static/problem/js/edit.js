@@ -33,10 +33,34 @@ function switchTab(t) {
 $(document).ready(function() {
     $(".tab-pane").hide();
     $("#info").show();
+    hide_field();
     $("a[role='tab']").click(function(e) {
         e.preventDefault()
         switchTab(this);
     });
+    CKEDITOR.replace("des");
+    CKEDITOR.replace("inText");
+    CKEDITOR.replace("outText");
+
+    $("#add_testcase").submit(function (e) {
+        e.preventDefault();
+        add_new_testcase(pid, new FormData(this));
+        //refreshTestcaseEvent();
+    });
+    $("#update_testcase").submit(function (e) {
+        e.preventDefault();
+        $.ajax({
+          type: "POST",
+          url: "/problem/pid/testcase/"+update_tid+"/",
+          data: new FormData(this),  
+          processData: false,
+          contentType: false,
+          success: function(data) {
+            alert("testcase updated");
+          }
+        });
+    });
+    refreshTestcaseEvent();
 });
 
 
@@ -87,4 +111,63 @@ function add_new_testcase(pid, data) {
               $("#testcase_table tr:last-child").before(new_row);
           }
       });
+}
+:
+$("#preview_button").click(function() {
+  MyWindow = window.open('{% url "problem:problem.views.preview" %}',
+    "MyWindow",
+    "toolbar=no,location=no,directories=no,status=no,menubar=no, \
+    scrollbars=yes,resizable=yes,width=600,height=30"
+  );
+  return false;
+});
+
+function hide_field() {
+  $("#id_error_torrence").parent().hide();
+  $("#id_other_judge_id").parent().hide();
+  $("#id_partial_judge_code").parent().hide();
+  $("#id_special_judge_code").parent().hide();
+}
+$("select").on("change", function(e) {
+    hide_field();
+    if (this.value == "ERR_TORRENT")
+        $("#id_error_torrence").parent().show();
+    else if (this.value == "OTHER")
+        $("#id_other_judge_id").parent().show();
+    else if (this.value == "PARTIAL")
+        $("#id_partial_judge_code").parent().show();
+    else if (this.value == "SPECIAL")
+        $("#id_special_judge_code").parent().show();
+});
+
+function refreshTestcaseEvent() {
+    $("body").on("click", ".reupload_btn", function(e) {
+        update_tid = $(this).parents("tr").attr('data-target');
+    });
+    $("body").on("click", ".update_btn", function(e) {
+        var tid = $(this).parents("tr").attr('data-target');
+        var time = $("#"+tid+"_time").serialize();
+        var memory = $("#"+tid+"_memory").serialize();
+        $.ajax({
+            type: "POST",
+            url: "/problem/"+pid+"/testcase/"+tid+"/",
+            data: time+"&"+memory+"&"+csrf,
+            success: function(data) {
+              alert('testcase updated')
+            }
+        });
+        return false;
+    });
+    $("body").on('click', '.del_testcase_btn', function(e) {
+        var row = $(this).parents("tr");
+        var tid = $(this).parents("tr").attr('data-target');
+        $.ajax({
+            type: 'GET',
+            url: '/problem/'+pid+'/testcase/'+tid+'/delete/',
+            success: function(data) {
+              row.hide();
+            }
+        });
+        return false;
+    });
 }

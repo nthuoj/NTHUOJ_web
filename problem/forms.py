@@ -40,6 +40,7 @@ autocomplete_light.register(UserAutocomplete)
 
 class ProblemForm(forms.ModelForm):
     partial_judge_code = forms.FileField(required=False)
+    special_judge_code = forms.FileField(required=False)
     class Meta:
         model = Problem
         fields = [
@@ -50,6 +51,7 @@ class ProblemForm(forms.ModelForm):
             'error_torrence',
             'other_judge_id',
             'partial_judge_code',
+            'special_judge_code',
         ]
         labels = {
             'pname': 'Problem Name'

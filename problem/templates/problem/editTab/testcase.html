@@ -67,59 +67,8 @@
 
 <script>
 var update_tid = 0;
-$(document).ready(function() {
-    $("#add_testcase").submit(function (e) {
-        e.preventDefault();
-        add_new_testcase({{pid}}, new FormData(this));
-        //refreshTestcaseEvent();
-    });
-    $("#update_testcase").submit(function (e) {
-        e.preventDefault();
-        $.ajax({
-          type: "POST",
-          url: "/problem/{{pid}}/testcase/"+update_tid+"/",
-          data: new FormData(this),  
-          processData: false,
-          contentType: false,
-          success: function(data) {
-            alert("testcase updated");
-          }
-        });
-    });
-    refreshTestcaseEvent();
-});
-function refreshTestcaseEvent() {
-    $("body").on('click', '.reupload_btn', function(e) {
-        update_tid = $(this).parents("tr").attr('data-target');
-    });
-    $("body").on('click', '.update_btn', function(e) {
-        var tid = $(this).parents("tr").attr('data-target');
-        var time = $("#"+tid+"_time").serialize();
-        var memory = $("#"+tid+"_memory").serialize();
-        var csrf = $("{% csrf_token %}").serialize();
-        $.ajax({
-            type: 'POST',
-            url: '/problem/'+{{pid}}+'/testcase/'+tid+'/',
-            data: time+"&"+memory+"&"+csrf,
-            success: function(data) {
-              alert('testcase updated')
-            }
-        });
-        return false;
-    });
-    $("body").on('click', '.del_testcase_btn', function(e) {
-        var row = $(this).parents("tr");
-        var tid = $(this).parents("tr").attr('data-target');
-        $.ajax({
-            type: 'GET',
-            url: '/problem/'+{{pid}}+'/testcase/'+tid+'/delete/',
-            success: function(data) {
-              row.hide();
-            }
-        });
-        return false;
-    });
-}
+var pid = {{pid}};
+var csrf = $("{% csrf_token %}").serialize();
 </script>
 {% else %}
 <strong>Save your problem before uploading testcases</strong>
