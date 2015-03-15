@@ -53,3 +53,6 @@ SOFTWARE.
   white-space: nowrap;
   text-overflow: ellipsis;
 }
+#current-tab{
+  display: none;
+}

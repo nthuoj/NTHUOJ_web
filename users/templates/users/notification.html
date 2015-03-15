@@ -29,6 +29,7 @@ SOFTWARE.
 {% endblock import_source %}
 
 {% block body_block %}
+<input type="text" id="current-tab" value="{{current_tab}}" />
 <div class="container notification-container">
   <h2>User Notification</h2>
   <div style="padding-top:25px;"></div>
@@ -61,7 +62,7 @@ SOFTWARE.
               {% for unread_notification in unread_notifications %}
               <tr>
                 <td href="#Notification-popup" class="open-popup-link"
-                    onclick="write_content('{{ unread_notification.id }}');">
+                    onclick="write_content('{{ unread_notification.id }}','{{ unread_notification.read }}');">
                   <p id="{{ unread_notification.id }}_content"
                      class="ellipsis">{{ unread_notification.message}}</p>
                 </td>
@@ -113,7 +114,7 @@ SOFTWARE.
               {% for notification in all_notifications %}
               <tr>
                 <td href="#Notification-popup" class="open-popup-link"
-                    onclick="write_content('{{ notification.id }}');">
+                    onclick="write_content('{{ notification.id }}','{{ notification.read }}');">
                   <p id="{{ notification.id }}_content"
                      class="ellipsis">{{ notification.message}}</p>
                 </td>

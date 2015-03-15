@@ -216,7 +216,7 @@ def register_confirm(request, activation_key):
         context_instance=RequestContext(request, processors=[custom_proc]))
 
 @login_required()
-def notification(request):
+def notification(request, current_tab='none'):
 
     unread_notifications = Notification.objects.filter \
         (receiver=request.user, read=False).order_by('-id')
@@ -227,21 +227,22 @@ def notification(request):
     return render(
         request, 'users/notification.html',
         {'all_notifications':all_notifications,
-         'unread_notifications':unread_notifications},
+         'unread_notifications':unread_notifications,
+         'current_tab':current_tab},
         context_instance=RequestContext(request, processors=[custom_proc]))
 
 @login_required()
-def readify(request, read_id):
+def readify(request, read_id, current_tab):
     try:
         Notification.objects.filter \
             (id=long(read_id), receiver=request.user).update(read=True)
         logger.info('Notification id %ld updates successfully!' % long(read_id))
     except Notification.DoesNotExist:
         logger.warning('Notification id %ld does not exsit!' % long(read_id))
-    return HttpResponseRedirect(reverse('users:notification'))
+    return HttpResponseRedirect(reverse('users:tab', kwargs={'current_tab':current_tab}))
 
 @login_required()
-def delete_notification(request, delete_ids):
+def delete_notification(request, delete_ids, current_tab):
     id_list = delete_ids.split(',')
     if delete_ids != '':
         for delete_id in id_list:
@@ -252,4 +253,4 @@ def delete_notification(request, delete_ids):
             except Notification.DoesNotExist:
                 logger.warning('Notification id %ld does not exsit!' % long(delete_id))
 
-    return HttpResponseRedirect(reverse('users:notification'))
+    return HttpResponseRedirect(reverse('users:tab', kwargs={'current_tab':current_tab}))

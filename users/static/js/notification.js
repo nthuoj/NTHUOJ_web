@@ -22,20 +22,40 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 var read_id;
-function write_content(id){
+var active_tab;
+var notification_type;
+function write_content(id, type){
     read_id = id;
     element = id + '_content';
+
+    if(type == 'True')
+        notification_type = 'read';
+    else
+        notification_type = 'unread';
     var message = document.getElementById(element).textContent;
     document.getElementById("area").textContent = message;
 }
 function readify(){
     window.location.href = "http://" + window.location.host +
-    "/users/readify/" + read_id;
+    "/users/readify/" + read_id + '/' + active_tab;
 }
+$(function(){
+    active_tab = document.getElementById("current-tab").value;
+    if(active_tab == 'all')
+        $('#nav_tab a[href="#all"]').tab('show');
+    $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+        active_tab = $(e.target).text();
+        if(active_tab == 'All notifications')
+            active_tab = 'all';
+        else
+            active_tab = 'unread';
+    });
+});
 $.magnificPopup.instance.close = function() {
     $(document).trigger('mfp-global-close');
     $.magnificPopup.proto.close.call();
-    readify();
+    if(notification_type == 'unread')
+        readify();
 };
 function delete_notification(delete_checkbox) {
     var delete_ids = "";
@@ -52,7 +72,7 @@ function delete_notification(delete_checkbox) {
     }
     delete_ids = delete_ids.slice(0,-1);
     window.location.href = "http://" + window.location.host +
-    "/users/delete_notification/" + delete_ids;
+    "/users/delete_notification/" + delete_ids + '/' +active_tab;
 }
 
 function check_all(obj, names) {
