@@ -68,52 +68,34 @@ def detail(request, pid):
     return render(request, 'problem/detail.html',
                   {'problem': problem, 'tags': tag, 'testcase': testcase})
 
-def edit(request, pid):
+def edit(request, pid=None):
     if request.user.is_anonymous():
         logger.warning("user un-login")
         raise PermissionDenied()
-    try:
-        problem = Problem.objects.get(pk=pid)
-        if not request.user.is_admin and request.user != problem.owner:
-            logger.warning("user %s has no permission to edit problem %s" % (request.user, pid))
-            raise PermissionDenied()
-    except Problem.DoesNotExist:
-        logger.warning("problem %s does not exist" % (pid))
-        raise Http404("problem %s does not exist" % (pid))
-    testcase = Testcase.objects.filter(problem=problem)
-    tags = problem.tags.all()
+    if pid is not None:
+        is_new = False
+        try:
+            problem = Problem.objects.get(pk=pid)
+            if not request.user.is_admin and request.user != problem.owner:
+                logger.warning("user %s has no permission to edit problem %s" % (request.user, pid))
+                raise PermissionDenied()
+        except Problem.DoesNotExist:
+            logger.warning("problem %s does not exist" % (pid))
+            raise Http404("problem %s does not exist" % (pid))
+        testcase = Testcase.objects.filter(problem=problem)
+        tags = problem.tags.all()
+    else:
+        is_new = True
     if request.method == 'GET':
-        form = ProblemForm(instance=problem)
+        if is_new:
+            form = ProblemForm()
+        else:
+            form = ProblemForm(instance=problem)
     if request.method == 'POST':
-        form = ProblemForm(request.POST, instance=problem)
-        if form.is_valid():
-            problem = form.save()
-            problem.description = request.POST['description']
-            problem.input= request.POST['input_description']
-            problem.output = request.POST['output_description']
-            problem.sample_in = request.POST['sample_input']
-            problem.sample_out = request.POST['sample_output']
-            problem.save()
-            logger.info('edit problem, pid = %d' % (problem.pk))
-            return redirect('/problem/%d' % (problem.pk))
-    if not request.user.is_admin:
-        del form.fields['owner']
-    return render(request, 'problem/edit.html', 
-                  {'form': form, 'pid': pid, 'is_new': False,
-                   'tags': tags, 'description': problem.description,
-                   'input': problem.input, 'output': problem.output,
-                   'sample_in': problem.sample_in, 'sample_out': problem.sample_out,
-                   'testcase': testcase })
-
-def new(request):
-    if request.user.is_anonymous():
-        raise PermissionDenied()
-    if not request.user.has_subjudge_auth():
-        raise PermissionDenied()
-    if request.method == 'GET':
-        form = ProblemForm()
-    if request.method == 'POST':
-        form = ProblemForm(request.POST)
+        if is_new:
+            form = ProblemForm(request.POST)
+        else:
+            form = ProblemForm(request.POST, instance=problem)
         if form.is_valid():
             problem = form.save()
             problem.description = request.POST['description']
@@ -122,12 +104,20 @@ def new(request):
             problem.sample_in = request.POST['sample_in']
             problem.sample_out = request.POST['sample_out']
             problem.save()
-            logger.info('post new problem, pid = %d' % (problem.pk))
+            logger.info('edit problem, pid = %d' % (problem.pk))
             return redirect('/problem/%d' % (problem.pk))
     if not request.user.is_admin:
         del form.fields['owner']
-    return render(request, 'problem/edit.html', 
+    if is_new:
+        return render(request, 'problem/edit.html', 
                     { 'form': form, 'owner': request.user, 'is_new': True })
+    else:
+        return render(request, 'problem/edit.html', 
+                  {'form': form, 'pid': pid, 'is_new': False,
+                   'tags': tags, 'description': problem.description,
+                   'input': problem.input, 'output': problem.output,
+                   'sample_in': problem.sample_in, 'sample_out': problem.sample_out,
+                   'testcase': testcase })
 
 def tag(request, pid):
     if request.method == "POST":

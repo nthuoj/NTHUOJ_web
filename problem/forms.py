@@ -36,6 +36,7 @@ class UserAutocomplete(autocomplete_light.AutocompleteModelBase):
         'placeholder': '',
         'data-autocomplete-minimum-characters': 1
     }
+autocomplete_light.register(UserAutocomplete)
 
 class ProblemForm(forms.ModelForm):
     partial_judge_code = forms.FileField(required=False)
