@@ -18,6 +18,7 @@
     SOFTWARE.
     '''
 from datetime import datetime
+from django.shortcuts import redirect
 from django.core.exceptions import PermissionDenied
 from django.shortcuts import redirect
 from django.http import Http404
@@ -38,6 +39,8 @@ from contest.forms import ContestForm
 from contest.forms import ClarificationForm
 
 from contest.contest_info import can_ask
+
+from contest.contest_info import get_scoreboard
 
 from utils.log_info import get_logger
 from utils import user_info
@@ -64,12 +67,14 @@ def contest(request,contest_id):
     if ((contest.start_time > now) and not user_info.has_contest_ownership(request.user,contest)):
         raise PermissionDenied
     else:
+        scoreboard = get_scoreboard(contest)
         user = request.user
         clarifications = get_clarifications(contest,user)
         initial_form = {'contest':contest,'asker':user}
         form = ClarificationForm(initial=initial_form)
         return render(request, 'contest/contest.html',{'contest':contest,
-            'clarifications':clarifications,'form':form,'user':user},
+            'clarifications':clarifications,'form':form,'user':user,
+            'scoreboard':scoreboard},
             context_instance = RequestContext(request, processors = [custom_proc]))
 
 def new(request):

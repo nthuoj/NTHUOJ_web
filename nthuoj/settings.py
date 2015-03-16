@@ -14,8 +14,7 @@ from emailInfo import EMAIL_HOST_USER
 from emailInfo import EMAIL_HOST_PASSWORD
 
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
-
-
+PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."),)
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.7/howto/deployment/checklist/
 
@@ -48,6 +47,7 @@ INSTALLED_APPS = (
     'group',
     'status',
     'axes',
+    'djangobower',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -102,7 +102,7 @@ USE_TZ = False
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.7/howto/static-files/
-
+STATIC_ROOT = os.path.join(PROJECT_ROOT, 'static')
 STATIC_URL = '/static/'
 
 # django-axes 1.3.8 configurations
@@ -116,3 +116,22 @@ AXES_COOLOFF_TIME = 0.1
 EMAIL_USE_TLS = True
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
+
+# django-bower settings
+BOWER_COMPONENTS_ROOT = os.path.join(PROJECT_ROOT, 'components')
+
+BOWER_INSTALLED_APPS = (
+    'Chart.js',
+    'jquery',
+    'jquery-ui#1.9.2',
+    'https://github.com/thomaspark/bootswatch.git', # bootswatch
+    'https://github.com/dimsemenov/Magnific-Popup.git', # Magnific-Popup
+    'https://github.com/codemirror/CodeMirror.git', # CodeMirror
+    'http://gregpike.net/demos/bootstrap-file-input/bootstrap.file-input.js', # bootstrap fileinput
+)
+
+STATICFILES_FINDERS = (
+    'django.contrib.staticfiles.finders.FileSystemFinder',
+    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+    'djangobower.finders.BowerFinder',
+)

@@ -1,4 +1,4 @@
-/*
+<!--
 The MIT License (MIT)
 
 Copyright (c) 2014 NTHUOJ team
@@ -20,40 +20,10 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
-*/
-var displayInfo = false;
-var loginInfo = false;
-
-function index_alert(){
-    var alert_info = '';
-    try{
-        alert_info = document.getElementById("alert_info").value;
-    } catch(e){ }
-    if(alert_info == 'mailbox'){
-        message = 'Please go to your mailbox and click the confirmation ' +
-        'link;otherwise , your account would not be activated!';
-        alert(message);
-    }
-}
-
-function info() {
-    if(displayInfo == false){
-        document.getElementById("information").style.display = "block";
-        displayInfo = !displayInfo;
-    }
-    else{
-        document.getElementById("information").style.display = "none";
-        displayInfo = !displayInfo;
-    }
-}
-
-$(function() {
-    var one_minute = 60*1000;
-    setInterval(function() {
-        $.get('/get_time/', function(data) {
-            $('#time').html(data);
-        });
-    }, one_minute);
-    // Call index_alert after window loaded.
-    index_alert();
-})
+-->
+Hey <b>{{username}}</b>, thanks for signing up.<br>
+To activate your account, just click the <a href="{{activation_link}}">activation link</a>.<br>
+Activation link: {{activation_link}}<br>
+<br>
+All the best,<br>
+    NTHUOJ Team
