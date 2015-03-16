@@ -40,40 +40,43 @@ SOFTWARE.
     {% endif %}
     <br>
     <br> 
-    <div class="span12">
-      <div class="hero-unit">
-        <div class="hero-unit">
-          <span style="width:50%; float:left">
-            <p>Group name</p>
-            <h2>{{ group_name }}</h2>
-          </span>
-          <span style="width:50%; float:right">
-              <p>Owner/TA</p>
-              <h3>
-                {{ owner }}
-                {% for coowner in coowner_list %}
-                  {{ coowner.username }}
-                {% endfor %} 
-              </h3>
-              </span>
-          <br>
-          <br>
-          <br>
+    <div class="container-fluid">
+      <div class="span12">
+        <div class="container-fluid">
+          <div class="hero-unit">
+            <div class="container-fluid" style="width:50%;float:left">
+              <h4 style="color:gray">Group name</h4>
+              <h2>{{ group_name }}</h2>
+            </div>
+            <div class="container-fluid" style="width:50%;float:right">
+              <div style="float:left; margin-right:40px">  
+                <h4 style="color:gray">Owner</h4>
+                <h3>{{ owner }}</h3>
+              </div>
+              <div>
+                <h4 style="color:gray">Coowner</h4>
+                <h3>
+                  {% for coowner in coowner_list %}
+                    {{ coowner.username }}
+                  {% endfor %} 
+                </h3>
+              </div>
+            </div>
+          </div>
         </div>
         <hr>
-        <div class="Description">
-          <p style="font-size:16px;color:gray">
-            {{ group_description }}
-          </p>
+        <div class="container-fluid">
+          <div class="Description" style="float:left">
+            <p style="font-size:16px; color:gray; word-wrap:break-word">
+              {{ group_description }}
+            </p>
+          </div>
         </div>
       </div>
     </div>
   </div>
   <hr> 
   <div class="contest">
-    <p style="border-bottom:1px solid; padding:2px; float:left; font-family:sans-serif">contest</p>
-    <br>
-    <br>
     <div class="panel-group" id="accordion">
       <div class="panel panel-success">
         <div class="panel-heading">
@@ -141,8 +144,6 @@ SOFTWARE.
   </div>
   <hr> 
   <div class="announce">
-    <p style="border-bottom:1px solid; padding:2px; float:left; font-family:sans-serif">
-      Announce</p>
     <table class="table table-hover">
       <thead>
         <tr>
@@ -170,7 +171,7 @@ SOFTWARE.
                             aria-hidden="true">&times;</button>
                     <h5 class="modal-title">{{annowence.title}}</h4>
                   <div class="modal-body">
-                    <p>{{ annowence.content }}</p>
+                    <p style="word-wrap:break-word">{{ annowence.content }}</p>
                   </div>
                   <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">
@@ -190,7 +191,10 @@ SOFTWARE.
   </div>
   <hr> 
   <div class="member">
-    <p style="border-bottom:1px solid; padding:2px; float:left; font-family:sans-serif">Member</p>
+    <form action="#" class="navbar-search pull-left" method="get">
+      <input type="text" name="q" class="search-query span10" value="" 
+             placeholder="Search..."style="float:left">
+    </form>
     <div class="btn-group" style="float:right">
       <a href="#" class="btn btn-default btn-sm">+</a>
       <a href="#" class="btn btn-defalut dropdown-toggle btn-sm" data-toggle="dropdown">
@@ -205,27 +209,27 @@ SOFTWARE.
         <li><a href="#">Something else</a>
         </li>
       </ul>
-      <t>
-        <a href="" class="btn btn-sm btn-default" data-toggle="modal" 
-           data-target="#studentDataDownloadModal" style="float:right">Download</a>
+      <a href="" class="btn btn-sm btn-default" data-toggle="modal" 
+         data-target="#studentDataDownloadModal" style="float:right">Download</a>
     </div>
-    <br>
-    <br>
-    <form action="#" class="navbar-search pull-left" method="get">
-      <input type="text" name="q" class="search-query span10" value="" 
-             placeholder="Search..."style="float:left">
-    </form>
-    <br>
     <table class="table table-hover">
       <thead>
         <tr>
           <th>Name</th>
+          <th>Email</th>
+          <th>Level</th>
         </tr>
       </thead>
       <tbody>
         {% for student in s_list %}
         <tr>
           <td>{{ student.username }}</td>
+          {% if student.email == "" %}
+            <td>---</td>
+          {% else %}
+            <td>{{ student.email }}</td>
+          {% endif %}
+          <td>{{ student.user_level }}</td>
         </tr>
         {% endfor %}
       </tbody>

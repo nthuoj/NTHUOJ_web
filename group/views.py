@@ -98,7 +98,7 @@ def detail(request, group_id):
 
     all_contest = group.trace_contest.all()[0:5]
     annowence_list = group.announce.all()[0:5]
-    student_list = group.member.all()
+    student_list = group.member.order_by('user_level')
     coowner_list = group.coowner.all()
     owner = group.owner
     user_is_owner = has_g_ownership(request.user, group)
@@ -129,13 +129,13 @@ def detail(request, group_id):
 
 def list(request):
 
-    group_list = Group.objects.order_by('-creation_time')
-    m_group_list = Group.objects.filter(member__username__contains=request.user.username)
-    #m_group_list = Group.objects.filter('')
+    all_group_list = Group.objects.order_by('-creation_time')
+    unsorted_group_list = Group.objects.filter(member__username__contains=request.user.username)
+    my_group_list = unsorted_group_list.order_by('-creation_time')
     return render(
         request,'group/groupList.html', {
-            'g_list': group_list,
-            'm_g_list': m_group_list,
+            'a_g_list': all_group_list,
+            'm_g_list': my_group_list,
         })
 
 def new(request):

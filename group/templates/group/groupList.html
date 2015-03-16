@@ -37,106 +37,102 @@ SOFTWARE.-->
       {% endif %}
     </div>
   </div>
-</div> 
-<div class="contest">
-  <h2 style="border-bottom:1px solid; padding:2px; float:left; font-family:sans-serif">
-    Group List
-  </h2>
-  <br>
-  <br>
-  <br>
-  <br>
-  <div class="filter" style="float:right">
-    <div class="btn-group" data-toggle="buttons-radio" style="float:right">
-      <button id="mygroup-btn" type="button" class="btn btn-primary">My Group</button>
-      <button id="allgroup-btn" type="button" class="btn btn-primary">All Group</button>
-      <script>
-        $(function(){
-          $('#allGroup').show();
-          $('#myGroup').hide();
-          $('#mygroup-btn').click(function(){
-            $('#allGroup').hide();
-            $('#myGroup').show();
-          });
-          $('#allgroup-btn').click(function(){
+  <div class="contest">
+    <br>
+    <div class="well">
+      <h2>Group List</h2>
+    </div>
+    <div class="filter" style="float:right">
+      <div class="btn-group" data-toggle="buttons-radio" style="float:right">
+        <button id="mygroup-btn" type="button" class="btn btn-primary">My Group</button>
+        <button id="allgroup-btn" type="button" class="btn btn-primary">All Group</button>
+        <script>
+          $(function(){
             $('#allGroup').show();
             $('#myGroup').hide();
-          });
-        })
-      </script>
+            $('#mygroup-btn').click(function(){
+              $('#allGroup').hide();
+              $('#myGroup').show();
+            });
+            $('#allgroup-btn').click(function(){
+              $('#allGroup').show();
+              $('#myGroup').hide();
+            });
+          })
+        </script>
+      </div>
     </div>
+    <a href="" class="btn btn-sm btn-default" data-toggle="modal" 
+       data-target="#searchGroupModal" style="float:left">Search group</a>
+    <table id="allGroup" class="table table-hover">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Owner/TA</th>
+          <th>Group Description</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for group in a_g_list %}
+        <tr>
+          <td>
+            <a href="{% url 'group:detail' group.id %}">{{ group.gname }}</a>
+          </td>
+          <td>{{ group.owner }}</td>
+          <td>{{ group.description|truncatechars:70 }}</td>
+          <td>
+            {% if user.has_judge_auth %}
+            <a href="{% url 'group:delete' group.id %}">
+              <button type="button" class="btn btn-danger" style="float:right">
+                Delete
+              </button>
+            </a>
+            {% endif %}
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    <table id="myGroup" class="table table-hover">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Owner/TA</th>
+          <th>Group Description</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for group in m_g_list %}
+        <tr>
+          <td>
+            <a href="{% url 'group:detail' group.id %}">{{ group.gname }}</a>
+          </td>
+          <td>{{ group.owner }}</td>
+          <td>{{ group.description|truncatechars:70 }}</td>
+          <td>
+            {% if user.has_judge_auth %}
+            <a href="{% url 'group:delete' group.id %}">
+              <button type="button" class="btn btn-danger" style="float:right">
+                Delete
+              </button>
+            </a>
+            {% endif %}
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    <ul class="pager">
+      <li class="previous disabled"><a href="#" style="color:gray">← Previous</a>
+      </li>
+      <li class="next"><a href="#" style="color:black">Next →</a>
+      </li>
+    </ul>
   </div>
-  <a href="" class="btn btn-sm btn-default" data-toggle="modal" 
-     data-target="#searchGroupModal" style="float:left">Search group</a>
-  <table id="allGroup" class="table table-hover">
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Owner/TA</th>
-        <th>Group Description</th>
-        <th></th>
-      </tr>
-    </thead>
-    <tbody>
-      {% for group in g_list %}
-      <tr>
-        <td>
-          <a href="{% url 'group:detail' group.id %}">{{ group.gname }}</a>
-        </td>
-        <td>{{ group.owner }}</td>
-        <td>{{ group.description|truncatechars:70 }}</td>
-        <td>
-          {% if user.has_judge_auth %}
-          <a href="{% url 'group:delete' group.id %}">
-            <button type="button" class="btn btn-danger" style="float:right">
-              Delete
-            </button>
-          </a>
-          {% endif %}
-        </td>
-      </tr>
-      {% endfor %}
-    </tbody>
-  </table>
-  <table id="myGroup" class="table table-hover">
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Owner/TA</th>
-        <th>Group Description</th>
-        <th></th>
-      </tr>
-    </thead>
-    <tbody>
-      {% for group in m_g_list %}
-      <tr>
-        <td>
-          <a href="{% url 'group:detail' group.id %}">{{ group.gname }}</a>
-        </td>
-        <td>{{ group.owner }}</td>
-        <td>{{ group.description|truncatechars:70 }}</td>
-        <td>
-          {% if user.has_judge_auth %}
-          <a href="{% url 'group:delete' group.id %}">
-            <button type="button" class="btn btn-danger" style="float:right">
-              Delete
-            </button>
-          </a>
-          {% endif %}
-        </td>
-      </tr>
-      {% endfor %}
-    </tbody>
-  </table>
-  <ul class="pager">
-    <li class="previous disabled"><a href="#" style="color:gray">← Previous</a>
-    </li>
-    <li class="next"><a href="#" style="color:black">Next →</a>
-    </li>
-  </ul>
+  <hr>
 </div>
-<hr>
-
 <!---Modal Section-->
 <!--1. Modal for search group-->
 <div class="modal fade" id="searchGroupModal" role="dialog" aria-hidden="true">
