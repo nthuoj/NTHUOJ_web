@@ -145,8 +145,8 @@ SOFTWARE.
               <p class="p2">Team<b class="caret"></b></p>
             </a>
             <ul class="dropdown-menu">
-              <li><a href="{% url 'team:list' %}">team list</a></li>
-              <li><a href="{% url 'team:profile' %}">team profile</a></li>
+              <li><a href="{% url 'team:list' %}">Team List</a></li>
+              <li><a href="{% url 'team:profile' %}">Team Profile</a></li>
             </ul>
           </li>
           <li class="dropdown">
@@ -154,10 +154,10 @@ SOFTWARE.
               <p class="p2">User<b class="caret"></b></p>
             </a>
             <ul class="dropdown-menu">
-              <li><a href="{% url 'users:list' %}">user list</a></li>
+              <li><a href="{% url 'users:list' %}">User List</a></li>
               {% if user.is_authenticated %}
                 <li>
-                  <a href={% url "users:profile" user.username %}>user profile</a>
+                  <a href={% url "users:profile" user.username %}>User Profile</a>
                 </li>
               {% endif %}
             </ul>
