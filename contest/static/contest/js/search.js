@@ -18,15 +18,5 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 $(document).ready(function() {
-    $("b").tooltip({
-        placement: 'top'
-    });
-    $('[data-toggle="tooltip"]').tooltip({
-        'placement': 'top'
-    });
-    $('#scoreboardTab a').click(function(e) {
-        e.preventDefault()
-        $('#scoreboardTab a[href="#testcase"]').tab('show')
-        $('#scoreboardTab a[href="#penalty"]').tab('show')
-    })
+    $('input.search-input').quicksearch();
 });

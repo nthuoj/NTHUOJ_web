@@ -22,38 +22,61 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 var editor;
-
+var adjustEditorSize;
 $(function () {
     editor = CodeMirror.fromTextArea(document.getElementById('code_editor'), {
+        mode: 'text/x-c++src',
+        theme: 'solarized light',
+        keyMap: 'sublime',
+        placeholder: 'Code goes here...',
+        // line settings
         lineNumbers: true,
-        styleActiveLine: true,
-        matchBrackets: true,
-        mode: 'text/x-csrc',
         lineWrapping: true,
-        tab: 4,
+        styleActiveLine: true,
+        // indent settings
         indentUnit: 4,
-        theme: 'solarized light'
+        indentWithTabs: true,
+        matchBrackets: true,
+        autoCloseBrackets: true,
+        showCursorWhenSelecting: true
     });
 
-    $('input[type=file]').bootstrapFileInput();
-    $('.file-inputs').bootstrapFileInput();
+    adjustEditorSize = function (editor) {
+        // Adjust editor size according to the line count
+        lineCount = editor.lineCount()
+        lineHeight = $('.CodeMirror-gutter-wrapper').height()
+        editorWidth = $('.CodeMirror').width()
+        editorHeight = Math.max(400, Math.min(lineCount*lineHeight + 50, 2000))
+        editor.setSize(editorWidth, editorHeight)
+    }
+
+    // Adjust editor size on load
+    adjustEditorSize(editor)
+
+    // Adjust editor size on change
+    editor.on('change', adjustEditorSize)
+
+    $('#fileinput').bootstrapFileInput();
 
     $('#fileinput').change(function(evt) {
         //Retrieve the first (and only!) File from the FileList object
-        var f = evt.target.files[0];
+        var file = evt.target.files[0];
 
-        if (f) {
-            var r = new FileReader();
-            r.onload = function(e) {
-                var contents = e.target.result;
-                editor.value = contents;
-                try {
-                    editor.getDoc().setValue(contents);
-                } catch (e) {
+        if (file) {
+            if (file.size > 10000) {
+                alert('You can\'t upload file over 10000 bytes.');
+            } else {
+                var reader = new FileReader();
+                reader.onload = function(e) {
+                    var contents = e.target.result;
+                    try {
+                        editor.getDoc().setValue(contents);
+                    } catch (e) {
 
-                }
-            };
-            r.readAsText(f);
+                    }
+                };
+                reader.readAsText(file);
+            }
         } else {
             alert('Failed to load file');
         }

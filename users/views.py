@@ -21,21 +21,27 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 '''
-import json
-
 from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required
+from django.core.context_processors import csrf
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.core.urlresolvers import reverse
-from django.shortcuts import render, redirect
+from django.http import HttpResponseRedirect
+from django.shortcuts import get_object_or_404
+from django.shortcuts import render, redirect, render_to_response
 from django.template import RequestContext
-from users.admin import UserCreationForm, AuthenticationForm
-
 from index.views import custom_proc
+from users.admin import UserCreationForm, AuthenticationForm
+from users.forms import CodeSubmitForm
 from users.forms import UserProfileForm, UserLevelForm
-from users.models import User
-from utils.log_info import get_logger, get_client_ip
-from utils.user_info import get_user_statistics
+from users.models import User, UserProfile
 from users.templatetags.profile_filters import can_change_userlevel
+from utils.log_info import get_logger, get_client_ip
+from utils.user_info import get_user_statistics, send_activation_email
+import datetime
+import random
+import json
+
 # Create your views here.
 
 logger = get_logger()
@@ -60,12 +66,6 @@ def list(request):
         {'users': user},
         context_instance=RequestContext(request, processors=[custom_proc]))
 
-def submit(request):
-    return render(
-        request,
-        'users/submit.html', {},
-        context_instance=RequestContext(request, processors=[custom_proc]))
-
 
 def profile(request, username):
     try:
@@ -86,6 +86,7 @@ def profile(request, username):
             if profile_form.is_valid() and request.user == profile_user:
                 logger.info('User %s update profile' % username)
                 profile_form.save()
+                request.user = profile_user
                 render_data['profile_message'] = 'Update successfully'
 
         if request.method == 'POST' and 'userlevel_form' in request.POST:
@@ -118,14 +119,17 @@ def profile(request, username):
 
 
 def user_create(request):
+    args = {}
+    args.update(csrf(request))
     if request.method == 'POST':
         user_form = UserCreationForm(request.POST)
+        args['user_form'] = user_form
         if user_form.is_valid():
             user = user_form.save()
+            send_activation_email(request, user)
             user.backend = 'django.contrib.auth.backends.ModelBackend'
             logger.info('user %s created' % str(user))
-            login(request, user)
-            return redirect(reverse('index:index'))
+            return redirect(reverse('index:alert', kwargs={'alert_info': 'mailbox'}))
         else:
             return render(
                 request, 'users/auth.html',
@@ -168,4 +172,47 @@ def user_login(request):
         request,
         'users/auth.html',
         {'form': AuthenticationForm(), 'title': 'Login'},
+        context_instance=RequestContext(request, processors=[custom_proc]))
+
+
+@login_required()
+def submit(request, pid=None):
+    if request.method=='POST':
+        codesibmitform = CodeSubmitForm(request.POST, user=request.user)
+        if codesibmitform.is_valid():
+            codesibmitform.submit()
+            return redirect(reverse('status:status'))
+        else:
+            return render(
+                request,
+                'users/submit.html', {'form': codesibmitform},
+                context_instance=RequestContext(request, processors=[custom_proc]))
+
+    return render(
+        request,
+        'users/submit.html', {'form': CodeSubmitForm(initial={'pid': pid})},
+        context_instance=RequestContext(request, processors=[custom_proc]))
+
+
+def register_confirm(request, activation_key):
+
+    '''check if user is already logged in and if he
+    is redirect him to some other url, e.g. home
+    '''
+    if request.user.is_authenticated():
+        HttpResponseRedirect(reverse('index:index'))
+
+    '''check if there is UserProfile which matches
+    the activation key (if not then display 404)
+    '''
+    user_profile = get_object_or_404(UserProfile, activation_key=activation_key)
+    user = user_profile.user
+    user.is_active = True
+    user.save()
+    logger.info('user %s has already been activated' % user.username)
+
+    return render(
+        request,
+        'users/confirm.html',
+        {'username':user.username},
         context_instance=RequestContext(request, processors=[custom_proc]))

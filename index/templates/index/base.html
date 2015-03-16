@@ -30,23 +30,22 @@ SOFTWARE.
     {% block title_name %}
     {% endblock title_name %}
     <!-- necessarily jQeuery -->
-    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js">
-    </script>
+    <script src={% static "jquery/dist/jquery.min.js" %}></script>
     <!-- bootstrap, bootwatch JS & CSS -->
-    <link rel="stylesheet" 
-    href="http://bootswatch.com/paper/bootstrap.css" media="screen">
-    <link rel="stylesheet" 
-    href="http://bootswatch.com/assets/css/bootswatch.min.css">
-    <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js">
-    </script>
+    {% if user.is_authenticated %}
+    <link rel="stylesheet" href="{% static '' %}bootswatch/{{user.theme}}/bootstrap.css">
+    {% else %}
+    <link rel="stylesheet" href={% static "bootswatch/paper/bootstrap.css" %}>
+    {% endif %}
+    <script src={% static "bootstrap/dist/js/bootstrap.min.js" %}></script>
     <!-- Magnific Popup core JS & CSS -->
-    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/magnific-popup.js/0.9.9/magnific-popup.css">
-    <script src="//cdnjs.cloudflare.com/ajax/libs/magnific-popup.js/0.9.9/jquery.magnific-popup.min.js">
-    </script>
-    <link rel="stylesheet" href={% static "./css/mfp-fade.css"%}>
-    <script src={% static "./js/popup-setting.js"%}></script>
-    <script src={% static "./js/index.js"%}></script>
-    <link rel="stylesheet" href={% static "./css/index.css"%} media="screen">
+    <link rel="stylesheet" href={% static "magnific-popup/dist/magnific-popup.css" %}>
+    <script src={% static "magnific-popup/dist/jquery.magnific-popup.min.js" %}></script>
+    <script src={% static "js/popup-setting.js" %}></script>
+    <script src={% static "js/index.js" %}></script>
+    <link rel="stylesheet" href={% static "css/index.css" %} media="screen">
+    <link rel="stylesheet" href={% static "css/mfp-fade.css" %} media="screen">
+
     {% block import_source %}
     {% endblock import_source %}
   </head>
@@ -83,10 +82,10 @@ SOFTWARE.
             </label>
             <br>
             <label class="control-label" for="inputSmall">Account</label>
-            <input class="form-control input-sm" type="text" 
+            <input class="form-control input-sm" type="text"
             id="inputSmall" placeholder="Account">
             <label class="control-label" for="inputSmall">Email</label>
-            <input class="form-control input-sm" type="text" 
+            <input class="form-control input-sm" type="text"
             id="inputSmall" placeholder="Email">
 
             <div class="poptxt_sm">
@@ -110,7 +109,7 @@ SOFTWARE.
           <span>a</span>
           <span>c</span>
           <span>k</span>
-        </a>  
+        </a>
       </div>
       <div id="mwt_slider_content">feedback</div>
 
@@ -123,7 +122,7 @@ SOFTWARE.
     <!-- navbar -->
     <div class="navbar navbar-default newbar">
       <div class="navbar-header">
-        <button type="button" class="navbar-toggle" data-toggle="collapse" 
+        <button type="button" class="navbar-toggle" data-toggle="collapse"
           data-target=".navbar-responsive-collapse">
           <span class="icon-bar"></span>
           <span class="icon-bar"></span>
@@ -135,39 +134,42 @@ SOFTWARE.
       </div>
       <div class="navbar-collapse collapse navbar-responsive-collapse">
         <ul class="nav navbar-nav">
+          <li><a href="{% url 'contest:archive' %}"><p class="p2">Contest</p></a></li>
+          <li><a href="{% url 'problem:volume' %}"><p class="p2">Problem</p></a></li>
+          <li><a href="{% url 'users:submit' %}"><p class="p2">Submit</p></a></li>
+          <li><a href="{% url 'status:status' %}"><p class="p2">Status</p></a></li>
+          <li><a href="{% url 'group:list' %}"><p class="p2">Group</p></a></li>
           <li class="dropdown">
-          <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-            <p class="p2">Contest<b class="caret"></b></p>
-          </a>
-          <ul class="dropdown-menu">
-            <li><a href="/contest/">contest archive</a></li>
-            <li><a href="#">running contest</a></li>
-          </ul>
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+              <p class="p2">Team<b class="caret"></b></p>
+            </a>
+            <ul class="dropdown-menu">
+              <li><a href="{% url 'team:list' %}">team list</a></li>
+              <li><a href="{% url 'team:profile' %}">team profile</a></li>
+            </ul>
           </li>
           <li class="dropdown">
-          <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-            <p class="p2">Problem<b class="caret"></b></p>
-          </a>
-          <ul class="dropdown-menu" id="volume_num">
-            {% for i in volumes %}
-            <li><a href="#">volume {{ i }}</a></li>
-            {% endfor %}
-          </ul>
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+              <p class="p2">User<b class="caret"></b></p>
+            </a>
+            <ul class="dropdown-menu">
+              <li><a href="{% url 'users:list' %}">user list</a></li>
+              {% if user.is_authenticated %}
+                <li>
+                  <a href={% url "users:profile" user.username %}>user profile</a>
+                </li>
+              {% endif %}
+            </ul>
           </li>
-          <li><a href={% url "users:submit" %}><p class="p2">Submit</p></a></li>
-          <li><a href={% url "status:status" %}><p class="p2">Status</p></a></li>
-          <li><a href="/index/group_list"><p class="p2">Group</p></a></li>
-          <li><a href={% url "team:list" %}><p class="p2">Team</p></a></li>
-          {% if user.is_authenticated %}
-            <li><a href={% url "users:profile" user.username %}><p class="p2">Personal</p></a></li>
-          {% endif %}
           <li><a href="#"><p class="p2">User Rank</p></a></li>
         </ul>
         <ul class="nav navbar-nav navbar-right">
-          <li >
-          <img src={% static "./images/14.png "%} height="50" width="50" 
+          {% if user.is_authenticated %}
+          <li>
+          <img src={% static "./images/14.png "%} height="50" width="50"
           onclick="info();" class="ring">
           </li>
+          {% endif %}
           {% if user.is_authenticated %}
           <li><a href={% url "users:logout" %}><p class="p3">Logout</p></a></li>
           {% else %}
@@ -190,11 +192,10 @@ SOFTWARE.
     </div>
     <!-- footer -->
     <div class="footer sticky-footer">
-      <a href="" class="p11" style="position:relative;left:30px;">Contact us</a>
-      <p class="p10" style="position:relative;left:400px;">
-      © NTHU Online Judge 2014, Templates are from Bootstrap Project</p> 
-      <p id='time' 
-      style="font-size: 18px;color:white;position:relative;float:right;right:30px;">
+      <a href="" id="contact_us">Contact us</a>
+      <p id="footer_text">
+      © NTHU Online Judge 2014, Templates are from Bootstrap Project</p>
+      <p id='time'>
       {{ tstr }}
       </p>
     </div>
