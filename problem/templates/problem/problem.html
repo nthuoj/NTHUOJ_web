@@ -26,8 +26,10 @@ SOFTWARE.
   <div style='padding-left:10px;padding-right:10px'>
     <div style='float:left;width:60%;'>
       <h2>{{ problem.pname }} &nbsp;&nbsp;
-        {% if problem.owner == user or user.user_level == 'ADMIN' %}
-          <a href="{% url 'problem:problem.views.edit' problem.pk %}">EDIT</a>
+        {% if problem.owner == user or user.user_level == 'ADMIN'%}
+          {% if not preview %}
+            <a href="{% url 'problem:problem.views.edit' problem.pk %}">EDIT</a>
+          {% endif %}
         {% endif %}
       </h2>
     </div>

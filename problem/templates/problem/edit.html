@@ -29,7 +29,6 @@ SOFTWARE.
 {% endblock %}
 {% block body_block %} 
 <div class="container" id="Body">
-  <input type="hidden" name="owner" value="{{ user.pk }}">
   <div style="width:80%; float:left;">
     <ul class="nav nav-tabs" role="tablist">
       <li class="active">
@@ -50,11 +49,10 @@ SOFTWARE.
     </ul>
 
     <div class="tab-content">
-      <form method="POST" action="" enctype="multipart/form-data">
+      <form method="POST" id="problem_info" action="" enctype="multipart/form-data">
         <div>
-          <a class="btn btn-success" target="_blank" id="preview_button">Preview</a>
-          <input type="submit" value="Save" class="btn btn-primary" 
-            style="width:100px" href="{% url 'problem:preview' %}">
+          <input type="submit" value="Preview" class="btn btn-success" target="_blank" id="preview_button">
+          <input type="submit" value="Save" class="btn btn-primary">
         </div>
         {% csrf_token %}
         <div class="tab-pane active" id="info">

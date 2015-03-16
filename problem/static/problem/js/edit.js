@@ -114,12 +114,13 @@ function add_new_testcase(pid, data) {
 }
 
 $("#preview_button").click(function() {
-  MyWindow = window.open('{% url "problem:problem.views.preview" %}',
-    "MyWindow",
-    "toolbar=no,location=no,directories=no,status=no,menubar=no, \
-    scrollbars=yes,resizable=yes,width=600,height=30"
-  );
-  return false;
+    var data = $("#problem_info :input").serialize();
+    MyWindow = window.open('/problem/preview?'+data,
+        "MyWindow",
+        "toolbar=no,location=no,directories=no,status=no,menubar=no, \
+        scrollbars=yes,resizable=yes,width=600,height=30"
+    );
+    return false;
 });
 
 function hide_field() {

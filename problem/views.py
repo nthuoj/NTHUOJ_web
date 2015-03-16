@@ -197,4 +197,11 @@ def delete_testcase(request, pid, tid):
     return HttpResponse()
 
 def preview(request):
-    return render(request, 'problem/preview.html')
+    form = ProblemForm(request.GET)
+    problem = form.save()
+    problem.description = request.GET['description']
+    problem.input= request.GET['input_description']
+    problem.output = request.GET['output_description']
+    problem.sample_in = request.GET['sample_in']
+    problem.sample_out = request.GET['sample_out']
+    return render(request, 'problem/preview.html', {'problem': problem, 'preview': True})
