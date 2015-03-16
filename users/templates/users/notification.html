@@ -50,7 +50,7 @@ SOFTWARE.
     <!-- Tab panes -->
     <div class="tab-content">
       <div role="tabpanel" class="tab-pane fade in active" id="unread">
-        <table class="table tab_content">
+        <table class="table table-striped table-hover tab_content">
           <thead>
             <tr>
               <th></th>
@@ -60,7 +60,7 @@ SOFTWARE.
           <tbody>
             <form name="urform" method="post">
               {% for unread_notification in unread_notifications %}
-              <tr>
+              <tr class="success">
                 <td href="#Notification-popup" class="open-popup-link"
                     onclick="write_content('{{ unread_notification.id }}','{{ unread_notification.read }}');">
                   <p id="{{ unread_notification.id }}_content"
@@ -102,17 +102,21 @@ SOFTWARE.
         </table>
       </div>
       <div role="tabpanel" class="tab-pane fade" id="all">
-        <table class="table tab_content">
+        <table class="table table-striped table-hover tab_content">
           <thead>
             <tr>
               <th></th>
-              <th style="text-align: right;">Delete the messeage</th>
+              <th style="text-align: right;width: 20%;">Delete the messeage</th>
             </tr>
           </thead>
           <tbody>
             <form name="allform" method="post">
               {% for notification in all_notifications %}
-              <tr>
+              {% if notification.read == False %}
+              <tr class="success">
+              {% else %}
+              <tr class="active">
+              {% endif %}
                 <td href="#Notification-popup" class="open-popup-link"
                     onclick="write_content('{{ notification.id }}','{{ notification.read }}');">
                   <p id="{{ notification.id }}_content"
