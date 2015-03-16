@@ -46,7 +46,7 @@ class CodeSubmitForm(forms.Form):
             language=language)
         try:
             f = open('%s%s.cpp' % (self.SUBMIT_PATH, submission.id), 'w')
-            f.write(code)
+            f.write(code.encode('utf-8'))
             f.close()
         except IOError:
             logger.warning('Sid %s fail to save code' % submission.id)
