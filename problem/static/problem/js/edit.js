@@ -100,10 +100,10 @@ function add_new_testcase(pid, data) {
                   $("<a>"+tid+".out</a>")));
               new_row.append($("<td>").append(
                   $("<input type='number' id='"+tid
-                      +"_time' name='time_limit' value='"+time_limit+"'></td>")));
+                      +"_time' name='time_limit' value='"+time_limit+"' min='0'></td>")));
               new_row.append($("<td>").append(
                   $("<input type='number' id='"+tid
-                      +"_memory' name='memory_limit' value='"+memory_limit+"'></td>")));
+                      +"_memory' name='memory_limit' value='"+memory_limit+"' min='0'></td>")));
               new_row.append("<td><button class='btn btn-primary' onclick='return false'\
                     data-toggle='modal' data-target='#edit_testcase'>ReUpload</button></td>");
               new_row.append("<td><button class='btn btn-primary update_btn'>Update</button></td>");
@@ -149,6 +149,14 @@ function refreshTestcaseEvent() {
         var tid = $(this).parents("tr").attr('data-target');
         var time = $("#"+tid+"_time").serialize();
         var memory = $("#"+tid+"_memory").serialize();
+        if ($("#"+tid+"_time").val() < 0) {
+            alert("time limit can't be negative");
+            return false;
+        }
+        if ($("#"+tid+"_memory").val() < 0) {
+            alert("memory limit can't be negative");
+            return false;
+        }
         $.ajax({
             type: "POST",
             url: "/problem/"+pid+"/testcase/"+tid+"/",

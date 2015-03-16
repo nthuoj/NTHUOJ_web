@@ -16,8 +16,8 @@
     <td>
       <a href="">{{t.pk}}.out</a>
     </td>
-    <td><input type="number" id="{{t.pk}}_time" name="time_limit" value="{{t.time_limit}}"></td>
-    <td><input type="number" id="{{t.pk}}_memory" name="memory_limit" value="{{t.memory_limit}}"></td>
+    <td><input type="number" id="{{t.pk}}_time" name="time_limit" value="{{t.time_limit}}" min="0"></td>
+    <td><input type="number" id="{{t.pk}}_memory" name="memory_limit" value="{{t.memory_limit}}" min="0"></td>
     <td><button class="btn btn-primary reupload_btn" onclick="return false"
         data-toggle="modal" data-target="#edit_testcase">ReUpload</button></td>
     <td><button class="btn btn-primary update_btn">Update</button></td>
@@ -30,8 +30,8 @@
       {% csrf_token %}
       <td><input type="file" name="t_in" required></td>
       <td><input type="file" name="t_out" required></td>
-      <td><input type="number" id="new_time_limit" name="time_limit" required></td>
-      <td><input type="number" id="new_memory_limit" name="memory_limit" required></td>
+      <td><input type="number" id="new_time_limit" name="time_limit" min="0" required></td>
+      <td><input type="number" id="new_memory_limit" name="memory_limit" min="0" required></td>
       <td><button class="btn btn-primary" id="add_testcase_btn">Add</button></td>
     </form>
   </tr>
