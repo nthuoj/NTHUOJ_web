@@ -32,6 +32,7 @@ from django.shortcuts import render
 from django.http import HttpResponse
 from users.models import User, Notification
 from django.template import RequestContext
+from utils.user_info import validate_user
 
 # Create your views here.
 logger = get_logger()
@@ -61,13 +62,15 @@ def get_time(request):
     return HttpResponse(tstr)
 
 def custom_proc(request):
+<<<<<<< HEAD
 
     amount = Notification.objects.filter \
         (receiver=request.user, read=False).count()
 
+=======
+>>>>>>> d50af02af4ebd9f457894d38f459a14a5bd75877
     t = time.time()
     tstr = datetime.datetime.fromtimestamp(t).strftime('%Y/%m/%d %H:%M:%S')
-    people = 0
     people = random.randint(100,999)
     return {
         'tstr': tstr,
