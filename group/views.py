@@ -27,7 +27,7 @@ from django.core.exceptions import PermissionDenied
 from django.forms.models import model_to_dict
 from group.forms import GroupForm, GroupFormEdit
 from group.models import Group
-from utils.user_info import has_g_ownership
+from utils.user_info import has_group_ownership
 from utils.log_info import get_logger
 
 
@@ -101,7 +101,7 @@ def detail(request, group_id):
     student_list = group.member.order_by('user_level')
     coowner_list = group.coowner.all()
     owner = group.owner
-    user_is_owner = has_g_ownership(request.user, group)
+    user_is_owner = has_group_ownership(request.user, group)
 
     running_contest_list = []
     ended_contest_list = []
