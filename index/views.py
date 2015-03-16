@@ -62,13 +62,10 @@ def get_time(request):
     return HttpResponse(tstr)
 
 def custom_proc(request):
-<<<<<<< HEAD
 
     amount = Notification.objects.filter \
         (receiver=request.user, read=False).count()
 
-=======
->>>>>>> d50af02af4ebd9f457894d38f459a14a5bd75877
     t = time.time()
     tstr = datetime.datetime.fromtimestamp(t).strftime('%Y/%m/%d %H:%M:%S')
     people = random.randint(100,999)
