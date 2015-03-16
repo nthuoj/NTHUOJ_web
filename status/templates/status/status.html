@@ -26,8 +26,9 @@ SOFTWARE.
 {% load status_filters %}
 
 {% block body_block %}
-<link rel="stylesheet" type="text/css" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.9.2/themes/dark-hive/jquery-ui.css">
-<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.9.2/jquery-ui.min.js"></script>
+<link rel="stylesheet" href={% static "jquery-ui/themes/dark-hive/jquery-ui.css" %}>
+<script src={% static "jquery-ui/ui/jquery-ui.js" %}></script>
+
 <script type="text/javascript">
   $(function () {
     $(document).tooltip({
