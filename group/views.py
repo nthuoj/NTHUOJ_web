@@ -130,9 +130,12 @@ def detail(request, group_id):
 def list(request):
 
     group_list = Group.objects.order_by('-creation_time')
+    m_group_list = Group.objects.filter(member__username__contains=request.user.username)
+    #m_group_list = Group.objects.filter('')
     return render(
         request,'group/groupList.html', {
-            'g_list': group_list
+            'g_list': group_list,
+            'm_g_list': m_group_list,
         })
 
 def new(request):
@@ -180,7 +183,7 @@ def edit(request, group_id):
                 return render(request,'group/editGroup.html',{'form':form})
             if request.method == 'POST':
                 form = GroupFormEdit(request.POST, instance = group)
-                if form.is_valid():
+                if form.is_valid(): 
                     modified_group = form.save()
                     logger.info('Group: Modified group %s!' % modified_group.id)
                     return HttpResponseRedirect('/group/detail/%s' % modified_group.id)

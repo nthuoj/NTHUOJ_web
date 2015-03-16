@@ -45,6 +45,7 @@ INSTALLED_APPS = (
     'group',
     'status',
     'axes',
+    'bootstrapform',
 )
 
 MIDDLEWARE_CLASSES = (
