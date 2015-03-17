@@ -45,7 +45,7 @@ $(function(){
         $('#nav_tab a[href="#all"]').tab('show');
     $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
         active_tab = $(e.target).text();
-        if(active_tab == 'All notifications')
+        if(active_tab == 'All Notifications')
             active_tab = 'all';
         else
             active_tab = 'unread';
