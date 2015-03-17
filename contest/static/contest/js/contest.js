@@ -25,13 +25,6 @@ $('#myTab a').click(function(e) {
     $('#myTab a[href="#status"]').tab('show')
 })
 
-function checkTime(i) {
-    if (i < 10) {
-        i = "0" + i
-    }; // add zero in front of numbers < 10
-    return i;
-}
-
 function getRestTime() {
     var end = new Date(document.getElementById('end').innerHTML)
     var start = new Date(document.getElementById('start').innerHTML)
@@ -46,7 +39,7 @@ function getRestTime() {
             result /= 60;
             var m = parseInt(result % 60);
             result /= 60;
-            var h = parseInt(result % 60);
+            var h = parseInt(result);
             m = checkTime(m);
             s = checkTime(s);
             h = checkTime(h);
