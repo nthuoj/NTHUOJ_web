@@ -17,10 +17,12 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
-//the target element
-//start time should put in tag with given id
-//<p id="timer">2015/3/16 12:00:23</p>
-//Usage: timer("timer");
+/*
+the target element
+start time should put in tag with given id
+<p id="timer">2015/3/16 12:00:23</p>
+Usage: timer("timer");
+*/
 function timer(id) {
     var server_time = new Date(document.getElementById(id).innerHTML);
     var now = new Date();
