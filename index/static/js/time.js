@@ -48,11 +48,8 @@ function showTime(id,offset) {
     time = new Date(time);
 
     y = time.getFullYear();
-
     m = time.getMonth()+1;
-
     d = time.getDate();
-
     h = time.getHours();
     h = checkTime(h);
 
