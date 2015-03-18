@@ -27,6 +27,8 @@ from index.views import custom_proc
 from django.template import RequestContext
 from django.forms.models import model_to_dict
 
+from contest.contest_info import get_clarifications
+
 from contest.contestArchive import get_contests
 
 from contest.models import Contest
@@ -34,6 +36,9 @@ from contest.models import Contestant
 from contest.models import Clarification
 
 from contest.forms import ContestForm
+from contest.forms import ClarificationForm
+
+from contest.contest_info import can_ask
 
 from contest.contest_info import get_scoreboard
 
@@ -63,10 +68,14 @@ def contest(request,contest_id):
         raise PermissionDenied
     else:
         scoreboard = get_scoreboard(contest)
-        clarification_list = Clarification.objects.filter(contest = contest)
+        user = request.user
+        clarifications = get_clarifications(contest,user)
+        initial_form = {'contest':contest,'asker':user}
+        form = ClarificationForm(initial=initial_form)
         return render(request, 'contest/contest.html',{'contest':contest,
-               'clarification_list':clarification_list,'scoreboard':scoreboard},
-               context_instance = RequestContext(request, processors = [custom_proc]))
+            'clarifications':clarifications,'form':form,'user':user,
+            'scoreboard':scoreboard},
+            context_instance = RequestContext(request, processors = [custom_proc]))
 
 def new(request):
     if request.user.is_authenticated() and request.user.has_judge_auth():
@@ -140,3 +149,21 @@ def register(request,contest_id):
                     logger.info('Contest: User %s attends Contest %s!' % (request.user.username,contest.id))
         return redirect('contest:archive')
     raise PermissionDenied
+
+def ask(request):
+    try:
+        contest = request.POST['contest']
+        contest_obj = Contest.objects.get(pk = contest)
+    except:
+        logger.warning('Clarification: Can not create Clarification!')
+        return HttpResponseRedirect('/contest/')
+
+    if request.user.is_authenticated():
+        if can_ask(request.user,contest_obj):
+            if request.method == 'POST':
+                form = ClarificationForm(request.POST)
+                if form.is_valid():
+                    new_clarification = form.save()
+                    logger.info('Clarification: User %s create Clarification %s!' % (request.user.username, new_clarification.id))
+                return redirect('contest:contest',contest)
+    return redirect('contest:archive')

@@ -17,7 +17,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 -->
-{% extends "index/base.html" %} {% load staticfiles %} 
+{% extends "index/base.html" %} {% load staticfiles %} {% load contest_extras %}
 
 {% block title_name %}
 <title>Contest</title>
@@ -66,28 +66,34 @@ SOFTWARE.
           <thead>
             <tr>
               <th>#</th>
-              <th>Problem Name</th>
+              <th>Problem</th>
               <th>Asker</th>
-              <th>Clarification</th>
+              <th>Description</th>
               <th>Reply</th>
+              <th>Replyer</th>
+              <th>Reply Time</th>
             </tr>
           </thead>
           <tbody>
-            {% for clarification in clarification_list %}
+            {% for clarification in clarifications %}
             <tr>
-              <td>{{ clarification.id }}</td>
+              <td>{{ forloop.counter }}</td>
               <td>{{ clarification.problem }}</td>
               <td>{{ clarification.asker }}</td>
               <td>{{ clarification.content }}</td>
               <td>{{ clarification.reply }}</td>
+              <td>{{ clarification.replyer }}</td>
+              <td>{{ clarification.reply_time }}</td>
             </tr>
             {% endfor %}
           </tbody>
         </table>
+        {% if user|can_ask:contest %}
         <div align="center">
           <button type="button" class="btn btn-primary btn-lg" data-toggle="modal" 
-          data-target="#myModal">Clarify</button>
+                  data-target="#clarification">Clarify</button>
         </div>
+        {% endif %}
       </div>
     </div>
     <hr>
@@ -116,47 +122,10 @@ SOFTWARE.
         <div class="tab-pane" id="status">4</div>
       </div>
     </div>
-
-    <!-- Clarification Modal -->
-    <div class="modal fade" id="myModal" tabindex="-1" 
-    role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <div class="modal-header">
-            <button type="button" class="close" data-dismiss="modal">
-              <span aria-hidden="true">&times;</span>
-              <span class="sr-only">Close</span>
-            </button>
-            <h4 class="modal-title" id="myModalLabel">Ask Question</h4>
-          </div>
-          <div class="modal-body">
-            <form role="form">
-              <label for="pid">Problem name</label>
-              <div id="pid" class="form-group">
-                <select class="form-control">
-                  {% for problem in contest.problem.all %}
-                  <option>{{ problem.pname }}</option>
-                  {% endfor %}
-                </select>
-              </div>
-              <div class="form-group">
-                <label for="exampleInputPassword1">Description</label>
-                <textarea type="text" class="form-control" id="exampleInputPassword1" placeholder="Problem Description"></textarea>
-              </div>
-              <div class="checkbox">
-                <label>
-                  <input type="checkbox">For All Teams
-                </label>
-              </div>
-            </form>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-            <button type="button" class="btn btn-primary">Send</button>
-          </div>
-        </div>
-      </div>
-    </div>
+    {% if user|can_ask:contest %}
+    <!--Clarification Modal-->
+    {% include "contest/clarification.html" %}
+    {% endif %}
   </div>
 </body>
 {% endblock body_block %}
