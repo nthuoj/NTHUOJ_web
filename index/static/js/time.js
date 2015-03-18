@@ -23,8 +23,11 @@ start time should put in tag with given id
 <p id="timer">2015/3/16 12:00:23</p>
 Usage: timer("timer");
 */
+$(function(){
+    timer("time");
+});
 function timer(id) {
-    var server_time = new Date(document.getElementById(id).innerHTML);
+    var server_time = new Date(document.getElementById('time').innerHTML);
     var now = new Date();
     var offset = server_time.getTime() - now.getTime();
     var t = setTimeout(function() {
@@ -43,13 +46,13 @@ function showTime(id,offset) {
     time = new Date();
     time = time.getTime() + offset;
     time = new Date(time);
-    
+
     y = time.getFullYear();
 
     m = time.getMonth()+1;
-    
+
     d = time.getDate();
-    
+
     h = time.getHours();
     h = checkTime(h);
 
