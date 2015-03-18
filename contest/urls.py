@@ -23,9 +23,16 @@ from contest import views
 
 urlpatterns = patterns('contest.views',
     url(r'^$',views.archive,name='archive'),
+    #create new contest
     url(r'^new/$',views.new,name='new'),
+    #edit existing contest
     url(r'^edit/(?P<contest_id>\d+)/$',views.edit,name='edit'),
+    #delete contest
     url(r'^delete/(?P<contest_id>\d+)/$',views.delete,name='delete'),
+    #detail of contest
     url(r'^(?P<contest_id>\d+)/$',views.contest,name='contest'),
+    #user register contest
     url(r'^register/(?P<contest_id>\d+)/$',views.register,name='register'),
+    #user create new clarification
+    url(r'^ask/$',views.ask,name='ask')
 )
