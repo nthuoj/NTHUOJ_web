@@ -22,7 +22,7 @@ from contest.models import Contestant
 from contest.models import Clarification
 
 from contest.scoreboard import Scoreboard
-from contest.scoreboard import User
+from contest.scoreboard import User as ScoreboardUser
 from contest.scoreboard import ScoreboardProblem
 from contest.scoreboard import UserProblem
 from contest.scoreboard import Submission as ScoreboardSubmission
@@ -31,6 +31,8 @@ from problem.models import Problem
 from problem.models import Testcase
 from problem.models import Submission
 from problem.models import SubmissionDetail
+
+from users.models import User
 
 def get_contestant_list(contest):
     return Contestant.objects.filter(contest = contest)
@@ -64,7 +66,7 @@ def get_scoreboard(contest):
         scoreboard.add_problem(new_problem)
 
     for contestant in contestants:
-        new_contestant = User(contestant.user.username)
+        new_contestant = ScoreboardUser(contestant.user.username)
         for problem in contest.problem.all():
             submissions = get_contestant_problem_submission_list(contest,contestant,problem)    
             total_testcases = get_total_testcases(problem)
@@ -94,3 +96,20 @@ def get_scoreboard(contest):
         scoreboard.add_user(new_contestant)
 
     return scoreboard
+
+def get_clarifications(contest,user):
+    reply_all = Clarification.objects.filter(contest = contest, reply_all = True)
+    user_ask = Clarification.objects.filter(contest = contest, asker = user)
+    return reply_all | user_ask
+
+def is_contestant(user,contest):
+    contestant = Contestant.objects.filter(contest = contest, user = user)
+    if len(contestant) >= 1:
+        return True
+    return False
+
+def can_ask(user,contest):
+    user_is_contestant = is_contestant(user,contest)
+    user_is_owner = (contest.owner == user)
+    user_is_coowner = contest.coowner.filter(pk = user.pk).exists()
+    return  user_is_contestant | user_is_owner | user_is_coowner 

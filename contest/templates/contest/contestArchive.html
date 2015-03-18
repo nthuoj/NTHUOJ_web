@@ -245,7 +245,7 @@ SOFTWARE.
                 </tr>
               </thead>
               <tbody>
-                {% for coowner in contest.coowners %}
+                {% for coowner in contest.coowner.all %}
                 <tr>
                   {% if user|has_auth:contest.id %}
                   <td>
