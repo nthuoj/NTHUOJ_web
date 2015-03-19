@@ -17,22 +17,15 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
-/*
-the target element
-start time should put in tag with given id
-<p id="timer">2015/3/16 12:00:23</p>
-Usage: timer("timer");
-*/
 $(function(){
     timer("time");
+    getRestTime();
 });
 function timer(id) {
-    var server_time = new Date(document.getElementById('time').innerHTML);
+    var server_time = new Date(document.getElementById(id).innerHTML);
     var now = new Date();
     var offset = server_time.getTime() - now.getTime();
-    var t = setTimeout(function() {
-        showTime(id,offset);
-    }, 1000);
+    showTime(id,offset);
 }
 
 function checkTime(i) {
@@ -63,4 +56,76 @@ function showTime(id,offset) {
     var t = setTimeout(function() {
         showTime(id,offset);
     }, 1000);
+}
+
+function getRestTime() {
+    var serverTime = new Date(document.getElementById("time").innerHTML).getTime();
+    var remaining_time = new Array();
+    var upcoming_time = new Array();
+    var tmp = new Array();
+    var remainings = new Array();
+    var upcomings = new Array();
+    var flag = 0;
+    try{
+        tmp = document.getElementsByName("end");
+        remainings = document.getElementsByName("remain");
+        for(var i=0;i<tmp.length;i++){
+            remaining_time[i] = new Date(tmp[i].textContent).getTime();
+        }
+    } catch(e){}
+    tmp = new Array();
+    try{
+        tmp = document.getElementsByName("start");
+        upcomings = document.getElementsByName("upcome");
+        for(var i=0;i<tmp.length;i++)
+            upcoming_time[i] = new Date(tmp[i].textContent).getTime();
+    } catch(e){}
+
+    for(var i=0;i<remaining_time.length;i++){
+
+        if (serverTime <= remaining_time[i]){
+            var result = (remaining_time[i] - serverTime) / 1000;
+            var s = parseInt(result % 60);
+            result /= 60;
+            var m = parseInt(result % 60);
+            result /= 60;
+            var h = parseInt(result);
+            m = checkTime(m);
+            s = checkTime(s);
+            h = checkTime(h);
+            remainings[i].innerHTML = h + ":" + m + ":" + s;
+        }
+    }
+    for(var i=0;i<upcoming_time.length;i++){
+
+        if (serverTime <= upcoming_time[i]){
+            var result = (upcoming_time[i] - serverTime) / 1000;
+            var s = parseInt(result % 60);
+            result /= 60;
+            var m = parseInt(result % 60);
+            result /= 60;
+            var h = parseInt(result);
+            m = checkTime(m);
+            s = checkTime(s);
+            h = checkTime(h);
+            upcomings[i].innerHTML = h + ":" + m + ":" + s;
+        }
+    }
+    for(var i=0;i<remaining_time.length;i++){
+        if(serverTime <= remaining_time[i]){
+            flag = 1;
+            break;
+        }
+    }
+    for(var i=0;i<upcoming_time.length;i++){
+        if(serverTime <= upcoming_time[i]){
+            flag = 1;
+            break;
+        }
+    }
+    if(flag == 1){
+        var t = setTimeout(function() {
+            getRestTime();
+        }, 1000);
+    }
 }

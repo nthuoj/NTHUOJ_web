@@ -48,12 +48,12 @@ function info() {
 }
 
 $(function() {
-    var one_minute = 60*1000;
+    var one_hour = 60*60*1000;
     setInterval(function() {
         $.get('/get_time/', function(data) {
             $('#time').html(data);
         });
-    }, one_minute);
+    }, one_hour);
     // Call index_alert after window loaded.
     index_alert();
 })
