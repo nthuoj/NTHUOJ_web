@@ -88,12 +88,17 @@ SOFTWARE.
             {% endfor %}
           </tbody>
         </table>
-        {% if user|can_ask:contest %}
+        
         <div align="center">
+          {% if user|can_ask:contest %}
           <button type="button" class="btn btn-primary btn-lg" data-toggle="modal" 
                   data-target="#clarification">Clarify</button>
+          {% endif %}
+          {% if user|can_reply:contest %}
+          <button type="button" class="btn btn-warning btn-lg" data-toggle="modal" 
+                  data-target="#reply">Reply</button>
+          {% endif %}
         </div>
-        {% endif %}
       </div>
     </div>
     <hr>
@@ -125,6 +130,10 @@ SOFTWARE.
     {% if user|can_ask:contest %}
     <!--Clarification Modal-->
     {% include "contest/clarification.html" %}
+    {% endif %}
+    {% if user|can_reply:contest %}
+    <!--Clarification Modal-->
+    {% include "contest/reply.html" %}
     {% endif %}
   </div>
 </body>

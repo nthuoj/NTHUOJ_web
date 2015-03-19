@@ -97,10 +97,18 @@ def get_scoreboard(contest):
 
     return scoreboard
 
-def get_clarifications(contest,user):
-    reply_all = Clarification.objects.filter(contest = contest, reply_all = True)
-    user_ask = Clarification.objects.filter(contest = contest, asker = user)
-    return reply_all | user_ask
+def is_owner_coowner(user,contest):
+    user_is_owner = (contest.owner == user)
+    user_is_coowner = contest.coowner.filter(pk = user.pk).exists()
+    return user_is_owner | user_is_coowner
+
+def get_clarifications(user,contest):
+    if is_owner_coowner(user,contest):
+        return Clarification.objects.filter(contest = contest)
+    else:
+        reply_all = Clarification.objects.filter(contest = contest, reply_all = True)
+        user_ask = Clarification.objects.filter(contest = contest, asker = user)
+        return reply_all | user_ask
 
 def is_contestant(user,contest):
     contestant = Contestant.objects.filter(contest = contest, user = user)
@@ -110,6 +118,8 @@ def is_contestant(user,contest):
 
 def can_ask(user,contest):
     user_is_contestant = is_contestant(user,contest)
-    user_is_owner = (contest.owner == user)
-    user_is_coowner = contest.coowner.filter(pk = user.pk).exists()
-    return  user_is_contestant | user_is_owner | user_is_coowner 
+    user_is_owner_coowner = is_owner_coowner(user, contest)
+    return  user_is_contestant | user_is_owner_coowner
+
+def can_reply(user,contest):
+    return is_owner_coowner(user,contest)
