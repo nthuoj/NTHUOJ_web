@@ -62,15 +62,24 @@ function getRestTime() {
     var serverTime = new Date(document.getElementById("time").innerHTML).getTime();
     var remaining_time = new Array();
     var upcoming_time = new Array();
+    var contest_id = new Array();
+    var freezes = new Array();
     var tmp = new Array();
+    var tmp2 = new Array();
+    var tmp3 = new Array();
     var remainings = new Array();
     var upcomings = new Array();
     var flag = 0;
     try{
         tmp = document.getElementsByName("end");
         remainings = document.getElementsByName("remain");
+        tmp2 = document.getElementsByName("contest_id");
+        tmp3 = document.getElementsByName("freeze_time");
+
         for(var i=0;i<tmp.length;i++){
             remaining_time[i] = new Date(tmp[i].textContent).getTime();
+            contest_id[i] = tmp2[i].textContent;
+            freezes[i] = Number(tmp3[i].textContent);
         }
     } catch(e){}
     tmp = new Array();
@@ -82,9 +91,12 @@ function getRestTime() {
     } catch(e){}
 
     for(var i=0;i<remaining_time.length;i++){
+        var result = (remaining_time[i] - serverTime) / 1000;
 
+        if(result <= freezes[i]*60){
+            document.getElementById("contest_" + contest_id[i]).className = "info";
+        }
         if (serverTime <= remaining_time[i]){
-            var result = (remaining_time[i] - serverTime) / 1000;
             var s = parseInt(result % 60);
             result /= 60;
             var m = parseInt(result % 60);
@@ -97,9 +109,9 @@ function getRestTime() {
         }
     }
     for(var i=0;i<upcoming_time.length;i++){
+        var result = (upcoming_time[i] - serverTime) / 1000;
 
         if (serverTime <= upcoming_time[i]){
-            var result = (upcoming_time[i] - serverTime) / 1000;
             var s = parseInt(result % 60);
             result /= 60;
             var m = parseInt(result % 60);
