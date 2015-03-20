@@ -103,9 +103,10 @@ function getRestTime() {
             break;
         }
     }
+    var one_second = 1000;
     if(flag == 1){
         var t = setTimeout(function() {
             getRestTime();
-        }, 1000);
+        }, one_second);
     }
 }

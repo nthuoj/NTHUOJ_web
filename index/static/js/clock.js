@@ -52,7 +52,8 @@ function showTime(id,offset) {
     s = checkTime(s);
 
     document.getElementById(id).innerHTML = y + "/" + m + "/" + d + " " + h + ":" + min + ":" + s;
+    var one_second = 1000;
     var t = setTimeout(function() {
         showTime(id,offset);
-    }, 1000);
+    }, one_second);
 }
