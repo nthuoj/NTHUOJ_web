@@ -42,7 +42,7 @@ function readify(){
 $(function(){
     active_tab = document.getElementById("current-tab").value;
     if(active_tab == 'all')
-        $('#nav_tab a[href="#all"]').tab('show');
+        $('#notification-tab-type a[href="#all"]').tab('show');
     $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
         active_tab = $(e.target).text();
         if(active_tab == 'All Notifications')

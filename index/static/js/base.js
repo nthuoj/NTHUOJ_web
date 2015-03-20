@@ -22,7 +22,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 $(function() {
-    var one_minute = 60*1000;
+    var one_minute = 60 * 1000;
     setInterval(function() {
         $.get('/get_time/', function(data) {
             $('#time').html(data);
