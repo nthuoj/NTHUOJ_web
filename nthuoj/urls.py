@@ -7,8 +7,7 @@ import autocomplete_light
 autocomplete_light.autodiscover()
 
 urlpatterns = patterns('',
-    url(r'^autocomplete/', 
-    include('autocomplete_light.urls')),
+    url(r'^autocomplete/', include('autocomplete_light.urls')),
     url(r'^admin/', include(admin.site.urls)),
     url(r'^get_time/', 'index.views.get_time'),
     url(r'^', include('index.urls', namespace='index')),

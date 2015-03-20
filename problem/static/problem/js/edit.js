@@ -30,7 +30,7 @@ function switchTab(t) {
     $($(t).attr("href")).show();
 }
 
-//$(document).ready(function() {
+$(document).ready(function() {
     $(".tab-pane").hide();
     $("#info").show();
     hide_field();
@@ -45,7 +45,6 @@ function switchTab(t) {
     $("#add_testcase").submit(function (e) {
         e.preventDefault();
         add_new_testcase(pid, new FormData(this));
-        //refreshTestcaseEvent();
     });
     $("#update_testcase").submit(function (e) {
         e.preventDefault();
@@ -61,7 +60,7 @@ function switchTab(t) {
         });
     });
     refreshTestcaseEvent();
-//});
+});
 
 
 function add_new_tag(pid) {
