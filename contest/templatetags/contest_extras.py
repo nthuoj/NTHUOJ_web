@@ -21,6 +21,7 @@ from django import template
 from utils import user_info
 from contest.models import Contest
 
+from contest import contest_info
 from contest.scoreboard import Scoreboard
 from contest.scoreboard import ScoreboardProblem
 from contest.scoreboard import UserProblem
@@ -38,6 +39,11 @@ def has_auth(user,contest_id):
     return user_info.has_contest_ownership(user,contest)
 
 register.filter("has_auth",has_auth)
+
+@register.filter
+def can_ask(user,contest):
+    return contest_info.can_ask(user,contest)
+register.filter("can_ask",can_ask)
 
 #check if user is judge or admin
 @register.filter
@@ -61,6 +67,7 @@ def users_sorted_by_solved_testcases(scoreboard):
     return scoreboard.users
 register.filter("users_sorted_by_solved_testcases",users_sorted_by_solved_testcases)
 
+@register.filter
 def total_contestant(scoreboard):
     return len(scoreboard.users)
 register.filter("total_contestant",total_contestant)
