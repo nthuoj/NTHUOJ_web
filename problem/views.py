@@ -24,6 +24,7 @@ SOFTWARE.
 from django.http import HttpResponse, HttpResponseBadRequest, Http404
 from django.shortcuts import render, redirect
 from django.core.exceptions import PermissionDenied
+from django.contrib.auth.decorators import login_required
 
 from users.models import User
 from problem.models import Problem, Tag, Testcase
@@ -68,10 +69,8 @@ def detail(request, pid):
     return render(request, 'problem/detail.html',
                   {'problem': problem, 'tags': tag, 'testcase': testcase})
 
+@login_required
 def edit(request, pid=None):
-    if request.user.is_anonymous():
-        logger.warning("user un-login")
-        raise PermissionDenied()
     if pid is not None:
         is_new = False
         try:
@@ -119,6 +118,7 @@ def edit(request, pid=None):
                    'sample_in': problem.sample_in, 'sample_out': problem.sample_out,
                    'testcase': testcase })
 
+@login_required
 def tag(request, pid):
     if request.method == "POST":
         tag = request.POST['tag']
@@ -137,6 +137,7 @@ def tag(request, pid):
         return HttpRequestBadRequest()
     return HttpResponse()
 
+@login_required
 def delete_tag(request, pid, tag_id):
     try:
         problem = Problem.objects.get(pk=pid)
@@ -153,6 +154,7 @@ def delete_tag(request, pid, tag_id):
     problem.tags.remove(tag)
     return HttpResponse()
 
+@login_required
 def testcase(request, pid, tid=None):
     if request.method == 'POST':
         try:
@@ -177,9 +179,11 @@ def testcase(request, pid, tid=None):
             testcase.memory_limit = request.POST['memory_limit']
             testcase.save()
             logger.info("testcase saved, tid = %s" % (testcase.pk))
-            return HttpResponse(json.dumps({'tid': testcase.pk}), content_type="application/json")
+            return HttpResponse(json.dumps({'tid': testcase.pk}), 
+                                content_type="application/json")
     return HttpResponse()
 
+@login_required
 def delete_testcase(request, pid, tid):
     try:
         problem = Problem.objects.get(pk=pid)
