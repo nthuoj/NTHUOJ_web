@@ -21,6 +21,7 @@ git clone git@github.com:bruce3557/NTHUOJ_web.git
 * django-axes
 * bower
 * django-bower
+* curl
 
 ###Installation:
 * Execute install.py for initial setting.
