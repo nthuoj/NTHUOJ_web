@@ -25,15 +25,18 @@ import time
 import random
 from django.http import Http404
 from django.utils import timezone
+from utils.log_info import get_logger
 from contest.models import Contest
 from django.shortcuts import render
 from django.http import HttpResponse
 from datetime import datetime, timedelta
+from users.models import User, Notification
+from django.template import RequestContext
 from utils.user_info import validate_user
 from django.template import RequestContext
 
-
 # Create your views here.
+logger = get_logger()
 def index(request, alert_info='none'):
     present = timezone.now()
     time_threshold = datetime.now() + timedelta(days=1);
@@ -45,7 +48,6 @@ def index(request, alert_info='none'):
                 {'c_runnings':c_runnings, 'c_upcomings':c_upcomings,
                 'alert_info':alert_info},
                 context_instance=RequestContext(request, processors=[custom_proc]))
-
 
 def custom_404(request):
     return render(request, 'index/404.html', status=404)
@@ -63,12 +65,15 @@ def get_time(request):
     return HttpResponse(tstr)
 
 def custom_proc(request):
+
+    amount = Notification.objects.filter \
+        (receiver=request.user, read=False).count()
+
     t = time.time()
     tstr = datetime.fromtimestamp(t).strftime('%Y/%m/%d %H:%M:%S')
     people = random.randint(100,999)
     return {
         'tstr': tstr,
         'people': people,
-        'info1': 123,
-        'info2': 1234567
+        'amount': amount
     }

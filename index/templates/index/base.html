@@ -43,7 +43,7 @@ SOFTWARE.
     <link rel="stylesheet" href={% static "magnific-popup/dist/magnific-popup.css" %}>
     <script src={% static "magnific-popup/dist/jquery.magnific-popup.min.js" %}></script>
     <script src={% static "js/popup-setting.js" %}></script>
-    <script src={% static "js/index.js" %}></script>
+    <script src={% static "js/base.js" %}></script>
     <link rel="stylesheet" href={% static "css/index.css" %} media="screen">
     <link rel="stylesheet" href={% static "css/mfp-fade.css" %} media="screen">
     <script src={% static "js/clock.js" %}></script>
@@ -67,8 +67,8 @@ SOFTWARE.
               </a>
             </div>
           </div>
-        </div>
-      </form>
+        </form>
+      </div>
     </div>
 
     <!-- forget_password popup -->
@@ -140,24 +140,26 @@ SOFTWARE.
           <li><a href="{% url 'users:submit' %}"><p class="p2">Submit</p></a></li>
           <li><a href="{% url 'status:status' %}"><p class="p2">Status</p></a></li>
           <li><a href="{% url 'group:list' %}"><p class="p2">Group</p></a></li>
+          <!--
           <li class="dropdown">
             <a href="#" class="dropdown-toggle" data-toggle="dropdown">
               <p class="p2">Team<b class="caret"></b></p>
             </a>
             <ul class="dropdown-menu">
-              <li><a href="{% url 'team:list' %}">team list</a></li>
-              <li><a href="{% url 'team:profile' %}">team profile</a></li>
+              <li><a href="{% url 'team:list' %}">Team List</a></li>
+              <li><a href="{% url 'team:profile' %}">Team Profile</a></li>
             </ul>
           </li>
+          -->
           <li class="dropdown">
             <a href="#" class="dropdown-toggle" data-toggle="dropdown">
               <p class="p2">User<b class="caret"></b></p>
             </a>
             <ul class="dropdown-menu">
-              <li><a href="{% url 'users:list' %}">user list</a></li>
+              <li><a href="{% url 'users:list' %}">User List</a></li>
               {% if user.is_authenticated %}
                 <li>
-                  <a href={% url "users:profile" user.username %}>user profile</a>
+                  <a href={% url "users:profile" user.username %}>User Profile</a>
                 </li>
               {% endif %}
             </ul>
@@ -167,8 +169,24 @@ SOFTWARE.
         <ul class="nav navbar-nav navbar-right">
           {% if user.is_authenticated %}
           <li>
-          <img src={% static "./images/14.png "%} height="50" width="50"
-          onclick="info();" class="ring">
+            <a href={% url "users:notification" %} id="notification">
+              {% if amount > 0 %}
+              <img src={% static "./images/bell_blue.png "%} id="notification_img"
+                   title="You have {{ amount }} unread notifications."/>
+              <div id="notification_circle">
+                <b id="number">
+                  {% if amount < 100 %}
+                    {{ amount }}
+                  {% else %}
+                    99+
+                  {% endif %}
+                </b>
+              </div>
+              {% else %}
+              <img src={% static "./images/bell_gray.png "%} id="notification_img"
+                   title="You have no unread notifications."/>
+              {% endif %}
+            </a>
           </li>
           {% endif %}
           {% if user.is_authenticated %}
@@ -183,11 +201,6 @@ SOFTWARE.
 
     <!-- wrap all page elements to div -->
     <div class="wrap-body container-fluid">
-      <!--information-->
-      <div class="information" id="information" style="display:none";>
-        <li class="divider">{{ info1 }}</li>
-        <li class="divider">{{ info2 }}</li>
-      </div>
       {% block body_block %}
       {% endblock body_block %}
     </div>
