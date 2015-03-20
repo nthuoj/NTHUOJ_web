@@ -18,46 +18,14 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 $(function(){
-    timer("time");
     getRestTime();
 });
-function timer(id) {
-    var server_time = new Date(document.getElementById(id).innerHTML);
-    var now = new Date();
-    var offset = server_time.getTime() - now.getTime();
-    showTime(id,offset);
-}
-
 function checkTime(i) {
     if (i < 10) {
         i = "0" + i
     }; // add zero in front of numbers < 10
     return i;
 }
-
-function showTime(id,offset) {
-    time = new Date();
-    time = time.getTime() + offset;
-    time = new Date(time);
-
-    y = time.getFullYear();
-    m = time.getMonth()+1;
-    d = time.getDate();
-    h = time.getHours();
-    h = checkTime(h);
-
-    min = time.getMinutes();
-    min = checkTime(min);
-
-    s = time.getSeconds();
-    s = checkTime(s);
-
-    document.getElementById(id).innerHTML = y + "/" + m + "/" + d + " " + h + ":" + min + ":" + s;
-    var t = setTimeout(function() {
-        showTime(id,offset);
-    }, 1000);
-}
-
 function getRestTime() {
     var serverTime = new Date(document.getElementById("time").innerHTML).getTime();
     var remaining_time = new Array();
