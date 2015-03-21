@@ -90,7 +90,7 @@ SOFTWARE.
         </div>
         <div id="collapseOne" class="panel-collapse collapse in">
           <div class="panel-body">
-            <table class="table table-hover">
+            <table class="table table-hover table-striped">
               <thead>
                 <tr>
                   <th>Title</th>
@@ -100,11 +100,19 @@ SOFTWARE.
               </thead>
               <tbody>
                 {% for running_contest in rc_list %}
-                <tr>
-                  <td>{{ running_contest.cname }}</td>
-                  <td>{{ running_contest.start_time }}</td>
-                  <td>{{ running_contest.end_time }}</td>
-                </tr>
+                  {% if running_contest.is_homework %}
+                    <tr style="background-color:#F1F7EA">
+                      <td>{{ running_contest.cname }}</td>
+                      <td>{{ running_contest.start_time }}</td>
+                      <td>{{ running_contest.end_time }}</td>
+                    </tr>
+                  {% else %}
+                    <tr style="background-color:#E3E8E3">
+                      <td>{{ running_contest.cname }}</td>
+                      <td>{{ running_contest.start_time }}</td>
+                      <td>{{ running_contest.end_time }}</td>
+                    </tr>
+                  {% endif %}
                 {% endfor %}
               </tbody>
             </table>
@@ -131,11 +139,19 @@ SOFTWARE.
               </thead>
               <tbody>
                 {% for ended_contest in ec_list %}
-                <tr>
-                  <td>{{ ended_contest.cname }}</td>
-                  <td>{{ ended_contest.start_time }}</td>
-                  <td>{{ ended_contest.end_time }}</td>
-                </tr>
+                  {% if ended_contest.is_homework %}
+                  <tr style="background-color:#D6DBD0">
+                    <td>{{ ended_contest.cname }}</td>
+                    <td>{{ ended_contest.start_time }}</td>
+                    <td>{{ ended_contest.end_time }}</td>
+                  </tr>
+                  {% else %}
+                  <tr style="background-color:#C5C9C5">
+                    <td>{{ ended_contest.cname }}</td>
+                    <td>{{ ended_contest.start_time }}</td>
+                    <td>{{ ended_contest.end_time }}</td>
+                  </tr>
+                  {% endif %}
                 {% endfor %}
               </tbody>
             </table>

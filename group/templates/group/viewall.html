@@ -55,12 +55,35 @@ SOFTWARE.
     <tbody>
       {% for archive in data_list %}
       <tr>
-        {% if list_type == 'runContest' or list_type == "endContest" %}
-        <td>{{ archive.cname }}</td>
-        <td>{{ archive.start_time }}</td>
-        <td>{{ archive.end_time }}</td>
-        {% endif %}
-        {% if list_type == "announce" %}
+        {% if list_type == 'runContest'%}
+          {% if archive.is_homework %}
+            <tr style="background-color:#F1F7EA">
+              <td>{{ archive.cname }}</td>
+              <td>{{ archive.start_time }}</td>
+              <td>{{ archive.end_time }}</td>
+            </tr>
+          {% else %}
+            <tr style="background-color:#E3E8E3">
+              <td>{{ archive.cname }}</td>
+              <td>{{ archive.start_time }}</td>
+              <td>{{ archive.end_time }}</td>
+            </tr>
+          {% endif %}
+        {% elif list_type == 'endContest'%}
+          {% if archive.is_homework %}
+            <tr style="background-color:#D6DBD0">
+              <td>{{ archive.cname }}</td>
+              <td>{{ archive.start_time }}</td>
+              <td>{{ archive.end_time }}</td>
+            </tr>
+          {% else %}
+            <tr style="background-color:#C5C9C5">
+              <td>{{ archive.cname }}</td>
+              <td>{{ archive.start_time }}</td>
+              <td>{{ archive.end_time }}</td>
+            </tr>
+          {% endif %}
+        {% elif list_type == "announce" %}
         <td>{{ archive.title }}</td>
         <td>{{ archive.content }}</td>
         <td>
