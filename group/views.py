@@ -20,7 +20,7 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.'''
-from django.http import HttpResponse, Http404, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render_to_response, render
 from django.utils import timezone
 from django.core.exceptions import PermissionDenied
@@ -30,7 +30,6 @@ from group.models import Group
 from utils.user_info import has_group_ownership
 from utils.log_info import get_logger
 
-
 logger = get_logger()
 
 def get_group(group_id):
@@ -38,7 +37,10 @@ def get_group(group_id):
         group = Group.objects.get(id = group_id)
     except Group.DoesNotExist:
         logger.warning('Group: Can not edit group %s! Group is not exist!' % group_id)
-        raise Http404("Group does not exist!")
+        return render(
+            request,
+            'index/404.html',
+            {'error_message': 'Group: Can not edit group %s! Group is not exist!' % group_id})
     return group
 
 def get_running_contest(request, group_id):
@@ -95,9 +97,9 @@ def get_all_announce(request, group_id):
 def detail(request, group_id):
     
     group = get_group(group_id)
-
-    all_contest = group.trace_contest.all()[0:5]
-    annowence_list = group.announce.all()[0:5]
+    show_number = 5; #number for brief list to show in group detail page.
+    all_contest = group.trace_contest.all()
+    annowence_list = group.announce.all()
     student_list = group.member.order_by('user_level')
     coowner_list = group.coowner.all()
     owner = group.owner
@@ -114,8 +116,8 @@ def detail(request, group_id):
 
     return render(
         request, 'group/groupDetail.html', {
-            'rc_list': running_contest_list, 
-            'ec_list': ended_contest_list,
+            'rc_list': running_contest_list[0:show_number], 
+            'ec_list': ended_contest_list[0:show_number],
             'an_list': annowence_list,
             'coowner_list': coowner_list,
             'owner': owner,
@@ -151,7 +153,10 @@ def new(request):
                 logger.info('Group: Create a new group %s!' % new_group.id)
                 return HttpResponseRedirect('/group/list')
             else:
-                raise Http404('Cannot create group! Info is blank!')
+                return render(
+                    request,
+                    'index/404.html',
+                    {'error_message': 'Cannot create group! Info is blank!'})
     else:
         raise PermissionDenied
 

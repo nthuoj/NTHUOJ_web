@@ -26,8 +26,9 @@ SOFTWARE.-->
 {% block body_block %}
 
 <div class="container-fluid">
-  <div class="row-fluid">
-    <div class="span12">
+  <div class="contest">
+    <br>
+    <div class="well">
       <!-- Create/Delete group need judge auth -->
       {% if user.has_judge_auth %}
       <div class="form-group">
@@ -35,11 +36,6 @@ SOFTWARE.-->
            href="{% url 'group:new' %}">Create</a>
       </div>
       {% endif %}
-    </div>
-  </div>
-  <div class="contest">
-    <br>
-    <div class="well">
       <h2>Group List</h2>
     </div>
     <div class="filter" style="float:right">
@@ -48,15 +44,15 @@ SOFTWARE.-->
         <button id="allgroup-btn" type="button" class="btn btn-primary">All Group</button>
         <script>
           $(function(){
-            $('#allGroup').show();
-            $('#myGroup').hide();
+            $('#all_group_table').show();
+            $('#my_group_table').hide();
             $('#mygroup-btn').click(function(){
-              $('#allGroup').hide();
-              $('#myGroup').show();
+              $('#all_group_table').hide();
+              $('#my_group_table').show();
             });
             $('#allgroup-btn').click(function(){
-              $('#allGroup').show();
-              $('#myGroup').hide();
+              $('#all_group_table').show();
+              $('#my_group_table').hide();
             });
           })
         </script>
@@ -64,7 +60,7 @@ SOFTWARE.-->
     </div>
     <a href="" class="btn btn-sm btn-default" data-toggle="modal" 
        data-target="#searchGroupModal" style="float:left">Search group</a>
-    <table id="allGroup" class="table table-hover">
+    <table id="all_group_table" class="table table-hover">
       <thead>
         <tr>
           <th>Name</th>
@@ -94,7 +90,7 @@ SOFTWARE.-->
         {% endfor %}
       </tbody>
     </table>
-    <table id="myGroup" class="table table-hover">
+    <table id="my_group_table" class="table table-hover">
       <thead>
         <tr>
           <th>Name</th>
