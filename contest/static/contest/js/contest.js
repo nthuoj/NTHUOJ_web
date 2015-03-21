@@ -27,7 +27,7 @@ function init(){
     tabInit();
 }
 
-function sele(target){
+function select(target){
     document.getElementById("id_clarification").value = target;
 }
 

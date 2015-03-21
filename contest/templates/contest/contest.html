@@ -83,7 +83,7 @@ SOFTWARE.
               {% if user|can_reply:contest %}
               <td>
               <button type="button" class="btn btn-warning btn-xs" data-toggle="modal" 
-                      data-target="#reply" onclick="sele({{ clarification.id }})">Reply</button>
+                      data-target="#reply" onclick="select({{ clarification.id }})">Reply</button>
               </td>
               {% endif %}
               <td>{{ forloop.counter }}</td>
