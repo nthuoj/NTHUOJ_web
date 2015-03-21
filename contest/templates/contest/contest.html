@@ -62,9 +62,12 @@ SOFTWARE.
         <h1 class="panel-title" style="text-align:center;">Clarification</h1>
       </div>
       <div id="contest_clarification">
-        <table class="table">
+        <table class="table" id="table">
           <thead>
             <tr>
+              {% if user|can_reply:contest %}
+                <th></th>
+              {% endif %}
               <th>#</th>
               <th>Problem</th>
               <th>Asker</th>
@@ -77,6 +80,12 @@ SOFTWARE.
           <tbody>
             {% for clarification in clarifications %}
             <tr>
+              {% if user|can_reply:contest %}
+              <td>
+              <button type="button" class="btn btn-warning btn-xs" data-toggle="modal" 
+                      data-target="#reply" onclick="sele({{ clarification.id }})">Reply</button>
+              </td>
+              {% endif %}
               <td>{{ forloop.counter }}</td>
               <td>{{ clarification.problem }}</td>
               <td>{{ clarification.asker }}</td>
@@ -93,10 +102,6 @@ SOFTWARE.
           {% if user|can_ask:contest %}
           <button type="button" class="btn btn-primary btn-lg" data-toggle="modal" 
                   data-target="#clarification">Clarify</button>
-          {% endif %}
-          {% if user|can_reply:contest %}
-          <button type="button" class="btn btn-warning btn-lg" data-toggle="modal" 
-                  data-target="#reply">Reply</button>
           {% endif %}
         </div>
       </div>
@@ -132,7 +137,7 @@ SOFTWARE.
     {% include "contest/clarification.html" %}
     {% endif %}
     {% if user|can_reply:contest %}
-    <!--Clarification Modal-->
+    <!--Reply Modal-->
     {% include "contest/reply.html" %}
     {% endif %}
   </div>

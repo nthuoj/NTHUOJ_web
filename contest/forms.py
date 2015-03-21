@@ -70,7 +70,8 @@ class ReplyForm(forms.ModelForm):
         contest = initial.get('contest',{})
         if type(contest) is Contest:
             clarifications = Clarification.objects.filter(contest = contest)
-            self.fields['clarification'] = forms.ChoiceField(choices=[(clarification.id,clarification.content) 
+            self.fields['clarification'] = forms.ChoiceField(
+                choices=[(clarification.id,clarification.content) 
                 for clarification in clarifications.all()])
 
     class Meta:

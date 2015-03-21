@@ -162,7 +162,7 @@ def ask(request):
         contest = request.POST['contest']
         contest_obj = Contest.objects.get(pk = contest)
     except:
-        logger.warning('Clarification: Can not create Clarification!')
+        logger.warning('Clarification: Can not create Clarification! Contest not found!')
         return redirect('contest:archive')
 
     if request.user.is_authenticated():
@@ -171,7 +171,8 @@ def ask(request):
                 form = ClarificationForm(request.POST)
                 if form.is_valid():
                     new_clarification = form.save()
-                    logger.info('Clarification: User %s create Clarification %s!' % (request.user.username, new_clarification.id))
+                    logger.info('Clarification: User %s create Clarification %s!' 
+                        % (request.user.username, new_clarification.id))
                 return redirect('contest:contest',contest)
     return redirect('contest:archive')
 
@@ -193,6 +194,7 @@ def reply(request):
                     replied_clarification = form.save()
                     replied_clarification.reply_time = datetime.now()
                     replied_clarification.save()
-                    logger.info('Clarification: User %s reply Clarification %s!' % (request.user.username, replied_clarification.id))
+                    logger.info('Clarification: User %s reply Clarification %s!' 
+                        % (request.user.username, replied_clarification.id))
                 return redirect('contest:contest',contest)
     return redirect('contest:archive')

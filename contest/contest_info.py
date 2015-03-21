@@ -32,6 +32,8 @@ from problem.models import Testcase
 from problem.models import Submission
 from problem.models import SubmissionDetail
 
+from utils.user_info import has_contest_ownership
+
 from users.models import User
 
 def get_contestant_list(contest):
@@ -97,13 +99,8 @@ def get_scoreboard(contest):
 
     return scoreboard
 
-def is_owner_coowner(user,contest):
-    user_is_owner = (contest.owner == user)
-    user_is_coowner = contest.coowner.filter(pk = user.pk).exists()
-    return user_is_owner | user_is_coowner
-
 def get_clarifications(user,contest):
-    if is_owner_coowner(user,contest):
+    if has_contest_ownership(user,contest):
         return Clarification.objects.filter(contest = contest)
     else:
         reply_all = Clarification.objects.filter(contest = contest, reply_all = True)
@@ -118,8 +115,8 @@ def is_contestant(user,contest):
 
 def can_ask(user,contest):
     user_is_contestant = is_contestant(user,contest)
-    user_is_owner_coowner = is_owner_coowner(user, contest)
+    user_is_owner_coowner = has_contest_ownership(user,contest)
     return  user_is_contestant | user_is_owner_coowner
 
 def can_reply(user,contest):
-    return is_owner_coowner(user,contest)
+    return has_contest_ownership(user,contest)
