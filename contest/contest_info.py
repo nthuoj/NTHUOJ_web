@@ -108,9 +108,10 @@ def get_clarifications(user,contest):
         return reply_all | user_ask
 
 def is_contestant(user,contest):
-    contestant = Contestant.objects.filter(contest = contest, user = user)
-    if len(contestant) >= 1:
-        return True
+    if user.is_authenticated():
+        contestant = Contestant.objects.filter(contest = contest, user = user)
+        if len(contestant) >= 1:
+            return True
     return False
 
 def can_ask(user,contest):

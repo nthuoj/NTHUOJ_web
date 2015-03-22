@@ -17,6 +17,7 @@
     OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
     SOFTWARE.
     '''
+from django.contrib.auth.decorators import login_required
 from datetime import datetime
 from django.shortcuts import redirect
 from django.core.exceptions import PermissionDenied
@@ -178,6 +179,7 @@ def register(request, contest_id):
         return redirect('contest:archive')
     raise PermissionDenied
 
+@login_required
 def ask(request):
     try:
         contest = request.POST['contest']
@@ -187,17 +189,17 @@ def ask(request):
             % contest)
         return redirect('contest:archive')
 
-    if request.user.is_authenticated():
-        if can_ask(request.user,contest_obj):
-            if request.method == 'POST':
-                form = ClarificationForm(request.POST)
-                if form.is_valid():
-                    new_clarification = form.save()
-                    logger.info('Clarification: User %s create Clarification %s!' 
-                        % (request.user.username, new_clarification.id))
-                return redirect('contest:contest',contest)
+    if can_ask(request.user,contest_obj):
+        if request.method == 'POST':
+            form = ClarificationForm(request.POST)
+            if form.is_valid():
+                new_clarification = form.save()
+                logger.info('Clarification: User %s create Clarification %s!' 
+                    % (request.user.username, new_clarification.id))
+            return redirect('contest:contest',contest)
     return redirect('contest:archive')
 
+@login_required
 def reply(request):
     try:
         clarification = request.POST['clarification']
@@ -208,15 +210,14 @@ def reply(request):
         logger.warning('Clarification: Can not reply Clarification!')
         return redirect('contest:archive')
     
-    if request.user.is_authenticated():
-        if can_reply(request.user,contest_obj):
-            if request.method == 'POST':
-                form = ReplyForm(request.POST or None, instance = instance)
-                if form.is_valid():
-                    replied_clarification = form.save()
-                    replied_clarification.reply_time = datetime.now()
-                    replied_clarification.save()
-                    logger.info('Clarification: User %s reply Clarification %s!' 
-                        % (request.user.username, replied_clarification.id))
-                return redirect('contest:contest',contest)
+    if can_reply(request.user,contest_obj):
+        if request.method == 'POST':
+            form = ReplyForm(request.POST or None, instance = instance)
+            if form.is_valid():
+                replied_clarification = form.save()
+                replied_clarification.reply_time = datetime.now()
+                replied_clarification.save()
+                logger.info('Clarification: User %s reply Clarification %s!' 
+                    % (request.user.username, replied_clarification.id))
+            return redirect('contest:contest',contest)
     return redirect('contest:archive')
