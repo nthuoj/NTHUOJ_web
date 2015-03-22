@@ -81,7 +81,6 @@ class User(AbstractBaseUser):
 
     def has_judge_auth(self):
         has_auth = ((self.user_level == self.ADMIN) or (self.user_level == self.JUDGE))
-
         return has_auth
 
     def has_subjudge_auth(self):

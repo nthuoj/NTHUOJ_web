@@ -1,3 +1,4 @@
+#-*- encoding=UTF-8 -*-
 """
 Django settings for nthuoj project.
 

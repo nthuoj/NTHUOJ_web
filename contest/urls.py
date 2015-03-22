@@ -22,7 +22,10 @@ from django.conf.urls import patterns, url
 from contest import views
 
 urlpatterns = patterns('contest.views',
+    #default contest archive
     url(r'^$',views.archive,name='archive'),
+    #explicit page of contest archive
+    url(r'^page/(?P<page>\d+)/$',views.archive,name='archive'),
     #create new contest
     url(r'^new/$',views.new,name='new'),
     #edit existing contest
