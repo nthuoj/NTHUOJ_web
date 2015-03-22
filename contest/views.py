@@ -207,7 +207,8 @@ def reply(request):
         contest_obj = instance.contest
         contest = contest_obj.id
     except:
-        logger.warning('Clarification: Can not reply Clarification!')
+        logger.warning('Clarification: User %s can not reply Clarification %s!'
+            % (request.user.username, clarification.id))
         return redirect('contest:archive')
     
     if can_reply(request.user,contest_obj):
