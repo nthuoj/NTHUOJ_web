@@ -102,10 +102,11 @@ def get_scoreboard(contest):
 def get_clarifications(user,contest):
     if has_contest_ownership(user,contest):
         return Clarification.objects.filter(contest = contest)
-    else:
-        reply_all = Clarification.objects.filter(contest = contest, reply_all = True)
+    reply_all = Clarification.objects.filter(contest = contest, reply_all = True)
+    if user.is_authenticated():
         user_ask = Clarification.objects.filter(contest = contest, asker = user)
         return reply_all | user_ask
+    return reply_all
 
 def is_contestant(user,contest):
     if user.is_authenticated():
