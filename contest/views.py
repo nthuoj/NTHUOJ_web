@@ -162,7 +162,8 @@ def ask(request):
         contest = request.POST['contest']
         contest_obj = Contest.objects.get(pk = contest)
     except:
-        logger.warning('Clarification: Can not create Clarification! Contest not found!')
+        logger.warning('Clarification: Can not create Clarification! Contest %s not found!'
+            % contest)
         return redirect('contest:archive')
 
     if request.user.is_authenticated():
