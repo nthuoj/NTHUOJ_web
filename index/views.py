@@ -41,9 +41,9 @@ def index(request, alert_info='none'):
     present = timezone.now()
     time_threshold = datetime.now() + timedelta(days=1);
     c_runnings = Contest.objects.filter \
-        (start_time__lt=present, end_time__gt=present,end_time__lt=time_threshold)
+        (start_time__lt=present, end_time__gt=present, is_homework=False)
     c_upcomings = Contest.objects.filter \
-        (start_time__gt=present, start_time__lt=time_threshold)
+        (start_time__gt=present, start_time__lt=time_threshold, is_homework=False)
     return render(request, 'index/index.html',
                 {'c_runnings':c_runnings, 'c_upcomings':c_upcomings,
                 'alert_info':alert_info},
