@@ -50,7 +50,7 @@ $(document).ready(function() {
         e.preventDefault();
         $.ajax({
           type: "POST",
-          url: "/problem/pid/testcase/"+update_tid+"/",
+          url: "/problem/pid/testcase/" + update_tid + "/",
           data: new FormData(this),  
           processData: false,
           contentType: false,
@@ -67,12 +67,12 @@ function add_new_tag(pid) {
     var new_tag = $('#newTag').val().trim();
     if (new_tag == '') return false;
     $.ajax({
-        url: "/problem/"+pid+"/tag/",
+        url: "/problem/" + pid + "/tag/",
         data: $("#addTag").serialize(),
         type: "POST",
         success: function(msg) {
-          var new_tag_row = $("<tr data-target='"+msg.tag_id+"'>");
-          new_tag_row.append($("<td>"+new_tag+"</td>"));
+          var new_tag_row = $("<tr data-target='" + msg.tag_id + "'>");
+          new_tag_row.append($("<td>" + new_tag + "</td>"));
           new_tag_row.append($("<td><button class='btn btn-primary del_tag_btn'>Delete</button></td>"));
           $("#tagTable").append(new_tag_row);
         }
@@ -86,7 +86,7 @@ function add_new_testcase(pid, data) {
       var memory_limit = $("#new_memory_limit").val();
       $.ajax({
           type: 'POST',
-          url: '/problem/'+pid+'/testcase/',
+          url: '/problem/' + pid + '/testcase/',
           data: data, 
           processData: false,
           contentType: false,
@@ -94,15 +94,17 @@ function add_new_testcase(pid, data) {
               var tid = data.tid;
               var new_row = $("<tr data-target="+tid+">");
               new_row.append($("<td>").append(
-                  $("<a>"+tid+".in</a>")));
+                  $("<a>" + tid + ".in</a>")));
               new_row.append($("<td>").append(
-                  $("<a>"+tid+".out</a>")));
+                  $("<a>" + tid + ".out</a>")));
               new_row.append($("<td>").append(
-                  $("<input type='number' id='"+tid
-                      +"_time' name='time_limit' value='"+time_limit+"' min='0'></td>")));
+                  $("<input type='number' id='" + tid
+                      + "_time' name='time_limit' value='" + time_limit +
+		      "' min='0'></td>")));
               new_row.append($("<td>").append(
-                  $("<input type='number' id='"+tid
-                      +"_memory' name='memory_limit' value='"+memory_limit+"' min='0'></td>")));
+                  $("<input type='number' id='" + tid
+                      + "_memory' name='memory_limit' value='" + memory_limit
+		      + "' min='0'></td>")));
               new_row.append("<td><button class='btn btn-primary' onclick='return false'\
                     data-toggle='modal' data-target='#edit_testcase'>ReUpload</button></td>");
               new_row.append("<td><button class='btn btn-primary update_btn'>Update</button></td>");
@@ -114,7 +116,7 @@ function add_new_testcase(pid, data) {
 
 $("#preview_button").click(function() {
     var data = $("#problem_info :input").serialize();
-    MyWindow = window.open('/problem/preview?'+data,
+    MyWindow = window.open('/problem/preview?' + data,
         "MyWindow",
         "toolbar=no,location=no,directories=no,status=no,menubar=no, \
         scrollbars=yes,resizable=yes,width=600,height=30"
@@ -146,20 +148,20 @@ function refreshTestcaseEvent() {
     });
     $("body").on("click", ".update_btn", function(e) {
         var tid = $(this).parents("tr").attr('data-target');
-        var time = $("#"+tid+"_time").serialize();
+        var time = $("#" + tid + "_time").serialize();
         var memory = $("#"+tid+"_memory").serialize();
-        if ($("#"+tid+"_time").val() < 0) {
+        if ($("#" + tid + "_time").val() < 0) {
             alert("time limit can't be negative");
             return false;
         }
-        if ($("#"+tid+"_memory").val() < 0) {
+        if ($("#" + tid +"_memory").val() < 0) {
             alert("memory limit can't be negative");
             return false;
         }
         $.ajax({
             type: "POST",
-            url: "/problem/"+pid+"/testcase/"+tid+"/",
-            data: time+"&"+memory+"&"+csrf,
+            url: "/problem/" + pid + "/testcase/" + tid + "/",
+            data: time + "&" + memory + "&" + csrf,
             success: function(data) {
               alert('testcase updated')
             }
@@ -171,7 +173,7 @@ function refreshTestcaseEvent() {
         var tid = $(this).parents("tr").attr('data-target');
         $.ajax({
             type: 'GET',
-            url: '/problem/'+pid+'/testcase/'+tid+'/delete/',
+            url: '/problem/' + pid + '/testcase/' + tid + '/delete/',
             success: function(data) {
               row.hide();
             }
