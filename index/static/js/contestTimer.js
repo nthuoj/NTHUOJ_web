@@ -39,25 +39,23 @@ function getRestTime() {
     var remainings = new Array();
     var upcomings = new Array();
     var flag = 0;
-    try{
-        end_time = document.getElementsByName("end");
-        remainings = document.getElementsByName("remain");
-        id_list = document.getElementsByName("contest_id");
-        freeze_time = document.getElementsByName("freeze_time");
 
-        for(var i=0;i<end_time.length;i++){
-            remaining_time[i] = new Date(end_time[i].textContent).getTime();
-            contest_id[i] = id_list[i].textContent;
-            freezes[i] = Number(freeze_time[i].textContent);
-        }
-    } catch(e){}
+    end_time = document.getElementsByName("end");
+    remainings = document.getElementsByName("remain");
+    id_list = document.getElementsByName("contest_id");
+    freeze_time = document.getElementsByName("freeze_time");
 
-    try{
-        start_time = document.getElementsByName("start");
-        upcomings = document.getElementsByName("upcome");
-        for(var i=0;i<start_time.length;i++)
-            upcoming_time[i] = new Date(start_time[i].textContent).getTime();
-    } catch(e){}
+    for(var i=0;i<end_time.length;i++){
+        remaining_time[i] = new Date(end_time[i].textContent).getTime();
+        contest_id[i] = id_list[i].textContent;
+        freezes[i] = Number(freeze_time[i].textContent);
+    }
+
+    start_time = document.getElementsByName("start");
+    upcomings = document.getElementsByName("upcome");
+    for(var i=0;i<start_time.length;i++)
+        upcoming_time[i] = new Date(start_time[i].textContent).getTime();
+
 
     for(var i=0;i<remaining_time.length;i++){
         var result = (remaining_time[i] - serverTime) / 1000;
