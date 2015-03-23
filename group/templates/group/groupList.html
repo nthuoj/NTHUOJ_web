@@ -40,19 +40,19 @@ SOFTWARE.-->
     </div>
     <div class="filter" style="float:right">
       <div class="btn-group" data-toggle="buttons-radio" style="float:right">
-        <button id="mygroup-btn" type="button" class="btn btn-primary">My Group</button>
-        <button id="allgroup-btn" type="button" class="btn btn-primary">All Group</button>
+        <button id="myGroupButton" type="button" class="btn btn-primary">My Group</button>
+        <button id="allGroupButton" type="button" class="btn btn-primary">All Group</button>
         <script>
           $(function(){
-            $('#all_group_table').show();
-            $('#my_group_table').hide();
-            $('#mygroup-btn').click(function(){
-              $('#all_group_table').hide();
-              $('#my_group_table').show();
+            $('#allGroupTable').show();
+            $('#myGroupTable').hide();
+            $('#myGroupButton').click(function(){
+              $('#allGroupTable').hide();
+              $('#myGroup_Table').show();
             });
-            $('#allgroup-btn').click(function(){
-              $('#all_group_table').show();
-              $('#my_group_table').hide();
+            $('#allGroupButton').click(function(){
+              $('#allGroupTable').show();
+              $('#myGroupTable').hide();
             });
           })
         </script>
@@ -60,7 +60,7 @@ SOFTWARE.-->
     </div>
     <a href="" class="btn btn-sm btn-default" data-toggle="modal" 
        data-target="#searchGroupModal" style="float:left">Search group</a>
-    <table id="all_group_table" class="table table-hover">
+    <table id="allGroupTable" class="table table-hover">
       <thead>
         <tr>
           <th>Name</th>
@@ -90,7 +90,7 @@ SOFTWARE.-->
         {% endfor %}
       </tbody>
     </table>
-    <table id="my_group_table" class="table table-hover">
+    <table id="myGroupTable" class="table table-hover">
       <thead>
         <tr>
           <th>Name</th>
