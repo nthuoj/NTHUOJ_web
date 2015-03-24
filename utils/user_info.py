@@ -45,7 +45,7 @@ def has_contest_ownership(curr_user, curr_contest):
 
     if curr_user == curr_contest.owner:
         return True
-    
+
     contest_coowners = curr_contest.coowner.all()
     if contest_coowners:
         for coowner in contest_coowners:
