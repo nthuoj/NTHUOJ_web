@@ -106,12 +106,10 @@ SOFTWARE.
           </script>
           {% if not user|has_auth:contest.id %}
           {% if user.is_authenticated and contest.open_register %}
-          <a href="{% url 'contest:register' contest.id %}">
-            <button type="button" class="btn btn-success btn-xs"
-                    data-toggle="modal" data-target="#register">
-              <span class="glyphicon glyphicon-plus"></span>
-            </button>
-          </a>
+          <button type="button" class="btn btn-success btn-xs"
+                  data-toggle="modal" data-target="#register">
+            <span class="glyphicon glyphicon-plus"></span>
+          </button>
           {% endif %}
           {% endif %}
         </td>
@@ -291,5 +289,8 @@ SOFTWARE.
     </div>
   </div>
 </div>
-{% endfor %} 
+{% endfor %}
+{% for contest in contests %}
+{% include 'contest/register.html' %}
+{% endfor %}
 {% endblock body_block %}
