@@ -24,4 +24,9 @@ $(document).ready(function() {
     $('[data-toggle="tooltip"]').tooltip({
         'placement': 'top'
     });
+    $('#scoreboardTab a').click(function(e) {
+        e.preventDefault()
+        $('#scoreboardTab a[href="#testcase"]').tab('show')
+        $('#scoreboardTab a[href="#penalty"]').tab('show')
+    })
 });

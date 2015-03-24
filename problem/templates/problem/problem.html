@@ -26,8 +26,10 @@ SOFTWARE.
   <div style='padding-left:10px;padding-right:10px'>
     <div style='float:left;width:60%;'>
       <h2>{{ problem.pname }} &nbsp;&nbsp;
-        {% if problem.owner == user or user.user_level == 'ADMIN' %}
-          <a href="{% url 'problem:problem.views.edit' problem.pk %}">EDIT</a>
+        {% if problem.owner == user or user.user_level == 'ADMIN'%}
+          {% if not preview %}
+            <a href="{% url 'problem:problem.views.edit' problem.pk %}">EDIT</a>
+          {% endif %}
         {% endif %}
       </h2>
     </div>
@@ -99,8 +101,8 @@ SOFTWARE.
   </div>
   <h3>Tags</h3>
   <div id='tags' style='float:left;width:60%'>
-    {% for t in tag %}
-      <span class='label label-info'>{{t.tag_name}}</span>
+    {% for tag in tags %}
+      <span class='label label-info'>{{tag.tag_name}}</span>
     {% endfor %}
   </div>
   <form id='addTag'>
@@ -125,21 +127,7 @@ SOFTWARE.
 </div>
 </body>
 <script>
-$(document).ready(function() {
-    $("#addTagButton").click(function() {
-        var new_tag = $('#newTag').val().trim();
-        if (new_tag == '') return false;
-        $.ajax({
-            url: "/problem/{{problem.pk}}/tag/",
-            data: $("#addTag").serialize(),
-            type: "POST",
-            success: function(msg) {
-              var new_tag_span = "<span class='label label-info'>"+new_tag+"</span>"
-              $("#tags").append(new_tag_span);
-            }
-        });    
-        $("#newTag").val("");
-        return false;
-    });
-});
+var pid = {{problem.pk}};
 </script>
+<script src="{% static 'problem/js/problem.js' %}"></script>
+

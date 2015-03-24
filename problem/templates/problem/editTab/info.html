@@ -38,23 +38,6 @@ SOFTWARE.
     </div>
   {% endif %}
 {% endfor %}
-<script>
-hide_field();
-function hide_field() {
-  $("#id_error_torrence").parent().hide();
-  $("#id_other_judge_id").parent().hide();
-  $("#id_partial_judge_code").parent().hide();
-}
-$("select").on("change", function(e) {
-    hide_field();
-    if (this.value == "ERR_TORRENT")
-        $("#id_error_torrence").parent().show();
-    else if (this.value == "OTHER")
-        $("#id_other_judge_id").parent().show();
-    else if (this.value == "PARTIAL")
-        $("#id_partial_judge_code").parent().show();
-});
-</script>
 <br>
 <br>
 <br>
