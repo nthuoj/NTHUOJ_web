@@ -117,8 +117,8 @@ SOFTWARE.
         <td>{{ contest.id }}</td>
         <td><a href="{% url 'contest:contest' contest.id %}">{{ contest.cname }}</a>
         </td>
-        <td>{{ contest.start_time }}</td>
-        <td>{{ contest.end_time }}</td>
+        <td>{{ contest.start_time|date:"Y/m/d H:i:s" }}</td>
+        <td>{{ contest.end_time|date:"Y/m/d H:i:s" }}</td>
         <td>{{ contest.owner }}</td>
       </tr>
       {% endfor %}

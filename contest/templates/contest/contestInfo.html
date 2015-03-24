@@ -109,13 +109,13 @@ SOFTWARE.
               <tr>
                 <td>Start Time</td>
                 <td>
-                  <h3>{{ contest.start_time }}</h3>
+                  <h3>{{ contest.start_time|date:"Y/m/d H:i:s" }}</h3>
                 </td>
               </tr>
               <tr>
                 <td>End Time</td>
                 <td>
-                  <h3>{{ contest.end_time }}</h3>
+                  <h3>{{ contest.end_time|date:"Y/m/d H:i:s" }}</h3>
                 </td>
               </tr>
             </table>
