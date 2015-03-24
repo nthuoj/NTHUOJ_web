@@ -39,12 +39,12 @@ function clarificationInit(){
 }
 
 function tabInit(){
-    $('#myTab a').click(function(e) {
+    $('#contest_tab a').click(function(e) {
         e.preventDefault()
-        $('#myTab a[href="#overview"]').tab('show')
-        $('#myTab a[href="#problem"]').tab('show')
-        $('#myTab a[href="#scoreboard"]').tab('show')
-        $('#myTab a[href="#status"]').tab('show')
+        $('#contest_tab a[href="#overview"]').tab('show')
+        $('#contest_tab a[href="#problem"]').tab('show')
+        $('#contest_tab a[href="#scoreboard"]').tab('show')
+        $('#contest_tab a[href="#status"]').tab('show')
     });
 }
 
