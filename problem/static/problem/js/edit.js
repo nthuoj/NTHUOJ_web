@@ -34,6 +34,7 @@ $(document).ready(function() {
     $(".tab-pane").hide();
     $("#info").show();
     hide_field();
+    show_field($("select").val());
     $("a[role='tab']").click(function(e) {
         e.preventDefault()
         switchTab(this);
@@ -130,16 +131,21 @@ function hide_field() {
   $("#id_partial_judge_code").parent().hide();
   $("#id_special_judge_code").parent().hide();
 }
+
+function show_field(option) {
+    if (option == "ERR_TORRENT")
+        $("#id_error_torrence").parent().show();
+    else if (option == "OTHER")
+        $("#id_other_judge_id").parent().show();
+    else if (option == "PARTIAL")
+        $("#id_partial_judge_code").parent().show();
+    else if (option == "SPECIAL")
+        $("#id_special_judge_code").parent().show();
+}
+
 $("select").on("change", function(e) {
     hide_field();
-    if (this.value == "ERR_TORRENT")
-        $("#id_error_torrence").parent().show();
-    else if (this.value == "OTHER")
-        $("#id_other_judge_id").parent().show();
-    else if (this.value == "PARTIAL")
-        $("#id_partial_judge_code").parent().show();
-    else if (this.value == "SPECIAL")
-        $("#id_special_judge_code").parent().show();
+    show_field(this.value);
 });
 
 function refreshTestcaseEvent() {

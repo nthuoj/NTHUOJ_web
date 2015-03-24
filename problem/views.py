@@ -1,4 +1,5 @@
 '''
+if 
 The MIT License (MIT)
 
 Copyright (c) 2014 NTHUOJ team
@@ -29,8 +30,8 @@ from django.contrib.auth.decorators import login_required
 from users.models import User
 from problem.models import Problem, Tag, Testcase
 from problem.forms import ProblemForm
-from utils import log_info
-from nthuoj.settings import TESTCASE_PATH
+from utils import log_info, config_info
+from problem.problem_info import *
 
 import os
 import json
@@ -65,13 +66,15 @@ def detail(request, pid):
     except Problem.DoesNotExist:
         logger.warning('problem %s not found' % (pid))
         raise Http404('problem %s does not exist' % (pid))
-    testcase = Testcase.objects.filter(problem=problem)
-    tag = problem.tags.all()
-    return render(request, 'problem/detail.html',
-                  {'problem': problem, 'tags': tag, 'testcase': testcase})
+    problem = get_problem(problem)
+    print problem.testcase
+    return render(request, 'problem/detail.html', {'problem': problem})
 
 @login_required
 def edit(request, pid=None):
+    SPECIAL_PATH = config_info.get_config('path', 'special_judge_path')
+    PARTIAL_PATH = config_info.get_config('path', 'partial_judge_path')
+    TESTCASE_PATH = config_info.get_config('path', 'testcase_path')
     if pid is not None:
         is_new = False
         try:
@@ -104,6 +107,14 @@ def edit(request, pid=None):
             problem.sample_in = request.POST['sample_in']
             problem.sample_out = request.POST['sample_out']
             problem.save()
+            if "special_judge_code" in request.FILES:
+                with open('%s%s.c' % (SPECIAL_PATH, problem.pk), 'w') as t_in:
+                    for chunk in request.FILES['special_judge_code'].chunks():
+                        t_in.write(chunk)
+            if "partial_judge_code" in request.FILES:
+                with open('%s%s.c' % (PARTIAL_PATH, problem.pk), 'w') as t_in:
+                    for chunk in request.FILES['partial_judge_code'].chunks():
+                        t_in.write(chunk)
             logger.info('edit problem, pid = %d' % (problem.pk))
             return redirect('/problem/%d' % (problem.pk))
     if not request.user.is_admin:
@@ -117,7 +128,8 @@ def edit(request, pid=None):
                    'tags': tags, 'description': problem.description,
                    'input': problem.input, 'output': problem.output,
                    'sample_in': problem.sample_in, 'sample_out': problem.sample_out,
-                   'testcase': testcase, 'TESTCASE_PATH': TESTCASE_PATH})
+                   'testcase': testcase, 'TESTCASE_PATH': TESTCASE_PATH, 
+                   'SPECIAL_PATH': SPECIAL_PATH, 'PARTIAL_PATH': PARTIAL_PATH})
 
 @login_required
 def tag(request, pid):
@@ -181,6 +193,7 @@ def testcase(request, pid, tid=None):
             testcase.save()
             logger.info("testcase saved, tid = %s" % (testcase.pk))
         if 't_in' in request.FILES:
+            TESTCASE_PATH = config_info.get_config('path', 'testcase_path')
             with open('%s%s.in' % (TESTCASE_PATH, testcase.pk), 'w') as t_in:
                 for chunk in request.FILES['t_in'].chunks():
                     t_in.write(chunk)
