@@ -29,10 +29,12 @@ SOFTWARE.
   <title>index</title>
 {% endblock title_name %}
 {% block import_source %}
+<script src={% static "./js/index.js"%}></script>
 {% endblock import_source %}
-
 {% block body_block %}
   <!-- clock -->
+
+  <input type="text" id="alert_info" value="{{alert_info}}" />
   <div class="gray">
   </div>
 
@@ -66,14 +68,26 @@ SOFTWARE.
     </thead>
     <thead style="background-color: #E5E5E5">
       <tr>
-        <th>#</th>
         <th>Contest name</th>
         <th>remaining time</th>
         <th>upcoming</th>
       </tr>
     </thead>
     <tbody class="line" id="contest_content">
-      <tr><td>{{ contest_num }}#{{ contest }}#{{ ctime }}</td></tr>
+      {% for c_running in c_runnings %}
+        <tr>
+          <td>{{ c_running.cname }}</td>
+          <td>{{ c_running.time_diff }}</td>
+          <td></td>
+        </tr>
+      {% endfor %}
+      {% for c_upcoming in c_upcomings %}
+        <tr>
+          <td>{{ c_upcoming.cname }}</td>
+          <td></td>
+          <td>{{ c_upcoming.time_diff }}</td>
+        </tr>
+      {% endfor %}
     </tbody>
   </table>
 {% endblock body_block %}

@@ -1,18 +1,14 @@
-<!--
+/*
 The MIT License (MIT)
-
 Copyright (c) 2014 NTHUOJ team
-
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
 in the Software without restriction, including without limitation the rights
 to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 copies of the Software, and to permit persons to whom the Software is
 furnished to do so, subject to the following conditions:
-
 The above copyright notice and this permission notice shall be included in all
 copies or substantial portions of the Software.
-
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -20,26 +16,35 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
--->
-<!DOCTYPE html>
-{% extends "index/base.html" %}
-{% load static %}
+*/
 
-{% block title_name %}
-  <title>brokenpage</title>
-{% endblock title_name %}
-{% block import_source %}
-{% endblock import_source %}
-{% block body_block %}
-  <div style="position:relative;bottom:0px;">
-    <p style="text-align:center" class="err1" >4&nbsp0&nbsp4</p>
-  </div>
-  <p style="text-align:center" class="err2">Page Not Found</p>
-  <p style="text-align:center" class="err2">{{ error_message }}</p>
-  <p style="text-align:center" class="err3">
-    Sorry , the page you are looking for seems to be missing.
-  </p>
+/*
+To add attribute to designated element
 
-  <hr class="hr1" style="position:relative;top:40px;">
-  <br><br><br><br><br><br><br><br><br><br><br><br>
-{% endblock body_block %}
+Usage: add_attribute(element_id, attribute_to_set, value_attribute_should_be); 
+*/
+function add_attribute(id, attribute, value) {
+    var att = document.createAttribute(attribute);
+    att.value = value;
+    document.getElementById(id).setAttributeNode(att);
+}
+
+/*
+add class="form-control" to designated element.
+Simple way to bootstraptify element
+
+Usage: add_form_control(id_of_element_to_bootstraptify)
+*/
+
+function add_form_control(id) {
+    add_attribute(id, 'class', 'form-control');
+}
+
+/*
+to hide designated element
+Usage: hide(id_of_element_to_hide)
+*/
+
+function hide(id){
+    add_attribute(id,'type','hidden');
+}

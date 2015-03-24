@@ -23,56 +23,66 @@ SOFTWARE.
 -->
 {%load static%}
 <!-- code mirror related -->
-<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/codemirror/4.8.0/codemirror.css">
-<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/codemirror/4.8.0/theme/solarized.css">
-<script src="//cdnjs.cloudflare.com/ajax/libs/codemirror/4.8.0/codemirror.js"></script>
-<script src="//cdnjs.cloudflare.com/ajax/libs/codemirror/4.8.0/mode/javascript/javascript.js"></script>
-<script src="//cdnjs.cloudflare.com/ajax/libs/codemirror/4.8.0/addon/selection/active-line.js"></script>
-<script src="//cdnjs.cloudflare.com/ajax/libs/codemirror/4.8.0/addon/edit/matchbrackets.js"></script>
-<script src="//cdnjs.cloudflare.com/ajax/libs/codemirror/4.8.0/mode/clike/clike.js"></script>
-<script src="//cdnjs.cloudflare.com/ajax/libs/codemirror/4.8.0/addon/selection/active-line.js"></script>
-<script src="//cdnjs.cloudflare.com/ajax/libs/codemirror/4.8.0/addon/edit/matchbrackets.js"></script>
-
+<link rel="stylesheet" href={% static "codemirror/lib/codemirror.css" %}>
+<link rel="stylesheet" href={% static "codemirror/theme/solarized.css" %}>
+<link rel="stylesheet" href={% static "codemirror/addon/dialog/dialog.css" %}>
+<script src={% static "codemirror/lib/codemirror.js" %}></script>
+<script src={% static "codemirror/addon/comment/comment.js" %}></script>
+<script src={% static "codemirror/addon/dialog/dialog.js" %}></script>
+<script src={% static "codemirror/addon/edit/closebrackets.js" %}></script>
+<script src={% static "codemirror/addon/edit/matchbrackets.js" %}></script>
+<script src={% static "codemirror/addon/search/search.js" %}></script>
+<script src={% static "codemirror/addon/search/searchcursor.js" %}></script>
+<script src={% static "codemirror/addon/selection/active-line.js" %}></script>
+<script src={% static "codemirror/addon/display/placeholder.js" %}></script>
+<script src={% static "codemirror/keymap/sublime.js" %}></script>
+<script src={% static "codemirror/mode/clike/clike.js" %}></script>
+<!-- custom settings -->
 <script src={% static "js/editorsettings.js" %}></script>
 <!-- file input -->
-<script src="http://gregpike.net/demos/bootstrap-file-input/bootstrap.file-input.js"></script>
+<script src={% static "bootstrap.file-input/index.js" %}></script>
+<style>
+  .CodeMirror-matchingbracket {
+    outline: 1px solid gray;
+    color: black !important;
+}
+</style>
 
-<!-- textarea -->
-<form class="form-horizontal" style="width:80%;margin:0 auto;">
-  <div class="form-group" style="margin:50px;">
-
-    <div class="col-lg-2">
-      <label class="control-label">PID:</label>
-      <input type="text" class="form-control input-sm col-lg-2" id="pid">
-    </div>
-
-    <div class="col-lg-8">
-      <label class="control-label col-lg-2">Language:</label>
-      <div class="col-lg-4">
-        <div class="radio">
-          <label id="cpp">
-            <input type="radio" name="optionsRadios" value="cpp" checked>
-            C++: -O2 -lm -std=c++11
-          </label>
-        </div>
-        <div class="radio">
-          <label id="c" data-placement="right">
-            <input type="radio" name="optionsRadios" value="c">
-            C: -O2 -lm -std=c99
-          </label>
+<div class="container">
+  <h3>Submit Code</h3>
+  <form class="form-horizontal" action="/users/submit/" method="post">
+    {% csrf_token %}
+    <div class="row" style="margin:10px;">
+      <div class="form-group col-lg-2">
+        <label class="control-label">PID:</label>
+        {{ form.pid }}
+        <strong style="color:red">{{ form.pid.errors }}</strong>
+      </div>
+      <div class="col-lg-8">
+        <label class="control-label col-lg-1">Language:</label>
+        <div class="col-lg-11 radio">
+          {{ form.language }}
         </div>
       </div>
     </div>
-  </div>
+    {{ form.code }}
+    <strong style="color:red">{{ form.code.errors }}</strong>
+    <a class="open-popup-link" href="#keybindings-popup">
+        We support Sublime key bindings!
+      </a>
+    <div class="form-group row">
+      <div style="float:left;margin:30px;">
+        <input type="file" data-filename-placement="inside" id="fileinput">
+      </div>
+      <div style="float:right;margin:30px;">
+        <button class="btn btn-primary">Submit</button>
+      </div>
+    </div>
+  </form>
+</div>
 
-  <textarea id="code_editor" name="code"></textarea>
-  <div class="form-group">
-    <div style="float:left;margin-left:30px;">
-      <input type="file" data-filename-placement="inside" id="fileinput">
-    </div>
-    <div style="float:right;margin-right:30px;">
-      <input type="button" class="btn btn-danger" value="Pre Test">
-      <button class="btn btn-primary">Submit</button>
-    </div>
+<div id="keybindings-popup" class="mfp-hide">
+  <div class="jumbotron">
+    {% include "users/keybindings.html" %}
   </div>
-</form>
+</div>

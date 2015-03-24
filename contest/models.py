@@ -23,6 +23,8 @@ from users.models import User
 from problem.models import Problem
 from team.models import Team
 from datetime import datetime
+from datetime import timedelta
+from django.utils import timezone
 
 # Create your models here.
 
@@ -38,6 +40,16 @@ class Contest(models.Model):
     is_homework = models.BooleanField(default=False)
     open_register = models.BooleanField(default=True)
     creation_time = models.DateTimeField(default=datetime.now, auto_now_add=True)
+
+    def time_diff(self):
+        present = timezone.now()
+        if self.start_time < present:
+            delta = self.end_time  - present
+        else:
+            delta = self.start_time  - present
+
+        deltatime = delta - timedelta(microseconds=delta.microseconds)
+        return str(deltatime)
 
     def __unicode__(self):
         return self.cname
@@ -67,9 +79,8 @@ class Clarification(models.Model):
     asker = models.ForeignKey(User, related_name='asker')
     replyer = models.ForeignKey(User, related_name='replyer', blank=True, null=True)
     ask_time = models.DateTimeField(default=datetime.now, auto_now=True)
-    reply_time = models.DateTimeField(blank=True)
-    realy_all = models.BooleanField(default=False)
+    reply_time = models.DateTimeField(blank=True, null=True)
+    reply_all = models.BooleanField(default=False)
 
     def __unicode__(self):
         return str(self.id)
-

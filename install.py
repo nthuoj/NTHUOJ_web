@@ -37,6 +37,11 @@ if not os.path.isfile('nthuoj.ini'):
     pwd = getpass.getpass()
     write_ini_file(host, db, user, pwd)
 
+if not os.path.isfile('emailInfo.py'):
+    # Setting emailInfo.py
+    email_host = raw_input('Email host(gmail): ')
+    email_host_pwd = getpass.getpass('Email host\'s password : ')
+    write_email_file(email_host, email_host_pwd)
 
 # Database Migratinos
 db_migrate()
@@ -47,6 +52,7 @@ ans = raw_input('Create super user?[Y/n] ')
 if ans == '' or ans == 'y' or ans == 'Y':
     django_manage('createsuperuser')
 
+# Install needed library & setup
 
-# Install needed library
-
+# django-axes
+django_manage('syncdb')
