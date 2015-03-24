@@ -51,10 +51,10 @@ SOFTWARE.
               <thead>
                 <tr>
                   {% if user|has_auth:contest.id %}
-                  <th style="text-align:center">Rejudge</th>
+                  <th style="text-align:center;width:20%;">Rejudge</th>
                   {% endif %}
-                  <th style="text-align:center">#</th>
-                  <th style="text-align:center">Problem</th>
+                  <th style="text-align:center;width:20%;">#</th>
+                  <th style="text-align:center;width:60%;">Problem</th>
                 </tr>
               </thead>
               <tbody>
@@ -64,9 +64,6 @@ SOFTWARE.
                   <td>
                     <button type="button" class="btn btn-warning btn-xs">
                       <span class="glyphicon glyphicon-refresh"></span>
-                    </button>
-                    <button type="button" class="btn btn-danger btn-xs">
-                      <span class="glyphicon glyphicon-minus"></span>
                     </button>
                   </td>
                   {% endif %}
@@ -82,10 +79,10 @@ SOFTWARE.
               <thead>
                 <tr>
                   {% if user|has_auth:contest.id %}
-                  <th></th>
+                  <th style="width:20%;"></th>
                   {% endif %}
-                  <th style="text-align:center">#</th>
-                  <th style="text-align:center">Contestant</th>
+                  <th style="text-align:center;width:20%;">#</th>
+                  <th style="text-align:center;">Contestant</th>
                 </tr>
               </thead>
               <tbody>
@@ -127,9 +124,6 @@ SOFTWARE.
             <table class="table" style="text-align:center">
               <thead>
                 <tr>
-                  {% if user|has_auth:contest.id %}
-                  <th></th>
-                  {% endif %}
                   <th style="text-align:center">#</th>
                   <th style="text-align:center">Coowner</th>
                 </tr>
@@ -137,13 +131,6 @@ SOFTWARE.
               <tbody>
                 {% for coowner in contest.coowner.all %}
                 <tr>
-                  {% if user|has_auth:contest.id %}
-                  <td>
-                    <button type="button" class="btn btn-danger btn-xs">
-                      <span class="glyphicon glyphicon-minus"></span>
-                    </button>
-                  </td>
-                  {% endif %}
                   <td>{{ forloop.counter }}</td>
                   <td>{{ coowner }}</td>
                 </tr>
