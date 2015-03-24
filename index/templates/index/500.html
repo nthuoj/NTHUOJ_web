@@ -27,36 +27,28 @@ SOFTWARE.
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  {% block title_name %}
-  {% endblock title_name %}
   <!-- necessarily jQeuery -->
   <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js">
   </script>
   <!-- bootstrap, bootwatch JS & CSS -->
-  <link rel="stylesheet" 
+  <link rel="stylesheet"
         href="http://bootswatch.com/paper/bootstrap.css" media="screen">
-  <link rel="stylesheet" 
+  <link rel="stylesheet"
         href="http://bootswatch.com/assets/css/bootswatch.min.css">
   <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js">
   </script>
   <link rel="stylesheet" href={% static "./css/index.css"%} media="screen">
-  {% block import_source %}
-  {% endblock import_source %}
 </head>
 <body>
-  <div style="position:relative;bottom:0px;">
-    <p style="text-align:center" class="err1" >5&nbsp0&nbsp0</p>
+  <div style="background-color:#fcfcfc;border-radius:10px;">
+    <div style="position:relative;bottom:0px;">
+      <p style="text-align:center" class="err1" >5&nbsp0&nbsp0</p>
+    </div>
+    <p style="text-align:center" class="err2">Some errors occurred</p>
+    <p style="text-align:center" class="err2">{{ error_message }}</p>
+    <p style="text-align:center" class="err3">
+      Oops , there was an error.
+    </p>
   </div>
-  <p style="text-align:center" class="err2">Some errors occurred</p>
-  <p style="text-align:center" class="err2">{{ error_message }}</p>
-  <p style="text-align:center" class="err3">
-    Oops , there was an error.
-  </p>
-
-  <hr class="hr1" style="position:relative;top:40px;">
-  
-  {% block body_block %}
-  {% endblock body_block %} 
-
 </body>
 </html>
