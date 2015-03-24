@@ -29,11 +29,11 @@ SOFTWARE.
   <title>index</title>
 {% endblock title_name %}
 {% block import_source %}
+<script src={% static "./js/index.js"%}></script>
 {% endblock import_source %}
-
 {% block body_block %}
   <!-- clock -->
-  
+
   <input type="text" id="alert_info" value="{{alert_info}}" />
   <div class="gray">
   </div>
