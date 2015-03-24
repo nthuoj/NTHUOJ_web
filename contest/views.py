@@ -17,6 +17,7 @@
     OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
     SOFTWARE.
     '''
+from django.contrib.auth.decorators import login_required
 from datetime import datetime
 from django.shortcuts import redirect
 from django.core.exceptions import PermissionDenied
@@ -98,8 +99,9 @@ def contest(request, contest_id):
             'scoreboard':scoreboard},
             context_instance = RequestContext(request, processors = [custom_proc]))
 
+@login_required
 def new(request):
-    if request.user.is_authenticated() and request.user.has_judge_auth():
+    if request.user.has_judge_auth():
         if request.method == 'GET':
             form = ContestForm(initial={'owner':request.user})
             return render(request,'contest/editContest.html',{'form':form})
@@ -111,80 +113,78 @@ def new(request):
                 return redirect('contest:archive')
     raise PermissionDenied
 
-
+@login_required
 def edit(request, contest_id):
-    if request.user.is_authenticated():
-        try:
-            contest = Contest.objects.get(id = contest_id)
-        except Contest.DoesNotExist:
-            logger.warning('Contest: Can not edit contest %s! Contest not found!' % contest_id)
-            raise Http404('Contest does not exist, can not edit.')
+    try:
+        contest = Contest.objects.get(id = contest_id)
+    except Contest.DoesNotExist:
+        logger.warning('Contest: Can not edit contest %s! Contest not found!' % contest_id)
+        raise Http404('Contest does not exist, can not edit.')
 
-        if user_info.has_contest_ownership(request.user,contest):
-            if request.method == 'GET':
-                contest_dic = model_to_dict(contest)
-                form = ContestForm(initial = contest_dic)
-                return render(request,'contest/editContest.html',{'form':form,'user':request.user})
-            if request.method == 'POST':
-                form = ContestForm(request.POST, instance = contest)
-                if form.is_valid():
-                    modified_contest = form.save()
-                    logger.info('Contest: Modified contest %s!' % modified_contest.id)
-                return redirect('contest:archive')
-    raise PermissionDenied
-
-def delete(request, contest_id):
-    if request.user.is_authenticated():
-        try:
-            contest = Contest.objects.get(id = contest_id)
-        except Contest.DoesNotExist:
-            logger.warning('Contest: Can not delete contest %s! Contest not found!' % contest_id)
-            raise Http404('Contest does not exist, can not delete.')
-
-        # only contest owner can delete
-        if request.user == contest.owner:
-            deleted_contest_id = contest.id
-            contest.delete()
-            logger.info('Contest: Delete contest %s!' % deleted_contest_id)
+    if user_info.has_contest_ownership(request.user,contest):
+        if request.method == 'GET':
+            contest_dic = model_to_dict(contest)
+            form = ContestForm(initial = contest_dic)
+            return render(request,'contest/editContest.html',{'form':form,'user':request.user})
+        if request.method == 'POST':
+            form = ContestForm(request.POST, instance = contest)
+            if form.is_valid():
+                modified_contest = form.save()
+                logger.info('Contest: Modified contest %s!' % modified_contest.id)
             return redirect('contest:archive')
     raise PermissionDenied
 
-def register(request, contest_id):
-    if request.user.is_authenticated():
-        #check contest's existance
-        try:
-            contest = Contest.objects.get(id = contest_id)
-        except Contest.DoesNotExist:
-            logger.warning('Contest: Can not register contest %s! Contest not found!' % contest_id)
-            raise Http404('Contest does not exist, can not register.')
-        if contest.open_register:
-            #check if user is not owner or coowner
-            if not user_info.has_contest_ownership(request.user,contest):
-                #check contestant existance
-                if Contestant.objects.filter(contest = contest,user = request.user).exists():
-                    #if user has attended
-                    logger.info('Contest: User %s has already attended Contest %s!' % (request.user.username,contest.id))
-                else:
-                    contestant = Contestant(contest = contest,user = request.user)
-                    contestant.save()
-                    logger.info('Contest: User %s attends Contest %s!' % (request.user.username,contest.id))
+@login_required
+def delete(request, contest_id):
+    try:
+        contest = Contest.objects.get(id = contest_id)
+    except Contest.DoesNotExist:
+        logger.warning('Contest: Can not delete contest %s! Contest not found!' % contest_id)
+        raise Http404('Contest does not exist, can not delete.')
+
+    # only contest owner can delete
+    if request.user == contest.owner:
+        deleted_contest_id = contest.id
+        contest.delete()
+        logger.info('Contest: Delete contest %s!' % deleted_contest_id)
         return redirect('contest:archive')
     raise PermissionDenied
 
+@login_required
+def register(request, contest_id):
+    #check contest's existance
+    try:
+        contest = Contest.objects.get(id = contest_id)
+    except Contest.DoesNotExist:
+        logger.warning('Contest: Can not register contest %s! Contest not found!' % contest_id)
+        raise Http404('Contest does not exist, can not register.')
+    if contest.open_register:
+        #check if user is not owner or coowner
+        if not user_info.has_contest_ownership(request.user,contest):
+            #check contestant existance
+            if Contestant.objects.filter(contest = contest,user = request.user).exists():
+                #if user has attended
+                logger.info('Contest: User %s has already attended Contest %s!' % (request.user.username,contest.id))
+            else:
+                contestant = Contestant(contest = contest,user = request.user)
+                contestant.save()
+                logger.info('Contest: User %s attends Contest %s!' % (request.user.username,contest.id))
+    return redirect('contest:archive')
+
+@login_required
 def ask(request):
     try:
         contest = request.POST['contest']
         contest_obj = Contest.objects.get(pk = contest)
     except:
         logger.warning('Clarification: Can not create Clarification!')
-        return HttpResponseRedirect('/contest/')
+        return redirect('contest:archive')
 
-    if request.user.is_authenticated():
-        if can_ask(request.user,contest_obj):
-            if request.method == 'POST':
-                form = ClarificationForm(request.POST)
-                if form.is_valid():
-                    new_clarification = form.save()
-                    logger.info('Clarification: User %s create Clarification %s!' % (request.user.username, new_clarification.id))
-                return redirect('contest:contest',contest)
+    if can_ask(request.user,contest_obj):
+        if request.method == 'POST':
+            form = ClarificationForm(request.POST)
+            if form.is_valid():
+                new_clarification = form.save()
+                logger.info('Clarification: User %s create Clarification %s!' % (request.user.username, new_clarification.id))
+            return redirect('contest:contest',contest)
     return redirect('contest:archive')
