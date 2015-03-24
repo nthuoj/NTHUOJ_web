@@ -64,7 +64,6 @@ def status(request, username=None):
         objects.filter(sid__in=submissions_id).order_by('-sid')
 
     submissions = regroup_submission(submissions, submission_details)
-    print contest_status(request, username)
     return render(
         request,
         'status/status.html',
@@ -74,12 +73,7 @@ def status(request, username=None):
 
 def contest_status(request, contest):
     submissions = Submission.objects.all()
-    if username:
-        try:
-            user = User.objects.get(username=username)
-            submissions = submissions.filter(user=user)
-        except:
-            raise Http404('User %s Not Found!' % username)
+
 
     submissions = submissions.order_by('-id')[0:50]
     submissions_id = map(lambda submission: submission.id, submissions)
