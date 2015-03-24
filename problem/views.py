@@ -67,7 +67,6 @@ def detail(request, pid):
         logger.warning('problem %s not found' % (pid))
         raise Http404('problem %s does not exist' % (pid))
     problem = get_problem(problem)
-    print problem.testcase
     return render(request, 'problem/detail.html', {'problem': problem})
 
 @login_required
