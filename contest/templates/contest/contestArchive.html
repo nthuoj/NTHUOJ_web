@@ -107,7 +107,8 @@ SOFTWARE.
           {% if not user|has_auth:contest.id %}
           {% if user.is_authenticated and contest.open_register %}
           <a href="{% url 'contest:register' contest.id %}">
-            <button type="button" class="btn btn-success btn-xs" >
+            <button type="button" class="btn btn-success btn-xs"
+                    data-toggle="modal" data-target="#register">
               <span class="glyphicon glyphicon-plus"></span>
             </button>
           </a>
@@ -115,7 +116,7 @@ SOFTWARE.
           {% endif %}
         </td>
         <td>{{ contest.id }}</td>
-        <td><a href="{% url 'contest:contest' contest.id %}">{{ contest.cname }}</a>
+        <td><a class="black" href="{% url 'contest:contest' contest.id %}">{{ contest.cname }}</a>
         </td>
         <td>{{ contest.start_time }}</td>
         <td>{{ contest.end_time }}</td>
@@ -138,8 +139,7 @@ SOFTWARE.
 <!-- /.container -->
 <!-- Contest detail info-->
 {% for contest in contests %}
-<div class="modal fade" id="contestInfo{{ contest.id }}" tabindex="-1" 
-     role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+<div class="modal fade" id="contestInfo{{ contest.id }}" tabindex="-1" role="dialog">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">

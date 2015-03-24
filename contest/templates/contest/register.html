@@ -1,4 +1,4 @@
-/*
+<!--
 The MIT License (MIT)
 Copyright (c) 2014 NTHUOJ team
 Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -16,23 +16,26 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
-*/
+-->
+{% extends "index/base.html" %} 
+{% load staticfiles %} 
 
-#contestArchive.container {
-  width: 90%;
-}
-.black {
-  color: black;
-}
-tr.past, tr.past>td>a {
-  color: #d8d8d8;
-  background-color: #f8f8f8;
-}
-
-.green {
-    color: green;
-}
-
-.red {
-    color: red;
-}
+<!-- Contest detail info-->
+<div class="modal fade" id="register" tabindex="-1" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal"> 
+          <span aria-hidden="true">&times;</span>
+          <span class="sr-only">Close</span>
+        </button>
+        <h2 class="modal-title" id="myModalLabel">
+            {{ contest.cname }}
+          </h2>
+      </div>
+      <div class="modal-body">
+        
+      </div>
+    </div>
+  </div>
+</div>

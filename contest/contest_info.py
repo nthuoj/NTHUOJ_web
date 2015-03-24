@@ -33,6 +33,10 @@ from problem.models import Submission
 from problem.models import SubmissionDetail
 
 from users.models import User
+from utils import user_info
+from utils.log_info import get_logger
+
+logger = get_logger()
 
 def get_contestant_list(contest):
     return Contestant.objects.filter(contest = contest)
@@ -113,3 +117,28 @@ def can_ask(user,contest):
     user_is_owner = (contest.owner == user)
     user_is_coowner = contest.coowner.filter(pk = user.pk).exists()
     return  user_is_contestant | user_is_owner | user_is_coowner 
+
+def get_contest_or_404(contest_id):
+    try:
+        contest = Contest.objects.get(id = contest_id)
+        return contest
+    except Contest.DoesNotExist:
+        logger.warning('Contest: Can not register contest %s! Contest not found!' % contest_id)
+        raise Http404('Can not register contest %s! Contest not found!' % contest_id)
+
+def can_register(contest,user):
+    open_register = contest.open_register
+    has_ownership = user_info.has_contest_ownership(user,contest)
+    has_attended = Contestant.objects.filter(contest = contest,user = user).exists()
+
+    if not open_register:
+        logger.info('Contest: Registration for Contest %s is closed, can not register.' % contest.id)
+        return False
+    if has_ownership:
+        logger.info('Contest: User %s has Contest %s ownership. Can not register.' % (user.username, contest.id))
+        return False
+    if has_attended:
+        logger.info('Contest: User %s has already attended Contest %s!' % (user.username, contest.id))
+        return False
+    return True
+

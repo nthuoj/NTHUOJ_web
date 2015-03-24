@@ -17,6 +17,7 @@
     OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
     SOFTWARE.
     '''
+from django.contrib.auth.decorators import login_required
 from datetime import datetime
 from django.shortcuts import redirect
 from django.core.exceptions import PermissionDenied
@@ -30,8 +31,10 @@ from django.forms.models import model_to_dict
 from index.views import custom_proc
 
 from contest.contest_info import get_clarifications
+from contest.contest_info import get_scoreboard
+from contest.contest_info import can_ask
 
-from contest.contestArchive import get_contests
+from contest.contest_archive import get_contests
 
 from contest.models import Contest
 from contest.models import Contestant
@@ -40,9 +43,10 @@ from contest.models import Clarification
 from contest.forms import ContestForm
 from contest.forms import ClarificationForm
 
-from contest.contest_info import can_ask
+from contest.register_contest import register_user
+from contest.register_contest import register_group as register_group_impl
 
-from contest.contest_info import get_scoreboard
+from group.models import Group
 
 from utils.log_info import get_logger
 from utils import user_info
@@ -149,27 +153,22 @@ def delete(request, contest_id):
             return redirect('contest:archive')
     raise PermissionDenied
 
+@login_required
 def register(request, contest_id):
-    if request.user.is_authenticated():
-        #check contest's existance
-        try:
-            contest = Contest.objects.get(id = contest_id)
-        except Contest.DoesNotExist:
-            logger.warning('Contest: Can not register contest %s! Contest not found!' % contest_id)
-            raise Http404('Contest does not exist, can not register.')
-        if contest.open_register:
-            #check if user is not owner or coowner
-            if not user_info.has_contest_ownership(request.user,contest):
-                #check contestant existance
-                if Contestant.objects.filter(contest = contest,user = request.user).exists():
-                    #if user has attended
-                    logger.info('Contest: User %s has already attended Contest %s!' % (request.user.username,contest.id))
-                else:
-                    contestant = Contestant(contest = contest,user = request.user)
-                    contestant.save()
-                    logger.info('Contest: User %s attends Contest %s!' % (request.user.username,contest.id))
-        return redirect('contest:archive')
-    raise PermissionDenied
+    register_user(contest_id, request.user)
+    return redirect('contest:archive')
+
+
+@login_required
+def register_group(request, contest_id, group_id):
+    try:
+        group = Group.objects.get(id = group_id)
+    except Group.DoesNotExist:
+        logger.warning('Contest: Group %s can not register contest %s! Group not found!' % (group_id, contest_id))
+        raise Http404(' Group %s can not register contest %s! Group not found!' % (group_id, contest_id))
+    if user_info.has_group_ownership(request.user, group):
+        register_group_impl(contest_id, group_id)
+    return redirect('contest:archive')
 
 def ask(request):
     try:
