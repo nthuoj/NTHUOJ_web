@@ -43,32 +43,35 @@ logger = get_logger()
 def has_contest_ownership(curr_user, curr_contest):
     curr_user = validate_user(curr_user)
 
-    is_owner = (curr_user.username == curr_contest.owner.username)
+    if curr_user == curr_contest.owner:
+        return True
+    
     contest_coowners = curr_contest.coowner.all()
     if contest_coowners:
         for coowner in contest_coowners:
             if curr_user == coowner:
-                is_owner = True
-    return is_owner
+                return True
+    return False
 
 
 def has_group_ownership(curr_user, curr_group):
     curr_user = validate_user(curr_user)
 
-    is_owner = (curr_user.username == curr_group.owner.username)
+    if curr_user == curr_group.owner:
+        return True
+
     group_coowners = curr_group.coowner.all()
     if group_coowners:
         for coowner in group_coowners:
             if curr_user == coowner:
-                is_owner = True
-    return is_owner
+                return True
+    return False
 
 
 def has_problem_ownership(curr_user, curr_problem):
     curr_user = validate_user(curr_user)
 
-    is_owner = (curr_user.username == curr_problem.owner.username)
-    return is_owner
+    return curr_user == curr_problem.owner
 
 
 def has_problem_auth(user, problem):
