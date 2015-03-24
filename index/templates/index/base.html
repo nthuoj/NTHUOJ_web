@@ -168,7 +168,7 @@ SOFTWARE.
             </a>
             <ul class="dropdown-menu">
               <li><a href={% url "users:profile" user.username %}>Profile</a></li>
-              <li><a href="#">Submissions</a></li>
+              <li><a href={% url "status:status" user.username %}>Submissions</a></li>
             </ul>
           </li>
           {% endif %}

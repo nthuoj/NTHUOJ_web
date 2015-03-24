@@ -21,17 +21,17 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 '''
-from django.shortcuts import render
-from index.views import custom_proc
-from utils.log_info import get_logger
 from django.conf import settings
-from django.http import Http404
-from users.forms import CodeSubmitForm
-from django.template import RequestContext
-from problem.models import Submission, SubmissionDetail
 from django.contrib.auth.decorators import login_required
+from django.http import Http404
+from django.shortcuts import render
+from django.template import RequestContext
+from index.views import custom_proc
+from problem.models import Submission, SubmissionDetail
 from status.templatetags.status_filters import show_detail
+from users.forms import CodeSubmitForm
 from users.models import User
+from utils.log_info import get_logger
 
 # Create your views here.
 
@@ -64,12 +64,31 @@ def status(request, username=None):
         objects.filter(sid__in=submissions_id).order_by('-sid')
 
     submissions = regroup_submission(submissions, submission_details)
-
+    print contest_status(request, username)
     return render(
         request,
         'status/status.html',
         {'submissions': submissions},
         context_instance=RequestContext(request, processors=[custom_proc]))
+
+
+def contest_status(request, contest):
+    submissions = Submission.objects.all()
+    if username:
+        try:
+            user = User.objects.get(username=username)
+            submissions = submissions.filter(user=user)
+        except:
+            raise Http404('User %s Not Found!' % username)
+
+    submissions = submissions.order_by('-id')[0:50]
+    submissions_id = map(lambda submission: submission.id, submissions)
+    submission_details = SubmissionDetail. \
+        objects.filter(sid__in=submissions_id).order_by('-sid')
+
+    submissions = regroup_submission(submissions, submission_details)
+
+    return render(request, 'status/statusTable.html', {'submissions': submissions})
 
 
 def error_message(request, sid):
