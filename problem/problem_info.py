@@ -12,5 +12,5 @@ def has_special_judge_code(problem):
 
 def has_partial_judge_code(problem):
     partial_path = config_info.get_config('path', 'partial_judge_path')
-    return os.path.isfile("%s%d.c" % (speJudge_path, problem.pk))
+    return os.path.isfile("%s%d.c" % (partial_path, problem.pk))
 

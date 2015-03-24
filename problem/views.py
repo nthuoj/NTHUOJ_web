@@ -127,8 +127,13 @@ def edit(request, pid=None):
                    'tags': tags, 'description': problem.description,
                    'input': problem.input, 'output': problem.output,
                    'sample_in': problem.sample_in, 'sample_out': problem.sample_out,
-                   'testcase': testcase, 'TESTCASE_PATH': TESTCASE_PATH, 
-                   'SPECIAL_PATH': SPECIAL_PATH, 'PARTIAL_PATH': PARTIAL_PATH})
+                   'testcase': testcase, 
+                   'path': {
+                       'TESTCASE_PATH': TESTCASE_PATH, 
+                       'SPECIAL_PATH': SPECIAL_PATH, 
+                       'PARTIAL_PATH': PARTIAL_PATH, },
+                   'has_special_judge_code': has_special_judge_code(problem),
+                   'has_partial_judge_code': has_partial_judge_code(problem)})
 
 @login_required
 def tag(request, pid):
