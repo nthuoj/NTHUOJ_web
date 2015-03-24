@@ -25,11 +25,13 @@ from django.shortcuts import render
 from index.views import custom_proc
 from utils.log_info import get_logger
 from django.conf import settings
+from django.http import Http404
 from users.forms import CodeSubmitForm
 from django.template import RequestContext
 from problem.models import Submission, SubmissionDetail
 from django.contrib.auth.decorators import login_required
 from status.templatetags.status_filters import show_detail
+from users.models import User
 
 # Create your views here.
 
@@ -47,8 +49,16 @@ def regroup_submission(submissions, submission_details):
     return submission_groups
 
 
-def status(request):
-    submissions = Submission.objects.order_by('-id')[0:50]
+def status(request, username=None):
+    submissions = Submission.objects.all()
+    if username:
+        try:
+            user = User.objects.get(username=username)
+            submissions = submissions.filter(user=user)
+        except:
+            raise Http404('User %s Not Found!' % username)
+
+    submissions = submissions.order_by('-id')[0:50]
     submissions_id = map(lambda submission: submission.id, submissions)
     submission_details = SubmissionDetail. \
         objects.filter(sid__in=submissions_id).order_by('-sid')

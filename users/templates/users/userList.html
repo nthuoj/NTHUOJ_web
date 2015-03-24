@@ -53,7 +53,7 @@ SOFTWARE.
           <tbody>
             {% for user in users %}
               <tr>
-                <td>{{ user.username }}</td>
+                <td><a href={% url "users:profile" user.username %}>{{ user.username }}</a></td>
                 <td>{{ user.email }}</td>
               </tr>
             {% endfor %}

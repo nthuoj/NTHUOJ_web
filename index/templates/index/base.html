@@ -157,15 +157,23 @@ SOFTWARE.
             </a>
             <ul class="dropdown-menu">
               <li><a href="{% url 'users:list' %}">User List</a></li>
-              {% if user.is_authenticated %}
-                <li>
-                  <a href={% url "users:profile" user.username %}>User Profile</a>
-                </li>
-              {% endif %}
+              <li><a href="#">User Rank</a></li>
             </ul>
           </li>
-          <li><a href="#"><p class="p2">User Rank</p></a></li>
+
+          {% if user.is_authenticated %}
+          <li class="dropdown">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+              <p class="p2">Personal<b class="caret"></b></p>
+            </a>
+            <ul class="dropdown-menu">
+              <li><a href={% url "users:profile" user.username %}>Profile</a></li>
+              <li><a href="#">Submissions</a></li>
+            </ul>
+          </li>
+          {% endif %}
         </ul>
+
         <ul class="nav navbar-nav navbar-right">
           {% if user.is_authenticated %}
           <li>
