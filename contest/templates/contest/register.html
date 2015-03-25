@@ -17,25 +17,61 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 -->
-<div class="modal fade" id="register" tabindex="-1" role="dialog">
+{% load contest_extras %}
+<div class="modal fade" id="register{{ contest.id }}" tabindex="-1" role="dialog">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal"> 
+        <button type="button" class="close" data-dismiss="modal">
           <span aria-hidden="true">&times;</span>
           <span class="sr-only">Close</span>
         </button>
-        <h2 class="modal-title" id="myModalLabel">
-            {{ contest.cname }}
-          </h2>
+        <h3 class="modal-title">
+            Register {{ contest.cname }}
+        </h3>
       </div>
-      <div class="modal-body">
+      <hr>
+      <div class="modal-body" id="register">
         <table width='100%'>
           <tr>
-            <td style="background-color:black;width:50%;"><h2>222</h2></td>
-            <td style="background-color:orange;width:50%;"><h2>333</h2></td>
+            {% if not user|has_auth:contest.id %}
+            <td class="clickable-area">
+              <div href="{% url 'contest:register' contest.id %}">
+                <h5>as {{ user.username }}<h5>
+              </div>
+            </td>
+            {% else %}
+            <td class="not-clickable-area">
+              <div>
+                <h5>owner or coowner can not register<h5>
+              </div>
+            </td>
+            {% endif %}
+            {% if own_group %}
+            <td class="saparate-area">
+            </td>
+            <td class="clickable-area" data-toggle="collapse" data-target="#group_select{{ contest.id }}">
+              <div>
+                <h4>a Group</h4>
+              </div>
+            </td>
+            {% endif %}
           </tr>
         </table>
+        {% if own_group %}
+        <div class="collapse" id="group_select{{ contest.id }}">
+          <div class="well">
+            <form class="form-inline" method="GET" action="{% url 'contest:register' contest.id %}">
+              <select name="group" class="form-control" style="width:70%;">
+                {% for group in groups %}
+                <option value="{{ group.id }}">{{ group.gname }}</option>
+                {% endfor %}
+              </select>
+              <input class="btn btn-primary" type="submit" value="Confirm">
+            </form>
+          </div>
+        </div>
+        {% endif %}
       </div>
     </div>
   </div>

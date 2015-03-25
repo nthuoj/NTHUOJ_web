@@ -17,25 +17,16 @@
     OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
     SOFTWARE.
     '''
+from django.db.models import Q
+from group.models import Group
 
-from django.conf.urls import patterns, url
-from contest import views
+from users.models import User
+from utils import user_info
+from utils.log_info import get_logger
 
-urlpatterns = patterns('contest.views',
-    #default contest archive
-    url(r'^$',views.archive,name='archive'),
-    #explicit page of contest archive
-    url(r'^page/(?P<page>\d+)/$',views.archive,name='archive'),
-    #create new contest
-    url(r'^new/$',views.new,name='new'),
-    #edit existing contest
-    url(r'^edit/(?P<contest_id>\d+)/$',views.edit,name='edit'),
-    #delete contest
-    url(r'^delete/(?P<contest_id>\d+)/$',views.delete,name='delete'),
-    #detail of contest
-    url(r'^(?P<contest_id>\d+)/$',views.contest,name='contest'),
-    #user register contest
-    url(r'^register/(?P<contest_id>\d+)/$',views.register,name='register'),
-    #user create new clarification
-    url(r'^ask/$',views.ask,name='ask')
-)
+logger = get_logger()
+
+def get_owned_group(user):
+    request = Q(owner = user)|Q(coowner = user)
+    owned_groups = Group.objects.filter(request)
+    return owned_groups

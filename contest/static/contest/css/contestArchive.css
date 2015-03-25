@@ -29,10 +29,30 @@ tr.past, tr.past>td>a {
   background-color: #f8f8f8;
 }
 
-.green {
-    color: green;
+td.clickable-area {
+    width:42%;
+	background-color: #98FB98;
+	text-align:center;
+}
+
+td.clickable-area:hover {
+	cursor: pointer;
+    width:42%;
+	background-color: #449d44;
+	text-align:center;
+}
+
+td.not-clickable-area {
+    width:42%;
+	background-color: #A0A0A0;
+	text-align:center;
+}
+
+.saparate-area{
+	width:6%;
 }
 
 .red {
     color: red;
 }
+

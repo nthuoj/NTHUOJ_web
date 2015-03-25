@@ -53,6 +53,7 @@ def register_group(contest_id, group_id):
         logger.info('Contest: Registration for Contest %s is closed, can not register.' % contest_id)
         return False
     for member in group.member.all():
-        register(contest, member)
+        if can_register(contest, member):
+            register(contest, member)
     return True
     
