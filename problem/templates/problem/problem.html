@@ -60,7 +60,7 @@ SOFTWARE.
               <td></td>
               <th>Time</th>
               <th>Memory</th>
-              {% for t in testcase %}
+              {% for t in problem.testcase %}
               <tr>
                 <th>Case {{forloop.counter}}</th>
                 <td>{{t.time_limit}} sec</td>
@@ -99,7 +99,7 @@ SOFTWARE.
   </div>
   <h3>Tags</h3>
   <div id='tags' style='float:left;width:60%'>
-    {% for tag in tags %}
+    {% for tag in problem.tags.all %}
       <span class='label label-info'>{{tag.tag_name}}</span>
     {% endfor %}
   </div>

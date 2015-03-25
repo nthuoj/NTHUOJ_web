@@ -30,6 +30,7 @@ from problem.models import Problem, Tag, Testcase
 from problem.forms import ProblemForm
 from problem.problem_info import *
 from utils import log_info
+from problem.problem_info import *
 
 import os
 import json
@@ -72,10 +73,8 @@ def detail(request, pid):
     except Problem.DoesNotExist:
         logger.warning('problem %s not found' % (pid))
         raise Http404('problem %s does not exist' % (pid))
-    testcase = Testcase.objects.filter(problem=problem)
-    tag = problem.tags.all()
-    return render(request, 'problem/detail.html',
-                  {'problem': problem, 'tags': tag, 'testcase': testcase})
+    problem = get_problem(problem)
+    return render(request, 'problem/detail.html', {'problem': problem})
 
 def edit(request, pid):
     if request.user.is_anonymous():
