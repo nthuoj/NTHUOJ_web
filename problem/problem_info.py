@@ -12,7 +12,7 @@ def get_problem(problem):
 
 def get_problem_list(user):
     if user.is_anonymous():
-        return Problem.objects.all(visible=True)
+        return Problem.objects.filter(visible=True)
     else:
         if user.is_admin:
             return Problem.objects.all()
