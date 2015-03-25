@@ -47,6 +47,7 @@ from contest.contest_info import get_scoreboard
 from utils.log_info import get_logger
 from utils import user_info
 
+from status.views import *
 
 logger = get_logger()
 
@@ -71,7 +72,7 @@ def archive(request, page = None):
     next = int(page)+1
     max_page = int(paginator.num_pages)
     pager = {'previous':previous, 'this':this, 'next':next, 'max_page':max_page}
-    return render(request, 
+    return render(request,
         'contest/contestArchive.html',
         {'contests':contests,'user':user,'pager':pager},
         context_instance = RequestContext(request, processors = [custom_proc]))
@@ -89,13 +90,14 @@ def contest(request, contest_id):
         raise PermissionDenied
     else:
         scoreboard = get_scoreboard(contest)
+        status = contest_status(request, contest)
         user = request.user
         clarifications = get_clarifications(contest,user)
         initial_form = {'contest':contest,'asker':user}
         form = ClarificationForm(initial=initial_form)
         return render(request, 'contest/contest.html',{'contest':contest,
             'clarifications':clarifications,'form':form,'user':user,
-            'scoreboard':scoreboard},
+            'scoreboard':scoreboard, 'status': status},
             context_instance = RequestContext(request, processors = [custom_proc]))
 
 def new(request):

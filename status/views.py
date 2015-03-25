@@ -32,7 +32,7 @@ from status.templatetags.status_filters import show_detail
 from users.forms import CodeSubmitForm
 from users.models import User
 from utils.log_info import get_logger
-
+import re
 # Create your views here.
 
 logger = get_logger()
@@ -68,17 +68,18 @@ def status(request, username=None):
 
 
 def contest_status(request, contest):
-    submissions = Submission.objects.all()
+    '''Return a status table of given contest'''
+    problems = contest.problem.all()
+    submissions = Submission.objects.filter(
+        problem__in=problems,
+        submit_time__gte=contest.start_time,
+        submit_time__lte=contest.end_time).order_by('-id')[0:25]
 
-
-    submissions = submissions.order_by('-id')[0:50]
-    submissions_id = map(lambda submission: submission.id, submissions)
-    submission_details = SubmissionDetail. \
-        objects.filter(sid__in=submissions_id).order_by('-sid')
-
-    submissions = regroup_submission(submissions, submission_details)
-
-    return render(request, 'status/statusTable.html', {'submissions': submissions})
+    submissions = regroup_submission(submissions)
+    table_content = str(render(request, 'status/statusTable.html', {'submissions': submissions}))
+    # remove rendered response header
+    table_content = re.sub('Content-Type: text/html; charset=utf-8', '', table_content)
+    return table_content
 
 
 def error_message(request, sid):
