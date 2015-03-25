@@ -17,7 +17,7 @@ def get_problem_list(user):
         if user.is_admin:
             return Problem.objects.all()
         else:
-            return Problem.objects.filter(Q(visible=True) | Q(owner=request.user))
+            return Problem.objects.filter(Q(visible=True) | Q(owner=user))
 
 def has_special_judge_code(problem):
     return os.path.isfile("%s%d.c" % (SPECIAL_PATH, problem.pk))
