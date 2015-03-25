@@ -27,10 +27,18 @@ from axes.decorators import watch_login
 import views
 
 urlpatterns = patterns('',
-    url(r'^create/$', views.user_create, name='create'),
-    url(r'^login/$', watch_login(views.user_login), name='login'),
-    url(r'^logout/$', views.user_logout, name='logout'),
+
     url(r'^list/$', views.list, name='list'),
     url(r'^submit/$', views.submit, name='submit'),
-    url(r'^profile/$', views.profile, name='profile'),
+    url(r'^create/$', views.user_create, name='create'),
+    url(r'^logout/$', views.user_logout, name='logout'),
+    url(r'^login/$', watch_login(views.user_login), name='login'),
+    url(r'^submit/(?P<pid>\d+)$', views.submit, name='submit'),
+    url(r'^notification/$', views.notification, name='notification'),
+    url(r'^profile/(?P<username>\w+)$', views.profile, name='profile'),
+    url(r'^readify/(?P<read_id>.*)/(?P<current_tab>.*)$', views.readify),
+    url(r'^notification/(?P<current_tab>\w+)/$', views.notification, name='tab'),
+    url(r'^confirm/(?P<activation_key>\w+)/', views.register_confirm, name='confirm'),
+    url(r'^delete_notification/(?P<delete_ids>.*)/(?P<current_tab>.*)$', views.delete_notification),
+
 )

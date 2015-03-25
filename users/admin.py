@@ -1,4 +1,3 @@
-
 '''
 The MIT License (MIT)
 
@@ -24,10 +23,12 @@ SOFTWARE.
 '''
 from django import forms
 from django.contrib import admin
-from users.models import User, Notification
-from django.contrib.auth.models import Group
 from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.forms import ReadOnlyPasswordHashField, AuthenticationForm
+from django.contrib.auth.models import Group
+from django.core.validators  import RegexValidator
+
+from users.models import User, Notification
 
 # Register your models here.
 
@@ -36,7 +37,9 @@ admin.site.register(Notification)
 class UserCreationForm(forms.ModelForm):
     """A form for creating new users. Includes all the required
     fields, plus a repeated password."""
-    username = forms.CharField(label='Username', widget=forms.TextInput(attrs={'class': 'form-control'}))
+    username = forms.CharField(label='Username',
+        widget=forms.TextInput(attrs={'class': 'form-control'}),
+        validators=[RegexValidator(regex='^\w+$', message='Username must be Alphanumeric')])
     email = forms.EmailField(label='Email', widget=forms.TextInput(attrs={'class': 'form-control'}))
     password1 = forms.CharField(label='Password', widget=forms.PasswordInput(attrs={'class': 'form-control'}))
     password2 = forms.CharField(label='Password Confirmation', widget=forms.PasswordInput(attrs={'class': 'form-control'}))
@@ -54,7 +57,6 @@ class UserCreationForm(forms.ModelForm):
         return password2
 
     def save(self, commit=True):
-        # Save the provided password in hashed format
         user = super(UserCreationForm, self).save(commit=False)
         user.set_password(self.cleaned_data["password1"])
         user.email = self.cleaned_data["email"]
@@ -62,10 +64,14 @@ class UserCreationForm(forms.ModelForm):
             user.save()
         return user
 
+
 class AuthenticationForm(AuthenticationForm):
     """Extend default AuthenticationForm with prettified bootstrap attribute"""
     username = forms.CharField(label='Username', widget=forms.TextInput(attrs={'class': 'form-control'}))
     password = forms.CharField(label='Password', widget=forms.PasswordInput(attrs={'class': 'form-control'}))
+    def __init__(self, *args, **kwargs):
+        super(AuthenticationForm, self).__init__(*args, **kwargs)
+        self.error_messages['inactive'] = 'This account is inactive. Check your email to activate the account!'
 
 
 class UserChangeForm(forms.ModelForm):
@@ -97,7 +103,7 @@ class UserAdmin(UserAdmin):
     list_display = ('username', 'is_admin')
     list_filter = ('is_admin',)
     fieldsets = (
-        (None, {'fields': ('username', 'password', 'email', 'user_level', 'active', 'theme')}),
+        (None, {'fields': ('username', 'password', 'email', 'user_level', 'theme')}),
         ('Permissions', {'fields': ('is_admin',)}),
     )
     # add_fieldsets is not a standard ModelAdmin attribute. UserAdmin
