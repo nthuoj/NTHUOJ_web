@@ -23,19 +23,12 @@ $(document).ready(function() {
 });
 
 function init(){
-    clarificationInit();
     tabInit();
 }
 
-function select(target){
+function select(target, description){
     document.getElementById("id_clarification").value = target;
-}
-
-function clarificationInit(){
-    $('[name="reply"]').click(function(e) {
-        var value = $('[name="reply"]').attr('reply');
-        $('.id_clarification').value = value;
-    });
+    $('#description').html(description);
 }
 
 function tabInit(){
