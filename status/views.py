@@ -38,16 +38,15 @@ from utils.log_info import get_logger
 logger = get_logger()
 
 
-def regroup_submission(submissions, submission_details):
+def regroup_submission(submissions):
     submission_groups = []
     for submission in submissions:
         submission_groups.append({
             'grouper': submission,
-            'list': submission_details.filter(sid=submission)
+            'list': SubmissionDetail.objects.filter(sid=submission.id).order_by('-sid')
         })
 
     return submission_groups
-
 
 def status(request, username=None):
     submissions = Submission.objects.all()
@@ -59,11 +58,8 @@ def status(request, username=None):
             raise Http404('User %s Not Found!' % username)
 
     submissions = submissions.order_by('-id')[0:50]
-    submissions_id = map(lambda submission: submission.id, submissions)
-    submission_details = SubmissionDetail. \
-        objects.filter(sid__in=submissions_id).order_by('-sid')
+    submissions = regroup_submission(submissions)
 
-    submissions = regroup_submission(submissions, submission_details)
     return render(
         request,
         'status/status.html',
