@@ -24,6 +24,7 @@ SOFTWARE.
 from django.http import HttpResponse, HttpResponseBadRequest, Http404
 from django.shortcuts import render, redirect
 from django.core.exceptions import PermissionDenied
+from django.core.paginator import Paginator
 
 from users.models import User
 from problem.models import Problem, Tag, Testcase
@@ -39,12 +40,23 @@ logger = log_info.get_logger()
 # Create your views here.
 def problem(request):
     can_add_problem = False
-    my_problem = Problem.objects.filter(owner=request.user)
     if request.user.is_anonymous():
         can_add_problem = False
     else:
         can_add_problem = request.user.has_subjudge_auth()
-    all_problem = get_problem_list(request.user)
+    all_problem_list = get_problem_list(request.user)
+    paginator = Paginator(all_problem_list, 10)
+    if "page" in request.GET:
+        page = request.GET["page"]
+    else:
+        page = 1
+    try:
+        all_problem = paginator.page(page)
+    except PageNotAnInteger:
+        all_problem = paginator.page(1)
+    except EmptyPage:
+        all_problem = paginator.page(paginator.num_pages)
+    my_problem = [p for p in all_problem.object_list if p.owner == request.user]
 
     return render(request, 'problem/panel.html', 
                   {'my_problem': my_problem, 'all_problem': all_problem, 

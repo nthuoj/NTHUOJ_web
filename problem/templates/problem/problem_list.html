@@ -66,5 +66,16 @@ SOFTWARE.
         </td>
       </tr>
     {% endfor %}
+    <tr>
+      <td colspan="3" style="text-align:center">
+      {% if problem.has_previous %}
+        <a href="?page={{problem.previous_page_number}}">previous</a>
+      {% endif %}
+      Page {{problem.number}} of {{problem.paginator.num_pages}}.
+      {% if problem.has_next %}
+        <a href="?page={{problem.next_page_number}}">next</a>
+      {% endif %}
+      </td>
+    </tr>
   </tbody>
 </table>

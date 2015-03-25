@@ -44,33 +44,16 @@ SOFTWARE.
   <div style='padding-top: 50px;'>
     {% if user.is_authenticated %}
     <span class='btn-group' role='group'>
-      <button type='button' class='btn btn-default' 
-      id='my_problem' onclick="switch_problem('my')">my problem</button>
-      <button type='button' class='btn btn-default' 
-      id='all_problem' onclick="switch_problem('all')">all problem</button>
+      <a class='btn btn-default'>all problem</a>
+      <a class='btn btn-default'>my problem</a>
     </span>
     {% endif %}
-    <div id='all-problem'>
+    <div>
       {% include 'problem/problem_list.html' with problem=all_problem %}
-    </div>
-    <div id='my-problem'>
-      {% include 'problem/problem_list.html' with problem=my_problem %}
     </div>
   </div>
 </div>
 <script>
-$('#my-problem').hide();
-$('#all_problem').focus();
-
-function switch_problem(s) {
-  if (s == 'my') {
-    $('#my-problem').show();
-    $('#all-problem').hide();
-  } else {
-    $('#my-problem').hide();
-    $('#all-problem').show();
-  }
-}
 $('[data-toggle="tooltip"]').tooltip();
 </script>
 
