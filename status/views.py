@@ -21,6 +21,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 '''
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.http import Http404
@@ -49,7 +50,8 @@ def regroup_submission(submissions):
     return submission_groups
 
 def status(request, username=None):
-    submissions = Submission.objects.all()
+    submissions = Submission.objects.all().order_by('-id')
+
     if username:
         try:
             user = User.objects.get(username=username)
@@ -57,8 +59,19 @@ def status(request, username=None):
         except:
             raise Http404('User %s Not Found!' % username)
 
-    submissions = submissions.order_by('-id')[0:50]
-    submissions = regroup_submission(submissions)
+    paginator = Paginator(submissions, 25)  # Show 25 submissions per page
+    page = request.GET.get('page')
+
+    try:
+        submissions = paginator.page(page)
+    except PageNotAnInteger:
+        # If page is not an integer, deliver first page.
+        submissions = paginator.page(1)
+    except EmptyPage:
+        # If page is out of range (e.g. 9999), deliver last page of results.
+        submissions = paginator.page(paginator.num_pages)
+
+    submissions.object_list = regroup_submission(submissions.object_list)
 
     return render(
         request,

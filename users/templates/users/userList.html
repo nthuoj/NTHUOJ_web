@@ -67,7 +67,7 @@ SOFTWARE.
     <span class="step-links">
       {% if users.has_previous %}
         <li class="previous">
-          <a href="?page={{ team_list.previous_page_number }}">← Previous</a>
+          <a href="?page={{ users.previous_page_number }}">← Previous</a>
         </li>
        {% endif %}
 
@@ -77,7 +77,7 @@ SOFTWARE.
 
       {% if users.has_next %}
         <li class="next">
-          <a href="?page={{ team_list.next_page_number }}">Next →</a>
+          <a href="?page={{ users.next_page_number }}">Next →</a>
         </li>
       {% endif %}
     </span>

@@ -28,5 +28,24 @@ SOFTWARE.
 <div class="container-fulid">
   <h1>Status</h1>
   {% include "status/statusTable.html" %}
+  <ul class="pager">
+    <span class="step-links">
+      {% if submissions.has_previous %}
+        <li class="previous">
+          <a href="?page={{ submissions.previous_page_number }}">← Previous</a>
+        </li>
+       {% endif %}
+
+      <span class="current">
+        Page {{ submissions.number }} of {{ submissions.paginator.num_pages }}.
+      </span>
+
+      {% if submissions.has_next %}
+        <li class="next">
+          <a href="?page={{ submissions.next_page_number }}">Next →</a>
+        </li>
+      {% endif %}
+    </span>
+  </ul>
 </div>
 {% endblock body_block %}
