@@ -24,11 +24,11 @@ SOFTWARE.
 from django.http import HttpResponse, HttpResponseBadRequest, Http404
 from django.shortcuts import render, redirect
 from django.core.exceptions import PermissionDenied
-from django.db.models import Q
 
 from users.models import User
 from problem.models import Problem, Tag, Testcase
 from problem.forms import ProblemForm
+from problem.problem_info import *
 from utils import log_info
 
 import os
@@ -41,16 +41,14 @@ def problem(request):
     can_add_problem = False
     my_problem = Problem.objects.filter(owner=request.user)
     if request.user.is_anonymous():
-        all_problem = Problem.objects.all(visible=False)
+        can_add_problem = False
     else:
         can_add_problem = request.user.has_subjudge_auth()
-        if request.user.is_admin:
-            all_problem = Problem.objects.all()
-        else:
-            all_problem = Problem.objects.filter(Q(visible=False) | Q(owner=request.user))
+    all_problem = get_problem_list(request.user)
 
     return render(request, 'problem/panel.html', 
-                  {'my_problem': my_problem, 'all_problem': all_problem, 'can_add_problem': can_add_problem})
+                  {'my_problem': my_problem, 'all_problem': all_problem, 
+                   'can_add_problem': can_add_problem})
 
 def volume(request):
     problem_id=[]
