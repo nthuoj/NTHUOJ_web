@@ -30,7 +30,6 @@ from problem.models import Problem, Tag, Testcase
 from problem.forms import ProblemForm
 from problem.problem_info import *
 from utils import log_info
-from problem.problem_info import *
 
 import os
 import json
