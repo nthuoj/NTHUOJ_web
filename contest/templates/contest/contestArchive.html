@@ -125,6 +125,16 @@ SOFTWARE.
     </tbody>
   </table>
 </div>
+<nav>
+  <ul class="pager">
+    {% if pager.this > 1 %}
+    <li class="previous"><a href="{% url 'contest:archive' pager.previous %}"><span>&larr;</span> Newer</a></li>
+    {% endif %}
+    {% if pager.this < pager.max_page %}
+    <li class="next"><a href="{% url 'contest:archive' pager.next %}">Older <span>&rarr;</span></a></li>
+    {% endif %}
+  </ul>
+</nav>
 <!-- /.container -->
 <!-- Contest detail info-->
 {% for contest in contests %}
@@ -245,7 +255,7 @@ SOFTWARE.
                 </tr>
               </thead>
               <tbody>
-                {% for coowner in contest.coowners %}
+                {% for coowner in contest.coowner.all %}
                 <tr>
                   {% if user|has_auth:contest.id %}
                   <td>

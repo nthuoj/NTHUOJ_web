@@ -1,18 +1,14 @@
-'''
+/*
 The MIT License (MIT)
-
 Copyright (c) 2014 NTHUOJ team
-
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
 in the Software without restriction, including without limitation the rights
 to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 copies of the Software, and to permit persons to whom the Software is
 furnished to do so, subject to the following conditions:
-
 The above copyright notice and this permission notice shall be included in all
 copies or substantial portions of the Software.
-
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -20,25 +16,35 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
-'''
-from django.conf.urls import patterns, include, url
-from axes.decorators import watch_login
+*/
 
-import views
+/*
+To add attribute to designated element
 
-urlpatterns = patterns('',
+Usage: add_attribute(element_id, attribute_to_set, value_attribute_should_be); 
+*/
+function add_attribute(id, attribute, value) {
+    var att = document.createAttribute(attribute);
+    att.value = value;
+    document.getElementById(id).setAttributeNode(att);
+}
 
-    url(r'^list/$', views.list, name='list'),
-    url(r'^submit/$', views.submit, name='submit'),
-    url(r'^create/$', views.user_create, name='create'),
-    url(r'^logout/$', views.user_logout, name='logout'),
-    url(r'^login/$', watch_login(views.user_login), name='login'),
-    url(r'^submit/(?P<pid>\d+)$', views.submit, name='submit'),
-    url(r'^notification/$', views.notification, name='notification'),
-    url(r'^profile/(?P<username>\w+)$', views.profile, name='profile'),
-    url(r'^readify/(?P<read_id>.*)/(?P<current_tab>.*)$', views.readify),
-    url(r'^notification/(?P<current_tab>\w+)/$', views.notification, name='tab'),
-    url(r'^confirm/(?P<activation_key>\w+)/', views.register_confirm, name='confirm'),
-    url(r'^delete_notification/(?P<delete_ids>.*)/(?P<current_tab>.*)$', views.delete_notification),
+/*
+add class="form-control" to designated element.
+Simple way to bootstraptify element
 
-)
+Usage: add_form_control(id_of_element_to_bootstraptify)
+*/
+
+function add_form_control(id) {
+    add_attribute(id, 'class', 'form-control');
+}
+
+/*
+to hide designated element
+Usage: hide(id_of_element_to_hide)
+*/
+
+function hide(id){
+    add_attribute(id,'type','hidden');
+}
