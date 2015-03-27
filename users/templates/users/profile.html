@@ -23,6 +23,7 @@ SOFTWARE.
 -->
 {% extends "index/base.html" %}
 {% load static %}
+{% load bootstrap %}
 {% load profile_filters %}
 
 {% block body_block %}
@@ -79,25 +80,7 @@ $(function() {
           {% if user == profile_user %}
             <form class="form-horizontal" action="" method="post" style="margin:10px;">
               {% csrf_token %}
-              {% for field in profile_form %}
-              <div class="form-group">
-                <div class='row'>
-                  <div class='col-lg-2 col-lg-offset-1'>
-                    <label class="control-label">{{ field.label }}</label>
-                  </div>
-                  <div class='col-lg-5'>
-                    {{ field }}
-                  </div>
-                </div>
-                {% if field.errors %}
-                <ul>
-                  {% for error in field.errors %}
-                    <li class='col-lg-offset-2'><strong style="color:red">{{ error|escape }}</strong></li>
-                  {% endfor %}
-                </ul>
-                {% endif %}
-              </div>
-              {% endfor %}
+              {{ profile_form|bootstrap_horizontal:'col-lg-4' }}
               <div class="modal-footer">
                 <div class='col-lg-8'>{{ profile_message }}</div>
                 <button type="submit" name="profile_form"
@@ -131,27 +114,7 @@ $(function() {
           {% if user|can_change_userlevel:profile_user %}
             <form class="form-horizontal" action="" method="post" style="margin:10px;">
               {% csrf_token %}
-              {% for field in userlevel_form %}
-              <div class="form-group">
-                <div class='row'>
-                  <div class='col-lg-2 col-lg-offset-1'>
-                    <label class="control-label">{{ field.label }}</label>
-                  </div>
-                  <div class='col-lg-5'>
-                    {{ field }}
-                  </div>
-                </div>
-                {% if field.errors %}
-                <ul>
-                  {% for error in field.errors %}
-                    <li class='col-lg-offset-2'>
-                      <strong style="color:red">{{ error|escape }}</strong>
-                    </li>
-                  {% endfor %}
-                </ul>
-                {% endif %}
-              </div>
-              {% endfor %}
+              {{ userlevel_form|bootstrap_horizontal:'col-lg-4' }}
               <div class="modal-footer">
                 <div class='col-lg-8'>{{ userlevel_message }}</div>
                 <button type="submit" name="userlevel_form"
