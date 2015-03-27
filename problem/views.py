@@ -63,7 +63,7 @@ def detail(request, pid):
     except Problem.DoesNotExist:
         logger.warning('problem %s not found' % (pid))
         raise Http404('problem %s does not exist' % (pid))
-    problem = get_problem(problem)
+    problem = get_testcase(problem)
     return render(request, 'problem/detail.html', {'problem': problem})
 
 def edit(request, pid):
