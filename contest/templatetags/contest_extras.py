@@ -45,6 +45,11 @@ def can_ask(user,contest):
     return contest_info.can_ask(user,contest)
 register.filter("can_ask",can_ask)
 
+@register.filter
+def can_reply(user,contest):
+    return contest_info.can_reply(user,contest)
+register.filter("can_reply",can_reply)
+
 #check if user is judge or admin
 @register.filter
 def has_judge_auth(user):
