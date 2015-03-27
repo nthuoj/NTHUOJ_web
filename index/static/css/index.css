@@ -31,7 +31,7 @@ body {
 }
 .wrap-body {
   min-height: 100%;
-  margin-bottom: 35px; 
+  margin-bottom: 35px;
 }
 .gray {
   background-color: #E5E5E5;
@@ -65,7 +65,7 @@ body {
   border-width: 2px;
 }
 .newbar {
-  margin: 0px; 
+  margin: 0px;
   background-color: #1B2435;
   z-index: 0px;
 
@@ -152,15 +152,15 @@ body {
 #mwt_mwt_slider_scroll {
   top: 0;
   left: -360px;
-  width: 360px;  
+  width: 360px;
   position: fixed;
   z-index: 9999;
-}       
+}
 #mwt_slider_content {
   background: #3c5a98;
   text-align: center;
   padding-top: 20px;
-}       
+}
 #mwt_fb_tab {
   position: absolute;
   top: 230px;
@@ -168,13 +168,13 @@ body {
   width: 24px;
   background: #3c5a98;
   color: #ffffff;
-  font-family: Arial, Helvetica, sans-serif; 
+  font-family: Arial, Helvetica, sans-serif;
   text-align: center;
   padding: 9px 0;
   -moz-border-radius-topright: 10px;
   -moz-border-radius-bottomright: 10px;
   -webkit-border-top-right-radius: 10px;
-  -webkit-border-bottom-right-radius: 10px;  
+  -webkit-border-bottom-right-radius: 10px;
 }
 #mwt_fb_tab2 {
   position: absolute;
@@ -184,13 +184,13 @@ body {
   height:40px;
   background: #3c5a98;
   color: #ffffff;
-  font-family: Arial, Helvetica, sans-serif; 
+  font-family: Arial, Helvetica, sans-serif;
   text-align: center;
   padding: 9px 0;
   -moz-border-radius-topright: 10px;
   -moz-border-radius-bottomright: 10px;
   -webkit-border-top-right-radius: 10px;
-  -webkit-border-bottom-right-radius: 10px;  
+  -webkit-border-bottom-right-radius: 10px;
 }
 #mwt_fb_tab span {
   display: block;
@@ -200,7 +200,7 @@ body {
   text-transform: uppercase;
   font-size: 12px;
   -webkit-transform: rotate(90deg);
-  -moz-transform: rotate(90deg); 
+  -moz-transform: rotate(90deg);
 }
 #mwt_fb_tab2 span {
   display: block;
@@ -210,10 +210,10 @@ body {
   text-transform: uppercase;
   font-size: 12px;
   -webkit-transform: rotate(90deg);
-  -moz-transform: rotate(90deg); 
+  -moz-transform: rotate(90deg);
 }
 .information {
-  position: absolute;   
+  position: absolute;
   right: 5px;
   background-color: white;
   font-size: 16px;
@@ -229,10 +229,10 @@ body {
   z-index: 998;
 }
 .register {
-  font-size: 20px; 
+  font-size: 20px;
 }
 .forget {
-  font-size: 20px; 
+  font-size: 20px;
 }
 .popdiv{
   padding:30px;
@@ -334,4 +334,10 @@ textarea#inputSmall {
 }
 #alert_info{
   display:none;
+}
+.end{
+  display: none;
+}
+.start{
+  display: none;
 }
