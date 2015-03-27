@@ -37,5 +37,6 @@ urlpatterns = patterns('contest.views',
     #user register contest
     url(r'^register/(?P<contest_id>\d+)/$',views.register,name='register'),
     #user create new clarification
-    url(r'^ask/$',views.ask,name='ask')
+    url(r'^ask/$',views.ask,name='ask'),
+    url(r'^reply/$',views.reply,name='reply')
 )
