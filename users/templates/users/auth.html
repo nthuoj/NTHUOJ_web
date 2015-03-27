@@ -23,46 +23,22 @@ SOFTWARE.
 -->
 {% extends "index/base.html" %}
 {% load static %}
-{% block import_source %}
-{% endblock import_source %}
+{% load bootstrap %}
+
 {% block body_block %}
-<div class="container" style="width:40%">
+<div class="container" style="width:30%">
   <h3>{{ title }}</h3>
+
   <form class="form-horizontal" action="" method="post">
     {% csrf_token %}
-    {% for field in form %}
-    <div class="form-group">
-      <div class='row'>
-        <div class='col-md-2'>
-          <label class="control-label">{{ field.label }}</label>
-        </div>
-        <div class='col-md-8'>
-          {{ field }}
-        </div>
-      </div>
-      {% if form.non_field_errors %}
-      <ul>
-        {% for error in form.non_field_errors %}
-          <li class='col-md-offset-2'><strong style="color:red">{{ error|escape }}</strong></li>
-        {% endfor %}
-      </ul>
-      {% endif %} 
-      {% if field.errors %}
-      <ul>
-        {% for error in field.errors %}
-          <li class='col-md-offset-2'><strong style="color:red">{{ error|escape }}</strong></li>
-        {% endfor %}
-      </ul>
-      {% endif %}
-    </div>
-    {% endfor %}
+    {{ form|bootstrap_horizontal }}
     <div class="modal-footer">
       <div id='msg' class='col-md-4'>{{ message }}</div>
       <button type="submit" class="btn btn-primary">Submit</button>
     </div>
     <hr>
     <div class="poptxt_login">
-      Don't have an account? You can 
+      Don't have an account? You can
       <a href={% url "users:create" %}>
         <p class="p6">register here</p>
       </a>
