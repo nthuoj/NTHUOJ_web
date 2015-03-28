@@ -46,6 +46,7 @@ from contest.forms import ReplyForm
 
 from contest.register_contest import register_user
 from contest.register_contest import register_group as register_group_impl
+from contest.register_contest import register_anonymous as register_anonymous_impl
 
 from contest.contest_info import can_ask
 from contest.contest_info import can_reply
@@ -168,13 +169,21 @@ def delete(request, contest_id):
 
 @login_required
 def register(request, contest_id):
-    contest = get_contest_or_404(contest_id)
-    #get group id or register as single user
-    group_id = request.GET.get('group')
-    if(group_id is not None):
-        register_group(request,contest,group_id)
-    
-    register_user(contest, request.user)
+    if request.method == 'POST':
+        contest = get_contest_or_404(contest_id)
+        #can only register not ended contest
+        if contest.end_time > datetime.now():
+            #get group id or register as single user
+            group_id = request.POST.get('group')
+            if(group_id is not None):
+                register_group(request,contest,group_id)
+
+            anonymous = request.POST.get('anonymous')
+            if(anonymous is not None):
+                register_anonymous(request,contest,anonymous)
+
+            if (group_id is None) and (anonymous is None):
+                register_user(contest, request.user)
     
     return redirect('contest:archive')
 
@@ -184,6 +193,12 @@ def register_group(request, contest, group_id):
     group = get_group_or_404(group_id)
     if user_info.has_group_ownership(request.user, group):
         register_group_impl(contest, group)
+    return redirect('contest:archive')
+
+@login_required
+def register_anonymous(request, contest, anonymous):
+    if user_info.has_contest_ownership(request.user, contest):
+        register_anonymous_impl(contest, anonymous)
     return redirect('contest:archive')
 
 @login_required

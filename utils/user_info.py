@@ -22,6 +22,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 '''
 from contest.models import Contest
+from contest.models import Contestant
+from users.models import UserManager
 from datetime import datetime
 from django.core.urlresolvers import reverse
 from django.core.mail import EmailMultiAlternatives
@@ -183,3 +185,23 @@ def send_activation_email(request, user):
         Thread(target=msg.send, args=()).start()
     except:
          logger.warning("There is an error when sending email to %s's mailbox" % username)
+
+def get_public_users():
+    return User.objects.filter(username__startswith = 'OJ')
+
+def attends_not_ended_contest(user):
+    user_attends = Contestant.objects.filter(user = user)
+    for contestant in user_attends:
+        if(datetime.now() < contestant.contest.end_time):
+            return True
+    return False
+
+def create_anonymous(need):
+    public_user = get_public_users()
+    we_have = len(public_user)
+    new_users = []
+    for index in range(we_have, we_have + need):
+        username = "OJ{:0>4d}".format(index)
+        new_user = User.objects.create_user(username,"000")
+        new_users.append(new_user)
+    return new_users

@@ -48,25 +48,45 @@ SOFTWARE.
             </td>
           </tr>
           {% endif %}
+        </table>
+        {% if own_group %}
+        <table width='100%'>
           <tr class="saparate-area"></tr>
-          {% if own_group %}
           <tr>
             <td>
               <a class="btn btn-success btn-lg btn-block" data-toggle="collapse" data-target="#group_select{{ contest.id }}">a Group</a>
             </td>
           </tr>
-          {% endif %}
-          </tr>
         </table>
-        {% if own_group %}
         <div class="collapse" id="group_select{{ contest.id }}">
           <div class="well">
-            <form class="form-inline" method="GET" action="{% url 'contest:register' contest.id %}">
+            <form class="form-inline" method="POST" action="{% url 'contest:register' contest.id %}">
+              {% csrf_token %}
               <select name="group" class="form-control" style="width:70%;">
                 {% for group in groups %}
                 <option value="{{ group.id }}">{{ group.gname }}</option>
                 {% endfor %}
               </select>
+              <input class="btn btn-primary" type="submit" value="Confirm">
+            </form>
+          </div>
+        </div>
+        {% endif %}
+        
+        {% if user|has_auth:contest.id %}
+        <table width='100%'>
+          <tr class="saparate-area"></tr>
+          <tr>
+            <td>
+              <a class="btn btn-success btn-lg btn-block" data-toggle="collapse" data-target="#anonymous{{ contest.id }}">Anonymous</a>
+            </td>
+          </tr>
+        </table>
+        <div class="collapse" id="anonymous{{ contest.id }}">
+          <div class="well">
+            <form class="form-inline" method="POST" action="{% url 'contest:register' contest.id %}">
+              {% csrf_token %}
+              <input class="form-control" type="text" name="anonymous">
               <input class="btn btn-primary" type="submit" value="Confirm">
             </form>
           </div>

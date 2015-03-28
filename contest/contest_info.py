@@ -150,4 +150,4 @@ def can_register(contest,user):
     if has_attended:
         logger.info('Contest: User %s has already attended Contest %s!' % (user.username, contest.id))
         return False
-    return True
+    return True 
