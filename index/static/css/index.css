@@ -31,18 +31,7 @@ body {
 }
 .wrap-body {
   min-height: 100%;
-  margin-bottom: 35px;
-}
-.gray {
-  height: 250px;
-  margin-top: 0px;
-}
-.hr1 {
-  margin: 0px;
-  position: relative;
-  top: -250px;
-  border-width: 3px;
-  color:gray;
+  margin-bottom: 0px;
 }
 #logo {
   margin-top: 30px;
@@ -59,30 +48,9 @@ body {
   margin-left: auto;
   margin-right: auto;
 }
-.p1 {
-  font-size: 60px;
-  font-family: impact;
-  text-align: left;
-}
-.hr2 {
-  border-width: 2px;
-}
 .newbar {
   margin: 0px;
-  <!--background-color: #1B2435;-->
   z-index: 0px;
-}
-.p2 {
-  font-size: 18px;
-  color: white;
-  margin: 0px;
-  padding: 0px;
-}
-.p3 {
-  color: white;
-  margin: 0px;
-  padding: 0px;
-  font-size: 26px;
 }
 .sticky-footer {
   padding: 0 auto;
@@ -94,53 +62,11 @@ body {
   border-bottom-right-radius: 0px;
   border-bottom-left-radius: 0px;
 }
-.p4 {
-  color: white;
-  margin: 3px;
-  padding: 0px;
-  font-size: 20px;
-}
-.p7 {
-  font-size: 120px;
-  font-family: impact;
-  text-align: left;
-}
-.p8 {
-  font-size: 70px;
-  font-family: impact;
-  text-align: left;
-  color: black;
-}
-.p9 {
-  font-size: 30px;
-  font-family: impact;
-  text-align: left;
-  color: black;
-}
-
-.tlogo {
-  position: relative;
-  top: -200px;
-}
-.p5 {
-  font-size: 20px;
-  color: #444444;
-}
 .line {
   border: 3px none black;
   border-top-style: solid;
 }
-.btn1 {
-  border-color: #444444;
-  background-color: gray;
-  color: #000;
-}
-.login {
-  font-size: 20px;
-}
-.p6 {
-  color: blue;
-}
+/*
 #mwt_mwt_slider_scroll {
   top: 0;
   left: -360px;
@@ -204,38 +130,12 @@ body {
   -webkit-transform: rotate(90deg);
   -moz-transform: rotate(90deg);
 }
-.information {
-  position: absolute;
-  right: 5px;
-  background-color: white;
-  font-size: 16px;
-  z-index: 999;
-  border: 2px solid #000;
-  border-radius: 3px;
-  padding: 10px;
-}
-.temp {
-  position: absolute;
-  right: 5px;
-  top: 200px;
-  z-index: 998;
-}
-.register {
-  font-size: 20px;
-}
+*/
 .forget {
   font-size: 20px;
 }
 .popdiv{
   padding:30px;
-}
-.txtbd{
-  border:1px black solid;
-}
-.poptxt_login{
-  display:inline;
-  float:left;
-  text-align:left;
 }
 textarea#inputSmall {
   height: 200px;
