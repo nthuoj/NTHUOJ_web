@@ -22,6 +22,7 @@ git clone git@github.com:bruce3557/NTHUOJ_web.git
 * bower
 * django-bower
 * curl
+* django-bootstrap-form
 
 ###Installation:
 * Execute install.py for initial setting.
