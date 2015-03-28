@@ -35,22 +35,14 @@ def register(contest, user):
     logger.info('Contest: User %s attends Contest %s!' % (user.username, contest.id))
     return True
 
-def register_user(contest_id, user):
-    contest = get_contest_or_404(contest_id)
+def register_user(contest, user):
     if can_register(contest, user):
         return register(contest,user)
     return False
 
-def register_group(contest_id, group_id):
-    contest = get_contest_or_404(contest_id)
-    try:
-        group = Group.objects.get(id = group_id)
-    except Group.DoesNotExist:
-        logger.warning('Contest: Group %s can not register contest %s! Group not found!' % (group_id, contest_id))
-        raise Http404(' Group %s can not register contest %s! Group not found!' % (group_id, contest_id))
-
+def register_group(contest, group):
     if not contest.open_register:
-        logger.info('Contest: Registration for Contest %s is closed, can not register.' % contest_id)
+        logger.info('Contest: Registration for Contest %s is closed, can not register.' % contest.id)
         return False
     for member in group.member.all():
         if can_register(contest, member):

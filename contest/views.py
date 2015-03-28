@@ -49,10 +49,11 @@ from contest.register_contest import register_group as register_group_impl
 
 from contest.contest_info import can_ask
 from contest.contest_info import can_reply
-
+from contest.contest_info import get_contest_or_404
 
 from group.models import Group
 from group.group_info import get_owned_group
+from group.group_info import get_group_or_404
 
 from utils.log_info import get_logger
 from utils import user_info
@@ -167,25 +168,22 @@ def delete(request, contest_id):
 
 @login_required
 def register(request, contest_id):
+    contest = get_contest_or_404(contest_id)
     #get group id or register as single user
-    try:
-        group_id = request.GET['group']
-        register_group(request,contest_id,group_id)
-    except:
-        register_user(contest_id, request.user)
+    group_id = request.GET.get('group')
+    if(group_id is not None):
+        register_group(request,contest,group_id)
+    
+    register_user(contest, request.user)
     
     return redirect('contest:archive')
 
 
 @login_required
-def register_group(request, contest_id, group_id):
-    try:
-        group = Group.objects.get(id = group_id)
-    except Group.DoesNotExist:
-        logger.warning('Contest: Group %s can not register contest %s! Group not found!' % (group_id, contest_id))
-        raise Http404(' Group %s can not register contest %s! Group not found!' % (group_id, contest_id))
+def register_group(request, contest, group_id):
+    group = get_group_or_404(group_id)
     if user_info.has_group_ownership(request.user, group):
-        register_group_impl(contest_id, group_id)
+        register_group_impl(contest, group)
     return redirect('contest:archive')
 
 @login_required

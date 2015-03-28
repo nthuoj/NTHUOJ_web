@@ -37,6 +37,7 @@ from utils.user_info import has_contest_ownership
 from users.models import User
 from utils import user_info
 from utils.log_info import get_logger
+from django.http import Http404
 
 logger = get_logger()
 
@@ -141,7 +142,7 @@ def can_register(contest,user):
     has_attended = Contestant.objects.filter(contest = contest,user = user).exists()
 
     if not open_register:
-        logger.info('Contest: Registration for Contest %s is closed, can not register.' % contest.id)
+        logger.info('Contest: Registration for Contest %s is closed. Can not register.' % contest.id)
         return False
     if has_ownership:
         logger.info('Contest: User %s has Contest %s ownership. Can not register.' % (user.username, contest.id))

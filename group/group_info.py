@@ -23,6 +23,7 @@ from group.models import Group
 from users.models import User
 from utils import user_info
 from utils.log_info import get_logger
+from django.http import Http404
 
 logger = get_logger()
 
@@ -30,3 +31,11 @@ def get_owned_group(user):
     request = Q(owner = user)|Q(coowner = user)
     owned_groups = Group.objects.filter(request)
     return owned_groups
+
+def get_group_or_404(group_id):
+    try:
+        group = Group.objects.get(id = group_id)
+        return group
+    except Group.DoesNotExist:
+        logger.warning('Group: Group %s not found!' % group_id)
+        raise Http404('Group %s not found!' % group_id)
