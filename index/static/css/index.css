@@ -34,8 +34,8 @@ body {
   margin-bottom: 35px;
 }
 .gray {
-  background-color: #E5E5E5;
   height: 250px;
+  margin-top: 0px;
 }
 .hr1 {
   margin: 0px;
@@ -44,17 +44,20 @@ body {
   border-width: 3px;
   color:gray;
 }
-.logo {
-  background-color: white;
-  padding-left: 40px;
-  padding-top: 20px;
-  padding-right: 40px;
-  padding-bottom: 30px;
-  margin: 0px;
-  width: 70%;
-  font-size: 22px;
-  border: 5px solid #1b2435;
-  border-radius: 10px;
+#logo {
+  margin-top: 30px;
+  margin-right: 200px;
+  margin-left: 200px;
+
+}
+#logo-content {
+  border: 5px solid black;
+  border-radius: 25px;
+}
+.center {
+  float: none;
+  margin-left: auto;
+  margin-right: auto;
 }
 .p1 {
   font-size: 60px;
@@ -66,9 +69,8 @@ body {
 }
 .newbar {
   margin: 0px;
-  background-color: #1B2435;
+  <!--background-color: #1B2435;-->
   z-index: 0px;
-
 }
 .p2 {
   font-size: 18px;
@@ -84,17 +86,12 @@ body {
 }
 .sticky-footer {
   padding: 0 auto;
-  background-color: #1b2435;
   border-top: 1px solid #dddddd;
   border-bottom-right-radius: -1;
   border-bottom-left-radius: -1;
   position:relative;
   bottom: 0px;
   z-index: 1;
-  width: 100%;
-  height: 35px;
-  border-top-left-radius: 250px;
-  border-top-right-radius: 250px;
   border-bottom-right-radius: 0px;
   border-bottom-left-radius: 0px;
 }
@@ -121,11 +118,7 @@ body {
   text-align: left;
   color: black;
 }
-.table1 {
-  width: 70%;
-  position: relative;
-  top: -150px;
-}
+
 .tlogo {
   position: relative;
   top: -200px;
@@ -136,7 +129,7 @@ body {
 }
 .line {
   border: 3px none black;
-  border-bottom-style: solid;
+  border-top-style: solid;
 }
 .btn1 {
   border-color: #444444;
@@ -340,4 +333,20 @@ textarea#inputSmall {
 }
 .start{
   display: none;
+}
+.nav-text{
+  font-size: 18px;
+}
+.nav-text-auth{
+  font-size: 25px;
+}
+.footer{
+  width: 100%;
+  height: 43px;
+  border-top-left-radius: 250px;
+  border-top-right-radius: 250px;
+}
+#contest {
+  margin-right: 220px;
+  margin-left: 220px;
 }

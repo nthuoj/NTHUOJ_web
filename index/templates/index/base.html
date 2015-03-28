@@ -95,6 +95,7 @@ SOFTWARE.
     </div>
 
     <!-- sidebar -->
+    <!--
     <div id="mwt_mwt_slider_scroll">
       <div id="mwt_fb_tab">
         <a href="#feedback-popup" class="open-popup-link sidebar_color">
@@ -115,99 +116,109 @@ SOFTWARE.
       </div>
       <div id="mwt_slider_content">feedback</div>
     </div>
+    -->
 
     <!-- navbar -->
-    <div class="navbar navbar-default newbar">
-      <div class="navbar-header">
-        <button type="button" class="navbar-toggle" data-toggle="collapse"
-          data-target=".navbar-responsive-collapse">
-          <span class="icon-bar"></span>
-          <span class="icon-bar"></span>
-          <span class="icon-bar"></span>
-        </button>
-        <a href={% url "index:index" %} class="navbar-brand">
-          <p class="p3">NTHU Online Judge</p>
-        </a>
+    <nav class="navbar navbar-inverse newbar" >
+      <div class="container-fluid">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed"
+                  data-toggle="collapse" data-target="#bs-example-navbar-collapse-2">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href={% url "index:index" %}>
+            NTHU Online Judge
+          </a>
+        </div>
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-2">
+          <ul class="nav navbar-nav">
+            <li  class="nav-text"><a href="{% url 'contest:archive' %}">Contest</a></li>
+            <li  class="nav-text"><a href="{% url 'problem:volume' %}">Problem</a></li>
+            <li  class="nav-text"><a href="{% url 'users:submit' %}">Submit</a></li>
+            <li  class="nav-text"><a href="{% url 'status:status' %}">Status</a></li>
+            <li  class="nav-text"><a href="{% url 'group:list' %}">Group</a></li>
+            <!--
+            <li class="dropdown">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                <p class="p2">Team<b class="caret"></b></p>
+              </a>
+              <ul class="dropdown-menu">
+                <li><a href="{% url 'team:list' %}">Team List</a></li>
+                <li><a href="{% url 'team:profile' %}">Team Profile</a></li>
+              </ul>
+            </li>
+            -->
+            <li class="dropdown nav-text">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown"
+                 role="button" aria-expanded="false">User
+                 <span class="caret"></span>
+               </a>
+              <ul class="dropdown-menu" role="menu">
+                <li><a href="{% url 'users:list' %}">User List</a></li>
+                {% if user.is_authenticated %}
+                  <li>
+                    <a href={% url "users:profile" user.username %}>User Profile</a>
+                  </li>
+                {% endif %}
+              </ul>
+            </li>
+            <!--
+            <li class="dropdown nav-text"><a href="#">User Rank</a></li>
+            -->
+          </ul>
+          <ul class="nav navbar-nav navbar-right">
+            {% if user.is_authenticated %}
+            <li>
+              <a href={% url "users:notification" %} id="notification">
+                {% if amount > 0 %}
+                <img src={% static "./images/bell_blue.png "%} id="notification_img"
+                     title="You have {{ amount }} unread notifications."/>
+                <div id="notification_circle">
+                  <b id="number">
+                    {% if amount < 100 %}
+                      {{ amount }}
+                    {% else %}
+                      99+
+                    {% endif %}
+                  </b>
+                </div>
+                {% else %}
+                <img src={% static "./images/bell_gray.png "%} id="notification_img"
+                     title="You have no unread notifications."/>
+                {% endif %}
+              </a>
+            </li>
+            {% endif %}
+            {% if user.is_authenticated %}
+            <li class="nav-text-auth"><a href={% url "users:logout" %}>Logout</a></li>
+            {% else %}
+            <li class="nav-text-auth"><a href={% url "users:login" %}>Login</a></li>
+            <li class="nav-text-auth"><a href={% url "users:create" %}>Register</a></li>
+            {% endif %}
+          </ul>
+        </div>
       </div>
-      <div class="navbar-collapse collapse navbar-responsive-collapse">
-        <ul class="nav navbar-nav">
-          <li><a href="{% url 'contest:archive' %}"><p class="p2">Contest</p></a></li>
-          <li><a href="{% url 'problem:volume' %}"><p class="p2">Problem</p></a></li>
-          <li><a href="{% url 'users:submit' %}"><p class="p2">Submit</p></a></li>
-          <li><a href="{% url 'status:status' %}"><p class="p2">Status</p></a></li>
-          <li><a href="{% url 'group:list' %}"><p class="p2">Group</p></a></li>
-          <!--
-          <li class="dropdown">
-            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-              <p class="p2">Team<b class="caret"></b></p>
-            </a>
-            <ul class="dropdown-menu">
-              <li><a href="{% url 'team:list' %}">Team List</a></li>
-              <li><a href="{% url 'team:profile' %}">Team Profile</a></li>
-            </ul>
-          </li>
-          -->
-          <li class="dropdown">
-            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-              <p class="p2">User<b class="caret"></b></p>
-            </a>
-            <ul class="dropdown-menu">
-              <li><a href="{% url 'users:list' %}">User List</a></li>
-              {% if user.is_authenticated %}
-                <li>
-                  <a href={% url "users:profile" user.username %}>User Profile</a>
-                </li>
-              {% endif %}
-            </ul>
-          </li>
-          <li><a href="#"><p class="p2">User Rank</p></a></li>
-        </ul>
-        <ul class="nav navbar-nav navbar-right">
-          {% if user.is_authenticated %}
-          <li>
-            <a href={% url "users:notification" %} id="notification">
-              {% if amount > 0 %}
-              <img src={% static "./images/bell_blue.png "%} id="notification_img"
-                   title="You have {{ amount }} unread notifications."/>
-              <div id="notification_circle">
-                <b id="number">
-                  {% if amount < 100 %}
-                    {{ amount }}
-                  {% else %}
-                    99+
-                  {% endif %}
-                </b>
-              </div>
-              {% else %}
-              <img src={% static "./images/bell_gray.png "%} id="notification_img"
-                   title="You have no unread notifications."/>
-              {% endif %}
-            </a>
-          </li>
-          {% endif %}
-          {% if user.is_authenticated %}
-          <li><a href={% url "users:logout" %}><p class="p3">Logout</p></a></li>
-          {% else %}
-          <li><a href={% url "users:login" %}><p class="p3">Login</p></a></li>
-          <li><a href={% url "users:create" %}><p class="p3">Register</p></a></li>
-          {% endif %}
-        </ul>
-      </div>
-    </div>
+    </nav>
 
     <!-- wrap all page elements to div -->
     <div class="wrap-body container-fluid">
       {% block body_block %}
       {% endblock body_block %}
     </div>
+
     <!-- footer -->
-    <div class="footer sticky-footer">
-      <a href="" id="contact_us">Contact us</a>
-      <p id="footer_text">
-      © NTHU Online Judge 2014, Templates are from Bootstrap Project</p>
-      <p id='time'>
-      {{ tstr }}
-      </p>
+    <div class="sticky-footer panel-primary">
+      <div class="panel-heading footer">
+        <a href="" id="contact_us">Contact us</a>
+        <p id="footer_text">
+       © NTHU Online Judge 2014, Templates are from Bootstrap Project</p>
+        <p id='time'>
+        {{ tstr }}
+        </p>
+      </div>
     </div>
   </body>
 </html>
