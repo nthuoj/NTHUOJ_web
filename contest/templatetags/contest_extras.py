@@ -52,12 +52,19 @@ def can_reply(user,contest):
     return contest_info.can_reply(user,contest)
 register.filter("can_reply",can_reply)
 
+#True is contest is ended
 @register.filter
 def is_ended(contest):
     if datetime.now() > contest.end_time:
         return True
     return False
 register.filter("is_ended",is_ended)
+
+#check if user is anonymous user
+@register.filter
+def is_anonymous(user):
+    return user_info.is_anonymous(user)
+register.filter("is_anonymous",is_anonymous)
 
 #check if user is judge or admin
 @register.filter

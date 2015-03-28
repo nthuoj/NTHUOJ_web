@@ -33,18 +33,18 @@ SOFTWARE.
       <hr>
       <div class="modal-body" id="register">
         <table width='100%'>
-          {% if not user|has_auth:contest.id %}
+          {% if user|has_auth:contest.id or user|is_anonymous %}
           <tr>
-            <td>
-              <a class="btn btn-primary btn-lg btn-block" href="{% url 'contest:register' contest.id %}">as {{ user.username }}</a>
+            <td class="not-clickable-area">
+              <div>
+                <h5>Can not register<h5>
+              </div>
             </td>
           </tr>
           {% else %}
           <tr>
-            <td class="not-clickable-area">
-              <div>
-                <h5>owner or coowner can not register<h5>
-              </div>
+            <td>
+              <a class="btn btn-primary btn-lg btn-block" href="{% url 'contest:register' contest.id %}">as {{ user.username }}</a>
             </td>
           </tr>
           {% endif %}
