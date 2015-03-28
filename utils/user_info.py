@@ -39,7 +39,7 @@ import hashlib
 import random
 
 logger = get_logger()
-
+ANONYMOUS_PREFIX = "OJ"
 
 #contest ownership
 def has_contest_ownership(curr_user, curr_contest):
@@ -187,7 +187,7 @@ def send_activation_email(request, user):
          logger.warning("There is an error when sending email to %s's mailbox" % username)
 
 def get_public_users():
-    return User.objects.filter(username__startswith = 'OJ')
+    return User.objects.filter(username__startswith = ANONYMOUS_PREFIX)
 
 def attends_not_ended_contest(user):
     user_attends = Contestant.objects.filter(user = user)
@@ -201,7 +201,14 @@ def create_anonymous(need):
     we_have = len(public_user)
     new_users = []
     for index in range(we_have, we_have + need):
-        username = "OJ{:0>4d}".format(index)
+        username = ANONYMOUS_PREFIX + "{:0>4d}".format(index)
         new_user = User.objects.create_user(username,"000")
         new_users.append(new_user)
     return new_users
+
+def is_anonymous(user):
+    if user.username.startswith(ANONYMOUS_PREFIX):
+        return True
+    else:
+        return False
+

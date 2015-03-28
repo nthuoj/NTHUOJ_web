@@ -56,6 +56,7 @@ from group.models import Group
 from group.group_info import get_owned_group
 from group.group_info import get_group_or_404
 
+from utils.user_info import is_anonymous
 from utils.log_info import get_logger
 from utils import user_info
 
@@ -169,7 +170,7 @@ def delete(request, contest_id):
 
 @login_required
 def register(request, contest_id):
-    if request.method == 'POST':
+    if request.method == 'POST' and not is_anonymous(user):
         contest = get_contest_or_404(contest_id)
         #can only register not ended contest
         if contest.end_time > datetime.now():
