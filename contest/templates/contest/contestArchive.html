@@ -84,7 +84,7 @@ SOFTWARE.
           });
 
           </script>
-          {% if user.is_authenticated and contest.open_register %}
+          {% if user.is_authenticated and contest.open_register and not contest|is_ended %}
           <button type="button" class="btn btn-success btn-xs"
                   data-toggle="modal" data-target="#register{{ contest.id }}">
             <span class="glyphicon glyphicon-plus"></span>

@@ -18,6 +18,7 @@
     SOFTWARE.
     '''
 from django import template
+from datetime import datetime
 from utils import user_info
 from contest.models import Contest
 
@@ -40,6 +41,7 @@ def has_auth(user,contest_id):
 
 register.filter("has_auth",has_auth)
 
+#clarification
 @register.filter
 def can_ask(user,contest):
     return contest_info.can_ask(user,contest)
@@ -49,6 +51,13 @@ register.filter("can_ask",can_ask)
 def can_reply(user,contest):
     return contest_info.can_reply(user,contest)
 register.filter("can_reply",can_reply)
+
+@register.filter
+def is_ended(contest):
+    if datetime.now() > contest.end_time:
+        return True
+    return False
+register.filter("is_ended",is_ended)
 
 #check if user is judge or admin
 @register.filter
