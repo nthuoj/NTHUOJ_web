@@ -86,7 +86,6 @@ body {
 }
 .sticky-footer {
   padding: 0 auto;
-  border-top: 1px solid #dddddd;
   border-bottom-right-radius: -1;
   border-bottom-left-radius: -1;
   position:relative;
@@ -263,8 +262,9 @@ textarea#inputSmall {
 }
 #notification_circle{
   position: relative;
-  top :-40px;
-  background-color: #4490DB;
+  top :-32px;
+  right: 1px;
+  background-color: white;
   height: 20px;
   width: 20px;
   border-radius: 25px;
@@ -272,9 +272,9 @@ textarea#inputSmall {
 }
 #number{
   position: relative;
-  top :-2px;
-  left :-1px;
-  color: white;
+  top : -2px;
+  left : 0px;
+  color: red;
   font-size: 10px;
   -webkit-transform:scale(0.83);
   display: inline-block;

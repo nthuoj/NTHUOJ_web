@@ -176,7 +176,8 @@ SOFTWARE.
                 {% if amount > 0 %}
                 <img src={% static "./images/bell_blue.png "%} id="notification_img"
                      title="You have {{ amount }} unread notifications."/>
-                <div id="notification_circle">
+                <div id="notification_circle"  class="center">
+
                   <b id="number">
                     {% if amount < 100 %}
                       {{ amount }}
