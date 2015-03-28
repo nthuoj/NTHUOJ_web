@@ -65,6 +65,9 @@ SOFTWARE.
         <table class="table">
           <thead>
             <tr>
+              {% if user|can_reply:contest %}
+                <th></th>
+              {% endif %}
               <th>#</th>
               <th>Problem</th>
               <th>Asker</th>
@@ -77,6 +80,13 @@ SOFTWARE.
           <tbody>
             {% for clarification in clarifications %}
             <tr>
+              {% if user|can_reply:contest %}
+              <td>
+              <button name="reply" type="button" class="btn btn-warning btn-xs" 
+                      data-toggle="modal" data-target="#reply" 
+                      onclick="select({{ clarification.id }},'{{ clarification.content }}')">Reply</button>
+              </td>
+              {% endif %}
               <td>{{ forloop.counter }}</td>
               <td>{{ clarification.problem }}</td>
               <td>{{ clarification.asker }}</td>
@@ -88,18 +98,19 @@ SOFTWARE.
             {% endfor %}
           </tbody>
         </table>
-        {% if user|can_ask:contest %}
+        
         <div align="center">
+          {% if user|can_ask:contest %}
           <button type="button" class="btn btn-primary btn-lg" data-toggle="modal" 
                   data-target="#clarification">Clarify</button>
+          {% endif %}
         </div>
-        {% endif %}
       </div>
     </div>
     <hr>
     <!--Contest detail-->
     <div id="detail">
-      <ul class="nav nav-tabs" role="tablist" id="myTab">
+      <ul class="nav nav-tabs" role="tablist" id="contest_tab">
         <li class="active"><a href="#overview" role="tab" data-toggle="tab">Overview</a>
         </li>
         <li><a href="#problem" role="tab" data-toggle="tab">Problem</a>
@@ -125,6 +136,10 @@ SOFTWARE.
     {% if user|can_ask:contest %}
     <!--Clarification Modal-->
     {% include "contest/clarification.html" %}
+    {% endif %}
+    {% if user|can_reply:contest %}
+    <!--Reply Modal-->
+    {% include "contest/reply.html" %}
     {% endif %}
   </div>
 </body>

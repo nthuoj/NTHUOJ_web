@@ -33,29 +33,29 @@ SOFTWARE.
       <hr>
       <div class="modal-body" id="register">
         <table width='100%'>
+          {% if not user|has_auth:contest.id %}
           <tr>
-            {% if not user|has_auth:contest.id %}
-            <td class="clickable-area">
-              <div href="{% url 'contest:register' contest.id %}">
-                <h5>as {{ user.username }}<h5>
-              </div>
+            <td>
+              <a class="btn btn-primary btn-lg btn-block" href="{% url 'contest:register' contest.id %}">as {{ user.username }}</a>
             </td>
-            {% else %}
+          </tr>
+          {% else %}
+          <tr>
             <td class="not-clickable-area">
               <div>
                 <h5>owner or coowner can not register<h5>
               </div>
             </td>
-            {% endif %}
-            {% if own_group %}
-            <td class="saparate-area">
+          </tr>
+          {% endif %}
+          <tr class="saparate-area"></tr>
+          {% if own_group %}
+          <tr>
+            <td>
+              <a class="btn btn-success btn-lg btn-block" data-toggle="collapse" data-target="#group_select{{ contest.id }}">a Group</a>
             </td>
-            <td class="clickable-area" data-toggle="collapse" data-target="#group_select{{ contest.id }}">
-              <div>
-                <h4>a Group</h4>
-              </div>
-            </td>
-            {% endif %}
+          </tr>
+          {% endif %}
           </tr>
         </table>
         {% if own_group %}
