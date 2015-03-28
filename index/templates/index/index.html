@@ -50,9 +50,26 @@ SOFTWARE.
   </div>
   </div>
 
+  <!-- announcement -->
+  <div id="announcement" class="center">
+    <h3><b>Announcements</b></h3>
+    <table align="center" class="table table-striped table-hover">
+      <thead class="line">
+        <tr>
+        </tr>
+      </thead>
+      <tbody>
+        {% for announcement in announcements %}
+          <tr class="warning">
+            <td><h3>{{ announcement.content|linebreaksbr}}</h3></td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
   <!-- contest -->
   <div id="contest" class="center">
-    <h3>Running Contest</h3>
+    <h3><b>Running Contest</b></h3>
     <table align="center" class="table table-striped table-hover">
       <thead class="line">
         <tr>

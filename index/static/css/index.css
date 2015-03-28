@@ -249,4 +249,10 @@ textarea#inputSmall {
 #contest {
   margin-right: 220px;
   margin-left: 220px;
+  margin-bottom: 70px;
+}
+#announcement {
+  margin-right: 220px;
+  margin-left: 220px;
+  margin-bottom: 50px;
 }

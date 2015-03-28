@@ -30,6 +30,7 @@ from contest.models import Contest
 from django.shortcuts import render
 from django.http import HttpResponse
 from datetime import datetime, timedelta
+from index.models import Announcement
 from users.models import User, Notification
 from django.template import RequestContext
 from utils.user_info import validate_user
@@ -44,9 +45,11 @@ def index(request, alert_info='none'):
         (start_time__lt=present, end_time__gt=present, is_homework=False)
     c_upcomings = Contest.objects.filter \
         (start_time__gt=present, start_time__lt=time_threshold, is_homework=False)
+    announcements = Announcement.objects.filter \
+        (start_time__lt=present, end_time__gt=present)
     return render(request, 'index/index.html',
                 {'c_runnings':c_runnings, 'c_upcomings':c_upcomings,
-                'alert_info':alert_info},
+                'announcements':announcements, 'alert_info':alert_info},
                 context_instance=RequestContext(request, processors=[custom_proc]))
 
 def custom_404(request):
