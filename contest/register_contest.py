@@ -29,20 +29,15 @@ from utils.log_info import get_logger
 
 logger = get_logger()
 
-def register(contest, user):
-    contestant = Contestant(contest = contest,user = user)
-    contestant.save()
-    logger.info('Contest: User %s attends Contest %s!' % (user.username, contest.id))
-
 def register_user(contest, user):
     if can_register(contest, user):
-        return register(contest,user)
+        contestant = Contestant(contest = contest,user = user)
+        contestant.save()
+        logger.info('Contest: User %s attends Contest %s!' % (user.username, contest.id))
 
 def register_group(contest, group):
     if not contest.open_register:
         logger.info('Contest: Registration for Contest %s is closed, can not register.' % contest.id)
         return
     for member in group.member.all():
-        if can_register(contest, member):
-            register(contest, member)
-    
+        register_user(contest, member)

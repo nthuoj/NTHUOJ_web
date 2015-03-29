@@ -183,6 +183,9 @@ def register_group(request, contest, group_id):
     group = get_group_or_404(group_id)
     if user_info.has_group_ownership(request.user, group):
         register_group_impl(contest, group)
+    else:
+        logger.warning('Contest: User %s can not register group %s. Does not have ownership!' 
+            % (request.user.username, group_id))
     return redirect('contest:archive')
 
 @login_required
