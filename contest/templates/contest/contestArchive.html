@@ -56,7 +56,8 @@ SOFTWARE.
         <th>
           {% if user.has_judge_auth %}
           <a href="{% url 'contest:new' %}">
-            <button type="button" class="btn btn-success btn-xs" >
+            <button type="button" class="btn btn-success btn-xs" 
+                    data-toggle="tooltip" data-placement="top" title="New Contest">
               <span class="glyphicon glyphicon-plus"></span>
             </button>
           </a>
@@ -76,12 +77,14 @@ SOFTWARE.
 
           {% if user|has_auth:contest.id %}
           <a href="{% url 'contest:delete' contest.id %}">
-            <button type="button" class="btn btn-danger btn-xs">
+            <button type="button" class="btn btn-danger btn-xs" data-toggle="tooltip" 
+                  data-placement="top" title="Delete Contest">
               <span class="glyphicon glyphicon-remove"></span>
             </button>
           </a>
           <a href="{% url 'contest:edit' contest.id %}">
-            <button type="button" class="btn btn-warning btn-xs">
+            <button type="button" class="btn btn-warning btn-xs" data-toggle="tooltip" 
+                  data-placement="top" title="Edit Contest">
               <span class="glyphicon glyphicon-pencil"></span>
             </button>
           </a>
@@ -93,10 +96,12 @@ SOFTWARE.
           </button>
           
           {% endif %}
-          <button type="button" class="btn btn-info btn-xs" data-toggle="modal" 
-                  data-target="#contestInfo{{ contest.id }}">
-            <span class="glyphicon glyphicon-info-sign"></span>
+          <a data-toggle="tooltip" data-placement="top" title="Contest Info">
+            <button type="button" class="btn btn-info btn-xs" data-toggle="modal" 
+                    data-target="#contestInfo{{ contest.id }}">
+              <span class="glyphicon glyphicon-info-sign"></span>
           </button>
+          </a>
 
           <script>
           $('[data-toggle="tooltip"]').tooltip({
@@ -107,7 +112,8 @@ SOFTWARE.
           {% if not user|has_auth:contest.id %}
           {% if user.is_authenticated and contest.open_register %}
           <a href="{% url 'contest:register' contest.id %}">
-            <button type="button" class="btn btn-success btn-xs" >
+            <button type="button" class="btn btn-success btn-xs" data-toggle="tooltip" 
+                  data-placement="top" title="Register">
               <span class="glyphicon glyphicon-plus"></span>
             </button>
           </a>
