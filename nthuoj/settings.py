@@ -77,7 +77,6 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'OPTIONS': {
             'read_default_file': INI_PATH,
-            'init_command' : 'SET storage_engine=MyISAM'
         },
     }
 }
