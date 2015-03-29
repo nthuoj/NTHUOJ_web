@@ -30,23 +30,23 @@ from django.core.exceptions import SuspiciousOperation
 
 class CustomHttpExceptionMiddleware(object):
     def process_exception(self, request, exception):
+        message = unicode(exception)
         if isinstance(exception, Http404):
-            message = unicode(exception)
-            print message
             return render(request, 'index/404.html',
                 {}, status=404)
-        elif isinstance(exception, Exception):
-            message = unicode(exception)
-            print message
-            return render(request, 'index/500.html',
-                {'error_message': message}, status=500)
         elif isinstance(exception, SuspiciousOperation):
-            message = unicode(exception)
-            print message
             return render(request, 'index/400.html',
                 {'error_message': message}, status=400)
         elif isinstance(exception, PermissionDenied):
-            message = unicode(exception)
-            print message
             return render(request, 'index/403.html',
                 {'error_message': message}, status=403)
+        elif isinstance(exception, Exception):
+            return render(request, 'index/500.html',
+                {'error_message': message}, status=500)
+
+def render_index(request, *args, **kwargs):
+    '''Helper to render index page with custom_proc'''
+    # add context_instance keyword
+    kwargs.update({'context_instance': RequestContext(request, processors=[custom_proc])})
+
+    return render(request, *args, **kwargs)

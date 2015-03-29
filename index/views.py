@@ -34,13 +34,11 @@ from users.models import User, Notification
 from django.template import RequestContext
 from utils.user_info import validate_user
 from django.template import RequestContext
-from django.core.exceptions import PermissionDenied
-from django.core.exceptions import SuspiciousOperation
 
 # Create your views here.
 logger = get_logger()
 def index(request, alert_info='none'):
-    '''
+
     present = timezone.now()
     time_threshold = datetime.now() + timedelta(days=1);
     c_runnings = Contest.objects.filter \
@@ -51,11 +49,6 @@ def index(request, alert_info='none'):
                 {'c_runnings':c_runnings, 'c_upcomings':c_upcomings,
                 'alert_info':alert_info},
                 context_instance=RequestContext(request, processors=[custom_proc]))
-    '''
-    #raise Http404
-    #raise Exception('Exception')
-    #raise PermissionDenied('PermissionDenied')
-    raise SuspiciousOperation("SuspiciousOperation")
 
 def custom_400(request):
     return render(request, 'index/400.html', status=400)
