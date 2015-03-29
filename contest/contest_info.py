@@ -37,6 +37,7 @@ from users.models import User
 from utils.user_info import has_contest_ownership
 import csv
 from django.http import HttpResponse
+from datetime import datetime
 
 
 def get_contestant_list(contest):
@@ -115,21 +116,53 @@ def get_scoreboard_csv(contest_id):
     response['Content-Disposition'] = 'attachment; filename=' + filename
 
     writer = csv.writer(response)
+    scoreboard.sort_users_by_penalty()
     #title
-    title = ['Penalty']
+    title = ['Penalty','User']
     for problem in scoreboard.problems:
         title.append(problem.id)
     title.append('Total')
     writer.writerow(title)
     #user data
-    for user in scoreboard.users:
-        user_row = [user.username]
+    for counter, user in enumerate(scoreboard.users):
+        user_row = [counter, user.username]
         for problem in user.problems:
             penalty = problem.get_penalty(contest.start_time)
             user_row.append(penalty)
         total_penalty = user.get_penalty(contest.start_time)
         user_row.append(total_penalty)
         writer.writerow(user_row)
+
+    footer = ['Passed','']  
+    for problem in scoreboard.problems:
+        footer.append(problem.pass_user)
+    writer.writerow(footer)
+
+    #to saparate two scoreboard
+    writer.writerow([])
+
+    scoreboard.sort_users_by_solved_testcases()
+    #title
+    title = ['Testcase','User']
+    for problem in scoreboard.problems:
+        title.append(problem.id)
+    title.append('Total')
+    writer.writerow(title)
+    #user data
+    for counter, user in enumerate(scoreboard.users):
+        user_row = [counter,  user.username]
+        for problem in user.problems:
+            passed_testcases = problem.get_testcases_solved()
+            total_testcases = problem.total_testcases
+            user_row.append(str(passed_testcases) + '/' + str(total_testcases))
+        user_total_testcases = user.get_testcases_solved()
+        user_row.append(user_total_testcases)
+        writer.writerow(user_row)
+
+    footer = ['Passed Testcases','']  
+    for problem in scoreboard.problems:
+        footer.append(problem.total_solved)
+    writer.writerow(footer)
 
     return response
 
