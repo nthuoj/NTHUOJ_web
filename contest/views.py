@@ -64,7 +64,6 @@ def archive(request, page = None):
     user = request.user
     all_contests = get_contests(user)
     groups = get_owned_group(user)
-    own_group = (len(groups)!=0)
     #show 15 contests
     paginator = Paginator(all_contests, 15)
 
@@ -85,7 +84,7 @@ def archive(request, page = None):
     pager = {'previous':previous, 'this':this, 'next':next, 'max_page':max_page}
     return render(request, 
         'contest/contestArchive.html',
-        {'contests':contests,'user':user,'groups':groups, 'own_group':own_group,'pager':pager},
+        {'contests':contests,'user':user,'groups':groups,'pager':pager},
         context_instance = RequestContext(request, processors = [custom_proc]))
 
 def contest(request, contest_id):

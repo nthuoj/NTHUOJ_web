@@ -49,7 +49,7 @@ SOFTWARE.
           </tr>
           {% endif %}
           <tr class="saparate-area"></tr>
-          {% if own_group %}
+          {% if groups %}
           <tr>
             <td>
               <a class="btn btn-success btn-lg btn-block" data-toggle="collapse" data-target="#group_select{{ contest.id }}">a Group</a>
@@ -58,7 +58,7 @@ SOFTWARE.
           {% endif %}
           </tr>
         </table>
-        {% if own_group %}
+        {% if groups %}
         <div class="collapse" id="group_select{{ contest.id }}">
           <div class="well">
             <form class="form-inline" method="GET" action="{% url 'contest:register' contest.id %}">
