@@ -40,8 +40,10 @@ from contest.models import Clarification
 
 from contest.forms import ContestForm
 from contest.forms import ClarificationForm
+from contest.forms import ReplyForm
 
 from contest.contest_info import can_ask
+from contest.contest_info import can_reply
 
 from contest.contest_info import get_scoreboard
 
@@ -91,11 +93,16 @@ def contest(request, contest_id):
     else:
         scoreboard = get_scoreboard(contest)
         user = request.user
-        clarifications = get_clarifications(contest,user)
+        clarifications = get_clarifications(user,contest)
+
         initial_form = {'contest':contest,'asker':user}
         form = ClarificationForm(initial=initial_form)
-        return render(request, 'contest/contest.html',{'contest':contest,
-            'clarifications':clarifications,'form':form,'user':user,
+
+        initial_reply_form = {'contest':contest,'replyer':user}
+        reply_form = ReplyForm(initial = initial_reply_form)
+        return render(request, 'contest/contest.html',
+            {'contest':contest, 'clarifications':clarifications, 'user':user,
+            'form':form, 'reply_form':reply_form,
             'scoreboard':scoreboard},
             context_instance = RequestContext(request, processors = [custom_proc]))
 
@@ -177,7 +184,8 @@ def ask(request):
         contest = request.POST['contest']
         contest_obj = Contest.objects.get(pk = contest)
     except:
-        logger.warning('Clarification: Can not create Clarification!')
+        logger.warning('Clarification: Can not create Clarification! Contest %s not found!'
+            % contest)
         return redirect('contest:archive')
 
     if can_ask(request.user,contest_obj):
@@ -185,6 +193,31 @@ def ask(request):
             form = ClarificationForm(request.POST)
             if form.is_valid():
                 new_clarification = form.save()
-                logger.info('Clarification: User %s create Clarification %s!' % (request.user.username, new_clarification.id))
+                logger.info('Clarification: User %s create Clarification %s!' 
+                    % (request.user.username, new_clarification.id))
+            return redirect('contest:contest',contest)
+    return redirect('contest:archive')
+
+@login_required
+def reply(request):
+    try:
+        clarification = request.POST['clarification']
+        instance = Clarification.objects.get(pk = clarification)
+        contest_obj = instance.contest
+        contest = contest_obj.id
+    except:
+        logger.warning('Clarification: User %s can not reply Clarification %s!'
+            % (request.user.username, clarification.id))
+        return redirect('contest:archive')
+    
+    if can_reply(request.user,contest_obj):
+        if request.method == 'POST':
+            form = ReplyForm(request.POST or None, instance = instance)
+            if form.is_valid():
+                replied_clarification = form.save()
+                replied_clarification.reply_time = datetime.now()
+                replied_clarification.save()
+                logger.info('Clarification: User %s reply Clarification %s!' 
+                    % (request.user.username, replied_clarification.id))
             return redirect('contest:contest',contest)
     return redirect('contest:archive')
