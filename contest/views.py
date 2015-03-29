@@ -224,9 +224,9 @@ def reply(request):
     return redirect('contest:archive')
 
 def download(request):
-    what = request.GET.get('type')
+    what = request.POST.get('type')
     if what == 'scoreboard':
-        contest_id = request.GET.get('contest')
+        contest_id = request.POST.get('contest')
         scoreboard_file = get_scoreboard_csv(contest_id)
         return scoreboard_file
     raise Http404('file not found')

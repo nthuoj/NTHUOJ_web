@@ -19,9 +19,15 @@ SOFTWARE.
 -->
 <h3>Scoreboard</h3>
 <div style="float:right">
-  <button type="button" class="btn btn-default" data-toggle="tooltip" data-placement="top" title="Download Scoreboard">
-    <span class="glyphicon glyphicon-download"></span>
-  </button>
+  <form method="POST" action="{% url 'contest:download' %}">
+    {% csrf_token %}
+    <input type="hidden" name="type" value="scoreboard">
+    <input type="hidden" name="contest" value="{{ contest.id }}">
+    <button type="sybmit" class="btn btn-default" data-toggle="tooltip" data-placement="top" 
+            title="Download Scoreboard">
+      <span class="glyphicon glyphicon-download"></span>
+    </button>
+  </form>
 </div>
 <h4>{{ contest.cname }}</h4> {% load staticfiles %}
 <script src="{% static 'contest/js/scoreboard.js' %}"></script>
@@ -30,9 +36,11 @@ SOFTWARE.
 <div role="tabpanel">
   <!-- Nav tabs -->
   <ul class="nav nav-tabs" role="tablist" id="scoreboardTab">
-    <li role="presentation" class="active"><a href="#testcase" aria-controls="testcase" role="tab" data-toggle="tab">Testcase</a>
+    <li role="presentation" class="active"><a href="#testcase" aria-controls="testcase" 
+        role="tab" data-toggle="tab">Testcase</a>
     </li>
-    <li role="presentation"><a href="#penalty" aria-controls="penalty" role="tab" data-toggle="tab">Penalty</a>
+    <li role="presentation"><a href="#penalty" aria-controls="penalty" 
+        role="tab" data-toggle="tab">Penalty</a>
     </li>
   </ul>
   <!-- Tab panes -->
