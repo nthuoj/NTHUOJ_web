@@ -41,12 +41,15 @@ from utils.user_info import get_user_statistics, send_activation_email
 import datetime
 import random
 import json
+from django.http import *
+from django.core.exceptions import *
 
 # Create your views here.
 
 logger = get_logger()
 
 def list(request):
+    raise Http500
     users = User.objects.all()
     paginator = Paginator(users, 25)  # Show 25 users per page
     page = request.GET.get('page')

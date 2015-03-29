@@ -286,20 +286,20 @@ textarea#inputSmall {
   -webkit-transform:scale(0.83);
   display: inline-block;
 }
-.err1 {
+.status {
   font-size: 120px;
   font-family: impact;
   text-align: left;
   margin-bottom: -40px;
 }
-.err2 {
+.status-title {
   font-size: 70px;
   font-family: impact;
   text-align: left;
   color: black;
   margin-bottom: 0px;
 }
-.err3 {
+.status-condition {
   font-size: 30px;
   font-family: impact;
   text-align: left;

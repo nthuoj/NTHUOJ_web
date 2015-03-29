@@ -24,29 +24,29 @@ SOFTWARE.
 from django.shortcuts import render
 from index.views import custom_proc
 from django.template import RequestContext
+from django.http import Http404, HttpResponse
+from django.core.exceptions import PermissionDenied
+from django.core.exceptions import SuspiciousOperation
 
-def render_404(request, message):
-    '''Help to render 404 page
-
-    example: 
-        render_404(request, 'Page not found')
-    '''
-    return render(request, 'index/404.html',
-        {'error_message': message}, status=500)
-
-
-def render_500(request, message):
-    '''Help to render 500 page
-
-    example: 
-        render_500(request, 'Request query does not exist')
-    '''
-    return render(request, 'index/500.html',
-        {'error_message': message}, status=500)
-
-def render_index(request, *args, **kwargs):
-    '''Helper to render index page with custom_proc'''
-    # add context_instance keyword
-    kwargs.update({'context_instance': RequestContext(request, processors=[custom_proc])})
-
-    return render(request, *args, **kwargs)
+class CustomHttpExceptionMiddleware(object):
+    def process_exception(self, request, exception):
+        if isinstance(exception, Http404):
+            message = unicode(exception)
+            print message
+            return render(request, 'index/404.html',
+                {}, status=404)
+        elif isinstance(exception, Exception):
+            message = unicode(exception)
+            print message
+            return render(request, 'index/500.html',
+                {'error_message': message}, status=500)
+        elif isinstance(exception, SuspiciousOperation):
+            message = unicode(exception)
+            print message
+            return render(request, 'index/400.html',
+                {'error_message': message}, status=400)
+        elif isinstance(exception, PermissionDenied):
+            message = unicode(exception)
+            print message
+            return render(request, 'index/403.html',
+                {'error_message': message}, status=403)

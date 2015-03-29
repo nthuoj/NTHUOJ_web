@@ -23,7 +23,7 @@ PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."),)
 SECRET_KEY = 'kivl1x)by8$98z6y3b^7texw&+d1arad2qlq-(sn=8g^lw_(+&'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 TEMPLATE_DEBUG = True
 
@@ -48,7 +48,6 @@ INSTALLED_APPS = (
     'group',
     'status',
     'axes',
-    'bootstrapform',
     'djangobower',
 )
 
@@ -59,7 +58,7 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'utils.render_helper.CustomHttpExceptionMiddleware',
     'axes.middleware.FailedLoginMiddleware',
 )
 
@@ -77,6 +76,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'OPTIONS': {
             'read_default_file': INI_PATH,
+            'init_command' : 'SET storage_engine=MyISAM'
         },
     }
 }

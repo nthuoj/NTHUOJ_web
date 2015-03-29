@@ -14,5 +14,7 @@ urlpatterns = patterns('',
     url(r'^group/', include('group.urls', namespace='group')),
     url(r'^status/', include('status.urls', namespace='status')),
 )
+handler400 = 'index.views.custom_400'
+handler403 = 'index.views.custom_403'
 handler404 = 'index.views.custom_404'
 handler500 = 'index.views.custom_500'
