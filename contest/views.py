@@ -17,6 +17,7 @@
     OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
     SOFTWARE.
     '''
+from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
 from datetime import datetime
 from django.shortcuts import redirect
@@ -30,8 +31,12 @@ from django.forms.models import model_to_dict
 
 from index.views import custom_proc
 
+from contest.contest_info import get_scoreboard
+from contest.contest_info import get_scoreboard_csv
 from contest.contest_info import get_clarifications
 
+from contest.contest_info import can_ask
+from contest.contest_info import can_reply
 from contest.contestArchive import get_contests
 
 from contest.models import Contest
@@ -41,11 +46,6 @@ from contest.models import Clarification
 from contest.forms import ContestForm
 from contest.forms import ClarificationForm
 from contest.forms import ReplyForm
-
-from contest.contest_info import can_ask
-from contest.contest_info import can_reply
-
-from contest.contest_info import get_scoreboard
 
 from utils.log_info import get_logger
 from utils import user_info
@@ -222,3 +222,11 @@ def reply(request):
                     % (request.user.username, replied_clarification.id))
             return redirect('contest:contest',contest)
     return redirect('contest:archive')
+
+def download(request):
+    what = request.GET.get('type')
+    if what == 'scoreboard':
+        contest_id = request.GET.get('contest')
+        scoreboard_file = get_scoreboard_csv(contest_id)
+        return scoreboard_file
+    raise Http404('file not found')

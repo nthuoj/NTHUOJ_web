@@ -32,9 +32,12 @@ from problem.models import Testcase
 from problem.models import Submission
 from problem.models import SubmissionDetail
 
-from utils.user_info import has_contest_ownership
-
 from users.models import User
+
+from utils.user_info import has_contest_ownership
+import csv
+from django.http import HttpResponse
+
 
 def get_contestant_list(contest):
     return Contestant.objects.filter(contest = contest)
@@ -98,6 +101,37 @@ def get_scoreboard(contest):
         scoreboard.add_user(new_contestant)
 
     return scoreboard
+
+def get_scoreboard_csv(contest_id):
+    try:
+        contest = Contest.objects.get(pk = contest_id)
+    except Contest.DoesNotExist:
+        logger.warning('Contest: Can not download Contest scoreboard %s! Contest not found!' % contest_id)
+        raise Http404('Contest does not exist, can not download scoreboard.')
+    scoreboard = get_scoreboard(contest)
+    
+    response = HttpResponse(content_type='text/csv')
+    filename = str(contest.cname) + "-scoreboard"
+    response['Content-Disposition'] = 'attachment; filename=' + filename
+
+    writer = csv.writer(response)
+    #title
+    title = ['Penalty']
+    for problem in scoreboard.problems:
+        title.append(problem.id)
+    title.append('Total')
+    writer.writerow(title)
+    #user data
+    for user in scoreboard.users:
+        user_row = [user.username]
+        for problem in user.problems:
+            penalty = problem.get_penalty(contest.start_time)
+            user_row.append(penalty)
+        total_penalty = user.get_penalty(contest.start_time)
+        user_row.append(total_penalty)
+        writer.writerow(user_row)
+
+    return response
 
 def get_clarifications(user,contest):
     if has_contest_ownership(user,contest):
