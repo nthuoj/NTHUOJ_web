@@ -27,16 +27,9 @@ SOFTWARE.
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <!-- necessarily jQeuery -->
-  <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js">
-  </script>
   <!-- bootstrap, bootwatch JS & CSS -->
-  <link rel="stylesheet"
-        href="http://bootswatch.com/paper/bootstrap.css" media="screen">
-  <link rel="stylesheet"
-        href="http://bootswatch.com/assets/css/bootswatch.min.css">
-  <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js">
-  </script>
+  <link rel="stylesheet" href={% static "bootswatch/paper/bootstrap.css" %}>
+  <script src={% static "bootstrap/dist/js/bootstrap.min.js" %}></script>
   <link rel="stylesheet" href={% static "./css/index.css"%} media="screen">
 </head>
 <body>
