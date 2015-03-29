@@ -23,7 +23,7 @@ from datetime import datetime
 
 class Announcement(models.Model):
 
-    content = models.TextField(null=False)
+    content = models.TextField(default=None)
     start_time = models.DateTimeField(default=datetime.now)
     end_time = models.DateTimeField(default=datetime.now)
 
