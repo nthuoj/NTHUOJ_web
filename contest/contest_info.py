@@ -115,7 +115,9 @@ def get_scoreboard_csv(contest_id):
     filename = str(contest.cname) + "-scoreboard"
     response['Content-Disposition'] = 'attachment; filename=' + filename
 
+    #init
     writer = csv.writer(response)
+    #penalty scoreboard csv
     scoreboard.sort_users_by_penalty()
     #title
     title = ['Penalty','User']
@@ -141,6 +143,7 @@ def get_scoreboard_csv(contest_id):
     #to saparate two scoreboard
     writer.writerow([])
 
+    #testcases scoreboard csv
     scoreboard.sort_users_by_solved_testcases()
     #title
     title = ['Testcase','User']
