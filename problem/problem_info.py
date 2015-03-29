@@ -1,16 +1,29 @@
 import os.path
 from utils import config_info
 from problem.models import Problem, Testcase
+from django.db.models import Q
 
-def get_problem(problem):
+SPECIAL_PATH = config_info.get_config('path', 'special_judge_path')
+PARTIAL_PATH = config_info.get_config('path', 'partial_judge_path')
+
+def get_testcase(problem):
     problem.testcase = Testcase.objects.filter(problem=problem)
     return problem
 
+def get_problem_list(user):
+    if user.is_anonymous():
+        return Problem.objects.filter(visible=True)
+    else:
+        if user.is_admin:
+            return Problem.objects.all()
+        else:
+            return Problem.objects.filter(Q(visible=True) | Q(owner=user))
+
 def has_special_judge_code(problem):
-    speJudge_path = config_info.get_config('path', 'special_judge_path')
-    return os.path.isfile("%s%d.c" % (speJudge_path, problem.pk))
+    return os.path.isfile("%s%d.c" % (SPECIAL_PATH, problem.pk)) \
+            or os.path.isfile("%s%d.cpp" % (SPECIAL_PATH, problem.pk))
 
 def has_partial_judge_code(problem):
-    partial_path = config_info.get_config('path', 'partial_judge_path')
-    return os.path.isfile("%s%d.c" % (partial_path, problem.pk))
+    return os.path.isfile("%s%d.c" % (PARTIAL_PATH, problem.pk)) \
+            or os.path.isfile("%s%d.cpp" % (PARTIAL_PATH, problem.pk))
 
