@@ -43,6 +43,11 @@ if not os.path.isfile('emailInfo.py'):
     email_host_pwd = getpass.getpass('Email host\'s password : ')
     write_email_file(email_host, email_host_pwd)
 
+if not os.path.isfile('./index/static/swf/ZeroClipboard.swf'):
+    # Downloading ZeroClipboard.swf
+    print "Downloading ZeroClipboard.swf ......"
+    download_swf()
+
 # Database Migratinos
 db_migrate()
 

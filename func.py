@@ -23,6 +23,7 @@ SOFTWARE.
 '''
 
 import os
+import urllib
 
 def write_ini_file(host, db, user, pwd):
     ini_file = open('nthuoj.ini', 'w')
@@ -35,10 +36,14 @@ def write_ini_file(host, db, user, pwd):
     ini_file.close()
 
 def write_email_file(user, pwd):
-    email_file = open('emailInfo.py', 'w') 
+    email_file = open('emailInfo.py', 'w')
     email_file.write('EMAIL_HOST_USER = \'%s\'\n' % user)
     email_file.write('EMAIL_HOST_PASSWORD = \'%s\'\n' % pwd)
     email_file.close()
+
+def download_swf():
+    url = 'https://github.com/zeroclipboard/zeroclipboard/blob/master/dist/ZeroClipboard.swf?raw=true'
+    urllib.urlretrieve(url, "./index/static/swf/ZeroClipboard.swf")
 
 def django_manage(args):
     cmd = 'python ./manage.py ' + args
