@@ -57,4 +57,3 @@ def db_migrate():
     for app in apps:
         django_manage('makemigrations ' + app)
     django_manage('migrate')
-
