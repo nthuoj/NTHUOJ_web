@@ -33,11 +33,11 @@ from django.template import RequestContext
 from index.views import custom_proc
 from users.admin import UserCreationForm, AuthenticationForm
 from users.forms import CodeSubmitForm
-from users.forms import UserProfileForm, UserLevelForm
+from users.forms import UserProfileForm, UserLevelForm, UserForgetPasswordForm
 from users.models import User, UserProfile, Notification
 from users.templatetags.profile_filters import can_change_userlevel
 from utils.log_info import get_logger, get_client_ip
-from utils.user_info import get_user_statistics, send_activation_email
+from utils.user_info import get_user_statistics, send_activation_email, send_forget_password_email
 import datetime
 import random
 import json
@@ -175,6 +175,53 @@ def user_login(request):
         context_instance=RequestContext(request, processors=[custom_proc]))
 
 
+def user_forget_password(request):
+    if request.user.is_authenticated():
+        return redirect(reverse('index:index'))
+
+    message = ''
+    if request.method == 'POST':
+        user_form = UserForgetPasswordForm(data=request.POST)
+        if user_form.is_valid():
+            user = User.objects.get(username=user_form.cleaned_data['username'])
+            send_forget_password_email(request, user)
+            message = 'Conform email has sent to you.'
+        else:
+            return render(
+                request,
+                'users/auth.html',
+                {'form': user_form, 'title': 'Forget Password'},
+                context_instance=RequestContext(request, processors=[custom_proc]))
+
+    return render(
+        request,
+        'users/auth.html',
+        {'form': UserForgetPasswordForm(), 'title': 'Forget Password', 'message': message},
+        context_instance=RequestContext(request, processors=[custom_proc]))
+
+
+def forget_password_confirm(request, activation_key):
+    '''check if user is already logged in and if he
+    is redirect him to some other url, e.g. home
+    '''
+    if request.user.is_authenticated():
+        HttpResponseRedirect(reverse('index:index'))
+
+    '''check if there is UserProfile which matches
+    the activation key (if not then display 404)
+    '''
+    user_profile = get_object_or_404(UserProfile, activation_key=activation_key, active_time__gte=datetime.datetime.now())
+    user = user_profile.user
+    user = User.objects.get(username='henry')
+    user.backend = 'django.contrib.auth.backends.ModelBackend'
+    # Let user login, so as to modify password
+    login(request, user)
+    logger.info('User %s is ready to reset his/her password' % user.username)
+    user_profile.delete()
+    return redirect(reverse('users:profile', kwargs={'username': user.username}))
+
+
+
 @login_required()
 def submit(request, pid=None):
     if request.method=='POST':
@@ -209,7 +256,7 @@ def register_confirm(request, activation_key):
     user.is_active = True
     user.save()
     logger.info('user %s has already been activated' % user.username)
-
+    user_profile.delete()
     return render(
         request,
         'users/confirm.html',

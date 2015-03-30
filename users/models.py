@@ -21,7 +21,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 '''
-from datetime import date
+from datetime import date, datetime, timedelta
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 from django.db import models
 from utils.config_info import get_config_items
@@ -126,6 +126,8 @@ class Notification(models.Model):
 class UserProfile(models.Model):
     user = models.OneToOneField(User)
     activation_key = models.CharField(max_length=40, blank=True)
+    # default active time is 15 minutes
+    active_time = models.DateTimeField(default=datetime.now()+timedelta(minutes=15))
 
     def __unicode__(self):
         return self.user.username
