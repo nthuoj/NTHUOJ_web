@@ -43,7 +43,7 @@ def write_email_file(user, pwd):
 
 def download_swf():
     url = 'https://github.com/zeroclipboard/zeroclipboard/blob/master/dist/ZeroClipboard.swf?raw=true'
-    urllib.urlretrieve(url, "./index/static/swf/ZeroClipboard.swf")
+    urllib.urlretrieve(url, "./index/static/flash/ZeroClipboard.swf")
 
 def django_manage(args):
     cmd = 'python ./manage.py ' + args
