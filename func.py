@@ -41,6 +41,9 @@ def write_email_file(user, pwd):
     email_file.write('EMAIL_HOST_PASSWORD = \'%s\'\n' % pwd)
     email_file.close()
 
+def create_flash_dir():
+    os.mkdir('./index/static/flash/')
+
 def download_swf():
     url = 'https://github.com/zeroclipboard/zeroclipboard/blob/master/dist/ZeroClipboard.swf?raw=true'
     urllib.urlretrieve(url, "./index/static/flash/ZeroClipboard.swf")
