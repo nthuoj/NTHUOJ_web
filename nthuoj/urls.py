@@ -1,9 +1,13 @@
 from django.conf.urls import patterns, include, url
 from django.contrib import admin
 from django.conf import settings
+import autocomplete_light
+
+# OP autodiscover
+autocomplete_light.autodiscover()
 
 urlpatterns = patterns('',
-
+    url(r'^autocomplete/', include('autocomplete_light.urls')),
     url(r'^admin/', include(admin.site.urls)),
     url(r'^get_time/', 'index.views.get_time'),
     url(r'^', include('index.urls', namespace='index')),
