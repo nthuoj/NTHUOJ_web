@@ -137,7 +137,7 @@ class Submission(models.Model):
     error_msg = models.TextField(blank=True)
     status = models.CharField(max_length=7, choices=STATUS_CHOICE, default=WAIT)
     language = models.CharField(max_length=5, choices=LANGUAGE_CHOICE, default=C)
-
+    other_judge_sid = models.IntegerField(blank=True, null=True)
     def __unicode__(self):
         return str(self.id)
 
