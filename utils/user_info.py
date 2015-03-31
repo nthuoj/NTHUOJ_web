@@ -126,18 +126,18 @@ def get_user_statistics(user):
     submissions = Submission.objects.filter(user=user)
     for label in status_labels:
         statistics += [{
-                           'label': label,
-                           'value': submissions.filter(status=label).count()
-                       }]
+            'label': label,
+            'value': submissions.filter(status=label).count()
+       }]
 
     # fetch Submission of the given user
     submissions_id = map(lambda submission: submission.id, submissions)
     submission_details = SubmissionDetail.objects.filter(sid__in=submissions_id)
     for label in verdict_labels:
         statistics += [{
-                           'label': label,
-                           'value': submission_details.filter(verdict=label).count()
-                       }]
+           'label': label,
+           'value': submission_details.filter(verdict=label).count()
+       }]
 
     return statistics
 
