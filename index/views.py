@@ -44,31 +44,9 @@ from users.models import User
 from problem.models import Problem
 from contest.models import Contest
 from group.models import Group
-# create autocomplete interface and register
-
-class ProblemAutocomplete(autocomplete_light.AutocompleteModelBase):
-
-    search_fields = ['^pname']
-    choices = Problem.objects.all()
-    model = Problem
-
-    attrs={
-        'placeholder': ' OP Autocomplete',
-        'data-autocomplete-minimum-characters': 1
- }
-
-autocomplete_light.register(ProblemAutocomplete)
-
-class UserAutocompleteForm(autocomplete_light.ModelForm):
-    class Meta:
-        model = Problem
-        fields = ['pname']
-        widgets = {
-            'pname': autocomplete_light.TextWidget('ProblemAutocomplete')
-        }
 
 def gg(request):
-    return render(request, 'index/team_list.html', {'form': UserAutocompleteForm()})
+    return render(request, 'index/team_list.html')
 
 def navigation_autocomplete(request,
     template_name='index/autocomplete.html'):
