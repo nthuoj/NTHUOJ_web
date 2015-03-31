@@ -111,7 +111,8 @@ def new(request):
     if request.user.has_judge_auth():
         if request.method == 'GET':
             form = ContestForm(initial={'owner':request.user})
-            return render(request,'contest/editContest.html',{'form':form})
+            title = "New Contest"
+            return render(request,'contest/editContest.html',{'form':form,'title':title})
         if request.method == 'POST':
             form = ContestForm(request.POST)
             if form.is_valid():
@@ -132,7 +133,8 @@ def edit(request, contest_id):
         if request.method == 'GET':
             contest_dic = model_to_dict(contest)
             form = ContestForm(initial = contest_dic)
-            return render(request,'contest/editContest.html',{'form':form,'user':request.user})
+            title = "Edit Contest"
+            return render(request,'contest/editContest.html',{'form':form,'user':request.user,'title':title})
         if request.method == 'POST':
             form = ContestForm(request.POST, instance = contest)
             if form.is_valid():
