@@ -58,9 +58,6 @@ coverage.xml
 # Django stuff:
 *.log
 
-#flash file
-*.swf
-
 # Sphinx documentation
 docs/_build/
 

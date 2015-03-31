@@ -20,7 +20,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
-var path = "http://" + location.host + "/static/flash/ZeroClipboard.swf";
+var path = "static/zeroclipboard/dist/ZeroClipboard.swf";
 ZeroClipboard.config( { swfPath: path } );
 var client = new ZeroClipboard( document.getElementById("contact_us") );
 client.on( "ready", function( readyEvent ) {

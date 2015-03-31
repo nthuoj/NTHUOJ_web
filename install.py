@@ -43,19 +43,8 @@ if not os.path.isfile('emailInfo.py'):
     email_host_pwd = getpass.getpass('Email host\'s password : ')
     write_email_file(email_host, email_host_pwd)
 
-if not os.path.isdir('./index/static/flash/'):
-    # Creating flash directory
-    print "Creating flash directory ......"
-    create_flash_dir()
-
-if not os.path.isfile('./index/static/flash/ZeroClipboard.swf'):
-    # Downloading ZeroClipboard.swf
-    print "Downloading ZeroClipboard.swf ......"
-    download_swf()
-
 # Database Migratinos
 db_migrate()
-
 
 # Create super user
 ans = raw_input('Create super user?[Y/n] ')
