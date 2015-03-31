@@ -34,7 +34,7 @@ urlpatterns = patterns('',
     # /problem/10/delete : delete problem 10
     url(r'^(?P<pid>\d+)/edit/$', views.edit, name='edit'),
     # /problem/10/edit : edit problem 10
-    url(r'^new/$', views.new, name='new'),
+    url(r'^new/$', views.edit, name='new'),
     # /problem/new : create new problem
     url(r'^(?P<pid>\d+)/tag/$', views.tag, name='tag'),
     # post /problem/10/tag: add tag to problem 10
@@ -47,6 +47,6 @@ urlpatterns = patterns('',
     url(r'^(?P<pid>\d+)/testcase/(?P<tid>\d+)/delete/$', 
         views.delete_testcase, name='delete_testcase'),
     # /problem/10/testcase/123/delete/: delete testcase 123 of problem 10
-    url(r'^preview/$', views.preview, name='new'),
+    url(r'^preview/$', views.preview, name='preview'),
     # /problem/preview  :  preview problem when editting
 )
