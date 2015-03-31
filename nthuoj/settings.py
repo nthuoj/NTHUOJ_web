@@ -33,6 +33,7 @@ ALLOWED_HOSTS = ['*']
 # Application definition
 
 INSTALLED_APPS = (
+    'autocomplete_light',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -132,6 +133,7 @@ BOWER_INSTALLED_APPS = (
     'http://gregpike.net/demos/bootstrap-file-input/bootstrap.file-input.js', # bootstrap fileinput
     'https://github.com/lou/multi-select.git', # multiselect
     'https://github.com/riklomas/quicksearch.git', # quicksearch
+    'ckeditor#full/stable',
 )
 
 STATICFILES_FINDERS = (

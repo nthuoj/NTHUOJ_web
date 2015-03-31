@@ -1,4 +1,4 @@
-'''
+/*
 The MIT License (MIT)
 
 Copyright (c) 2014 NTHUOJ team
@@ -20,43 +20,22 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
-'''
-from django import forms
-from problem.models import Problem
-from users.models import User
-
-import autocomplete_light
-
-# create autocomplete interface and register
-class UserAutocomplete(autocomplete_light.AutocompleteModelBase):
-    search_fields = ['^username']
-    choices = User.objects.all()
-    model = User
-    attrs = {
-        'placeholder': '',
-        'data-autocomplete-minimum-characters': 1
-    }
-autocomplete_light.register(UserAutocomplete)
-
-class ProblemForm(forms.ModelForm):
-    partial_judge_code = forms.FileField(required=False)
-    special_judge_code = forms.FileField(required=False)
-    class Meta:
-        model = Problem
-        fields = [
-            'pname',
-            'owner',
-            'visible',
-            'judge_source',
-            'error_torrence',
-            'other_judge_id',
-            'partial_judge_code',
-            'special_judge_code',
-        ]
-        labels = {
-            'pname': 'Problem Name'
-        }
-        widgets = {
-            'owner': autocomplete_light.TextWidget('UserAutocomplete')
-        }
+*/
+$(document).ready(function() {
+    $("#addTagButton").click(function() {
+        var new_tag = $('#newTag').val().trim();
+        if (new_tag == '') return false;
+        $.ajax({
+            url: "/problem/"+pid+"/tag/",
+            data: $("#addTag").serialize(),
+            type: "POST",
+            success: function(msg) {
+              var new_tag_span = "<span class='label label-info'>"+new_tag+"</span>"
+              $("#tags").append(new_tag_span);
+            }
+        });    
+        $("#newTag").val("");
+        return false;
+    });
+});
 
