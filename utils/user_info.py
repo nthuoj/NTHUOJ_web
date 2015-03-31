@@ -154,10 +154,10 @@ def send_activation_email(request, user):
 
     # Send email with activation key
     activation_link = request.META['HTTP_HOST'] + \
-                      reverse('users:confirm', kwargs={'activation_key': activation_key})
+        reverse('users:confirm', kwargs={'activation_key': activation_key})
     email_subject = 'Account confirmation'
     email_body = render_to_string('index/activation_email.html',
-                                  {'username': username, 'activation_link': activation_link})
+                    {'username': username, 'activation_link': activation_link})
     msg = EmailMultiAlternatives(email_subject, email_body, EMAIL_HOST_USER, [email])
     msg.attach_alternative(email_body, "text/html")
 
