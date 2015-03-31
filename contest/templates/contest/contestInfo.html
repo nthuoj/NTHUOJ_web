@@ -18,8 +18,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 -->
 {% load contest_extras %}
-<div class="modal fade" id="contestInfo{{ contest.id }}" tabindex="-1" 
-     role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+<div class="modal fade" id="contestInfo{{ contest.id }}"
+     tabindex="-1" role="dialog">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
@@ -27,9 +27,9 @@ SOFTWARE.
           <span aria-hidden="true">&times;</span>
           <span class="sr-only">Close</span>
         </button>
-        <h2 class="modal-title" id="myModalLabel">
+        <h3 class="modal-title">
             {{ contest.cname }}
-          </h2>
+        </h3>
       </div>
       <div class="modal-body">
         <ul class="nav nav-tabs" role="tablist" name="infoTab">
@@ -109,13 +109,13 @@ SOFTWARE.
               <tr>
                 <td>Start Time</td>
                 <td>
-                  <h3>{{ contest.start_time|date:"Y/m/d H:i:s" }}</h3>
+                  <h4>{{ contest.start_time|date:"Y/m/d H:i:s" }}</h4>
                 </td>
               </tr>
               <tr>
                 <td>End Time</td>
                 <td>
-                  <h3>{{ contest.end_time|date:"Y/m/d H:i:s" }}</h3>
+                  <h4>{{ contest.end_time|date:"Y/m/d H:i:s" }}</h4>
                 </td>
               </tr>
             </table>
