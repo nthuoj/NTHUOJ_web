@@ -121,21 +121,14 @@ SOFTWARE.
     <!-- navbar -->
     <nav class="navbar navbar-inverse newbar" >
       <div class="container-fluid">
-        <div class="navbar-header">
-          <button type="button" class="navbar-toggle collapsed"
-                  data-toggle="collapse" data-target="#bs-example-navbar-collapse-2">
-            <span class="sr-only">Toggle navigation</span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-          </button>
-          <a class="navbar-brand" href={% url "index:index" %}>
-            NTHU Online Judge
-          </a>
-        </div>
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-2">
           <ul class="nav navbar-nav">
-            <li  class="nav-text"><a href="{% url 'contest:archive' %}">Contest</a></li>
+            <li  class="nav-text-brand">
+              <a href="{% url 'contest:archive' %}" class="nav-padding">
+                NTHU Online Judge
+              </a>
+            </li>
+            <li  class="nav-text"><a href="{% url 'contest:archive' %}" class="nav-padding">Contest</a></li>
             <li  class="nav-text"><a href="{% url 'problem:volume' %}">Problem</a></li>
             <li  class="nav-text"><a href="{% url 'users:submit' %}">Submit</a></li>
             <li  class="nav-text"><a href="{% url 'status:status' %}">Status</a></li>
@@ -177,7 +170,6 @@ SOFTWARE.
                 <img src={% static "./images/bell_blue.png "%} id="notification_img"
                      title="You have {{ amount }} unread notifications."/>
                 <div id="notification_circle" class="center">
-
                   <b id="number">
                     {% if amount < 100 %}
                       {{ amount }}
@@ -194,11 +186,9 @@ SOFTWARE.
             </li>
             {% endif %}
             {% if user.is_authenticated %}
-            <li class="nav-text-auth name">
-              <a href="{% url "users:profile" user.username %}">
-              <span class="label label-default" id="username">
+            <li class="nav-text-auth">
+              <a href={% url "users:profile" user.username %}>
                 <i id="name-text">{{ user.username }}</i>
-              </span>
               </a>
             </li>
             <li class="nav-text-auth"><a href={% url "users:logout" %}>Logout</a></li>
