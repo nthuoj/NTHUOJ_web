@@ -42,12 +42,6 @@ SOFTWARE.
     </div>
   </div>
   <div style='padding-top: 50px;'>
-    {% if user.is_authenticated %}
-    <span class='btn-group' role='group'>
-      <a class='btn btn-default'>all problem</a>
-      <a class='btn btn-default'>my problem</a>
-    </span>
-    {% endif %}
     <div>
       {% include 'problem/problem_list.html' with problem=all_problem %}
     </div>
