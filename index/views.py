@@ -37,6 +37,22 @@ from django.template import RequestContext
 
 # Create your views here.
 logger = get_logger()
+
+from django.db.models import Q
+from users.models import User
+from problem.models import Problem
+def navigation_autocomplete(request,
+    template_name='index/autocomplete.html'):
+
+    q = request.GET.get('q', '')
+
+    queries = {}
+
+    queries['users'] = User.objects.all()[:6]
+    queries['problems'] = Problem.objects.all()[:6]
+    print queries
+    return render(request, template_name, queries)
+
 def index(request, alert_info='none'):
     present = timezone.now()
     time_threshold = datetime.now() + timedelta(days=1);
