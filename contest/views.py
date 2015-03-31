@@ -170,7 +170,7 @@ def delete(request, contest_id):
 
 @login_required
 def register(request, contest_id):
-    if request.method == 'POST' and not is_anonymous(user):
+    if request.method == 'POST' and not is_anonymous(request.user):
         contest = get_contest_or_404(contest_id)
         #can only register not ended contest
         if contest.end_time > datetime.now():

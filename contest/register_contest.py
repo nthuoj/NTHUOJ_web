@@ -54,6 +54,9 @@ def register_group(contest, group):
     return True
 
 def register_anonymous(contest, anonymous):
+    if not is_integer(anonymous):
+        logger.warning('Contest: input word is not interger! Can not register anonymous!')
+        return False
     anonymous = int(anonymous)
     public_users = get_public_users()
     available = 0
@@ -115,3 +118,9 @@ def register_anonymous(contest, anonymous):
 
     return True
     
+def is_integer(obj):
+    try:
+        int(obj)
+        return True
+    except ValueError:
+        return False

@@ -78,7 +78,8 @@ SOFTWARE.
           <tr class="saparate-area"></tr>
           <tr>
             <td>
-              <a class="btn btn-success btn-lg btn-block" data-toggle="collapse" data-target="#anonymous{{ contest.id }}">Anonymous</a>
+              <a class="btn btn-success btn-lg btn-block" data-toggle="collapse"
+              data-target="#anonymous{{ contest.id }}">Anonymous</a>
             </td>
           </tr>
         </table>
@@ -86,7 +87,9 @@ SOFTWARE.
           <div class="well">
             <form class="form-inline" method="POST" action="{% url 'contest:register' contest.id %}">
               {% csrf_token %}
-              <input class="form-control" type="text" name="anonymous">
+              <label>How many Anonymous?</label>
+              <br>
+              <input class="form-control" type="text" name="anonymous" placeholder="1~200">
               <input class="btn btn-primary" type="submit" value="Confirm">
             </form>
           </div>
