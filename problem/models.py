@@ -47,7 +47,7 @@ class Problem(models.Model):
 
     NORMAL = 'NORMAL'
     SPECIAL = 'SPECIAL'
-    ERROR_TORRENT = 'ERR_TORRENT'
+    ERROR_TOLERANT = 'ERR_TOLERANT'
     PARTIAL = 'PARTIAL'
     UVA_JUDGE = 'UVA'
     ICPC_JUDGE = 'ICPC'
@@ -56,11 +56,11 @@ class Problem(models.Model):
         # Local Judge
         (NORMAL, 'Normal Judge'),
         (SPECIAL, 'Special Judge'),
-        (ERROR_TORRENT, 'Error Torrent'),
+        (ERROR_TOLERANT, 'Error TOLERANT'),
         (PARTIAL, 'Partial Judge'),
         # Other Judge
         (UVA_JUDGE, 'Uva'),
-        (ICPC_JUDGE, 'Acm ICPC'),
+        (ICPC_JUDGE, 'ACM ICPC Live Archive'),
         (POJ_JUDGE, 'POJ'),
     )
 
