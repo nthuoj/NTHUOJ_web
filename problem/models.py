@@ -39,16 +39,38 @@ class Tag(models.Model):
 
 class Problem(models.Model):
     LOCAL = 'LOCAL'
+    OTHER = 'OTHER'
+    JUDGE_SOURCE_CHOICE = (
+        (LOCAL, 'Local Judge'),
+        (OTHER, 'Use Other Judge'),
+    )
+
+    NORMAL = 'NORMAL'
     SPECIAL = 'SPECIAL'
     ERROR_TORRENT = 'ERR_TORRENT'
     PARTIAL = 'PARTIAL'
-    OTHER = 'OTHER'
+    UVA_JUDGE = 'UVA'
+    ICPC_JUDGE = 'ICPC'
+    POJ_JUDGE = 'POJ'
     JUDGE_TYPE_CHOICE = (
-        (LOCAL, 'Local Judge'),
+        # Local Judge
+        (NORMAL, 'Normal Judge'),
         (SPECIAL, 'Special Judge'),
         (ERROR_TORRENT, 'Error Torrent'),
         (PARTIAL, 'Partial Judge'),
-        (OTHER, 'Use Other Judge'),
+        # Other Judge
+        (UVA_JUDGE, 'Uva'),
+        (ICPC_JUDGE, 'Acm ICPC'),
+        (POJ_JUDGE, 'POJ'),
+    )
+
+    C = 'C'
+    CPP = 'CPP'
+    CPP11 = 'CPP11'
+    LANGUAGE_CHOICE = (
+        (C, 'C'),
+        (CPP, 'C++'),
+        (CPP11, 'C++11'),
     )
 
     pname = models.CharField(max_length=50, default='')
@@ -62,7 +84,9 @@ class Problem(models.Model):
     error_torrence = models.DecimalField(decimal_places=15, max_digits=17, default=0)
     other_judge_id = models.IntegerField(blank=True, null=True)
     tags = models.ManyToManyField(Tag, blank=True, null=True)
-    judge_source = models.CharField(max_length=11, choices=JUDGE_TYPE_CHOICE, default=LOCAL)
+    judge_source = models.CharField(max_length=11, choices=JUDGE_SOURCE_CHOICE, default=LOCAL)
+    judge_type = models.CharField(max_length=11, choices=JUDGE_TYPE_CHOICE, default=NORMAL)
+    judge_language = models.CharField(max_length=11, choices=LANGUAGE_CHOICE, default=CPP)
 
     def __unicode__(self):
         return self.pname
