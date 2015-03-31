@@ -43,7 +43,7 @@ def get_total_testcases(problem):
     testcases = Testcase.objects.filter(problem = problem)
     return testcases.count()
 
-def get_contestant_problem_submission_list(contest,contestant,problem):
+def get_contestant_problem_submission_list(contest, contestant, problem):
     return Submission.objects.filter(problem = problem, submit_time__lte = contest.end_time,
         submit_time__gte = contest.start_time,user = contestant.user).order_by('submit_time')
 
@@ -51,7 +51,7 @@ def get_passed_testcases(submission):
     passed_testcases = SubmissionDetail.objects.filter(sid = submission, verdict = SubmissionDetail.AC)
     return passed_testcases.count()
 
-def get_penalty(obj,start_time):
+def get_penalty(obj, start_time):
     penalty = obj.get_penalty(start_time)
     if penalty == 0:
         return '--'
@@ -99,7 +99,7 @@ def get_scoreboard(contest):
 
     return scoreboard
 
-def get_clarifications(user,contest):
+def get_clarifications(user, contest):
     if has_contest_ownership(user,contest):
         return Clarification.objects.filter(contest = contest)
     reply_all = Clarification.objects.filter(contest = contest, reply_all = True)
@@ -108,17 +108,31 @@ def get_clarifications(user,contest):
         return reply_all | user_ask
     return reply_all
 
-def is_contestant(user,contest):
+def is_contestant(user, contest):
     if user.is_authenticated():
         contestant = Contestant.objects.filter(contest = contest, user = user)
         if len(contestant) >= 1:
             return True
     return False
 
-def can_ask(user,contest):
+#check if user can create new clarification in contest
+def can_ask(user, contest):
     user_is_contestant = is_contestant(user,contest)
     user_is_owner_coowner = has_contest_ownership(user,contest)
     return  user_is_contestant | user_is_owner_coowner
 
-def can_reply(user,contest):
+#check if user can reply clarification
+def can_reply(user, contest):
     return has_contest_ownership(user,contest)
+
+#check if user can edit contest
+def can_edit_contest(user, contest):
+    return user.has_admin_auth() or user_info.has_contest_ownership(user, contest)
+
+#check if user can create contest
+def can_create_contest(user):
+    return user.has_judge_auth()
+
+#check if user can delete contest
+def can_delete_contest(user):
+    return user.has_admin_auth() or (user == contest.owner)

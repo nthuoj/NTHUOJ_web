@@ -44,9 +44,13 @@ from contest.forms import ReplyForm
 
 from contest.contest_info import can_ask
 from contest.contest_info import can_reply
-
+from contest.contest_info import can_create_contest
+from contest.contest_info import can_edit_contest
+from contest.contest_info import can_delete_contest
 from contest.contest_info import get_scoreboard
 
+from utils.render_helper import render_404
+from utils.render_helper import render_index
 from utils.log_info import get_logger
 from utils import user_info
 
@@ -98,7 +102,7 @@ def contest(request, contest_id):
         initial_form = {'contest':contest,'asker':user}
         form = ClarificationForm(initial=initial_form)
 
-        initial_reply_form = {'contest':contest,'replyer':user}
+        initial_reply_form = {'contest':contest,'replier':user}
         reply_form = ReplyForm(initial = initial_reply_form)
         return render(request, 'contest/contest.html',
             {'contest':contest, 'clarifications':clarifications, 'user':user,
@@ -108,7 +112,7 @@ def contest(request, contest_id):
 
 @login_required
 def new(request):
-    if request.user.has_judge_auth():
+    if can_create_contest(request.user):
         if request.method == 'GET':
             form = ContestForm(initial={'owner':request.user})
             title = "New Contest"
@@ -128,20 +132,22 @@ def edit(request, contest_id):
     except Contest.DoesNotExist:
         logger.warning('Contest: Can not edit contest %s! Contest not found!' % contest_id)
         raise Http404('Contest does not exist, can not edit.')
-
-    if user_info.has_contest_ownership(request.user,contest):
+    title = "Edit Contest"
+    if can_edit_contest(request.user,contest):
         if request.method == 'GET':
             contest_dic = model_to_dict(contest)
             form = ContestForm(initial = contest_dic)
-            title = "Edit Contest"
-            return render(request,'contest/editContest.html',{'form':form,'user':request.user,'title':title})
+            return render_index(request,'contest/editContest.html',
+                    {'form':form,'user':request.user,'title':title})
         if request.method == 'POST':
             form = ContestForm(request.POST, instance = contest)
             if form.is_valid():
                 modified_contest = form.save()
                 logger.info('Contest: Modified contest %s!' % modified_contest.id)
-            return redirect('contest:archive')
-    raise PermissionDenied
+                return archive(request)
+            else:
+                return render_index(request,'contest/editContest.html',
+                    {'form':form,'user':request.user,'title':title})
 
 @login_required
 def delete(request, contest_id):
@@ -152,7 +158,7 @@ def delete(request, contest_id):
         raise Http404('Contest does not exist, can not delete.')
 
     # only contest owner can delete
-    if request.user == contest.owner:
+    if can_delete_contest(request.user):
         deleted_contest_id = contest.id
         contest.delete()
         logger.info('Contest: Delete contest %s!' % deleted_contest_id)

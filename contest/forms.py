@@ -83,7 +83,7 @@ class ReplyForm(forms.ModelForm):
         model = Clarification
         fields = (
             'reply',
-            'replyer',
+            'replier',
             'reply_time',
             'reply_all'
         )

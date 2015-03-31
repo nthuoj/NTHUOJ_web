@@ -28,3 +28,8 @@ div.selected-header{
 	background-color: #449d44;
 	border-color: #398439;
 }
+
+ul.errorlist{
+	color: #fff;
+	background-color: #d9534f;
+}
