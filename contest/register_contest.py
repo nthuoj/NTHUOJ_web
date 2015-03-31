@@ -57,7 +57,14 @@ def register_anonymous(contest, anonymous):
     if not is_integer(anonymous):
         logger.warning('Contest: input word is not interger! Can not register anonymous!')
         return False
-    anonymous = int(anonymous)
+    anonymous = int(anonymous)  
+    if anonymous < 0:
+        logger.info('Contest: input word is less than 0. Can not register anonymous!')
+        return False
+    if anonymous > 200:
+        logger.info('Contest: register anonymous more than 200! Set to 200!')
+        anonymous = 200
+        
     public_users = get_public_users()
     available = 0
     available_anonymous = []
