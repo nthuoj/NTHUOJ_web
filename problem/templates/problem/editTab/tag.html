@@ -22,10 +22,16 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 -->
 <br>
+{% if not is_new %}
 <strong>Current Tags</strong>
-<button id='merge_tag' class='btn btn-default'>Merge tags</button>
 <table>
   <tbody id="tagTable">
+    {% for t in tags %}
+      <tr data-target="{{t.pk}}">
+        <td>{{t.tag_name}}</td>
+        <td><button class="btn btn-primary del_tag_btn">Delete</button></td>
+      </tr>
+    {% endfor %}
   </tbody>
 </table>
 <br>
@@ -34,12 +40,44 @@ SOFTWARE.
   <tr>
     <th>Add Tag</th>
     <td>
-      <div class='input-group'>
-        <input type='text' id='newTag' class='form-control' width='25%'>
-        <span class='input-group-btn'>
-          <button id='add_tag_button' class='btn btn-default'>Add</button>
-        </span>
-      </div>
+      <form id="addTag">
+        <div class='input-group'>
+          {% csrf_token %}
+          <input type='text' id='newTag' name='tag' class='form-control' width='25%'>
+          <span class='input-group-btn'>
+            <button id='add_tag_button' class='btn btn-default'>Add</button>
+          </span>
+        </div>
+      </form>
     </td>
   </tr>
 </table>
+<script>
+$(document).ready(function() {
+    $("#addTag").submit(function(e) {
+        e.preventDefault();
+        var ret = add_new_tag({{pid}});
+        refreshEventListener();
+        return ret;
+    });
+    refreshEventListener();
+});
+function refreshEventListener() {
+    $('body').on('click', '.del_tag_btn', function(e) {
+        var row = $(this).parents("tr");
+        var tid = $(this).parents("tr").attr('data-target');
+        $.ajax({
+            type: 'GET',
+            url: '/problem/'+{{pid}}+'/tag/'+tid+'/delete/',
+            success: function(data) {
+              row.hide();
+            }
+        });
+        return false;
+    });
+}
+</script>
+{% else %}
+<strong>Save your problem before editing the tags</strong>
+{% endif %}
+
