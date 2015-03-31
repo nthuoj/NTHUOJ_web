@@ -256,3 +256,14 @@ textarea#inputSmall {
   margin-left: 220px;
   margin-bottom: 50px;
 }
+#username {
+  position: relative;
+  top: -5px;
+}
+.name {
+  position: relative;
+  left: 7px;
+}
+#name-text:hover {
+  text-decoration: underline;
+}

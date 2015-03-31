@@ -194,6 +194,13 @@ SOFTWARE.
             </li>
             {% endif %}
             {% if user.is_authenticated %}
+            <li class="nav-text-auth name">
+              <a href="{% url "users:profile" user.username %}">
+              <span class="label label-default" id="username">
+                <i id="name-text">{{ user.username }}</i>
+              </span>
+              </a>
+            </li>
             <li class="nav-text-auth"><a href={% url "users:logout" %}>Logout</a></li>
             {% else %}
             <li class="nav-text-auth"><a href={% url "users:login" %}>Login</a></li>
