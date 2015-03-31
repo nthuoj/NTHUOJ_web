@@ -76,3 +76,12 @@ register.filter("users_sorted_by_solved_testcases",users_sorted_by_solved_testca
 def total_contestant(scoreboard):
     return len(scoreboard.users)
 register.filter("total_contestant",total_contestant)
+
+@register.filter
+def can_register(user, contest_id):
+    try:
+        contest = Contest.objects.get(pk = contest_id)
+    except:
+        return False
+    return contest_info.can_register(user, contest)
+register.filter("can_register",can_register)

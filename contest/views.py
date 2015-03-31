@@ -143,7 +143,8 @@ def edit(request, contest_id):
             form = ContestForm(request.POST, instance = contest)
             if form.is_valid():
                 modified_contest = form.save()
-                logger.info('Contest: Modified contest %s!' % modified_contest.id)
+                logger.info('Contest: User %s Modified contest %s!' % 
+                    (request.user, modified_contest.id))
                 return archive(request)
             else:
                 return render_index(request,'contest/editContest.html',

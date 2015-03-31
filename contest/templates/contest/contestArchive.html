@@ -109,15 +109,13 @@ SOFTWARE.
           });
 
           </script>
-          {% if not user|has_auth:contest.id %}
-          {% if user.is_authenticated and contest.open_register %}
+          {% if user|can_register:contest.id %}
           <a href="{% url 'contest:register' contest.id %}">
             <button type="button" class="btn btn-success btn-xs" data-toggle="tooltip" 
                   data-placement="top" title="Register">
               <span class="glyphicon glyphicon-plus"></span>
             </button>
           </a>
-          {% endif %}
           {% endif %}
         </td>
         <td>{{ contest.id }}</td>

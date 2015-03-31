@@ -136,3 +136,22 @@ def can_create_contest(user):
 #check if user can delete contest
 def can_delete_contest(user):
     return user.has_admin_auth() or (user == contest.owner)
+
+def can_register(user, contest):
+    #admin can't attend any contest
+    if user.has_admin_auth():
+        return False
+    open_register = contest.open_register
+    has_ownership = user_info.has_contest_ownership(user,contest)
+    has_attended = Contestant.objects.filter(contest = contest,user = user).exists()
+
+    if not open_register:
+        logger.info('Contest: Registration for Contest %s is closed. Can not register.' % contest.id)
+        return False
+    if has_ownership:
+        logger.info('Contest: User %s has Contest %s ownership. Can not register.' % (user.username, contest.id))
+        return False
+    if has_attended:
+        logger.info('Contest: User %s has already attended Contest %s!' % (user.username, contest.id))
+        return False
+    return True 
