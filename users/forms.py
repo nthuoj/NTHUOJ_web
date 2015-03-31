@@ -39,6 +39,8 @@ class CodeSubmitForm(forms.Form):
         language = self.cleaned_data['language']
 
         problem = Problem.objects.get(id=pid)
+        problem.total_submission += 1
+        problem.save()
         testcases = Testcase.objects.filter(problem=problem)
         submission = Submission.objects.create(
             user=self.user,

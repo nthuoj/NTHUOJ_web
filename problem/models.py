@@ -63,6 +63,8 @@ class Problem(models.Model):
     other_judge_id = models.IntegerField(blank=True, null=True)
     tags = models.ManyToManyField(Tag, blank=True, null=True)
     judge_source = models.CharField(max_length=11, choices=JUDGE_TYPE_CHOICE, default=LOCAL)
+    ac_count = models.IntegerField(default=0)
+    total_submission = models.IntegerField(default=0)
 
     def __unicode__(self):
         return self.pname
