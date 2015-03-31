@@ -25,3 +25,8 @@
   <a class="block choice" href="{% url 'users:profile' user.username %}">{{ user }}</a>
   {% endfor %}
 {% endif %}
+
+{% if problems or contests or groups or users %}
+{% else %}
+  <span class="block"><em>No matches found</em></span>
+{% endif %}
