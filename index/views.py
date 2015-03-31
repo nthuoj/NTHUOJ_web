@@ -38,9 +38,38 @@ from django.template import RequestContext
 # Create your views here.
 logger = get_logger()
 
+import autocomplete_light
 from django.db.models import Q
 from users.models import User
 from problem.models import Problem
+from contest.models import Contest
+from group.models import Group
+# create autocomplete interface and register
+
+class ProblemAutocomplete(autocomplete_light.AutocompleteModelBase):
+
+    search_fields = ['^pname']
+    choices = Problem.objects.all()
+    model = Problem
+
+    attrs={
+        'placeholder': ' OP Autocomplete',
+        'data-autocomplete-minimum-characters': 1
+ }
+
+autocomplete_light.register(ProblemAutocomplete)
+
+class UserAutocompleteForm(autocomplete_light.ModelForm):
+    class Meta:
+        model = Problem
+        fields = ['pname']
+        widgets = {
+            'pname': autocomplete_light.TextWidget('ProblemAutocomplete')
+        }
+
+def gg(request):
+    return render(request, 'index/team_list.html', {'form': UserAutocompleteForm()})
+
 def navigation_autocomplete(request,
     template_name='index/autocomplete.html'):
 
@@ -48,8 +77,19 @@ def navigation_autocomplete(request,
 
     queries = {}
 
-    queries['users'] = User.objects.all()[:6]
-    queries['problems'] = Problem.objects.all()[:6]
+    queries['users'] = User.objects.filter(
+        username__istartswith=q
+    )[:6]
+    queries['problems'] = Problem.objects.filter(
+        Q(pname__icontains=q) |
+        Q(id__contains=q)
+    )[:10]
+    queries['contests'] = Contest.objects.filter(
+        cname__icontains=q
+    )[:6]
+    queries['groups'] = Group.objects.filter(
+        gname__icontains=q
+    )[:6]
     print queries
     return render(request, template_name, queries)
 

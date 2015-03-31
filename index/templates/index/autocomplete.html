@@ -1,28 +1,27 @@
-<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.js" type="text/javascript"></script>
-{% include 'autocomplete_light/static.html' %}
-<script type="text/javascript">
-// Change #yourInput by a selector that matches the input you want to use
-// for the navigation autocomplete.
-$('#yourInput').yourlabsAutocomplete({
-    // Url of the view you just created
-    url: 'http://localhost:8000/search/',
+{% if users %}
+    <span class="separator">User</span>
+    {% for user in users %}
+    <a class="block choice" href="{{ user.get_absolute_url }}">{{ user }}</a>
+    {% endfor %}
+{% endif %}
 
-    // With keyboard, we should iterate around <a> tags in the autocomplete
-    choiceSelector: 'a',
-}).input.bind('selectChoice', function(e, choice, autocomplete) {
-    // When a choice is selected, open it. Note: this is not needed for
-    // mouse click on the links of course, but this is necessary for keyboard
-    // selection.
-    window.location.href = choice.attr('href');
-});
-</script>
+{% if problems %}
+    <span class="separator">Problem</span>
+    {% for problem in problems %}
+    <a class="block choice" href="{{ problem.get_absolute_url }}">{{ problem }}</a>
+    {% endfor %}
+{% endif %}
 
-<span class="separator">Users</span>
-{% for user in users %}
-<a class="block choice" href="{{ user.get_absolute_url }}">{{ user }}</a>
-{% endfor %}
+{% if contests %}
+    <span class="separator">Contest</span>
+    {% for contest in contests %}
+    <a class="block choice" href="{{ contest.get_absolute_url }}">{{ contest }}</a>
+    {% endfor %}
+{% endif %}
 
-<span class="separator">Problem</span>
-{% for problem in problems %}
-<a class="block choice" href="{{ problem.get_absolute_url }}">{{ problem }}</a>
-{% endfor %}
+{% if groups %}
+    <span class="separator">Group</span>
+    {% for group in groups %}
+    <a class="block choice" href="{{ problem.get_absolute_url }}">{{ group }}</a>
+    {% endfor %}
+{% endif %}
