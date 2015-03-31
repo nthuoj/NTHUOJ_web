@@ -89,7 +89,8 @@ SOFTWARE.
               {% csrf_token %}
               <label>How many Anonymous?</label>
               <br>
-              <input class="form-control" type="text" name="anonymous" placeholder="1~200">
+              <input class="form-control" type="text" name="anonymous" 
+                     placeholder="1~{{ max_anonymous }}">
               <input class="btn btn-primary" type="submit" value="Confirm">
             </form>
           </div>

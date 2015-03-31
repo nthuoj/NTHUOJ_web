@@ -47,6 +47,7 @@ from contest.forms import ReplyForm
 from contest.register_contest import register_user
 from contest.register_contest import register_group as register_group_impl
 from contest.register_contest import register_anonymous as register_anonymous_impl
+from contest.register_contest import MAX_ANONYMOUS
 
 from contest.contest_info import can_ask
 from contest.contest_info import can_reply
@@ -85,9 +86,13 @@ def archive(request, page = None):
     next = int(page)+1
     max_page = int(paginator.num_pages)
     pager = {'previous':previous, 'this':this, 'next':next, 'max_page':max_page}
+
+    max_anonymous = MAX_ANONYMOUS
+
     return render(request, 
         'contest/contestArchive.html',
-        {'contests':contests,'user':user,'groups':groups, 'own_group':own_group,'pager':pager},
+        {'contests':contests,'user':user,'groups':groups, 'own_group':own_group,
+        'pager':pager, 'max_anonymous':max_anonymous},
         context_instance = RequestContext(request, processors = [custom_proc]))
 
 def contest(request, contest_id):

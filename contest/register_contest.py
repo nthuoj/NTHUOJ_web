@@ -32,6 +32,7 @@ from utils.user_info import attends_not_ended_contest
 from utils.user_info import create_anonymous
 
 logger = get_logger()
+MAX_ANONYMOUS = 200
 
 def register(contest, user):
     contestant = Contestant(contest = contest,user = user)
@@ -59,12 +60,14 @@ def register_anonymous(contest, anonymous):
         return False
     anonymous = int(anonymous)  
     if anonymous < 0:
-        logger.info('Contest: input word is less than 0. Can not register anonymous!')
+        logger.warning('Contest: input word is less than 0. Can not register anonymous!')
         return False
-    if anonymous > 200:
-        logger.info('Contest: register anonymous more than 200! Set to 200!')
-        anonymous = 200
-        
+    if anonymous > MAX_ANONYMOUS:
+        too_many_anonymous_info = 'Contest: register anonymous more than ' \
+             + str(MAX_ANONYMOUS) + '! Set to ' + str(MAX_ANONYMOUS) + '!'
+        logger.info(too_many_anonymous_info)
+        anonymous = MAX_ANONYMOUS
+
     public_users = get_public_users()
     available = 0
     available_anonymous = []
@@ -92,7 +95,7 @@ def register_anonymous(contest, anonymous):
             if index == (attended-anonymous):
                 return True
             username = user.username
-            contestant = Contestant.objects.get(user = user)
+            contestant = Contestant.objects.get(user = user,contest = contest)
             contestant.delete()
             logger.info('Contest: User %s leave Contest %s!' % (username, contest.id))
             
