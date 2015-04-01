@@ -54,19 +54,19 @@ def register_group(contest, group):
             register(contest, member)
     return True
 
-def register_anonymous(contest, anonymous):
-    if not is_integer(anonymous):
+def register_anonymous(contest, account_num):
+    if not is_integer(account_num):
         logger.warning('Contest: input word is not interger! Can not register anonymous!')
         return False
-    anonymous = int(anonymous)  
+    account_num = int(account_num)  
     if anonymous < 0:
         logger.warning('Contest: input word is less than 0. Can not register anonymous!')
         return False
-    if anonymous > MAX_ANONYMOUS:
+    if account_num > MAX_ANONYMOUS:
         too_many_anonymous_info = 'Contest: register anonymous more than ' \
              + str(MAX_ANONYMOUS) + '! Set to ' + str(MAX_ANONYMOUS) + '!'
         logger.info(too_many_anonymous_info)
-        anonymous = MAX_ANONYMOUS
+        account_num = MAX_ANONYMOUS
 
     public_users = get_public_users()
     available = 0
@@ -87,10 +87,10 @@ def register_anonymous(contest, anonymous):
             attended_anonymous.append(contestant.user)
 
     attended = len(attended_anonymous)
-    if anonymous == attended:
+    if account_num == attended:
         return True
 
-    if (anonymous < attended):
+    if (account_num < attended):
         for index,user in enumerate(attended_anonymous):
             if index == (attended-anonymous):
                 return True
@@ -99,7 +99,7 @@ def register_anonymous(contest, anonymous):
             contestant.delete()
             logger.info('Contest: User %s leave Contest %s!' % (username, contest.id))
             
-    still_need = anonymous - attended
+    still_need = account_num - attended
     #available is more than request
     if(available >= still_need):
         for user in available_anonymous:

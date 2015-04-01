@@ -208,8 +208,5 @@ def create_anonymous(need):
     return new_users
 
 def is_anonymous(user):
-    if user.username.startswith(ANONYMOUS_PREFIX):
-        return True
-    else:
-        return False
+    return user.username.startswith(ANONYMOUS_PREFIX)
 
