@@ -17,6 +17,7 @@
     OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
     SOFTWARE.
     '''
+from datetime import datetime
 from contest.models import Contest
 from contest.models import Contestant
 from contest.models import Clarification
@@ -144,7 +145,7 @@ def can_register(user, contest):
     open_register = contest.open_register
     has_ownership = user_info.has_contest_ownership(user,contest)
     has_attended = Contestant.objects.filter(contest = contest,user = user).exists()
-
+    ended = is_ended(contest)
     if not open_register:
         logger.info('Contest: Registration for Contest %s is closed. Can not register.' % contest.id)
         return False
@@ -154,4 +155,11 @@ def can_register(user, contest):
     if has_attended:
         logger.info('Contest: User %s has already attended Contest %s!' % (user.username, contest.id))
         return False
+    if ended:
+        logger.info('Contest: Contest %s has ended! Can not register.' % (contest.id))
+        return False
     return True 
+
+def is_ended(contest):
+    return (datetime.now() > contest.end_time)
+

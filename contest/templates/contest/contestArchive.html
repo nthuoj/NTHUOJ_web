@@ -109,7 +109,7 @@ SOFTWARE.
           });
 
           </script>
-          {% if user|can_register:contest.id %}
+          {% if user|show_register_btn:contest.id %}
           <a href="{% url 'contest:register' contest.id %}">
             <button type="button" class="btn btn-success btn-xs" data-toggle="tooltip" 
                   data-placement="top" title="Register">

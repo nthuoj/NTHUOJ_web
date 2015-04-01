@@ -28,6 +28,7 @@ from contest.scoreboard import UserProblem
 from contest.scoreboard import User
 
 from users.models import User
+from utils import user_info 
 
 
 register = template.Library()
@@ -85,3 +86,13 @@ def can_register(user, contest_id):
         return False
     return contest_info.can_register(user, contest)
 register.filter("can_register",can_register)
+
+@register.filter
+def show_register_btn(user, contest_id):
+    try:
+        contest = Contest.objects.get(pk = contest_id)
+    except:
+        return False
+    return (user_info.has_contest_ownership(user, contest) or 
+        contest_info.can_register(user, contest)) and not contest_info.is_ended(contest)
+register.filter("show_register_btn",show_register_btn)
