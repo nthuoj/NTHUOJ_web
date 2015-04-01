@@ -172,8 +172,8 @@ def register(request, contest_id):
     group_id = request.GET.get('group')
     if(group_id is not None):
         register_group(request,contest,group_id)
-    
-    register_user(contest, request.user)
+    else:
+        register_user(contest, request.user)
     
     return redirect('contest:archive')
 
