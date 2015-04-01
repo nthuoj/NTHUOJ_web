@@ -34,6 +34,7 @@ from problem.models import Submission
 from problem.models import SubmissionDetail
 
 from utils.user_info import has_contest_ownership
+from utils.user_info import user_is_valid
 
 from users.models import User
 
@@ -140,6 +141,8 @@ def can_delete_contest(user):
 
 def can_register(user, contest):
     #admin can't attend any contest
+    if not user_is_valid(user):
+        return False
     if user.has_admin_auth():
         return False
     open_register = contest.open_register
