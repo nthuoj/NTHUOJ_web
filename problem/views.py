@@ -57,10 +57,15 @@ def problem(request):
         all_problem = paginator.page(1)
     except EmptyPage:
         all_problem = paginator.page(paginator.num_pages)
-    my_problem = [p for p in all_problem.object_list if p.owner == request.user]
+    for p in all_problem:
+        try:
+            p.pass_rate = float(p.ac_count) / float(p.total_submission) * 100.0
+            p.not_pass_rate = 100.0 - p.pass_rate
+        except ZeroDivisionError:
+            logger.info("problem %d has 0 submission" % p.pk)
 
     return render(request, 'problem/panel.html', 
-                  {'my_problem': my_problem, 'all_problem': all_problem, 
+                  {'all_problem': all_problem, 
                    'can_add_problem': can_add_problem})
 
 def volume(request):
