@@ -49,6 +49,7 @@ INSTALLED_APPS = (
     'group',
     'status',
     'axes',
+    'bootstrapform',
     'djangobower',
 )
 

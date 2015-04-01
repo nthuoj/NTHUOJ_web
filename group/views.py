@@ -20,140 +20,177 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.'''
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render_to_response, render
+from django.utils import timezone
+from django.core.exceptions import PermissionDenied
+from django.forms.models import model_to_dict
+from group.forms import GroupForm, GroupFormEdit
+from group.models import Group
+from utils.user_info import has_group_ownership
+from utils.log_info import get_logger
 
-def get_running_contest(request):
-        all_running_contest_list = [
-            {'name':'contest', 's_time':'20111010', 'e_time':'20111010'},
-            {'name':'contest', 's_time':'20140505', 'e_time':'20111010'},
-            {'name':'contest', 's_time':'20122222', 'e_time':'20111010'},
-            {'name':'contest', 's_time':'20133333', 'e_time':'20111010'},
-            {'name':'contest', 's_time':'20144444', 'e_time':'20111010'},
-            {'name':'contest', 's_time':'20166666', 'e_time':'20111010'},
-            {'name':'contest', 's_time':'20122222', 'e_time':'20111010'},
-            {'name':'contest', 's_time':'20133333', 'e_time':'20111010'},
-            {'name':'contest', 's_time':'20144444', 'e_time':'20111010'},
-            {'name':'contest', 's_time':'20166666', 'e_time':'20111010'},
-            {'name':'contest', 's_time':'20122222', 'e_time':'20111010'},
-            {'name':'contest', 's_time':'20133333', 'e_time':'20111010'},
-            {'name':'contest', 's_time':'20144444', 'e_time':'20111010'},
-            {'name':'contest', 's_time':'20166666', 'e_time':'20111010'},
-            {'name':'contest', 's_time':'20177777', 'e_time':'20111010'},
-        ] 
-        return render(
-            request, 'group/viewall.html', {
-                'data_list': all_running_contest_list, 
-                'title': 'running contest',
-                'list_type': 'runContest',
-            })
+logger = get_logger()
 
-def get_ended_contest(request):
-        all_ended_contest_list = [
-            {'name':'archive', 'time':'20111010'},
-            {'name':'archive', 'time':'20140505'},
-            {'name':'archive', 'time':'20122222'},
-            {'name':'archive', 'time':'20133333'},
-            {'name':'archive', 'time':'20144444'},
-            {'name':'archive', 'time':'20166666'},
-            {'name':'archive', 'time':'20111010'},
-            {'name':'archive', 'time':'20140505'},
-            {'name':'archive', 'time':'20122222'},
-            {'name':'archive', 'time':'20133333'},
-            {'name':'archive', 'time':'20144444'},
-            {'name':'archive', 'time':'20166666'},
-        ] 
+def get_group(group_id):
+    try:
+        group = Group.objects.get(id = group_id)
+    except Group.DoesNotExist:
+        logger.warning('Group: Can not edit group %s! Group is not exist!' % group_id)
         return render(
-            request, 'group/viewall.html', {
-                'data_list': all_ended_contest_list, 
-                'title': 'ended contest',
-                'list_type': 'endContest',
-            })
+            request,
+            'index/404.html',
+            {'error_message': 'Group: Can not edit group %s! Group is not exist!' % group_id})
+    return group
 
-def get_all_announce(request):
-        all_announce_list = [
-            {'id':'1', 'name':'announce', 'op':'drowsy', 'time':'20111010', 'content':'111'},
-            {'id':'2', 'name':'announce', 'op':'drowsy', 'time':'20140505', 'content':'222'},
-            {'id':'3', 'name':'announce', 'op':'drowsy', 'time':'20122222', 'content':'333'},
-            {'id':'4', 'name':'announce', 'op':'drowsy', 'time':'20133333', 'content':'444'},
-            {'id':'5', 'name':'announce', 'op':'drowsy', 'time':'20144444', 'content':'555'},
-            {'id':'6', 'name':'announce', 'op':'drowsy', 'time':'20166666', 'content':'666'},
-            {'id':'7', 'name':'announce', 'op':'drowsy', 'time':'20122222', 'content':'777'},
-            {'id':'8', 'name':'announce', 'op':'drowsy', 'time':'20111010', 'content':'888'},
-            {'id':'9', 'name':'announce', 'op':'drowsy', 'time':'20140505', 'content':'999'},
-            {'id':'10', 'name':'announce', 'op':'drowsy', 'time':'20122222', 'content':'aaa'},
-            {'id':'11', 'name':'announce', 'op':'drowsy', 'time':'20133333', 'content':'bbb'},
-            {'id':'12', 'name':'announce', 'op':'drowsy', 'time':'20144444', 'content':'ccc'},
-            {'id':'13', 'name':'announce', 'op':'drowsy', 'time':'20166666', 'content':'ddd'},
-            {'id':'14', 'name':'announce', 'op':'drowsy', 'time':'20122222', 'content':'eee'},
-        ] 
-        return render(
-            request, 'group/viewall.html', {
-                'data_list': all_announce_list, 
-                'title': 'announce',
-                'list_type': 'announce',
-            })
+def get_running_contest(request, group_id):
+        
+    group = get_group(group_id)
+
+    all_contest = group.trace_contest.all()
+    all_running_contest_list = []
+    now = timezone.now()
+
+    for contest in all_contest:
+        if contest.start_time < now and contest.end_time > now:
+            all_running_contest_list.append(contest)
+
+    return render(
+        request, 'group/viewall.html', {
+            'data_list': all_running_contest_list, 
+            'title': 'running contest',
+            'list_type': 'runContest',
+        })
+
+def get_ended_contest(request, group_id):
+        
+    group = get_group(group_id)
+
+    all_contest = group.trace_contest.all()
+    all_ended_contest_list = []
+    now = timezone.now()
+
+    for contest in all_contest:
+        if contest.end_time < now:
+            all_ended_contest_list.append(contest)
+
+    return render(
+        request, 'group/viewall.html', {
+            'data_list': all_ended_contest_list, 
+            'title': 'ended contest',
+            'list_type': 'endContest',
+        })
+
+def get_all_announce(request, group_id):
+
+    group = get_group(group_id)
+
+    all_announce_list = group.announce.all()
+    return render(
+        request, 'group/viewall.html', {
+            'data_list': all_announce_list, 
+            'title': 'announce',
+            'list_type': 'announce',
+        })
 
     
-def detail(request,group_id):
-    running_contest_list = [
-        {'name':'11111', 's_time':'20111010', 'e_time':'20111010'},
-        {'name':'22222', 's_time':'20140505', 'e_time':'20111010'},
-        {'name':'33333', 's_time':'20122222', 'e_time':'20111010'},
-        {'name':'44444', 's_time':'20133333', 'e_time':'20111010'},
-        {'name':'55555', 's_time':'20144444', 'e_time':'20111010'},
-    ]
+def detail(request, group_id):
+    
+    group = get_group(group_id)
+    show_number = 5; #number for brief list to show in group detail page.
+    all_contest = group.trace_contest.all()
+    annowence_list = group.announce.all()
+    student_list = group.member.order_by('user_level')
+    coowner_list = group.coowner.all()
+    owner = group.owner
+    user_is_owner = has_group_ownership(request.user, group)
 
-    ended_contest_list = [
-        {'name':'aaaaa', 'time':'20111010'},
-        {'name':'bbbbb', 'time':'20140505'},
-        {'name':'ccccc', 'time':'20122222'},
-        {'name':'ddddd', 'time':'20133333'},
-        {'name':'eeeee', 'time':'20144444'},
-    ]
-
-    annowence_list = [
-        {'id':'1', 'name':'annowence_1', 'op':'drowsy', 'time':'20111010', 'content':'asdasd'},
-        {'id':'2', 'name':'annowence_2', 'op':'drowsy', 'time':'20140505', 'content':'qwefad'},
-    ]
-
-    student_list =[
-        {'name': 'Tom', 'time': '2014/1/2 23:00'},
-        {'name': 'Amy', 'time': '2014/1/2 23:00'},
-        {'name': 'Jess', 'time': '2014/1/2 23:00'},
-        {'name': 'Bieber', 'time': '2014/1/2 23:00'},
-        {'name': 'Ian', 'time': '2014/1/2 23:00'},
-        {'name': 'Anthony', 'time': '2014/1/2 23:00'},
-        {'name': 'Lily', 'time': '2014/1/2 23:00'}
-    ]
-
-    ta_list =[
-        {'name': 'drowsy'},
-        {'name': 'henry'},
-    ]
+    running_contest_list = []
+    ended_contest_list = []
+    now = timezone.now()
+    for contest in all_contest:
+        if contest.start_time < now and contest.end_time > now:
+            running_contest_list.append(contest)
+        elif contest.end_time < now:
+            ended_contest_list.append(contest)
 
     return render(
         request, 'group/groupDetail.html', {
-            'rc_list': running_contest_list, 
-            'ec_list': ended_contest_list,
+            'rc_list': running_contest_list[0:show_number], 
+            'ec_list': ended_contest_list[0:show_number],
             'an_list': annowence_list,
-            'ta_list': ta_list,
+            'coowner_list': coowner_list,
+            'owner': owner,
             's_list': student_list,
-            'group_name': 'GGgroup', 
-            'group_description': 'blablabla, this is a description',
+            'group_name': group.gname, 
+            'group_description': group.description,
+            'group_id': group.id,
+            'user_is_owner': user_is_owner,
         })
 
 
 def list(request):
-    group_list = [
-        {'name': 'GGgroup', 'ta_name': 'drowsy, henry', 'mem_number': '42', 'gid': '001'},
-        {'name': '2ndgroup', 'ta_name': 'TA1', 'mem_number': '1', 'gid': '002'},
-        {'name': '3rdgroup', 'ta_name': 'TA2, henry', 'mem_number': '22', 'gid': '003'},
-        {'name': '4thgroup', 'ta_name': 'drowsy, TA3', 'mem_number': '34', 'gid': '004'},
-        {'name': '5thgroup', 'ta_name': 'TA4', 'mem_number': '105', 'gid': '005'},
-        {'name': '6thgroup', 'ta_name': 'T5A', 'mem_number': '42', 'gid': '006'},
-    ]
+
+    all_group_list = Group.objects.order_by('-creation_time')
+    unsorted_group_list = Group.objects.filter(member__username__contains=request.user.username)
+    my_group_list = unsorted_group_list.order_by('-creation_time')
     return render(
         request,'group/groupList.html', {
-            'g_list': group_list
+            'a_g_list': all_group_list,
+            'm_g_list': my_group_list,
         })
+
+def new(request):
+
+    if request.user.has_judge_auth():
+        if request.method == 'GET':
+            form = GroupForm()
+            return render(request,'group/editGroup.html',{'form':form})
+        if request.method == 'POST':
+            form = GroupForm(request.POST)
+            if form.is_valid():
+                new_group = form.save()
+                logger.info('Group: Create a new group %s!' % new_group.id)
+                return HttpResponseRedirect('/group/list')
+            else:
+                return render(
+                    request,
+                    'index/404.html',
+                    {'error_message': 'Cannot create group! Info is blank!'})
+    else:
+        raise PermissionDenied
+
+def delete(request, group_id):
+
+    if request.user.has_judge_auth():
+        get_group(group_id)
+        deleted_gid = group.id
+        group.delete()
+        logger.info('Group: Delete group %s!' % deleted_gid)
+        return HttpResponseRedirect('/group/list')
+    else:
+        raise PermissionDenied
+
+def edit(request, group_id):
+
+        group = get_group(group_id)
+        
+        coowner_list = []
+        all_coowner = group.coowner.all()
+        for coowner in all_coowner:
+            coowner_list.append(coowner.username)
+
+        if request.user.username == group.owner.username or \
+           request.user.username in coowner_list:
+            if request.method == 'GET':        
+                group_dic = model_to_dict(group)
+                form = GroupFormEdit(initial = group_dic)
+                return render(request,'group/editGroup.html',{'form':form})
+            if request.method == 'POST':
+                form = GroupFormEdit(request.POST, instance = group)
+                if form.is_valid(): 
+                    modified_group = form.save()
+                    logger.info('Group: Modified group %s!' % modified_group.id)
+                    return HttpResponseRedirect('/group/detail/%s' % modified_group.id)
+        else:
+            raise PermissionDenied

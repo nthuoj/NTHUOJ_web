@@ -27,7 +27,6 @@ from users.models import User
 from contest.models import Contest
 from datetime import date
 
-# Create your models here.
 
 class Announce(models.Model):
     
@@ -51,4 +50,3 @@ class Group(models.Model):
 
     def __unicode__(self):
         return self.gname
-

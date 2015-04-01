@@ -39,16 +39,38 @@ class Tag(models.Model):
 
 class Problem(models.Model):
     LOCAL = 'LOCAL'
-    SPECIAL = 'SPECIAL'
-    ERROR_TORRENT = 'ERR_TORRENT'
-    PARTIAL = 'PARTIAL'
     OTHER = 'OTHER'
-    JUDGE_TYPE_CHOICE = (
+    JUDGE_SOURCE_CHOICE = (
         (LOCAL, 'Local Judge'),
-        (SPECIAL, 'Special Judge'),
-        (ERROR_TORRENT, 'Error Torrent'),
-        (PARTIAL, 'Partial Judge'),
         (OTHER, 'Use Other Judge'),
+    )
+
+    NORMAL = 'NORMAL'
+    SPECIAL = 'SPECIAL'
+    ERROR_TOLERANT = 'ERR_TOLERANT'
+    PARTIAL = 'PARTIAL'
+    UVA_JUDGE = 'UVA'
+    ICPC_JUDGE = 'ICPC'
+    POJ_JUDGE = 'POJ'
+    JUDGE_TYPE_CHOICE = (
+        # Local Judge
+        (NORMAL, 'Normal Judge'),
+        (SPECIAL, 'Special Judge'),
+        (ERROR_TOLERANT, 'Error TOLERANT'),
+        (PARTIAL, 'Partial Judge'),
+        # Other Judge
+        (UVA_JUDGE, 'Uva'),
+        (ICPC_JUDGE, 'ACM ICPC Live Archive'),
+        (POJ_JUDGE, 'POJ'),
+    )
+
+    C = 'C'
+    CPP = 'CPP'
+    CPP11 = 'CPP11'
+    LANGUAGE_CHOICE = (
+        (C, 'C'),
+        (CPP, 'C++'),
+        (CPP11, 'C++11'),
     )
 
     pname = models.CharField(max_length=50, default='')
@@ -62,7 +84,9 @@ class Problem(models.Model):
     error_torrence = models.DecimalField(decimal_places=15, max_digits=17, default=0)
     other_judge_id = models.IntegerField(blank=True, null=True)
     tags = models.ManyToManyField(Tag, blank=True, null=True)
-    judge_source = models.CharField(max_length=11, choices=JUDGE_TYPE_CHOICE, default=LOCAL)
+    judge_source = models.CharField(max_length=11, choices=JUDGE_SOURCE_CHOICE, default=LOCAL)
+    judge_type = models.CharField(max_length=11, choices=JUDGE_TYPE_CHOICE, default=NORMAL)
+    judge_language = models.CharField(max_length=11, choices=LANGUAGE_CHOICE, default=CPP)
     ac_count = models.IntegerField(default=0)
     total_submission = models.IntegerField(default=0)
 
@@ -115,7 +139,7 @@ class Submission(models.Model):
     error_msg = models.TextField(blank=True)
     status = models.CharField(max_length=7, choices=STATUS_CHOICE, default=WAIT)
     language = models.CharField(max_length=5, choices=LANGUAGE_CHOICE, default=C)
-
+    other_judge_sid = models.IntegerField(blank=True, null=True)
     def __unicode__(self):
         return str(self.id)
 
