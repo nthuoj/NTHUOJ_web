@@ -18,7 +18,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 -->
 {% load staticfiles %}
-<div class="modal fade" id="clarification" tabindex="-1" role="dialog">
+<div class="modal fade" id="reply" tabindex="-1" role="dialog">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
@@ -26,18 +26,21 @@ SOFTWARE.
           <span>&times;</span>
           <span class="sr-only">Close</span>
         </button>
-        <h4 class="modal-title">Ask Question</h4>
+        <h4 class="modal-title">Reply</h4>
       </div>
       <div class="modal-body">
-        <form action="{% url 'contest:ask' %}" method="POST" role="form">
-          {% csrf_token %} {{ form.contest.as_hidden }} {{ form.asker.as_hidden }}
+        <form action="{% url 'contest:reply' %}" method="POST" role="form">
+          {% csrf_token %} {{ reply_form.replyer.as_hidden }} {{ reply_form.clarification.as_hidden }}
           <div class="form-group" style="width:50%">
-            <label>Problem name</label>
-            {{ form.problem }}
+            <label>Clarification</label>
+            <div id="description"></div>
           </div>
           <div class="form-group">
-            <label>Description</label>
-            {{ form.content }}
+            <label>Reply</label>
+            {{ reply_form.reply }}
+          </div>
+          <div class="checkbox">
+            <label>{{ reply_form.reply_all }}Reply All</label>
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
@@ -48,3 +51,4 @@ SOFTWARE.
     </div>
   </div>
 </div>
+

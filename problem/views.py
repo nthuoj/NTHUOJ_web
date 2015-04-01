@@ -23,6 +23,8 @@ SOFTWARE.
 '''
 from django.http import HttpResponse, HttpResponseBadRequest, Http404
 from django.shortcuts import render, redirect
+from django.core.exceptions import PermissionDenied
+from django.contrib.auth.decorators import login_required
 
 from users.models import User
 from problem.models import Problem, Tag, Testcase
@@ -66,11 +68,143 @@ def detail(request, pid):
     problem = get_testcase(problem)
     return render(request, 'problem/detail.html', {'problem': problem})
 
-def edit(request, pid):
-    return render(request, 'problem/edit.html')
+@login_required
+def edit(request, pid=None):
+    if pid is not None:
+        is_new = False
+        try:
+            problem = Problem.objects.get(pk=pid)
+            if not request.user.is_admin and request.user != problem.owner:
+                logger.warning("user %s has no permission to edit problem %s" % (request.user, pid))
+                raise PermissionDenied()
+        except Problem.DoesNotExist:
+            logger.warning("problem %s does not exist" % (pid))
+            raise Http404("problem %s does not exist" % (pid))
+        testcase = Testcase.objects.filter(problem=problem)
+        tags = problem.tags.all()
+    else:
+        is_new = True
+    if request.method == 'GET':
+        if is_new:
+            form = ProblemForm()
+        else:
+            form = ProblemForm(instance=problem)
+    if request.method == 'POST':
+        if is_new:
+            form = ProblemForm(request.POST)
+        else:
+            form = ProblemForm(request.POST, instance=problem)
+        if form.is_valid():
+            problem = form.save()
+            problem.description = request.POST['description']
+            problem.input= request.POST['input_description']
+            problem.output = request.POST['output_description']
+            problem.sample_in = request.POST['sample_in']
+            problem.sample_out = request.POST['sample_out']
+            problem.save()
+            logger.info('edit problem, pid = %d' % (problem.pk))
+            return redirect('/problem/%d' % (problem.pk))
+    if not request.user.is_admin:
+        del form.fields['owner']
+    if is_new:
+        return render(request, 'problem/edit.html', 
+                    { 'form': form, 'owner': request.user, 'is_new': True })
+    else:
+        return render(request, 'problem/edit.html', 
+                  {'form': form, 'pid': pid, 'is_new': False,
+                   'tags': tags, 'description': problem.description,
+                   'input': problem.input, 'output': problem.output,
+                   'sample_in': problem.sample_in, 'sample_out': problem.sample_out,
+                   'testcase': testcase })
 
-def new(request):
-    return render(request, 'problem/edit.html')
+@login_required
+def tag(request, pid):
+    if request.method == "POST":
+        tag = request.POST['tag']
+        try:
+            problem = Problem.objects.get(pk=pid)
+        except Problem.DoesNotExist:
+            logger.warning("problem %s does not exist" % (pid))
+            raise Http404("problem %s does not exist" % (pid))
+        if not problem.tags.filter(tag_name=tag).exists():
+            logger.info("add new tag '%s' to problem %s" % (tag, pid))
+            new_tag, created = Tag.objects.get_or_create(tag_name=tag)
+            problem.tags.add(new_tag)
+            problem.save()
+            return HttpResponse(json.dumps({'tag_id': new_tag.pk}),
+                                content_type="application/json")
+        return HttpRequestBadRequest()
+    return HttpResponse()
+
+@login_required
+def delete_tag(request, pid, tag_id):
+    try:
+        problem = Problem.objects.get(pk=pid)
+        tag = Tag.objects.get(pk=tag_id)
+    except Problem.DoesNotExist:
+        logger.warning("problem %s does not exist" % (pid))
+        raise Http404("problem %s does not exist" % (pid))
+    except Tag.DoesNotExist:
+        logger.warning("tag %s does not exist" % (tag_id))
+        raise Http404("tag %s does not exist" % (tag_id))
+    if not request.user.is_admin and request.user != problem.owner:
+        raise PermissionDenied()
+    logger.info("tag %d deleted" % (tag.pk))
+    problem.tags.remove(tag)
+    return HttpResponse()
+
+@login_required
+def testcase(request, pid, tid=None):
+    if request.method == 'POST':
+        try:
+            problem = Problem.objects.get(pk=pid)
+        except Problem.DoesNotExist:
+            logger.warning("problem %s does not exist" % (pid))
+            raise Http404("problem %s does not exist" % (pid))
+        if tid == None:
+            testcase = Testcase()
+            testcase.problem = problem
+        else:
+            try:
+                testcase = Testcase.objects.get(pk=tid)
+            except Testcase.DoesNotExist:
+                logger.warning("testcase %s does not exist" % (tid))
+                raise Http404("testcase %s does not exist" % (tid))
+            if testcase.problem != problem:
+                logger.warning("testcase %s does not belong to problem %s" % (tid, pid))
+                raise Http404("testcase %s does not belong to problem %s" % (tid, pid))
+        if 'time_limit' in request.POST:
+            testcase.time_limit = request.POST['time_limit']
+            testcase.memory_limit = request.POST['memory_limit']
+            testcase.save()
+            logger.info("testcase saved, tid = %s" % (testcase.pk))
+            return HttpResponse(json.dumps({'tid': testcase.pk}), 
+                                content_type="application/json")
+    return HttpResponse()
+
+@login_required
+def delete_testcase(request, pid, tid):
+    try:
+        problem = Problem.objects.get(pk=pid)
+        testcase = Testcase.objects.get(pk=tid)
+    except Problem.DoesNotExist:
+        logger.warning("problem %s does not exist" % (pid))
+        raise Http404("problem %s does not exist" % (pid))
+    except Testcase.DoesNotExist:
+        logger.warning("testcase %s does not exist" % (tid))
+        raise Http404("testcase %s does not exist" % (tid))
+    if not request.user.is_admin and request.user != problem.owner:
+        raise PermissionDenied
+    logger.info("testcase %d deleted" % (testcase.pk))
+    testcase.delete()
+    return HttpResponse()
 
 def preview(request):
-    return render(request, 'problem/preview.html')
+    form = ProblemForm(request.GET)
+    problem = form.save()
+    problem.description = request.GET['description']
+    problem.input= request.GET['input_description']
+    problem.output = request.GET['output_description']
+    problem.sample_in = request.GET['sample_in']
+    problem.sample_out = request.GET['sample_out']
+    return render(request, 'problem/preview.html', {'problem': problem, 'preview': True})
