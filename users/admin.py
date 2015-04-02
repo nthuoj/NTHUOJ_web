@@ -28,11 +28,13 @@ from django.contrib.auth.forms import ReadOnlyPasswordHashField, AuthenticationF
 from django.contrib.auth.models import Group
 from django.core.validators  import RegexValidator
 
-from users.models import User, Notification
+from users.models import User, Notification, UserProfile
 
 # Register your models here.
 
 admin.site.register(Notification)
+admin.site.register(UserProfile)
+
 
 class UserCreationForm(forms.ModelForm):
     """A form for creating new users. Includes all the required

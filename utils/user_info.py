@@ -173,6 +173,7 @@ def send_forget_password_email(request, user):
     salt = hashlib.sha1(str(random.random())).hexdigest()[:5]
     activation_key = hashlib.sha1(salt+email).hexdigest()
     # Create and save user profile
+    UserProfile.objects.filter(user=user).delete()
     new_profile = UserProfile(user=user, activation_key=activation_key)
     new_profile.save()
 
