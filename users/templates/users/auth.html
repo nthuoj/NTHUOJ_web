@@ -23,8 +23,7 @@ SOFTWARE.
 -->
 {% extends "index/base.html" %}
 {% load static %}
-{% block import_source %}
-{% endblock import_source %}
+
 {% block body_block %}
 <div class="container" style="width:40%">
   <h3>{{ title }}</h3>
@@ -46,7 +45,7 @@ SOFTWARE.
           <li class='col-md-offset-2'><strong style="color:red">{{ error|escape }}</strong></li>
         {% endfor %}
       </ul>
-      {% endif %} 
+      {% endif %}
       {% if field.errors %}
       <ul>
         {% for error in field.errors %}
@@ -62,7 +61,7 @@ SOFTWARE.
     </div>
     <hr>
     <div class="poptxt_login">
-      Don't have an account? You can 
+      Don't have an account? You can
       <a href={% url "users:create" %}>
         <p class="p6">register here</p>
       </a>
