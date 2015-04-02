@@ -89,7 +89,7 @@ class Problem(models.Model):
     judge_language = models.CharField(max_length=11, choices=LANGUAGE_CHOICE, default=CPP)
 
     def __unicode__(self):
-        return self.pname
+        return str(self.id) + ' - ' + self.pname
 
 
 class Testcase(models.Model):
