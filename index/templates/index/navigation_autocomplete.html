@@ -26,7 +26,6 @@
   {% endfor %}
 {% endif %}
 
-{% if problems or contests or groups or users %}
-{% else %}
+{% if not problems and not contests and not users %}
   <span class="block"><em>No matches found</em></span>
 {% endif %}
