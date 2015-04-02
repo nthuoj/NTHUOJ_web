@@ -27,6 +27,7 @@ import views
 
 urlpatterns = patterns('',
     url(r'^$', views.status, name='status'),
+    url(r'^(?P<username>\w+)$', views.status, name='status'),
     url(r'^view_code/(?P<sid>\d+)$', views.view_code, name='view_code'),
     url(r'^error_message/(?P<sid>\d+)$', views.error_message, name="error_message"),
 )
