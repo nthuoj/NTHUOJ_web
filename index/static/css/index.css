@@ -283,3 +283,7 @@ textarea#inputSmall {
 .form-horizontal .control-label {
   text-align: left;
 }
+.navbar-form{
+  margin: 0px;
+  padding-top: 5px;
+}
