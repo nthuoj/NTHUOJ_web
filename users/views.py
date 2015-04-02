@@ -52,18 +52,18 @@ def list(request):
     page = request.GET.get('page')
 
     try:
-        user = paginator.page(page)
+        users = paginator.page(page)
     except PageNotAnInteger:
         # If page is not an integer, deliver first page.
-        user = paginator.page(1)
+        users = paginator.page(1)
     except EmptyPage:
         # If page is out of range (e.g. 9999), deliver last page of results.
-        user = paginator.page(paginator.num_pages)
+        users = paginator.page(paginator.num_pages)
 
     return render(
         request,
         'users/userList.html',
-        {'users': user},
+        {'users': users},
         context_instance=RequestContext(request, processors=[custom_proc]))
 
 
