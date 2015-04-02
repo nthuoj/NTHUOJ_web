@@ -87,6 +87,12 @@ def can_register(user, contest_id):
     return contest_info.can_register(user, contest)
 register.filter("can_register",can_register)
 
+
+'''
+Contest should not be end. 
+And user should own contest(to register group)
+or user can register 
+'''
 @register.filter
 def show_register_btn(user, contest_id):
     try:

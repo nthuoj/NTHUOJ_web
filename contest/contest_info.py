@@ -140,27 +140,28 @@ def can_delete_contest(user):
     return user.has_admin_auth() or (user == contest.owner)
 
 def can_register(user, contest):
+    ended = is_ended(contest)
+    if ended:
+        logger.info('Contest: Contest %s has ended! Can not register.' % (contest.id))
+        return False
+    open_register = contest.open_register
+    if not open_register:
+        logger.info('Contest: Registration for Contest %s is closed. Can not register.' % contest.id)
+        return False
+    has_ownership = user_info.has_contest_ownership(user,contest)
+    if has_ownership:
+        logger.info('Contest: User %s has Contest %s ownership. Can not register.' % (user.username, contest.id))
+        return False
+    has_attended = Contestant.objects.filter(contest = contest,user = user).exists()
+    if has_attended:
+        logger.info('Contest: User %s has already attended Contest %s!' % (user.username, contest.id))
+        return False
     #admin can't attend any contest
     if not user_is_valid(user):
         return False
     if user.has_admin_auth():
         return False
-    open_register = contest.open_register
-    has_ownership = user_info.has_contest_ownership(user,contest)
-    has_attended = Contestant.objects.filter(contest = contest,user = user).exists()
-    ended = is_ended(contest)
-    if not open_register:
-        logger.info('Contest: Registration for Contest %s is closed. Can not register.' % contest.id)
-        return False
-    if has_ownership:
-        logger.info('Contest: User %s has Contest %s ownership. Can not register.' % (user.username, contest.id))
-        return False
-    if has_attended:
-        logger.info('Contest: User %s has already attended Contest %s!' % (user.username, contest.id))
-        return False
-    if ended:
-        logger.info('Contest: Contest %s has ended! Can not register.' % (contest.id))
-        return False
+
     return True 
 
 def is_ended(contest):
