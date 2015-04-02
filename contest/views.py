@@ -50,6 +50,7 @@ from contest.contest_info import get_scoreboard
 from utils.log_info import get_logger
 from utils import user_info
 
+from status.views import *
 
 logger = get_logger()
 
@@ -74,7 +75,7 @@ def archive(request, page = None):
     next = int(page)+1
     max_page = int(paginator.num_pages)
     pager = {'previous':previous, 'this':this, 'next':next, 'max_page':max_page}
-    return render(request, 
+    return render(request,
         'contest/contestArchive.html',
         {'contests':contests,'user':user,'pager':pager},
         context_instance = RequestContext(request, processors = [custom_proc]))
@@ -92,6 +93,7 @@ def contest(request, contest_id):
         raise PermissionDenied
     else:
         scoreboard = get_scoreboard(contest)
+        status = contest_status(request, contest)
         user = request.user
         clarifications = get_clarifications(user,contest)
 
@@ -103,7 +105,7 @@ def contest(request, contest_id):
         return render(request, 'contest/contest.html',
             {'contest':contest, 'clarifications':clarifications, 'user':user,
             'form':form, 'reply_form':reply_form,
-            'scoreboard':scoreboard},
+            'scoreboard':scoreboard, 'status': status},
             context_instance = RequestContext(request, processors = [custom_proc]))
 
 def new(request):
@@ -194,7 +196,7 @@ def ask(request):
             form = ClarificationForm(request.POST)
             if form.is_valid():
                 new_clarification = form.save()
-                logger.info('Clarification: User %s create Clarification %s!' 
+                logger.info('Clarification: User %s create Clarification %s!'
                     % (request.user.username, new_clarification.id))
             return redirect('contest:contest',contest)
     return redirect('contest:archive')
@@ -210,7 +212,7 @@ def reply(request):
         logger.warning('Clarification: User %s can not reply Clarification %s!'
             % (request.user.username, clarification.id))
         return redirect('contest:archive')
-    
+
     if can_reply(request.user,contest_obj):
         if request.method == 'POST':
             form = ReplyForm(request.POST or None, instance = instance)
@@ -218,7 +220,7 @@ def reply(request):
                 replied_clarification = form.save()
                 replied_clarification.reply_time = datetime.now()
                 replied_clarification.save()
-                logger.info('Clarification: User %s reply Clarification %s!' 
+                logger.info('Clarification: User %s reply Clarification %s!'
                     % (request.user.username, replied_clarification.id))
             return redirect('contest:contest',contest)
     return redirect('contest:archive')
