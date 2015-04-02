@@ -21,45 +21,78 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 '''
-from django.shortcuts import render
-from index.views import custom_proc
-from utils.log_info import get_logger
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.conf import settings
-from users.forms import CodeSubmitForm
-from django.template import RequestContext
-from problem.models import Submission, SubmissionDetail
 from django.contrib.auth.decorators import login_required
+from django.http import Http404
+from django.shortcuts import render
+from django.template import RequestContext
+from index.views import custom_proc
+from problem.models import Submission, SubmissionDetail
 from status.templatetags.status_filters import show_detail
-
+from users.forms import CodeSubmitForm
+from users.models import User
+from utils.log_info import get_logger
+import re
 # Create your views here.
 
 logger = get_logger()
 
 
-def regroup_submission(submissions, submission_details):
+def regroup_submission(submissions):
     submission_groups = []
     for submission in submissions:
         submission_groups.append({
             'grouper': submission,
-            'list': submission_details.filter(sid=submission)
+            'list': SubmissionDetail.objects.filter(sid=submission.id).order_by('-sid')
         })
 
     return submission_groups
 
+def status(request, username=None):
+    submissions = Submission.objects.all().order_by('-id')
 
-def status(request):
-    submissions = Submission.objects.order_by('-id')[0:50]
-    submissions_id = map(lambda submission: submission.id, submissions)
-    submission_details = SubmissionDetail. \
-        objects.filter(sid__in=submissions_id).order_by('-sid')
+    if username:
+        try:
+            user = User.objects.get(username=username)
+            submissions = submissions.filter(user=user)
+        except:
+            raise Http404('User %s Not Found!' % username)
 
-    submissions = regroup_submission(submissions, submission_details)
+    paginator = Paginator(submissions, 25)  # Show 25 submissions per page
+    page = request.GET.get('page')
+
+    try:
+        submissions = paginator.page(page)
+    except PageNotAnInteger:
+        # If page is not an integer, deliver first page.
+        submissions = paginator.page(1)
+    except EmptyPage:
+        # If page is out of range (e.g. 9999), deliver last page of results.
+        submissions = paginator.page(paginator.num_pages)
+
+    submissions.object_list = regroup_submission(submissions.object_list)
 
     return render(
         request,
         'status/status.html',
         {'submissions': submissions},
         context_instance=RequestContext(request, processors=[custom_proc]))
+
+
+def contest_status(request, contest):
+    '''Return a status table of given contest'''
+    problems = contest.problem.all()
+    submissions = Submission.objects.filter(
+        problem__in=problems,
+        submit_time__gte=contest.start_time,
+        submit_time__lte=contest.end_time).order_by('-id')[0:25]
+
+    submissions = regroup_submission(submissions)
+    table_content = str(render(request, 'status/statusTable.html', {'submissions': submissions}))
+    # remove rendered response header
+    table_content = re.sub('Content-Type: text/html; charset=utf-8', '', table_content)
+    return table_content
 
 
 def error_message(request, sid):

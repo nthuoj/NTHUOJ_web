@@ -23,6 +23,7 @@ SOFTWARE.
 '''
 import time
 import random
+import autocomplete_light
 from django.http import Http404
 from django.utils import timezone
 from utils.log_info import get_logger
@@ -34,9 +35,16 @@ from users.models import User, Notification
 from django.template import RequestContext
 from utils.user_info import validate_user
 from django.template import RequestContext
+from django.db.models import Q
+from users.models import User
+from problem.models import Problem
+from contest.models import Contest
+from group.models import Group
 
 # Create your views here.
 logger = get_logger()
+
+
 def index(request, alert_info='none'):
 
     present = timezone.now()
@@ -49,6 +57,30 @@ def index(request, alert_info='none'):
                 {'c_runnings':c_runnings, 'c_upcomings':c_upcomings,
                 'alert_info':alert_info},
                 context_instance=RequestContext(request, processors=[custom_proc]))
+
+def navigation_autocomplete(request):
+    q = request.GET.get('q', '')
+
+    queries = {}
+
+    queries['users'] = User.objects.filter(
+        username__istartswith=q
+    )[:5]
+
+    queries['problems'] = Problem.objects.filter(
+        Q(pname__icontains=q) |
+        Q(id__contains=q)
+    )[:10]
+
+    queries['contests'] = Contest.objects.filter(
+        cname__icontains=q
+    )[:5]
+
+    queries['groups'] = Group.objects.filter(
+        gname__icontains=q
+    )[:5]
+
+    return render(request, 'index/navigation_autocomplete.html', queries)
 
 def custom_400(request):
     return render(request, 'index/400.html', status=400)
