@@ -280,3 +280,6 @@ textarea#inputSmall {
   top: -5px;
   left: 10px;
 }
+.form-horizontal .control-label {
+  text-align: left;
+}
