@@ -24,6 +24,7 @@ git clone git@github.com:bruce3557/NTHUOJ_web.git
 * django-bower
 * curl
 * django-datetime-widget
+* django-bootstrap-form
 
 ###Installation:
 * Execute install.py for initial setting.
