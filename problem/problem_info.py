@@ -7,8 +7,7 @@ SPECIAL_PATH = config_info.get_config('path', 'special_judge_path')
 PARTIAL_PATH = config_info.get_config('path', 'partial_judge_path')
 
 def get_testcase(problem):
-    problem.testcase = Testcase.objects.filter(problem=problem)
-    return problem
+    return = Testcase.objects.filter(problem=problem)
 
 def get_problem_list(user):
     if user.is_anonymous():
