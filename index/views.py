@@ -45,10 +45,6 @@ from group.models import Group
 logger = get_logger()
 
 
-
-def gg(request):
-    return render(request, 'index/team_list.html')
-
 def index(request, alert_info='none'):
     present = timezone.now()
     time_threshold = datetime.now() + timedelta(days=1);
