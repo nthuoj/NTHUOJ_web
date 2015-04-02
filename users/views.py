@@ -162,6 +162,7 @@ def user_login(request):
             logger.info('user %s @ %s logged in' % (str(user), ip))
             one_hour = 60 * 60
             request.session.set_expiry(one_hour)
+            logger.info('user %s set session timeout one hour' % str(user))
             login(request, user)
             return redirect(reverse('index:index'))
         else:
