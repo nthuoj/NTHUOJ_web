@@ -27,8 +27,9 @@ from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.forms import ReadOnlyPasswordHashField, AuthenticationForm
 from django.contrib.auth.models import Group
 from django.core.validators  import RegexValidator
-
 from users.models import User, Notification, UserProfile
+from utils.config_info import get_config
+from users.models import User, Notification
 
 # Register your models here.
 
@@ -39,6 +40,7 @@ admin.site.register(UserProfile)
 class UserCreationForm(forms.ModelForm):
     """A form for creating new users. Includes all the required
     fields, plus a repeated password."""
+    USERNAME_BLACK_LIST = get_config('username', 'black_list', filename='user_auth.cfg').splitlines()
     username = forms.CharField(label='Username',
         widget=forms.TextInput(attrs={'class': 'form-control'}),
         validators=[RegexValidator(regex='^\w+$', message='Username must be Alphanumeric')])
@@ -57,6 +59,15 @@ class UserCreationForm(forms.ModelForm):
         if password1 and password2 and password1 != password2:
             raise forms.ValidationError("Passwords don't match")
         return password2
+
+    def clean_username(self):
+        username = self.cleaned_data.get("username")
+        username_lower = username.lower()
+        for token in self.USERNAME_BLACK_LIST:
+            if token.lower() in username_lower:
+                raise forms.ValidationError("Username should't conatin %s." % token)
+
+        return username
 
     def save(self, commit=True):
         user = super(UserCreationForm, self).save(commit=False)

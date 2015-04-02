@@ -25,24 +25,24 @@ import ConfigParser
 from django.conf import settings
 
 
-def get_config(section, option):
+def get_config(section, option, filename='nthuoj.cfg'):
     '''Return a config in that section'''
     try:
         config = ConfigParser.ConfigParser()
         config.optionxform = str
-        config.read(settings.BASE_DIR + '/nthuoj/nthuoj.cfg')
+        config.read(settings.BASE_DIR + '/nthuoj/config/' + filename)
         return config.get(section, option)
     except:
         # no config found
         return None
 
-def get_config_items(section):
+def get_config_items(section, filename='nthuoj.cfg'):
     '''Return all config in that section'''
     try:
         config = ConfigParser.ConfigParser()
         config.optionxform = str
-        config.read(settings.BASE_DIR + '/nthuoj/nthuoj.cfg')
+        config.read(settings.BASE_DIR + '/nthuoj/config/' + filename)
         return config.items(section)
     except:
         # no config found
-        return None
+        return []
