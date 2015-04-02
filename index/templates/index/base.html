@@ -42,6 +42,7 @@ SOFTWARE.
     <!-- Magnific Popup core JS & CSS -->
     <link rel="stylesheet" href={% static "magnific-popup/dist/magnific-popup.css" %}>
     <script src={% static "magnific-popup/dist/jquery.magnific-popup.min.js" %}></script>
+    {% include 'autocomplete_light/static.html' %}
     <script src={% static "js/popup-setting.js" %}></script>
     <script src={% static "js/base.js" %}></script>
     <link rel="stylesheet" href={% static "css/index.css" %} media="screen">
@@ -52,6 +53,16 @@ SOFTWARE.
     {% endblock import_source %}
   </head>
   <body>
+  <script type="text/javascript">
+  $(function() {
+    $('#globalNavigation').yourlabsAutocomplete({
+        url: '{% url "index:search" %}'
+    }).input.bind('selectChoice', function(e, choice, autocomplete) {
+        // When a choice is selected, open it.
+        window.location.href = choice.attr('href');
+    });
+  })
+  </script>
     <!-- feedback-popup -->
     <div id="feedback-popup" class="mfp-hide">
       <div class="jumbotron popdiv">
@@ -157,15 +168,27 @@ SOFTWARE.
             </a>
             <ul class="dropdown-menu">
               <li><a href="{% url 'users:list' %}">User List</a></li>
-              {% if user.is_authenticated %}
-                <li>
-                  <a href={% url "users:profile" user.username %}>User Profile</a>
-                </li>
-              {% endif %}
+              <li><a href="#">User Rank</a></li>
             </ul>
           </li>
-          <li><a href="#"><p class="p2">User Rank</p></a></li>
+
+          {% if user.is_authenticated %}
+          <li class="dropdown">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+              <p class="p2">Personal<b class="caret"></b></p>
+            </a>
+            <ul class="dropdown-menu">
+              <li><a href={% url "users:profile" user.username %}>Profile</a></li>
+              <li><a href={% url "status:status" user.username %}>Submissions</a></li>
+            </ul>
+          </li>
+          {% endif %}
         </ul>
+        <form class="navbar-form">
+          <div class="form-group">
+            <input id="globalNavigation" type="text" class="form-control" placeholder="Search Site">
+          </div>
+        </form>
         <ul class="nav navbar-nav navbar-right">
           {% if user.is_authenticated %}
           <li>
