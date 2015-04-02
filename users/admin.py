@@ -42,11 +42,10 @@ class UserCreationForm(forms.ModelForm):
     fields, plus a repeated password."""
     USERNAME_BLACK_LIST = get_config('username', 'black_list', filename='user_auth.cfg').splitlines()
     username = forms.CharField(label='Username',
-        widget=forms.TextInput(attrs={'class': 'form-control'}),
         validators=[RegexValidator(regex='^\w+$', message='Username must be Alphanumeric')])
-    email = forms.EmailField(label='Email', widget=forms.TextInput(attrs={'class': 'form-control'}))
-    password1 = forms.CharField(label='Password', widget=forms.PasswordInput(attrs={'class': 'form-control'}))
-    password2 = forms.CharField(label='Password Confirmation', widget=forms.PasswordInput(attrs={'class': 'form-control'}))
+    email = forms.EmailField(label='Email')
+    password1 = forms.CharField(label='Password', widget=forms.PasswordInput())
+    password2 = forms.CharField(label='Password Confirmation', widget=forms.PasswordInput())
 
     class Meta:
         model = User
@@ -80,8 +79,8 @@ class UserCreationForm(forms.ModelForm):
 
 class AuthenticationForm(AuthenticationForm):
     """Extend default AuthenticationForm with prettified bootstrap attribute"""
-    username = forms.CharField(label='Username', widget=forms.TextInput(attrs={'class': 'form-control'}))
-    password = forms.CharField(label='Password', widget=forms.PasswordInput(attrs={'class': 'form-control'}))
+    username = forms.CharField(label='Username')
+    password = forms.CharField(label='Password', widget=forms.PasswordInput())
     def __init__(self, *args, **kwargs):
         super(AuthenticationForm, self).__init__(*args, **kwargs)
         self.error_messages['inactive'] = 'This account is inactive. Check your email to activate the account!'
