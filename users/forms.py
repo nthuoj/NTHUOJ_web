@@ -23,10 +23,12 @@ class CodeSubmitForm(forms.Form):
 
     def clean_pid(self):
         pid = self.cleaned_data['pid']
+        if not unicode(pid).isnumeric():
+            raise forms.ValidationError("Pid must be a number")
         try:
             problem = Problem.objects.get(id=pid)
             if not user_info.has_problem_auth(self.user, problem):
-                raise forms.ValidationError('You don\'t have permission to submit that problem')
+                raise forms.ValidationError("You don't have permission to submit that problem")
         except Problem.DoesNotExist:
             logger.warning('Pid %s doe not exist' % pid)
             raise forms.ValidationError('Problem of this pid does not exist')
