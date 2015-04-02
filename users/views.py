@@ -36,8 +36,10 @@ from users.forms import CodeSubmitForm
 from users.forms import UserProfileForm, UserLevelForm
 from users.models import User, UserProfile, Notification
 from users.templatetags.profile_filters import can_change_userlevel
-from utils.log_info import get_logger, get_client_ip
+from utils.log_info import get_logger
 from utils.user_info import get_user_statistics, send_activation_email
+from utils.render_helper import render_index
+from axes.decorators import get_ip_address_from_request
 import datetime
 import random
 import json
@@ -158,7 +160,7 @@ def user_login(request):
                 username=user_form.cleaned_data['username'],
                 password=user_form.cleaned_data['password'])
             user.backend = 'django.contrib.auth.backends.ModelBackend'
-            ip = get_client_ip(request)
+            ip = get_ip_address_from_request(request)
             logger.info('user %s @ %s logged in' % (str(user), ip))
             login(request, user)
             return redirect(reverse('index:index'))
@@ -174,6 +176,12 @@ def user_login(request):
         {'form': AuthenticationForm(), 'title': 'Login'},
         context_instance=RequestContext(request, processors=[custom_proc]))
 
+
+def user_block_wrong_tries(request):
+    """Block login for over 3 wrong tries."""
+    ip = get_ip_address_from_request(request)
+
+    return render_index(request, 'users/blockWrongTries.html', {'ip': ip})
 
 @login_required()
 def submit(request, pid=None):
