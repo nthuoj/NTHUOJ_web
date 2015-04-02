@@ -23,7 +23,7 @@ from datetimewidget.widgets import DateTimeWidget, DateWidget, TimeWidget
 
 class AnnouncementCreationForm(forms.ModelForm):
     dateTimeOptions = {
-            'format': 'yyyy/mm/dd HH:ii',
+            'format': 'yyyy-mm-dd hh:ii:ss',
             'todayBtn': 'true',
             'minuteStep': 30,
     }

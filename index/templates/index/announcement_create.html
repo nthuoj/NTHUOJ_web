@@ -37,7 +37,6 @@ SOFTWARE.
 <div class="container" style="width:50%">
   <form action="" method="post" role="form">
     {% csrf_token %}
-
     {% for field in form %}
     {% if field.label_tag == form.content.label_tag %}
       <div class="panel panel-default">
