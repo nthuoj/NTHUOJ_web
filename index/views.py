@@ -37,6 +37,8 @@ from utils.user_info import validate_user
 from django.core.urlresolvers import reverse
 from django.template import RequestContext
 from index.forms import AnnouncementCreationForm
+from django.core.exceptions import PermissionDenied
+from django.contrib.auth.decorators import login_required
 
 # Create your views here.
 logger = get_logger()
@@ -54,7 +56,10 @@ def index(request, alert_info='none'):
                 'announcements':announcements, 'alert_info':alert_info},
                 context_instance=RequestContext(request, processors=[custom_proc]))
 
+@login_required()
 def announcement_create(request):
+    if User.has_admin_auth(request.user) == False:
+        raise PermissionDenied('User %s does not have the permission!' % str(request.user))
     if request.method == 'POST':
         form = AnnouncementCreationForm(request.POST)
         if form.is_valid():
@@ -63,9 +68,43 @@ def announcement_create(request):
             return redirect(reverse('index:index'))
     else:
         form = AnnouncementCreationForm()
-    return render(request, 'index/announcement_create.html',
-                {'form': form},
+    return render(request, 'index/announcement.html',
+                {'form': form, 'title': 'Create Announcement'},
                 context_instance=RequestContext(request, processors=[custom_proc]))
+
+@login_required()
+def announcement_update(request, aid):
+    if User.has_admin_auth(request.user) == False:
+        raise PermissionDenied('User %s does not have the permission' % str(request.user))
+
+    try:
+        announcement = Announcement.objects.get(id=long(aid))
+    except Announcement.DoesNotExist:
+        raise Exception('Announcement %ld does not exist' % long(aid))
+
+    if request.method == 'POST':
+        form = AnnouncementCreationForm(request.POST, instance=announcement)
+        if form.is_valid():
+            updating = form.save()
+            updating.backend = 'django.contrib.auth.backends.ModelBackend'
+            return redirect(reverse('index:index'))
+    else:
+        form = AnnouncementCreationForm(instance=announcement)
+    return render(request, 'index/announcement.html',
+                {'form': form, 'announcement':announcement, 'title': 'Update Announcement'},
+                context_instance=RequestContext(request, processors=[custom_proc]))
+
+@login_required()
+def announcement_delete(request, aid):
+    if User.has_admin_auth(request.user) == False:
+        raise PermissionDenied('User %s does not have the permission' % str(request.user))
+
+    try:
+        announcement = Announcement.objects.get(id=long(aid))
+        announcement.delete()
+    except Announcement.DoesNotExist:
+        raise Exception('Announcement %ld does not exist' % long(aid))
+    return redirect(reverse('index:index'))
 
 def custom_404(request):
     return render(request, 'index/404.html', status=404)

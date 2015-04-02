@@ -26,7 +26,7 @@ SOFTWARE.
 {% load static %}
 {% load bootstrap %}
 {% block title_name %}
-  <title>announcement</title>
+  <title>{{ title }}</title>
 {% endblock title_name %}
 {% block import_source %}
 {{ form.media }}
@@ -47,7 +47,11 @@ SOFTWARE.
       {{ field|bootstrap }}
     {% endif %}
     {% endfor %}
+    {% if title == 'Create Announcement' %}
     <button type="submit" class="btn btn-primary">Add</button>
+    {% else %}
+    <button type="submit" class="btn btn-primary">Update</button>
+    {% endif %}
   </form>
 </div>
 <br>

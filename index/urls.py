@@ -26,4 +26,6 @@ urlpatterns = patterns('',
     url(r'^$', views.index, name='index'),
     url(r'^index/(?P<alert_info>\w+)/$', views.index, name='alert'),
     url(r'^announcement_create/$', views.announcement_create, name='announcement_create'),
+    url(r'^announcement_update/(?P<aid>\w+)$', views.announcement_update, name='announcement_update'),
+    url(r'^announcement_delete/(?P<aid>\w+)$', views.announcement_delete, name='announcement_delete'),
 )

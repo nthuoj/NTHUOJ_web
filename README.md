@@ -23,6 +23,7 @@ git clone git@github.com:bruce3557/NTHUOJ_web.git
 * bower
 * django-bower
 * curl
+* django-datetime-widget
 
 ###Installation:
 * Execute install.py for initial setting.
