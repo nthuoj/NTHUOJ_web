@@ -51,6 +51,7 @@ INSTALLED_APPS = (
     'axes',
     'bootstrapform',
     'djangobower',
+    'datetimewidget',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -62,6 +63,7 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'axes.middleware.FailedLoginMiddleware',
+    'django.middleware.locale.LocaleMiddleware',
 )
 
 ROOT_URLCONF = 'nthuoj.urls'
@@ -101,7 +103,6 @@ USE_I18N = True
 USE_L10N = True
 
 USE_TZ = False
-
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.7/howto/static-files/

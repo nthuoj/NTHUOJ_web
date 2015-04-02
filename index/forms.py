@@ -16,14 +16,15 @@
     LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
     OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
     SOFTWARE.
-    '''
+'''
 
-from django.conf.urls import patterns, url
-import views
+from index.models import Announcement
+from django import forms
+from datetimewidget.widgets import DateTimeWidget, DateWidget, TimeWidget
 
-urlpatterns = patterns('',
-    url(r'^get_time/$', views.get_time),
-    url(r'^$', views.index, name='index'),
-    url(r'^index/(?P<alert_info>\w+)/$', views.index, name='alert'),
-    url(r'^announcement_create/$', views.announcement_create, name='announcement_create'),
-)
+class dateForm(forms.ModelForm):
+    class Meta:
+        model = Announcement
+        date_time = forms.DateTimeField(widget=DateTimeWidget(usel10n=True, bootstrap_version=3))
+        date = forms.DateField(widget=DateWidget(usel10n=True, bootstrap_version=3))
+        time = forms.TimeField(widget=TimeWidget(usel10n=True, bootstrap_version=3))

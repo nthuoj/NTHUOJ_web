@@ -1,4 +1,4 @@
-'''
+/*
 The MIT License (MIT)
 
 Copyright (c) 2014 NTHUOJ team
@@ -20,16 +20,8 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
-'''
-from django.db import models
-from datetime import datetime
-# Create your models here.
-
-class Announcement(models.Model):
-
-    content = models.TextField(default=None)
-    start_time = models.DateTimeField(default=datetime.now)
-    end_time = models.DateTimeField(default=datetime.now)
-
-    def __unicode__(self):
-        return str(self.id)
+*/
+#announcement-create {
+  margin-right: 220px;
+  margin-left: 220px;
+}

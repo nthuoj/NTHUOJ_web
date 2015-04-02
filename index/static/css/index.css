@@ -274,3 +274,8 @@ textarea#inputSmall {
 .navbar {
   min-height: 4%;
 }
+#announcement-add {
+  position: relative;
+  top: -5px;
+  left: 10px;
+}

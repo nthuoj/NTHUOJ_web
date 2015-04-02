@@ -52,7 +52,14 @@ SOFTWARE.
 
   <!-- announcement -->
   <div id="announcement" class="center">
-    <h3><b>Announcements</b></h3>
+    <h3 style="display: inline;"><b>Announcements</b></h3>
+    {% if user.has_admin_auth %}
+    <a href="{% url 'index:announcement_create' %}" id="announcement-add">
+      <button type="button" class="btn btn-success btn-xs" >
+        <span class="glyphicon glyphicon-plus"></span>
+      </button>
+    </a>
+    {% endif %}
     <table align="center" class="table table-striped table-hover">
       <thead class="line">
         <tr>

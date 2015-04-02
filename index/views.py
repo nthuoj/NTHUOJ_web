@@ -27,14 +27,16 @@ from django.http import Http404
 from django.utils import timezone
 from utils.log_info import get_logger
 from contest.models import Contest
-from django.shortcuts import render
 from django.http import HttpResponse
 from datetime import datetime, timedelta
 from index.models import Announcement
 from users.models import User, Notification
+from django.shortcuts import render, redirect
 from django.template import RequestContext
 from utils.user_info import validate_user
+from django.core.urlresolvers import reverse
 from django.template import RequestContext
+from django.forms.models import modelform_factory
 
 # Create your views here.
 logger = get_logger()
@@ -50,6 +52,21 @@ def index(request, alert_info='none'):
     return render(request, 'index/index.html',
                 {'c_runnings':c_runnings, 'c_upcomings':c_upcomings,
                 'announcements':announcements, 'alert_info':alert_info},
+                context_instance=RequestContext(request, processors=[custom_proc]))
+
+def announcement_create(request):
+    announcement_form = modelform_factory(Announcement)
+    form = announcement_form()
+    if request.method == 'POST':
+        form = announcement_form(request.POST)
+        if form.is_valid():
+            announcement = form.save()
+            announcement.backend = 'django.contrib.auth.backends.ModelBackend'
+            return redirect(reverse('index:index'))
+    else:
+        form = announcement_form()
+    return render(request, 'index/announcement_create.html',
+                {'form': form},
                 context_instance=RequestContext(request, processors=[custom_proc]))
 
 def custom_404(request):
