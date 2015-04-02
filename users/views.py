@@ -212,7 +212,6 @@ def forget_password_confirm(request, activation_key):
     '''
     user_profile = get_object_or_404(UserProfile, activation_key=activation_key, active_time__gte=datetime.datetime.now())
     user = user_profile.user
-    user = User.objects.get(username='henry')
     user.backend = 'django.contrib.auth.backends.ModelBackend'
     # Let user login, so as to modify password
     login(request, user)
