@@ -19,10 +19,14 @@ def get_problem_list(user):
             return Problem.objects.filter(Q(visible=True) | Q(owner=user))
 
 def has_special_judge_code(problem):
-    return os.path.isfile("%s%d.c" % (SPECIAL_PATH, problem.pk)) \
-            or os.path.isfile("%s%d.cpp" % (SPECIAL_PATH, problem.pk))
+    if problem.judge_language == problem.C:
+        return os.path.isfile("%s%d.c" % (SPECIAL_PATH, problem.pk))
+    if problem.judge_language == problem.CPP:
+        return os.path.isfile("%s%d.cpp" % (SPECIAL_PATH, problem.pk))
 
 def has_partial_judge_code(problem):
-    return os.path.isfile("%s%d.c" % (PARTIAL_PATH, problem.pk)) \
-            or os.path.isfile("%s%d.cpp" % (PARTIAL_PATH, problem.pk))
+    if problem.judge_language == problem.C:
+        return os.path.isfile("%s%d.c" % (PARTIAL_PATH, problem.pk))
+    if problem.judge_language == problem.CPP:
+        return os.path.isfile("%s%d.cpp" % (PARTIAL_PATH, problem.pk))
 
