@@ -39,7 +39,7 @@ from users.templatetags.profile_filters import can_change_userlevel
 from utils.log_info import get_logger
 from utils.user_info import get_user_statistics, send_activation_email
 from utils.render_helper import render_index
-from axes.decorators import get_ip_address_from_request
+from axes.decorators import *
 import datetime
 import random
 import json
@@ -160,11 +160,13 @@ def user_login(request):
                 username=user_form.cleaned_data['username'],
                 password=user_form.cleaned_data['password'])
             user.backend = 'django.contrib.auth.backends.ModelBackend'
-            ip = get_ip_address_from_request(request)
+            ip = get_ip(request)
             logger.info('user %s @ %s logged in' % (str(user), ip))
             login(request, user)
             return redirect(reverse('index:index'))
         else:
+            user_form.add_error(None,
+                "You will be blocked for 6 minutes if you have over 3 wrong tries.")
             return render(
                 request,
                 'users/auth.html',
@@ -179,9 +181,15 @@ def user_login(request):
 
 def user_block_wrong_tries(request):
     """Block login for over 3 wrong tries."""
-    ip = get_ip_address_from_request(request)
+    attempts = AccessAttempt.objects.filter(ip_address=get_ip(request))
+    for attempt in attempts:
+        if attempt.failures_since_start >= FAILURE_LIMIT:
+            unblock_time = attempt.attempt_time + COOLOFF_TIME
+            return render_index(request, 'users/blockWrongTries.html',
+                {'unblock_time': unblock_time})
+    # No block attempt
+    return redirect(reverse('index:index'))
 
-    return render_index(request, 'users/blockWrongTries.html', {'ip': ip})
 
 @login_required()
 def submit(request, pid=None):
