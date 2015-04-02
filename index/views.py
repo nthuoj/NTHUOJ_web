@@ -37,6 +37,7 @@ from utils.user_info import validate_user
 from django.core.urlresolvers import reverse
 from django.template import RequestContext
 from django.forms.models import modelform_factory
+from index.forms import AnnouncementCreationForm
 
 # Create your views here.
 logger = get_logger()
@@ -55,16 +56,19 @@ def index(request, alert_info='none'):
                 context_instance=RequestContext(request, processors=[custom_proc]))
 
 def announcement_create(request):
-    announcement_form = modelform_factory(Announcement)
-    form = announcement_form()
+    #announcement_form = modelform_factory(Announcement)
+    #form = announcement_form()
     if request.method == 'POST':
-        form = announcement_form(request.POST)
+        form = AnnouncementCreationForm(request.POST)
         if form.is_valid():
             announcement = form.save()
             announcement.backend = 'django.contrib.auth.backends.ModelBackend'
             return redirect(reverse('index:index'))
     else:
-        form = announcement_form()
+        if request.GET.get('id',None):
+            form = AnnouncementCreationForm(instance=AnnouncementCreationForm.objects.get(id=request.GET.get('id',None)))
+        else:
+            form = AnnouncementCreationForm()
     return render(request, 'index/announcement_create.html',
                 {'form': form},
                 context_instance=RequestContext(request, processors=[custom_proc]))

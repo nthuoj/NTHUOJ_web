@@ -17,14 +17,14 @@
     OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
     SOFTWARE.
 '''
-
-from index.models import Announcement
 from django import forms
+from index.models import Announcement
 from datetimewidget.widgets import DateTimeWidget, DateWidget, TimeWidget
 
-class dateForm(forms.ModelForm):
+class AnnouncementCreationForm(forms.ModelForm):
+    content = forms.CharField(widget=forms.Textarea)
+    start_time = forms.DateTimeField(widget=DateTimeWidget(usel10n=True, bootstrap_version=3))
+    end_time = forms.DateTimeField(widget=DateTimeWidget(usel10n=True, bootstrap_version=3))
     class Meta:
         model = Announcement
-        date_time = forms.DateTimeField(widget=DateTimeWidget(usel10n=True, bootstrap_version=3))
-        date = forms.DateField(widget=DateWidget(usel10n=True, bootstrap_version=3))
-        time = forms.TimeField(widget=TimeWidget(usel10n=True, bootstrap_version=3))
+        fields = ('content', 'start_time', 'end_time')
