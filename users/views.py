@@ -40,8 +40,6 @@ from utils.log_info import get_logger
 from utils.user_info import get_user_statistics, send_activation_email
 from utils.render_helper import render_index
 from axes.decorators import *
-import datetime
-import random
 import json
 
 # Create your views here.
