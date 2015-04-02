@@ -21,73 +21,61 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 '''
-from contest.models import Contest
 from datetime import datetime
+from threading import Thread
+import hashlib
+import random
+
 from django.core.urlresolvers import reverse
 from django.core.mail import EmailMultiAlternatives
 from django.template.loader import render_to_string
-from django.db import models
+
+from contest.models import Contest
 from emailInfo import EMAIL_HOST_USER
-from group.models import Group
-from problem.models import Problem, Submission, SubmissionDetail
-from threading import Thread
+from problem.models import Submission, SubmissionDetail
 from users.models import User, UserProfile
 from utils.log_info import get_logger
-import hashlib
-import random
+
 
 logger = get_logger()
 
 
-#contest ownership
 def has_contest_ownership(curr_user, curr_contest):
-    user_is_valid(curr_user) #check user
-    #check contset
-    try:
-        Contest.objects.get(id=curr_contest.id)
-    except Contest.DoesNotExist:
-        logger.warning('Contest id %ld does not exsit!' % curr_contest.id)
+    curr_user = validate_user(curr_user)
 
-    is_owner = (curr_user.username == curr_contest.owner.username)
-    if curr_contest.coowner.all().count() != 0:
-        for coowner in curr_contest.coowner.all():
+    if curr_user == curr_contest.owner:
+        return True
+
+    contest_coowners = curr_contest.coowner.all()
+    if contest_coowners:
+        for coowner in contest_coowners:
             if curr_user == coowner:
-                is_owner = True
-    return is_owner
+                return True
+    return False
 
 
-#group ownership
 def has_group_ownership(curr_user, curr_group):
-    user_is_valid(curr_user) #check user
-    #check group
-    try:
-        Group.objects.get(id=curr_group.id)
-    except Group.DoesNotExist:
-        logger.warning('Group id %ld does not exsit!' % curr_group.id)
+    curr_user = validate_user(curr_user)
 
-    is_owner = (curr_user.username == curr_group.owner.username)
-    if curr_group.coowner.all().count() != 0:
-        for coowner in curr_group.coowner.all():
+    if curr_user == curr_group.owner:
+        return True
+
+    group_coowners = curr_group.coowner.all()
+    if group_coowners:
+        for coowner in group_coowners:
             if curr_user == coowner:
-                is_owner = True
-    return is_owner
+                return True
+    return False
 
 
-#problem ownership
 def has_problem_ownership(curr_user, curr_problem):
-    user_is_valid(curr_user) #check user
-    #check problem
-    try:
-        Problem.objects.get(id=curr_problem.id)
-    except Problem.DoesNotExist:
-        logger.warning('Problem id %ld does not exsit!' % curr_problem.id)
+    curr_user = validate_user(curr_user)
 
-    is_owner = (curr_user.username == curr_problem.owner.username)
-    return is_owner
+    return curr_user == curr_problem.owner
 
 
 def has_problem_auth(user, problem):
-    '''Check if user has authority to see/submit that problem'''
+    """Check if user has authority to see/submit that problem"""
     user = validate_user(user)
 
     if problem.visible:
@@ -112,12 +100,6 @@ def has_problem_auth(user, problem):
     return False
 
 
-def user_is_valid(curr_user):
-    try:
-        User.objects.get(username=curr_user.username)
-    except User.DoesNotExist:
-        logger.warning('User username %s does not exsit!' % curr_user.username)
-
 def validate_user(user):
     # an anonymous user is treated as a normal user
     if user.is_anonymous():
@@ -126,7 +108,7 @@ def validate_user(user):
 
 
 def get_user_statistics(user):
-    '''Find the statistics of the given user'''
+    """Find the statistics of the given user"""
     # fetch some status labels in Submissions
     # here, we only concern about COMPILE_ERROR, RESTRICTED_FUNCTION,
     # and JUDGE_ERROR since ACCEPTED, NOT_ACCEPTED, etc will appear in
@@ -135,7 +117,7 @@ def get_user_statistics(user):
         Submission.COMPILE_ERROR,
         Submission.RESTRICTED_FUNCTION,
         Submission.JUDGE_ERROR
-        ]
+    ]
     # find all verdict in SubmissionDetail.VERDICT_CHOICE
     verdict_labels = [x[0] for x in SubmissionDetail.VERDICT_CHOICE]
     statistics = []
@@ -146,16 +128,16 @@ def get_user_statistics(user):
         statistics += [{
             'label': label,
             'value': submissions.filter(status=label).count()
-        }]
+       }]
 
     # fetch Submission of the given user
     submissions_id = map(lambda submission: submission.id, submissions)
     submission_details = SubmissionDetail.objects.filter(sid__in=submissions_id)
     for label in verdict_labels:
         statistics += [{
-            'label': label,
-            'value': submission_details.filter(verdict=label).count()
-        }]
+           'label': label,
+           'value': submission_details.filter(verdict=label).count()
+       }]
 
     return statistics
 
@@ -164,7 +146,7 @@ def send_activation_email(request, user):
     username = user.username
     email = user.email
     salt = hashlib.sha1(str(random.random())).hexdigest()[:5]
-    activation_key = hashlib.sha1(salt+email).hexdigest()
+    activation_key = hashlib.sha1(salt + email).hexdigest()
 
     # Create and save user profile
     new_profile = UserProfile(user=user, activation_key=activation_key)
@@ -182,4 +164,4 @@ def send_activation_email(request, user):
     try:
         Thread(target=msg.send, args=()).start()
     except:
-         logger.warning("There is an error when sending email to %s's mailbox" % username)
+        logger.warning("There is an error when sending email to %s's mailbox" % username)
