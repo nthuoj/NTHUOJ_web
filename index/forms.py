@@ -22,9 +22,14 @@ from index.models import Announcement
 from datetimewidget.widgets import DateTimeWidget, DateWidget, TimeWidget
 
 class AnnouncementCreationForm(forms.ModelForm):
+    dateTimeOptions = {
+            'format' : 'yyyy/mm/dd hh:ii',
+            'showMeridian' : 'true',
+            'todayBtn' : 'true',
+    }
     content = forms.CharField(widget=forms.Textarea)
-    start_time = forms.DateTimeField(widget=DateTimeWidget(usel10n=True, bootstrap_version=3))
-    end_time = forms.DateTimeField(widget=DateTimeWidget(usel10n=True, bootstrap_version=3))
+    start_time = forms.DateTimeField(widget=DateTimeWidget(options=dateTimeOptions,usel10n=True, bootstrap_version=3))
+    end_time = forms.DateTimeField(widget=DateTimeWidget(options=dateTimeOptions,usel10n=True, bootstrap_version=3))
     class Meta:
         model = Announcement
         fields = ('content', 'start_time', 'end_time')

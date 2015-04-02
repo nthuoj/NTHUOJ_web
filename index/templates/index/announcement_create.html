@@ -40,23 +40,16 @@ SOFTWARE.
 
     {% for field in form %}
     {% if field.label_tag == form.content.label_tag %}
-    <div class="panel panel-default">
-      <div class="panel-heading" style="font-size:25px">Set Content</div>
-      <div class="panel-body">{{ field|bootstrap }}</div>
-    </div>
-    {% elif field.label_tag == form.start_time.label_tag %}
-    <div class="panel panel-default">
-      <div class="panel-heading" style="font-size:25px">Set start time</div>
-      <div class="panel-body">{{ field|bootstrap  }}</div>
-    </div>
+      <div class="panel panel-default">
+        <div class="panel-heading" style="font-size:25px">Set Content</div>
+        <div class="panel-body">{{ field|bootstrap }}</div>
+      </div>
     {% else %}
-    <div class="panel panel-default">
-      <div class="panel-heading" style="font-size:25px">Set end time</div>
-      <div class="panel-body">{{ field|bootstrap  }}</div>
-    </div>
+      {{ field|bootstrap }}
     {% endif %}
     {% endfor %}
     <button type="submit" class="btn btn-primary">Add</button>
   </form>
 </div>
+<br>
 {% endblock body_block %}
