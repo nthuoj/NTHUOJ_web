@@ -106,6 +106,11 @@ or user can register
 '''
 @register.filter
 def show_register_btn(user, contest):
-    return (user_info.has_contest_ownership(user, contest) or 
-        contest_info.can_register(user, contest)) and not contest_info.is_ended(contest)
+    if not user.is_authenticated():
+        return False
+    is_not_ended = not contest_info.is_ended(contest)
+    own_contest = user_info.has_contest_ownership(user, contest)
+    user_can_register = contest_info.can_register(user, contest)
+    user_is_admin = user.has_admin_auth()
+    return is_not_ended and (own_contest or user_can_register or user_is_admin)
 register.filter("show_register_btn",show_register_btn)

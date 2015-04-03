@@ -168,6 +168,7 @@ def can_delete_contest(user,contest):
 5. user is logined
 6. user is not admin
 '''
+NOT_LOGGED_IN = "not_logged_in"
 ENDED = "ended"
 NOT_OPEN_REGISTER = "not_open_register"
 OWN_CONTEST = "own_contest"
@@ -175,19 +176,25 @@ HAS_ATTENDED = "has_attended"
 IS_ADMIN = "is_admin"
 OK = "OK"
 def can_register_return_status(user, contest):
-    user = validate_user(user)
+    if not user.is_authenticated():
+        return NOT_LOGGED_IN
+
     ended = is_ended(contest)
     if ended:
         return ENDED
+
     open_register = contest.open_register
     if not open_register:
         return NOT_OPEN_REGISTER
+
     has_ownership = has_contest_ownership(user,contest)
     if has_ownership:
         return OWN_CONTEST
+
     has_attended = Contestant.objects.filter(contest = contest,user = user).exists()
     if has_attended:
         return HAS_ATTENDED
+    
     if user.has_admin_auth():
         return IS_ADMIN
 
@@ -202,6 +209,8 @@ def can_register_log(user, contest):
     status = can_register_return_status(user, contest)
     if status is OK:
         return True
+    elif status is NOT_LOGGED_IN:
+        logger.info('Contest: User does not logged in. Can not register.')
     elif status is ENDED:
         logger.info('Contest: Contest %s has ended! Can not register.' % (contest.id))
     elif status is NOT_OPEN_REGISTER:
@@ -217,4 +226,3 @@ def can_register_log(user, contest):
 
 def is_ended(contest):
     return (datetime.now() > contest.end_time)
-
