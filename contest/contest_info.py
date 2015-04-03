@@ -34,7 +34,7 @@ from problem.models import Submission
 from problem.models import SubmissionDetail
 
 from utils.user_info import has_contest_ownership
-from utils.user_info import user_is_valid
+from utils.user_info import validate_user
 
 from users.models import User
 
@@ -111,8 +111,7 @@ def get_clarifications(user, contest):
     return reply_all
 
 def is_contestant(user, contest):
-    if not user_is_valid(user):
-        return False
+    user = validate_user(user)
     contestant = Contestant.objects.filter(contest = contest, user = user)
     return (len(contestant)>=1)
 
@@ -121,8 +120,7 @@ def is_contestant(user, contest):
 admin and owner and coowner and contestant can create clarification
 '''
 def can_ask(user, contest):
-    if not user_is_valid(user):
-        return False
+    user = validate_user(user)
     user_is_contestant = is_contestant(user,contest)
     user_is_owner_coowner = has_contest_ownership(user,contest)
     user_is_admin = user.has_admin_auth()
@@ -133,8 +131,7 @@ def can_ask(user, contest):
 admin and owner and coowner can reply clarification
 '''
 def can_reply(user, contest):
-    if not user_is_valid(user):
-        return False
+    user = validate_user(user)
     return user.has_admin_auth() or has_contest_ownership(user,contest)
 
 #check if user can edit contest
@@ -142,17 +139,15 @@ def can_reply(user, contest):
 admin and owner and coowner can edit
 '''
 def can_edit_contest(user, contest):
-    if not user_is_valid(user):
-        return False
-    return user.has_admin_auth() or user_info.has_contest_ownership(user, contest)
+    user = validate_user(user)
+    return user.has_admin_auth() or has_contest_ownership(user, contest)
 
 #check if user can create contest
 '''
 admin or judge can create contest
 '''
 def can_create_contest(user):
-    if not user_is_valid(user):
-        return False
+    user = validate_user(user)
     return user.has_judge_auth()
 
 #check if user can delete contest
@@ -160,8 +155,7 @@ def can_create_contest(user):
 admin or owner can delete contest
 '''
 def can_delete_contest(user,contest):
-    if not user_is_valid(user):
-        return False
+    user = validate_user(user)
     return user.has_admin_auth() or (user == contest.owner)
 '''
 1. contest is not ended
@@ -172,6 +166,7 @@ def can_delete_contest(user,contest):
 6. user is not admin
 '''
 def can_register(user, contest):
+    user = validate_user(user)
     ended = is_ended(contest)
     if ended:
         return False
@@ -184,14 +179,13 @@ def can_register(user, contest):
     has_attended = Contestant.objects.filter(contest = contest,user = user).exists()
     if has_attended:
         return False
-    if not user_is_valid(user):
-        return False
     if user.has_admin_auth():
         return False
 
     return True 
 
 def can_register_log(user, contest):
+    user = validate_user(user)
     ended = is_ended(contest)
     if ended:
         logger.info('Contest: Contest %s has ended! Can not register.' % (contest.id))
@@ -207,8 +201,6 @@ def can_register_log(user, contest):
     has_attended = Contestant.objects.filter(contest = contest,user = user).exists()
     if has_attended:
         logger.info('Contest: User %s has already attended Contest %s!' % (user.username, contest.id))
-        return False
-    if not user_is_valid(user):
         return False
     if user.has_admin_auth():
         logger.info('Contest: User %s is admin. Can not register contest %s!' % (user.username, contest.id))
