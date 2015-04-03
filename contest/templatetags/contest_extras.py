@@ -42,6 +42,21 @@ def has_auth(user,contest_id):
 register.filter("has_auth",has_auth)
 
 @register.filter
+def can_create_contest(user):
+    return contest_info.can_create_contest(user)
+register.filter("can_create_contest",can_create_contest)
+
+@register.filter
+def can_edit_contest(user, contest):
+    return contest_info.can_edit_contest(user,contest)
+register.filter("can_edit_contest",can_edit_contest)
+
+@register.filter
+def can_delete_contest(user, contest):
+    return contest_info.can_delete_contest(user,contest)
+register.filter("can_delete_contest",can_delete_contest)
+
+@register.filter
 def can_ask(user,contest):
     return contest_info.can_ask(user,contest)
 register.filter("can_ask",can_ask)
@@ -94,11 +109,7 @@ And user should own contest(to register group)
 or user can register 
 '''
 @register.filter
-def show_register_btn(user, contest_id):
-    try:
-        contest = Contest.objects.get(pk = contest_id)
-    except:
-        return False
+def show_register_btn(user, contest):
     return (user_info.has_contest_ownership(user, contest) or 
         contest_info.can_register(user, contest)) and not contest_info.is_ended(contest)
 register.filter("show_register_btn",show_register_btn)

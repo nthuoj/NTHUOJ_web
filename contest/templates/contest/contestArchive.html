@@ -54,7 +54,7 @@ SOFTWARE.
     <thead>
       <tr>
         <th>
-          {% if user.has_judge_auth %}
+          {% if user|can_create_contest %}
           <a href="{% url 'contest:new' %}">
             <button type="button" class="btn btn-success btn-xs" 
                     data-toggle="tooltip" data-placement="top" title="New Contest">
@@ -74,42 +74,30 @@ SOFTWARE.
       {% for contest in contests %}
       <tr>
         <td>
-
-          {% if user|has_auth:contest.id %}
-          <a href="{% url 'contest:delete' contest.id %}">
-            <button type="button" class="btn btn-danger btn-xs" data-toggle="tooltip" 
-                  data-placement="top" title="Delete Contest">
-              <span class="glyphicon glyphicon-remove"></span>
-            </button>
-          </a>
-          <a href="{% url 'contest:edit' contest.id %}">
-            <button type="button" class="btn btn-warning btn-xs" data-toggle="tooltip" 
-                  data-placement="top" title="Edit Contest">
-              <span class="glyphicon glyphicon-pencil"></span>
-            </button>
-          </a>
-
-          {% else %}
-          <button type="button" class="btn btn-default btn-xs" data-toggle="tooltip" 
-                  data-placement="top" title="Start Virtual Contest">
-            <span class="glyphicon glyphicon-play"></span>
-          </button>
-          
-          {% endif %}
           <a data-toggle="tooltip" data-placement="top" title="Contest Info">
             <button type="button" class="btn btn-info btn-xs" data-toggle="modal" 
                     data-target="#contestInfo{{ contest.id }}">
               <span class="glyphicon glyphicon-info-sign"></span>
           </button>
           </a>
+          {% if user|can_delete_contest:contest %}
+          <a href="{% url 'contest:delete' contest.id %}">
+            <button type="button" class="btn btn-danger btn-xs" data-toggle="tooltip" 
+                  data-placement="top" title="Delete Contest">
+              <span class="glyphicon glyphicon-remove"></span>
+            </button>
+          </a>
+          {% endif %}
+          {% if user|can_edit_contest:contest %}
+          <a href="{% url 'contest:edit' contest.id %}">
+            <button type="button" class="btn btn-warning btn-xs" data-toggle="tooltip" 
+                  data-placement="top" title="Edit Contest">
+              <span class="glyphicon glyphicon-pencil"></span>
+            </button>
+          </a>
+          {% endif%}
 
-          <script>
-          $('[data-toggle="tooltip"]').tooltip({
-            'placement': 'top'
-          });
-
-          </script>
-          {% if user|show_register_btn:contest.id %}
+          {% if user|show_register_btn:contest %}
           <a href="{% url 'contest:register' contest.id %}">
             <button type="button" class="btn btn-success btn-xs" data-toggle="tooltip" 
                   data-placement="top" title="Register">

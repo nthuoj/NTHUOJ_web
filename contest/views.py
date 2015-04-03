@@ -48,6 +48,7 @@ from contest.contest_info import can_create_contest
 from contest.contest_info import can_edit_contest
 from contest.contest_info import can_delete_contest
 from contest.contest_info import get_scoreboard
+from contest.contest_info import can_register
 
 from utils.render_helper import render_404
 from utils.render_helper import render_index
@@ -121,7 +122,8 @@ def new(request):
             form = ContestForm(request.POST)
             if form.is_valid():
                 new_contest = form.save()
-                logger.info('Contest: Create a new contest %s!' % new_contest.id)
+                logger.info('Contest: User %s Create a new contest %s!' % 
+                    (request.user ,new_contest.id))
                 return redirect('contest:archive')
     raise PermissionDenied
 
@@ -143,7 +145,7 @@ def edit(request, contest_id):
             form = ContestForm(request.POST, instance = contest)
             if form.is_valid():
                 modified_contest = form.save()
-                logger.info('Contest: User %s Modified contest %s!' % 
+                logger.info('Contest: User %s edited contest %s!' % 
                     (request.user, modified_contest.id))
                 return archive(request)
             else:
@@ -158,33 +160,26 @@ def delete(request, contest_id):
         logger.warning('Contest: Can not delete contest %s! Contest not found!' % contest_id)
         raise Http404('Contest does not exist, can not delete.')
 
-    # contest owner or admin can delete
     if can_delete_contest(request.user):
         deleted_contest_id = contest.id
         contest.delete()
-        logger.info('Contest: Delete contest %s!' % deleted_contest_id)
+        logger.info('Contest: User %s delete contest %s!' % 
+            (request.user, deleted_contest_id))
         return redirect('contest:archive')
     raise PermissionDenied
 
 @login_required
 def register(request, contest_id):
-    #check contest's existance
     try:
         contest = Contest.objects.get(id = contest_id)
     except Contest.DoesNotExist:
         logger.warning('Contest: Can not register contest %s! Contest not found!' % contest_id)
         raise Http404('Contest does not exist, can not register.')
-    if contest.open_register:
-        #check if user is not owner or coowner
-        if not user_info.has_contest_ownership(request.user,contest):
-            #check contestant existance
-            if Contestant.objects.filter(contest = contest,user = request.user).exists():
-                #if user has attended
-                logger.info('Contest: User %s has already attended Contest %s!' % (request.user.username,contest.id))
-            else:
-                contestant = Contestant(contest = contest,user = request.user)
-                contestant.save()
-                logger.info('Contest: User %s attends Contest %s!' % (request.user.username,contest.id))
+    if can_register(request.user, contest):
+        contestant = Contestant(contest = contest,user = request.user)
+        contestant.save()
+        logger.info('Contest: User %s attends Contest %s!' % (request.user.username,contest.id))
+
     return redirect('contest:archive')
 
 @login_required

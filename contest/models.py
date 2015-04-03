@@ -36,8 +36,7 @@ class Contest(models.Model):
     coowner = models.ManyToManyField(User, related_name='coowner', blank=True)
     start_time = models.DateTimeField(default=datetime.now)
     end_time = models.DateTimeField(default=datetime.now)
-    freeze_time = models.IntegerField(default=0,
-        validators = [MinValueValidator(0)])
+    freeze_time = models.IntegerField(default=0,validators = [MinValueValidator(0)])
     problem = models.ManyToManyField(Problem, blank=True)
     is_homework = models.BooleanField(default=False)
     open_register = models.BooleanField(default=True)
