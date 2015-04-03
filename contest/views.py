@@ -49,6 +49,7 @@ from contest.contest_info import can_edit_contest
 from contest.contest_info import can_delete_contest
 from contest.contest_info import get_scoreboard
 from contest.contest_info import can_register
+from contest.contest_info import can_register_log
 
 from utils.render_helper import render_404
 from utils.render_helper import render_index
@@ -177,7 +178,7 @@ def register(request, contest_id):
     except Contest.DoesNotExist:
         logger.warning('Contest: Can not register contest %s! Contest not found!' % contest_id)
         raise Http404('Contest does not exist, can not register.')
-    if can_register(request.user, contest):
+    if can_register_log(request.user, contest):
         contestant = Contestant(contest = contest,user = request.user)
         contestant.save()
         logger.info('Contest: User %s attends Contest %s!' % (request.user.username,contest.id))

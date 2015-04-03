@@ -33,10 +33,13 @@ from problem.models import Testcase
 from problem.models import Submission
 from problem.models import SubmissionDetail
 
+from users.models import User
+
 from utils.user_info import has_contest_ownership
 from utils.user_info import validate_user
+from utils.log_info import get_logger
 
-from users.models import User
+logger = get_logger()
 
 def get_contestant_list(contest):
     return Contestant.objects.filter(contest = contest)
@@ -165,48 +168,52 @@ def can_delete_contest(user,contest):
 5. user is logined
 6. user is not admin
 '''
-def can_register(user, contest):
+ENDED = "ended"
+NOT_OPEN_REGISTER = "not_open_register"
+OWN_CONTEST = "own_contest"
+HAS_ATTENDED = "has_attended"
+IS_ADMIN = "is_admin"
+OK = "OK"
+def can_register_return_status(user, contest):
     user = validate_user(user)
     ended = is_ended(contest)
     if ended:
-        return False
+        return ENDED
     open_register = contest.open_register
     if not open_register:
-        return False
-    has_ownership = user_info.has_contest_ownership(user,contest)
+        return NOT_OPEN_REGISTER
+    has_ownership = has_contest_ownership(user,contest)
     if has_ownership:
-        return False
+        return OWN_CONTEST
     has_attended = Contestant.objects.filter(contest = contest,user = user).exists()
     if has_attended:
-        return False
+        return HAS_ATTENDED
     if user.has_admin_auth():
-        return False
+        return IS_ADMIN
 
-    return True 
+    return OK
+
+def can_register(user, contest):
+    if can_register_return_status(user, contest) is OK:
+        return True
+    return False
 
 def can_register_log(user, contest):
-    user = validate_user(user)
-    ended = is_ended(contest)
-    if ended:
+    status = can_register_return_status(user, contest)
+    if status is OK:
+        return True
+    elif status is ENDED:
         logger.info('Contest: Contest %s has ended! Can not register.' % (contest.id))
-        return False
-    open_register = contest.open_register
-    if not open_register:
+    elif status is NOT_OPEN_REGISTER:
         logger.info('Contest: Registration for Contest %s is closed. Can not register.' % contest.id)
-        return False
-    has_ownership = user_info.has_contest_ownership(user,contest)
-    if has_ownership:
+    elif status is OWN_CONTEST:
         logger.info('Contest: User %s has Contest %s ownership. Can not register.' % (user.username, contest.id))
-        return False
-    has_attended = Contestant.objects.filter(contest = contest,user = user).exists()
-    if has_attended:
+    elif status is HAS_ATTENDED:
         logger.info('Contest: User %s has already attended Contest %s!' % (user.username, contest.id))
-        return False
-    if user.has_admin_auth():
+    elif status is IS_ADMIN:
         logger.info('Contest: User %s is admin. Can not register contest %s!' % (user.username, contest.id))
-        return False
 
-    return True 
+    return False
 
 def is_ended(contest):
     return (datetime.now() > contest.end_time)

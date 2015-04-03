@@ -94,11 +94,7 @@ def total_contestant(scoreboard):
 register.filter("total_contestant",total_contestant)
 
 @register.filter
-def can_register(user, contest_id):
-    try:
-        contest = Contest.objects.get(pk = contest_id)
-    except:
-        return False
+def can_register(user, contest):
     return contest_info.can_register(user, contest)
 register.filter("can_register",can_register)
 
