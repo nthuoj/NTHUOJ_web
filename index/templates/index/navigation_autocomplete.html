@@ -1,0 +1,31 @@
+{% if problems %}
+  <span class="separator">Problem</span>
+  {% for problem in problems %}
+  <a class="block choice" href="{% url 'problem:detail' problem.id %}">{{ problem }}</a>
+  {% endfor %}
+{% endif %}
+
+{% if contests %}
+  <span class="separator">Contest</span>
+  {% for contest in contests %}
+  <a class="block choice" href="{% url 'contest:contest' contest.id %}">{{ contest }}</a>
+  {% endfor %}
+{% endif %}
+
+{% if groups %}
+  <span class="separator">Group</span>
+  {% for group in groups %}
+  <a class="block choice" href="{% url 'group:detail' group.id %}">{{ group }}</a>
+  {% endfor %}
+{% endif %}
+
+{% if users %}
+  <span class="separator">User</span>
+  {% for user in users %}
+  <a class="block choice" href="{% url 'users:profile' user.username %}">{{ user }}</a>
+  {% endfor %}
+{% endif %}
+
+{% if not problems and not contests and not users %}
+  <span class="block"><em>No matches found</em></span>
+{% endif %}
