@@ -29,11 +29,11 @@ SOFTWARE.
   <title>index</title>
 {% endblock title_name %}
 {% block import_source %}
-<script src={% static "./js/index.js"%}></script>
+<script src={% static "js/contestTimer.js" %}></script>
+<script src={% static "js/index.js"%}></script>
 {% endblock import_source %}
 {% block body_block %}
   <!-- clock -->
-
   <input type="text" id="alert_info" value="{{alert_info}}" />
   <div class="gray">
   </div>
@@ -75,17 +75,21 @@ SOFTWARE.
     </thead>
     <tbody class="line" id="contest_content">
       {% for c_running in c_runnings %}
-        <tr>
+        <tr id="contest_{{ c_running.id }}">
           <td>{{ c_running.cname }}</td>
-          <td>{{ c_running.time_diff }}</td>
+          <td name="remain"></td>
           <td></td>
+          <td name="end" class="end">{{ c_running.end_time|date:"Y/m/d H:i:s" }}</td>
+          <td name="contest_id" class="end">{{ c_running.id }}</td>
+          <td name="freeze_time" class="end">{{ c_running.freeze_time }}</td>
         </tr>
       {% endfor %}
       {% for c_upcoming in c_upcomings %}
         <tr>
           <td>{{ c_upcoming.cname }}</td>
           <td></td>
-          <td>{{ c_upcoming.time_diff }}</td>
+          <td  name="upcome"></td>
+          <td  name="start" class="start">{{ c_upcoming.start_time|date:"Y/m/d H:i:s" }}</td>
         </tr>
       {% endfor %}
     </tbody>

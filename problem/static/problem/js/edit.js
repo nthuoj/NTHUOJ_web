@@ -39,9 +39,15 @@ $(document).ready(function() {
         e.preventDefault()
         switchTab(this);
     });
-    CKEDITOR.replace("des");
-    CKEDITOR.replace("inText");
-    CKEDITOR.replace("outText");
+    CKEDITOR.replace("des", {
+    	fontSize_sizes: '12/12px;16/16px;24/24px;48/48px;'
+    });
+    CKEDITOR.replace("inText", {
+    	fontSize_sizes: '12/12px;16/16px;24/24px;48/48px;'
+    });
+    CKEDITOR.replace("outText", {
+    	fontSize_sizes: '12/12px;16/16px;24/24px;48/48px;'
+    });
 
     $("#add_testcase").submit(function (e) {
         e.preventDefault();

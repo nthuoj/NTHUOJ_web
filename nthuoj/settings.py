@@ -49,6 +49,7 @@ INSTALLED_APPS = (
     'group',
     'status',
     'axes',
+    'bootstrapform',
     'djangobower',
 )
 
@@ -130,6 +131,7 @@ BOWER_INSTALLED_APPS = (
     'https://github.com/dimsemenov/Magnific-Popup.git', # Magnific-Popup
     'https://github.com/codemirror/CodeMirror.git', # CodeMirror
     'http://gregpike.net/demos/bootstrap-file-input/bootstrap.file-input.js', # bootstrap fileinput
+    'ckeditor#full/stable',
 )
 
 STATICFILES_FINDERS = (

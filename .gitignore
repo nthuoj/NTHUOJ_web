@@ -1,5 +1,8 @@
+# Configs
+config/
+
 # Bower
-components
+components/
 
 # Migrations
 migrations/
@@ -64,5 +67,3 @@ docs/_build/
 # PyBuilder
 target/
 
-#bootstrap
-bootstrap/

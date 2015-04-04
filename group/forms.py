@@ -18,12 +18,29 @@
     SOFTWARE.
     '''
 
-from django.conf.urls import patterns, url
-import views
+from django import forms
+from group.models import Group
 
-urlpatterns = patterns('',
-    url(r'^$', views.index, name='index'),
-    url(r'^index/(?P<alert_info>\w+)/$', views.index, name='alert'),
-    url(r'^get_time/$', views.get_time),
-    url(r'^search/$', views.navigation_autocomplete, name='search'),
-)
+class GroupForm(forms.ModelForm):
+    class Meta:
+        model = Group
+        fields = [
+            'gname',
+            'owner',
+            'coowner',
+            'member',
+            'description',
+            'announce',
+            'trace_contest',
+        ]
+
+class GroupFormEdit(forms.ModelForm):
+    class Meta:
+        model = Group
+        fields = [
+            'coowner',
+            'member',
+            'description',
+            'announce',
+            'trace_contest',
+        ]

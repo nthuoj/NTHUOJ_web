@@ -17,13 +17,29 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
-$('#myTab a').click(function(e) {
-    e.preventDefault()
-    $('#myTab a[href="#overview"]').tab('show')
-    $('#myTab a[href="#problem"]').tab('show')
-    $('#myTab a[href="#scoreboard"]').tab('show')
-    $('#myTab a[href="#status"]').tab('show')
-})
+$(document).ready(function() {
+    bootstraptify();
+    init();
+});
+
+function init(){
+    tabInit();
+}
+
+function select(target, description){
+    document.getElementById("id_clarification").value = target;
+    $('#description').html(description);
+}
+
+function tabInit(){
+    $('#contest_tab a').click(function(e) {
+        e.preventDefault()
+        $('#contest_tab a[href="#overview"]').tab('show')
+        $('#contest_tab a[href="#problem"]').tab('show')
+        $('#contest_tab a[href="#scoreboard"]').tab('show')
+        $('#contest_tab a[href="#status"]').tab('show')
+    });
+}
 
 function checkTime(i) {
     if (i < 10) {
@@ -61,4 +77,11 @@ function getRestTime() {
             document.getElementById('clock').innerHTML = "Contest Ended";
         }
     }
+}
+
+function bootstraptify() {
+    add_form_control('id_clarification');
+    add_form_control('id_reply');
+    add_form_control('id_content');
+    add_form_control('id_problem');
 }
