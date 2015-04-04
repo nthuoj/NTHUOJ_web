@@ -286,25 +286,22 @@ textarea#inputSmall {
   -webkit-transform:scale(0.83);
   display: inline-block;
 }
-.err1 {
+.status {
   font-size: 120px;
-  font-family: impact;
-  text-align: left;
-  margin-bottom: -40px;
+  margin-bottom: -20px;
+  text-align: center;
 }
-.err2 {
+.status-title {
   font-size: 70px;
-  font-family: impact;
-  text-align: left;
-  color: black;
-  margin-bottom: 0px;
+  text-align: center;
 }
-.err3 {
+.status-message {
+  font-size: 50px;
+  text-align: center;
+}
+.status-condition {
   font-size: 30px;
-  font-family: impact;
-  text-align: left;
-  color: black;
-  margin-bottom: 0px;
+  text-align: center;
 }
 #time {
   margin-bottom: 0px;
