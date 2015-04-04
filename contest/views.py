@@ -163,7 +163,7 @@ def delete(request, contest_id):
         logger.warning('Contest: Can not delete contest %s! Contest not found!' % contest_id)
         raise Http404('Contest does not exist, can not delete.')
 
-    if can_delete_contest(request.user):
+    if can_delete_contest(request.user, contest):
         deleted_contest_id = contest.id
         contest.delete()
         logger.info('Contest: User %s delete contest %s!' % 
