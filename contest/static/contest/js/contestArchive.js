@@ -26,3 +26,6 @@ $('[name=infoTab] a').click(function(e) {
     $('[name=infoTab] a[href="#coowner"]').tab('show')
     $('[name=infoTab] a[href="#others"]').tab('show')
 })
+$('[data-toggle="tooltip"]').tooltip({
+    'placement': 'top'
+});
