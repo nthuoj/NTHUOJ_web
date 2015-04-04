@@ -28,18 +28,25 @@ SOFTWARE.
 <head>
   <meta charset="UTF-8">
   <!-- bootstrap, bootwatch JS & CSS -->
+  {% if user.is_authenticated %}
+  <link rel="stylesheet" href="{% static '' %}bootswatch/{{user.theme}}/bootstrap.css">
+  {% else %}
   <link rel="stylesheet" href={% static "bootswatch/paper/bootstrap.css" %}>
+  {% endif %}
   <script src={% static "bootstrap/dist/js/bootstrap.min.js" %}></script>
   <link rel="stylesheet" href={% static "./css/index.css"%} media="screen">
 </head>
 <body>
   <div style="background-color:#fcfcfc;border-radius:10px;">
     <div style="position:relative;bottom:0px;">
-      <p style="text-align:center" class="status" >5&nbsp0&nbsp0</p>
+      <p class="status" >5&nbsp0&nbsp0</p>
     </div>
-    <p style="text-align:center" class="status-title">Some errors occurred</p>
-    <p style="text-align:center" class="status-title">{{ error_message }}</p>
-    <p style="text-align:center" class="status-condition">
+    <br>
+    <p class="status-title">Some errors occurred</p>
+    <br>
+    <p class="status-message">{{ error_message }}</p>
+    <br>
+    <p class="status-condition">
       Oops , there was an error.
     </p>
   </div>
