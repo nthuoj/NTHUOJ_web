@@ -46,6 +46,7 @@ logger = get_logger()
 
 
 def index(request, alert_info='none'):
+
     present = timezone.now()
     time_threshold = datetime.now() + timedelta(days=1);
     c_runnings = Contest.objects.filter \
@@ -81,6 +82,11 @@ def navigation_autocomplete(request):
 
     return render(request, 'index/navigation_autocomplete.html', queries)
 
+def custom_400(request):
+    return render(request, 'index/400.html', status=400)
+
+def custom_403(request):
+    return render(request, 'index/403.html', status=403)
 
 def custom_404(request):
     return render(request, 'index/404.html', status=404)

@@ -60,7 +60,7 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'utils.render_helper.CustomHttpExceptionMiddleware',
     'axes.middleware.FailedLoginMiddleware',
 )
 
@@ -131,6 +131,7 @@ BOWER_INSTALLED_APPS = (
     'https://github.com/dimsemenov/Magnific-Popup.git', # Magnific-Popup
     'https://github.com/codemirror/CodeMirror.git', # CodeMirror
     'http://gregpike.net/demos/bootstrap-file-input/bootstrap.file-input.js', # bootstrap fileinput
+    'https://github.com/zeroclipboard/zeroclipboard.git',
     'https://github.com/lou/multi-select.git', # multiselect
     'https://github.com/riklomas/quicksearch.git', # quicksearch
     'ckeditor#full/stable',
