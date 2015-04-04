@@ -34,7 +34,8 @@ $(document).ready(function() {
     $(".tab-pane").hide();
     $("#info").show();
     hide_field();
-    show_field($("select").val());
+    show_field($("#id_judge_source").val());
+    show_field($("#id_judge_type").val());
     $("a[role='tab']").click(function(e) {
         e.preventDefault()
         switchTab(this);
@@ -139,7 +140,7 @@ function hide_field() {
 }
 
 function show_field(option) {
-    if (option == "ERR_TORRENT")
+    if (option == "ERR_TOLERANT")
         $("#id_error_torrence").parent().show();
     else if (option == "OTHER")
         $("#id_other_judge_id").parent().show();

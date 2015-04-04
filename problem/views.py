@@ -106,12 +106,13 @@ def edit(request, pid=None):
             problem.sample_in = request.POST['sample_in']
             problem.sample_out = request.POST['sample_out']
             problem.save()
+            file_ex = get_problem_file_extension(problem)
             if "special_judge_code" in request.FILES:
-                with open('%s%s.c' % (SPECIAL_PATH, problem.pk), 'w') as t_in:
+                with open('%s%s%s' % (SPECIAL_PATH, problem.pk, file_ex), 'w') as t_in:
                     for chunk in request.FILES['special_judge_code'].chunks():
                         t_in.write(chunk)
             if "partial_judge_code" in request.FILES:
-                with open('%s%s.c' % (PARTIAL_PATH, problem.pk), 'w') as t_in:
+                with open('%s%s%s' % (PARTIAL_PATH, problem.pk, file_ex), 'w') as t_in:
                     for chunk in request.FILES['partial_judge_code'].chunks():
                         t_in.write(chunk)
             logger.info('edit problem, pid = %d' % (problem.pk))
@@ -133,7 +134,8 @@ def edit(request, pid=None):
                        'SPECIAL_PATH': SPECIAL_PATH, 
                        'PARTIAL_PATH': PARTIAL_PATH, },
                    'has_special_judge_code': has_special_judge_code(problem),
-                   'has_partial_judge_code': has_partial_judge_code(problem)})
+                   'has_partial_judge_code': has_partial_judge_code(problem),
+                   'file_ex': get_problem_file_extension(problem)})
 
 @login_required
 def tag(request, pid):
