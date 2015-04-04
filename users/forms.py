@@ -124,3 +124,18 @@ class UserLevelForm(forms.ModelForm):
             (user_level == User.SUB_JUDGE or user_level == User.USER):
             return True
         return False
+
+class UserForgetPasswordForm(forms.Form):
+    username = forms.CharField()
+    email = forms.EmailField()
+
+    def clean_email(self):
+        # Check that if username and email match or not
+        username = self.cleaned_data['username']
+        email = self.cleaned_data['email']
+        if username and email and User.objects.filter(username=username, email=email):
+            return email
+        raise forms.ValidationError("Username and Email don't match")
+
+
+
