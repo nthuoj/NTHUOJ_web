@@ -1,4 +1,4 @@
-'''
+"""
 The MIT License (MIT)
 
 Copyright (c) 2014 NTHUOJ team
@@ -20,7 +20,7 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
-'''
+"""
 from django import template
 
 from users.models import User
@@ -46,7 +46,7 @@ def can_change_userlevel(user, profile_user):
     # judge can change user to sub-judge, user
     user_level = profile_user.user_level
     if user.has_judge_auth() and \
-        (user_level == User.SUB_JUDGE or user_level == User.USER):
+            (user_level == User.SUB_JUDGE or user_level == User.USER):
         return True
 
     return False

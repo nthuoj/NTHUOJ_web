@@ -134,6 +134,7 @@ class UserAdmin(UserAdmin):
     filter_horizontal = ()
 
 admin.site.register(User, UserAdmin)
+
 # since we're not using Django's built-in permissions,
 # unregister the Group model from admin.
 admin.site.unregister(Group)

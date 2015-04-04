@@ -13,7 +13,7 @@ class CodeSubmitForm(forms.Form):
     LANGUAGE_CHOICE = tuple(config_info.get_config_items('compiler_option'))
 
     pid = forms.CharField()
-    language = forms.ChoiceField(choices=LANGUAGE_CHOICE, initial='CPP',
+    language = forms.ChoiceField(choices=LANGUAGE_CHOICE, initial=Submission.CPP,
         widget=forms.RadioSelect())
     code = forms.CharField(max_length=10000,
         widget=forms.Textarea(attrs={'id': 'code_editor'}))
