@@ -5,6 +5,7 @@ from django.db.models import Q
 
 SPECIAL_PATH = config_info.get_config('path', 'special_judge_path')
 PARTIAL_PATH = config_info.get_config('path', 'partial_judge_path')
+TESTCASE_PATH = config_info.get_config('path', 'testcase_path')
 
 def get_testcase(problem):
     return Testcase.objects.filter(problem=problem)
