@@ -27,7 +27,6 @@ from problem import views
 urlpatterns = patterns('',
     url(r'^$', views.problem, name='problem'),
     # /problem  : problem panel
-    url(r'^volume/$', views.volume, name='volume'),
     url(r'^(?P<pid>\d+)/$', views.detail, name='detail'),
     # /problem/10 : detail of problem 10
     url(r'^(?P<pid>\d+)/delete/$', views.delete_problem, name='delete_problem'),

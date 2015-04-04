@@ -66,21 +66,6 @@ def problem(request):
                   {'all_problem': all_problem, 
                    'can_add_problem': can_add_problem})
 
-def volume(request):
-    problem_id=[]
-    if Problem.objects.count() != 0:
-        problems = Problem.objects.latest('id')
-        volume_number = (problems.id - 1) // 100
-        for i in range(1,volume_number + 2):
-            start_id = ((i - 1) * 100 + 1)
-            if problems.id < i * 100:
-                end_id = problems.id
-            else:
-                end_id = i * 100
-            problem_id.append(str(start_id) + ' ~ ' + str(end_id))
-
-    return render(request, 'problem/volume.html', {'problem_id':problem_id})
-
 def detail(request, pid):
     user = request.user
     try:
