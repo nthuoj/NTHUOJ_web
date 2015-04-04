@@ -95,9 +95,8 @@ def contest(request, contest_id):
 
     now = datetime.now()
     #if contest has not started and user is not the owner
-    if ((contest.start_time > now) and not user_info.has_contest_ownership(request.user,contest)):
-        raise PermissionDenied
-    else:
+    if ((contest.start_time < now) or user_info.has_contest_ownership(request.user,contest) or\
+        request.user.has_admin_auth()):
         scoreboard = get_scoreboard(contest)
         status = contest_status(request, contest)
         user = request.user
@@ -113,6 +112,9 @@ def contest(request, contest_id):
             'form':form, 'reply_form':reply_form,
             'scoreboard':scoreboard, 'status': status},
             context_instance = RequestContext(request, processors = [custom_proc]))
+    else:
+        raise PermissionDenied
+        
 
 @login_required
 def new(request):
