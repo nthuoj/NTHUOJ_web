@@ -1,14 +1,18 @@
 <!--
 The MIT License (MIT)
+
 Copyright (c) 2014 NTHUOJ team
+
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
 in the Software without restriction, including without limitation the rights
 to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 copies of the Software, and to permit persons to whom the Software is
 furnished to do so, subject to the following conditions:
+
 The above copyright notice and this permission notice shall be included in all
 copies or substantial portions of the Software.
+
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -34,7 +38,7 @@ SOFTWARE.
     <link rel="stylesheet" href={% static "bootswatch/paper/bootstrap.css" %}>
     {% endif %}
     <script src={% static "bootstrap/dist/js/bootstrap.min.js" %}></script>
-    <script src={%static './js/function.js'%}></script>
+    <script src={% static './js/function.js'%}></script>
     <!-- Magnific Popup core JS & CSS -->
     <link rel="stylesheet" href={% static "magnific-popup/dist/magnific-popup.css" %}>
     <script src={% static "magnific-popup/dist/jquery.magnific-popup.min.js" %}></script>
@@ -44,6 +48,7 @@ SOFTWARE.
     <link rel="stylesheet" href={% static "css/index.css" %} media="screen">
     <link rel="stylesheet" href={% static "css/mfp-fade.css" %} media="screen">
     <script src={% static "js/clock.js" %}></script>
+    <script src={% static "zeroclipboard/dist/ZeroClipboard.js"%}></script>
     {% block import_source %}
     {% endblock import_source %}
   </head>
@@ -194,13 +199,14 @@ SOFTWARE.
     <!-- footer -->
     <div class="sticky-footer panel-primary">
       <div class="panel-heading footer">
-        <a href="" id="contact_us">Contact us</a>
+        <button id="contact_us" data-clipboard-text="nthucsoj@gmail.com" title="Click to copy me.">Contact us
+        </button>
+        <script src={% static "js/clipboard.js"%}></script>
         <p id="footer_text">
-       © NTHU Online Judge 2014, Templates are from Bootstrap Project</p>
+        © NTHU Online Judge 2014, Templates are from Bootstrap Project</p>
         <p id='time'>
         {{ tstr }}
         </p>
-      </div>
     </div>
   </body>
 </html>

@@ -18,17 +18,19 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 -->
 {% extends "index/base.html" %} {% load staticfiles %} {% block title_name %}
-<title>New Contest</title>
+<title>{{ title }}</title>
 {% endblock title_name %} {% block import_source %}
 
 <script src="{% static 'multiselect/js/jquery.multi-select.js' %}" type="text/javascript"></script>
 <script src="{% static 'contest/js/editContest.js' %}" type="text/javascript"></script>
 <script src="{% static 'quicksearch/jquery.quicksearch.js' %}" type="text/javascript"></script>
 <script src="{% static 'contest/js/search.js' %}" type="text/javascript"></script>
+<link href="{% static 'contest/css/editContest.css'%}" rel="stylesheet" type="text/css"> 
 <link href="{% static 'multiselect/css/multi-select.css'%}" media="screen" rel="stylesheet" type="text/css"> 
 {% endblock import_source %} 
 {% block body_block %}
-<div class="container" style="width:40%;">
+<div class="container" style="width:50%;">
+    <div class="well"><h2>{{ title }}</h2></div>
     <form action="." method="POST">
         {% csrf_token %}
         {% for field in form %}
@@ -50,8 +52,8 @@ SOFTWARE.
         {{ field.as_hidden }}
         {% else %}
         <div class="fieldWrapper form-group">
-            {{ field.errors }}
             {{ field.label_tag }}
+            {{ field.errors }}
             {{ field }}
         </div>
         {% endif %}
