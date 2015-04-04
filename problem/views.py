@@ -58,11 +58,9 @@ def problem(request):
     except EmptyPage:
         all_problem = paginator.page(paginator.num_pages)
     for p in all_problem:
-        try:
+        if p.total_submission != 0:
             p.pass_rate = float(p.ac_count) / float(p.total_submission) * 100.0
             p.not_pass_rate = 100.0 - p.pass_rate
-        except ZeroDivisionError:
-            logger.info("problem %d has 0 submission" % p.pk)
 
     return render(request, 'problem/panel.html', 
                   {'all_problem': all_problem, 
