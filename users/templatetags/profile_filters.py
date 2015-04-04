@@ -22,8 +22,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 '''
 from django import template
+
 from users.models import User
-from datetime import datetime
 from utils.user_info import validate_user
 
 register = template.Library()
@@ -31,14 +31,14 @@ register = template.Library()
 
 @register.filter()
 def can_change_userlevel(user, profile_user):
-    '''Test if the user can change user_level
+    """Test if the user can change user_level
     of profile_user
     Args:
         submission: a Submission object
         user: an User object
     Returns:
         a boolean of the judgement
-    '''
+    """
     user = validate_user(user)
     # admin can change user to all levels
     if user.has_admin_auth():

@@ -1,12 +1,10 @@
 from django import forms
-from django.conf import settings
-from django.forms import ModelForm
-
 from users.models import User
 from problem.models import Problem, Submission, SubmissionDetail, Testcase
 from utils import log_info, user_info, config_info
 
 logger = log_info.get_logger()
+
 
 class CodeSubmitForm(forms.Form):
     SUBMIT_PATH = config_info.get_config('path', 'submission_code_path')
@@ -56,6 +54,7 @@ class CodeSubmitForm(forms.Form):
     def __init__(self, *args, **kwargs):
         self.user = kwargs.pop('user', User())
         super(CodeSubmitForm, self).__init__(*args, **kwargs)
+
 
 class UserProfileForm(forms.ModelForm):
     """A form for updating user's profile. Includes all the required
@@ -124,6 +123,7 @@ class UserLevelForm(forms.ModelForm):
             (user_level == User.SUB_JUDGE or user_level == User.USER):
             return True
         return False
+
 
 class UserForgetPasswordForm(forms.Form):
     username = forms.CharField()

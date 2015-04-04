@@ -46,6 +46,7 @@ import json
 
 logger = get_logger()
 
+
 def list(request):
     users = User.objects.all()
     paginator = Paginator(users, 25)  # Show 25 users per page

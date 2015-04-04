@@ -1,4 +1,4 @@
-'''
+"""
 The MIT License (MIT)
 
 Copyright (c) 2014 NTHUOJ team
@@ -20,16 +20,18 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
-'''
+"""
 from django import forms
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.forms import ReadOnlyPasswordHashField, AuthenticationForm
 from django.contrib.auth.models import Group
 from django.core.validators  import RegexValidator
-from users.models import User, Notification, UserProfile
+
+from users.models import UserProfile
 from utils.config_info import get_config
 from users.models import User, Notification
+
 
 # Register your models here.
 
@@ -64,7 +66,7 @@ class UserCreationForm(forms.ModelForm):
         username_lower = username.lower()
         for token in self.USERNAME_BLACK_LIST:
             if token.lower() in username_lower:
-                raise forms.ValidationError("Username should't conatin %s." % token)
+                raise forms.ValidationError("Username shouldn't contain %s." % token)
 
         return username
 
@@ -81,6 +83,7 @@ class AuthenticationForm(AuthenticationForm):
     """Extend default AuthenticationForm with prettified bootstrap attribute"""
     username = forms.CharField(label='Username')
     password = forms.CharField(label='Password', widget=forms.PasswordInput())
+
     def __init__(self, *args, **kwargs):
         super(AuthenticationForm, self).__init__(*args, **kwargs)
         self.error_messages['inactive'] = 'This account is inactive. Check your email to activate the account!'
