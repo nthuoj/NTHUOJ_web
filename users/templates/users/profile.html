@@ -23,6 +23,7 @@ SOFTWARE.
 -->
 {% extends "index/base.html" %}
 {% load static %}
+{% load bootstrap %}
 {% load profile_filters %}
 
 {% block body_block %}
@@ -51,9 +52,10 @@ $(function() {
   }
 </style>
 
-<div class="bs-docs-section container">
+<div class="container">
+  <h1>{{ profile_user }}'s Profile</h1>
   <div class="row">
-    <div class="col-lg-6">
+    <div class="col-lg-7">
       {% block statistic_block %}
       <div class="panel panel-default">
         <div class="panel-heading">Statistics</div>
@@ -71,7 +73,7 @@ $(function() {
       </div>
       {% endblock statistic_block %}
     </div>
-    <div class="col-lg-6">
+    <div class="col-lg-5">
       {% block profile_field_block %}
       <div class="panel panel-default">
         <div class="panel-heading">Profile</div>
@@ -79,25 +81,7 @@ $(function() {
           {% if user == profile_user %}
             <form class="form-horizontal" action="" method="post" style="margin:10px;">
               {% csrf_token %}
-              {% for field in profile_form %}
-              <div class="form-group">
-                <div class='row'>
-                  <div class='col-lg-2 col-lg-offset-1'>
-                    <label class="control-label">{{ field.label }}</label>
-                  </div>
-                  <div class='col-lg-5'>
-                    {{ field }}
-                  </div>
-                </div>
-                {% if field.errors %}
-                <ul>
-                  {% for error in field.errors %}
-                    <li class='col-lg-offset-2'><strong style="color:red">{{ error|escape }}</strong></li>
-                  {% endfor %}
-                </ul>
-                {% endif %}
-              </div>
-              {% endfor %}
+              {{ profile_form|bootstrap_horizontal:'col-lg-4' }}
               <div class="modal-footer">
                 <div class='col-lg-8'>{{ profile_message }}</div>
                 <button type="submit" name="profile_form"
@@ -110,7 +94,7 @@ $(function() {
                 <div class='col-lg-2 col-lg-offset-1'>
                   <label class="control-label">Username</label>
                 </div>
-                <div class='col-lg-5'>
+                <div class='col-lg-6'>
                   <input class="form-control" readonly="True" type="text"
                     value="{{ profile_user.username }}">
                 </div>
@@ -121,7 +105,7 @@ $(function() {
                 <div class='col-lg-2 col-lg-offset-1'>
                   <label class="control-label">Email</label>
                 </div>
-                <div class='col-lg-5'>
+                <div class='col-lg-6'>
                   <input class="form-control" readonly="True" type="email" value="{{ profile_user.email }}">
                 </div>
               </div>
@@ -131,27 +115,7 @@ $(function() {
           {% if user|can_change_userlevel:profile_user %}
             <form class="form-horizontal" action="" method="post" style="margin:10px;">
               {% csrf_token %}
-              {% for field in userlevel_form %}
-              <div class="form-group">
-                <div class='row'>
-                  <div class='col-lg-2 col-lg-offset-1'>
-                    <label class="control-label">{{ field.label }}</label>
-                  </div>
-                  <div class='col-lg-5'>
-                    {{ field }}
-                  </div>
-                </div>
-                {% if field.errors %}
-                <ul>
-                  {% for error in field.errors %}
-                    <li class='col-lg-offset-2'>
-                      <strong style="color:red">{{ error|escape }}</strong>
-                    </li>
-                  {% endfor %}
-                </ul>
-                {% endif %}
-              </div>
-              {% endfor %}
+              {{ userlevel_form|bootstrap_horizontal:'col-lg-4' }}
               <div class="modal-footer">
                 <div class='col-lg-8'>{{ userlevel_message }}</div>
                 <button type="submit" name="userlevel_form"
