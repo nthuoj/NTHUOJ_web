@@ -92,7 +92,7 @@ body {
   bottom: 0px;
   z-index: 1;
   width: 100%;
-  height: 35px;
+  height: 37px;
   border-top-left-radius: 250px;
   border-top-right-radius: 250px;
   border-bottom-right-radius: 0px;
@@ -328,9 +328,12 @@ textarea#inputSmall {
   font-size: 18px;
   color: white;
   margin: 3px;
+  margin-bottom: 0px;
   padding: 0px;
   position: relative;
   left: 30px;
+  background-color: transparent;
+  border: 0;
 }
 #alert_info{
   display:none;
