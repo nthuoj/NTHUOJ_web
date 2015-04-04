@@ -1,4 +1,4 @@
-'''
+"""
 The MIT License (MIT)
 
 Copyright (c) 2014 NTHUOJ team
@@ -20,20 +20,24 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
-'''
+"""
+import re
+
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.http import Http404
 from django.shortcuts import render
 from django.template import RequestContext
+
 from index.views import custom_proc
 from problem.models import Submission, SubmissionDetail
+
 from status.templatetags.status_filters import show_detail
 from users.forms import CodeSubmitForm
 from users.models import User
 from utils.log_info import get_logger
-import re
+from utils.render_helper import render_index
+
 # Create your views here.
 
 logger = get_logger()
@@ -49,6 +53,7 @@ def regroup_submission(submissions):
 
     return submission_groups
 
+
 def status(request, username=None):
     submissions = Submission.objects.all().order_by('-id')
 
@@ -57,7 +62,7 @@ def status(request, username=None):
             user = User.objects.get(username=username)
             submissions = submissions.filter(user=user)
         except:
-            raise Http404('User %s Not Found!' % username)
+            raise Http404
 
     paginator = Paginator(submissions, 25)  # Show 25 submissions per page
     page = request.GET.get('page')
@@ -73,15 +78,11 @@ def status(request, username=None):
 
     submissions.object_list = regroup_submission(submissions.object_list)
 
-    return render(
-        request,
-        'status/status.html',
-        {'submissions': submissions},
-        context_instance=RequestContext(request, processors=[custom_proc]))
+    return render_index(request, 'status/status.html', {'submissions': submissions})
 
 
 def contest_status(request, contest):
-    '''Return a status table of given contest'''
+    """Return a status table of given contest"""
     problems = contest.problem.all()
     submissions = Submission.objects.filter(
         problem__in=problems,
@@ -96,21 +97,14 @@ def contest_status(request, contest):
 
 
 def error_message(request, sid):
-
     try:
         submission = Submission.objects.get(id=sid)
         error_msg = submission.error_msg
         if show_detail(submission, request.user):
-            return render(
-                request,
-                'status/error_message.html',
-                {'error_message': error_msg})
+            return render_index(request, 'status/errorMessage.html', {'error_message': error_msg})
         else:
             logger.warning('User %s attempt to view detail of SID %s' % (request.user, sid))
-            return render(
-                request,
-                'index/500.html',
-                {'error_message': 'You don\'t have permission to view detail of SID %s' % sid})
+            raise PremissionDeny('You don\'t have permission to view detail of SID %s' % sid)
 
     except Submission.DoesNotExist:
         logger.warning('SID %s Not Found!' % sid)
