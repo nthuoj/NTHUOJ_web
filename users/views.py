@@ -36,10 +36,10 @@ from users.forms import CodeSubmitForm
 from users.forms import UserProfileForm, UserLevelForm, UserForgetPasswordForm
 from users.models import User, UserProfile, Notification
 from users.templatetags.profile_filters import can_change_userlevel
-from utils.log_info import get_logger, get_client_ip
+from utils.log_info import get_logger
 from utils.user_info import get_user_statistics, send_activation_email, send_forget_password_email
-import datetime
-import random
+from utils.render_helper import render_index
+from axes.decorators import *
 import json
 
 # Create your views here.
@@ -158,11 +158,16 @@ def user_login(request):
                 username=user_form.cleaned_data['username'],
                 password=user_form.cleaned_data['password'])
             user.backend = 'django.contrib.auth.backends.ModelBackend'
-            ip = get_client_ip(request)
+            ip = get_ip(request)
             logger.info('user %s @ %s logged in' % (str(user), ip))
+            one_hour = 60 * 60
+            request.session.set_expiry(one_hour)
+            logger.info('user %s set session timeout one hour' % str(user))
             login(request, user)
             return redirect(reverse('index:index'))
         else:
+            user_form.add_error(None,
+                "You will be blocked for 6 minutes if you have over 3 wrong tries.")
             return render(
                 request,
                 'users/auth.html',
@@ -219,6 +224,17 @@ def forget_password_confirm(request, activation_key):
     user_profile.delete()
     return redirect(reverse('users:profile', kwargs={'username': user.username}))
 
+
+def user_block_wrong_tries(request):
+    """Block login for over 3 wrong tries."""
+    attempts = AccessAttempt.objects.filter(ip_address=get_ip(request))
+    for attempt in attempts:
+        if attempt.failures_since_start >= FAILURE_LIMIT:
+            unblock_time = attempt.attempt_time + COOLOFF_TIME
+            return render_index(request, 'users/blockWrongTries.html',
+                {'unblock_time': unblock_time})
+    # No block attempt
+    return redirect(reverse('index:index'))
 
 
 @login_required()
