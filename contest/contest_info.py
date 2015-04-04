@@ -157,7 +157,7 @@ def can_create_contest(user):
 '''
 admin or owner can delete contest
 '''
-def can_delete_contest(user,contest):
+def can_delete_contest(user, contest):
     user = validate_user(user)
     return user.has_admin_auth() or (user == contest.owner)
 '''
