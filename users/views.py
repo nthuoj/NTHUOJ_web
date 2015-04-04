@@ -36,10 +36,10 @@ from users.forms import CodeSubmitForm
 from users.forms import UserProfileForm, UserLevelForm
 from users.models import User, UserProfile, Notification
 from users.templatetags.profile_filters import can_change_userlevel
-from utils.log_info import get_logger, get_client_ip
+from utils.log_info import get_logger
 from utils.user_info import get_user_statistics, send_activation_email
-import datetime
-import random
+from utils.render_helper import render_index
+from axes.decorators import *
 import json
 
 # Create your views here.
@@ -158,7 +158,7 @@ def user_login(request):
                 username=user_form.cleaned_data['username'],
                 password=user_form.cleaned_data['password'])
             user.backend = 'django.contrib.auth.backends.ModelBackend'
-            ip = get_client_ip(request)
+            ip = get_ip(request)
             logger.info('user %s @ %s logged in' % (str(user), ip))
             one_hour = 60 * 60
             request.session.set_expiry(one_hour)
@@ -166,6 +166,8 @@ def user_login(request):
             login(request, user)
             return redirect(reverse('index:index'))
         else:
+            user_form.add_error(None,
+                "You will be blocked for 6 minutes if you have over 3 wrong tries.")
             return render(
                 request,
                 'users/auth.html',
@@ -176,6 +178,18 @@ def user_login(request):
         'users/auth.html',
         {'form': AuthenticationForm(), 'title': 'Login'},
         context_instance=RequestContext(request, processors=[custom_proc]))
+
+
+def user_block_wrong_tries(request):
+    """Block login for over 3 wrong tries."""
+    attempts = AccessAttempt.objects.filter(ip_address=get_ip(request))
+    for attempt in attempts:
+        if attempt.failures_since_start >= FAILURE_LIMIT:
+            unblock_time = attempt.attempt_time + COOLOFF_TIME
+            return render_index(request, 'users/blockWrongTries.html',
+                {'unblock_time': unblock_time})
+    # No block attempt
+    return redirect(reverse('index:index'))
 
 
 @login_required()
