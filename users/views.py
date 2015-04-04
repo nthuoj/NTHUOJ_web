@@ -29,8 +29,9 @@ from django.core.context_processors import csrf
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.core.urlresolvers import reverse
 from django.shortcuts import get_object_or_404
-from django.shortcuts import render, redirect
+from django.shortcuts import redirect
 from axes.decorators import *
+from django.http import Http404
 
 from users.admin import UserCreationForm, AuthenticationForm
 from users.forms import CodeSubmitForm
@@ -105,10 +106,7 @@ def user_profile(request, username):
 
     except User.DoesNotExist:
         logger.warning('User %s does not exist' % username)
-        return render(
-            request,
-            'index/500.html',
-            {'error_message': 'User %s does not exist' % username})
+        raise Http404
 
 
 def user_create(request):
@@ -237,6 +235,7 @@ def register_confirm(request, activation_key):
     user_profile.delete()
     return render_index(request, 'users/confirm.html', {'username': user.username})
 
+
 @login_required()
 def user_notification(request, current_tab='none'):
     unread_notifications = Notification.objects. \
@@ -245,8 +244,10 @@ def user_notification(request, current_tab='none'):
     all_notifications = Notification.objects. \
         filter(receiver=request.user).order_by('-id')
 
-    return render(request, 'users/notification.html',
-        {'all_notifications': all_notifications, 'unread_notifications': unread_notifications, 'current_tab': current_tab})
+    return render_index(request, 'users/notification.html',
+                        {'all_notifications': all_notifications,
+                         'unread_notifications': unread_notifications, 'current_tab': current_tab})
+
 
 @login_required()
 def user_readify(request, read_id, current_tab):

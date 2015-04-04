@@ -1,4 +1,4 @@
-'''
+"""
 The MIT License (MIT)
 
 Copyright (c) 2014 NTHUOJ team
@@ -20,13 +20,15 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
-'''
+"""
 from django.shortcuts import render
-from index.views import custom_proc
 from django.template import RequestContext
-from django.http import Http404, HttpResponse
+from django.http import Http404
 from django.core.exceptions import PermissionDenied
 from django.core.exceptions import SuspiciousOperation
+
+from index.views import custom_proc
+
 
 class CustomHttpExceptionMiddleware(object):
     def process_exception(self, request, exception):
@@ -44,8 +46,9 @@ class CustomHttpExceptionMiddleware(object):
             return render(request, 'index/500.html',
                 {'error_message': message}, status=500)
 
+
 def render_index(request, *args, **kwargs):
-    '''Helper to render index page with custom_proc'''
+    """Helper to render index page with custom_proc"""
     # add context_instance keyword
     kwargs.update({'context_instance': RequestContext(request, processors=[custom_proc])})
 

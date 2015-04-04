@@ -27,11 +27,9 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.contrib.auth.decorators import login_required
 from django.http import Http404
 from django.shortcuts import render
-from django.template import RequestContext
+from django.core.exceptions import PermissionDenied
 
-from index.views import custom_proc
 from problem.models import Submission, SubmissionDetail
-
 from status.templatetags.status_filters import show_detail
 from users.forms import CodeSubmitForm
 from users.models import User
@@ -96,6 +94,7 @@ def contest_status(request, contest):
     return table_content
 
 
+@login_required()
 def error_message(request, sid):
     try:
         submission = Submission.objects.get(id=sid)
@@ -104,14 +103,11 @@ def error_message(request, sid):
             return render_index(request, 'status/errorMessage.html', {'error_message': error_msg})
         else:
             logger.warning('User %s attempt to view detail of SID %s' % (request.user, sid))
-            raise PremissionDeny('You don\'t have permission to view detail of SID %s' % sid)
+            raise PermissionDenied('You don\'t have permission to view detail of SID %s' % sid)
 
     except Submission.DoesNotExist:
         logger.warning('SID %s Not Found!' % sid)
-        return render(
-            request,
-            'index/500.html',
-            {'error_message': 'SID %s Not Found!' % sid})
+        raise Http404
 
 
 @login_required()
@@ -124,22 +120,13 @@ def view_code(request, sid):
             f.close()
             codesubmitform = CodeSubmitForm(
                 initial={'code': code, 'pid': submission.problem.id})
-            return render(request, 'users/submit.html', {'form': codesubmitform})
+            return render_index(request, 'users/submit.html', {'form': codesubmitform})
         else:
             logger.warning('User %s attempt to view detail of SID %s' % (request.user, sid))
-            return render(
-                request,
-                'index/500.html',
-                {'error_message': 'You don\'t have permission to view detail of SID %s' % sid})
+            raise PermissionDenied('You don\'t have permission to view detail of SID %s' % sid)
     except Submission.DoesNotExist:
         logger.warning('SID %s Not Found!' % sid)
-        return render(
-            request,
-            'index/500.html',
-            {'error_message': 'SID %s Not Found!' % sid})
+        raise Http404
     except IOError:
         logger.warning('File %s.cpp Not Found!' % sid)
-        return render(
-            request,
-            'index/500.html',
-            {'error_message': 'File of SID %s Not Found!' % sid})
+        raise Http404

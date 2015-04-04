@@ -17,46 +17,31 @@
     OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
     SOFTWARE.
     '''
-from django.contrib.auth.decorators import login_required
 from datetime import datetime
+
 from django.shortcuts import redirect
-from django.core.exceptions import PermissionDenied
-from django.shortcuts import redirect
-from django.http import Http404
-from django.shortcuts import render
-from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.template import RequestContext
 from django.forms.models import model_to_dict
 
 from index.views import custom_proc
-
 from contest.contest_info import get_clarifications
-
 from contest.contestArchive import get_contests
-
 from contest.models import Contest
 from contest.models import Contestant
 from contest.models import Clarification
-
 from contest.forms import ContestForm
 from contest.forms import ClarificationForm
 from contest.forms import ReplyForm
-
 from contest.contest_info import can_ask
 from contest.contest_info import can_reply
 from contest.contest_info import can_create_contest
 from contest.contest_info import can_edit_contest
 from contest.contest_info import can_delete_contest
 from contest.contest_info import get_scoreboard
-from contest.contest_info import can_register
 from contest.contest_info import can_register_log
-
-from utils.render_helper import render_404
-from utils.render_helper import render_index
-from utils.log_info import get_logger
 from utils import user_info
-
 from status.views import *
+
 
 logger = get_logger()
 
