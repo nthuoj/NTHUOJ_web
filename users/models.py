@@ -22,9 +22,13 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
 from datetime import date, datetime, timedelta
+
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 from django.db import models
+
 from utils.config_info import get_config_items
+
+
 # Create your models here.
 
 

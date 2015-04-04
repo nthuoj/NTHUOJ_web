@@ -1,7 +1,9 @@
 from django import forms
+
 from users.models import User
 from problem.models import Problem, Submission, SubmissionDetail, Testcase
 from utils import log_info, user_info, config_info
+
 
 logger = log_info.get_logger()
 

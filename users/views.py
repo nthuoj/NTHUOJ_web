@@ -1,4 +1,4 @@
-'''
+"""
 The MIT License (MIT)
 
 Copyright (c) 2014 NTHUOJ team
@@ -20,34 +20,35 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
-'''
-from django.contrib.auth import authenticate, login, logout
+"""
+from json import dumps
+
+from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
 from django.core.context_processors import csrf
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.core.urlresolvers import reverse
-from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404
-from django.shortcuts import render, redirect, render_to_response
-from django.template import RequestContext
+from django.shortcuts import render, redirect
+from axes.decorators import *
+
 from index.views import custom_proc
 from users.admin import UserCreationForm, AuthenticationForm
 from users.forms import CodeSubmitForm
 from users.forms import UserProfileForm, UserLevelForm, UserForgetPasswordForm
-from users.models import User, UserProfile, Notification
+from users.models import UserProfile, Notification
 from users.templatetags.profile_filters import can_change_userlevel
 from utils.log_info import get_logger
 from utils.user_info import get_user_statistics, send_activation_email, send_forget_password_email
 from utils.render_helper import render_index
-from axes.decorators import *
-import json
+
 
 # Create your views here.
 
 logger = get_logger()
 
 
-def list(request):
+def user_list(request):
     users = User.objects.all()
     paginator = Paginator(users, 25)  # Show 25 users per page
     page = request.GET.get('page')
@@ -68,14 +69,14 @@ def list(request):
         context_instance=RequestContext(request, processors=[custom_proc]))
 
 
-def profile(request, username):
+def user_profile(request, username):
     try:
         profile_user = User.objects.get(username=username)
         piechart_data = get_user_statistics(profile_user)
 
         render_data = {}
         render_data['profile_user'] = profile_user
-        render_data['piechart_data'] = json.dumps(piechart_data)
+        render_data['piechart_data'] = dumps(piechart_data)
         if request.user == profile_user:
             render_data['profile_form'] = UserProfileForm(instance=profile_user)
         if can_change_userlevel(request.user, profile_user):
@@ -207,9 +208,9 @@ def user_forget_password(request):
 
 
 def forget_password_confirm(request, activation_key):
-    '''check if user is already logged in and if he
+    """check if user is already logged in and if he
     is redirect him to some other url, e.g. home
-    '''
+    """
     if request.user.is_authenticated():
         HttpResponseRedirect(reverse('index:index'))
 
@@ -241,14 +242,14 @@ def user_block_wrong_tries(request):
 @login_required()
 def submit(request, pid=None):
     if request.method=='POST':
-        codesibmitform = CodeSubmitForm(request.POST, user=request.user)
-        if codesibmitform.is_valid():
-            codesibmitform.submit()
+        codesubmitform = CodeSubmitForm(request.POST, user=request.user)
+        if codesubmitform.is_valid():
+            codesubmitform.submit()
             return redirect(reverse('status:status'))
         else:
             return render(
                 request,
-                'users/submit.html', {'form': codesibmitform},
+                'users/submit.html', {'form': codesubmitform},
                 context_instance=RequestContext(request, processors=[custom_proc]))
 
     return render(
@@ -258,9 +259,9 @@ def submit(request, pid=None):
 
 
 def register_confirm(request, activation_key):
-    '''check if user is already logged in and if he
+    """check if user is already logged in and if he
     is redirect him to some other url, e.g. home
-    '''
+    """
     if request.user.is_authenticated():
         HttpResponseRedirect(reverse('index:index'))
 
@@ -279,8 +280,9 @@ def register_confirm(request, activation_key):
         {'username':user.username},
         context_instance=RequestContext(request, processors=[custom_proc]))
 
+
 @login_required()
-def notification(request, current_tab='none'):
+def user_notification(request, current_tab='none'):
 
     unread_notifications = Notification.objects.filter \
         (receiver=request.user, read=False).order_by('-id')
@@ -295,8 +297,9 @@ def notification(request, current_tab='none'):
          'current_tab':current_tab},
         context_instance=RequestContext(request, processors=[custom_proc]))
 
+
 @login_required()
-def readify(request, read_id, current_tab):
+def user_readify(request, read_id, current_tab):
     try:
         Notification.objects.filter \
             (id=long(read_id), receiver=request.user).update(read=True)
@@ -305,8 +308,9 @@ def readify(request, read_id, current_tab):
         logger.warning('Notification id %ld does not exsit!' % long(read_id))
     return HttpResponseRedirect(reverse('users:tab', kwargs={'current_tab':current_tab}))
 
+
 @login_required()
-def delete_notification(request, delete_ids, current_tab):
+def user_delete_notification(request, delete_ids, current_tab):
     id_list = delete_ids.split(',')
     if delete_ids != '':
         for delete_id in id_list:

@@ -28,9 +28,9 @@ from django.contrib.auth.forms import ReadOnlyPasswordHashField, AuthenticationF
 from django.contrib.auth.models import Group
 from django.core.validators  import RegexValidator
 
-from users.models import UserProfile
 from utils.config_info import get_config
 from users.models import User, Notification
+from users.models import UserProfile
 
 
 # Register your models here.

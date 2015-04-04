@@ -23,7 +23,10 @@ SOFTWARE.
 """
 from django.core.urlresolvers import reverse
 from django.test import TestCase
+
 from users.models import User
+
+
 # Create your tests here.
 
 
@@ -72,7 +75,7 @@ class UserTestCase(TestCase):
         self.client.post(
             reverse('users:create'),
             {'username': 'test002', 'password1': 'test002',
-            'password2':'test002', 'email': 'oj'})
+                'password2':'test002', 'email': 'oj'})
         self.assertNotEqual(User.objects.all().count(), user_count + 1)
 
         # sign up with used username
