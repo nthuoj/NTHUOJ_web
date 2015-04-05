@@ -30,7 +30,7 @@ SOFTWARE.
       </div>
       <div class="modal-body">
         <form action="{% url 'contest:reply' %}" method="POST" role="form">
-          {% csrf_token %} {{ reply_form.replyer.as_hidden }} {{ reply_form.clarification.as_hidden }}
+          {% csrf_token %} {{ reply_form.replier.as_hidden }} {{ reply_form.clarification.as_hidden }}
           <div class="form-group" style="width:50%">
             <label>Clarification</label>
             <div id="description"></div>
