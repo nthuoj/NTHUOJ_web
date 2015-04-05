@@ -228,13 +228,22 @@ def register_confirm(request, activation_key):
     '''check if there is UserProfile which matches
     the activation key (if not then display 404)
     '''
+    # clear expired activation_key
+    UserProfile.objects.filter(active_time__lte=datetime.datetime.now()).delete()
+
     user_profile = get_object_or_404(UserProfile, activation_key=activation_key)
     user = user_profile.user
     user.is_active = True
     user.save()
     logger.info('user %s has already been activated' % user.username)
+    user.backend = 'django.contrib.auth.backends.ModelBackend'
+    login(request, user)
     return render_index(request, 'users/confirm.html', {'username': user.username})
 
+    return render_index(
+        request,
+        'users/confirm.html',
+        {'username':user.username})
 
 @login_required()
 def user_notification(request, current_tab='none'):
