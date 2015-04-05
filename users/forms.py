@@ -14,9 +14,9 @@ class CodeSubmitForm(forms.Form):
 
     pid = forms.CharField()
     language = forms.ChoiceField(choices=LANGUAGE_CHOICE, initial=Submission.CPP,
-        widget=forms.RadioSelect())
+                                 widget=forms.RadioSelect())
     code = forms.CharField(max_length=10000,
-        widget=forms.Textarea(attrs={'id': 'code_editor'}))
+                           widget=forms.Textarea(attrs={'id': 'code_editor'}))
 
     def clean_pid(self):
         pid = self.cleaned_data['pid']
@@ -63,14 +63,14 @@ class UserProfileForm(forms.ModelForm):
     fields, plus a repeated password."""
 
     username = forms.CharField(label='Username',
-        widget=forms.TextInput(attrs={'readonly': True}))
+                               widget=forms.TextInput(attrs={'readonly': True}))
     email = forms.EmailField(label='Email')
     theme = forms.ChoiceField(label='Theme',
-        choices=User.THEME_CHOICE)
+                              choices=User.THEME_CHOICE)
     password1 = forms.CharField(label='Password', required=False,
-        widget=forms.PasswordInput())
+                                widget=forms.PasswordInput())
     password2 = forms.CharField(label='Password Confirmation', required=False,
-        widget=forms.PasswordInput())
+                                widget=forms.PasswordInput())
 
     class Meta:
         model = User
@@ -104,7 +104,7 @@ class UserProfileForm(forms.ModelForm):
 class UserLevelForm(forms.ModelForm):
     """A form for updating user's userlevel."""
     user_level = forms.ChoiceField(label='Userlevel',
-        choices=User.USER_LEVEL_CHOICE)
+                                   choices=User.USER_LEVEL_CHOICE)
 
     class Meta:
         model = User
@@ -122,7 +122,7 @@ class UserLevelForm(forms.ModelForm):
         # judge can change user to sub-judge, user
         user_level = self.cleaned_data['user_level']
         if user.has_judge_auth() and \
-            (user_level == User.SUB_JUDGE or user_level == User.USER):
+                (user_level == User.SUB_JUDGE or user_level == User.USER):
             return True
         return False
 
