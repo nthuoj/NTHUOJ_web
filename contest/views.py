@@ -28,8 +28,10 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.template import RequestContext
 from django.forms.models import model_to_dict
 from contest.contest_info import get_clarifications
+from contest.contest_info import get_scoreboard
+from contest.contest_info import can_ask
 
-from contest.contestArchive import get_contests
+from contest.contest_archive import get_contests
 
 from contest.models import Contest
 from contest.models import Contestant
@@ -39,6 +41,9 @@ from contest.forms import ContestForm
 from contest.forms import ClarificationForm
 from contest.forms import ReplyForm
 
+from contest.register_contest import register_user
+from contest.register_contest import register_group as register_group_impl
+
 from contest.contest_info import can_ask
 from contest.contest_info import can_reply
 from contest.contest_info import can_create_contest
@@ -47,6 +52,14 @@ from contest.contest_info import can_delete_contest
 from contest.contest_info import get_scoreboard
 from contest.contest_info import can_register
 from contest.contest_info import can_register_log
+from contest.contest_info import get_contest_or_404
+
+from group.models import Group
+from group.group_info import get_owned_group
+from group.group_info import get_group_or_404
+
+from utils.log_info import get_logger
+from utils import user_info
 from utils.render_helper import render_index
 from utils.log_info import get_logger
 from utils import user_info
@@ -58,6 +71,7 @@ logger = get_logger()
 def archive(request, page = None):
     user = request.user
     all_contests = get_contests(user)
+    groups = get_owned_group(user)
     #show 15 contests
     paginator = Paginator(all_contests, 15)
 
@@ -78,7 +92,7 @@ def archive(request, page = None):
     pager = {'previous':previous, 'this':this, 'next':next, 'max_page':max_page}
     return render_index(request,
         'contest/contestArchive.html',
-        {'contests':contests,'user':user,'pager':pager})
+        {'contests':contests,'user':user,'groups':groups,'pager':pager})
 
 def contest(request, contest_id):
     try:
@@ -168,16 +182,25 @@ def delete(request, contest_id):
 
 @login_required
 def register(request, contest_id):
-    try:
-        contest = Contest.objects.get(id = contest_id)
-    except Contest.DoesNotExist:
-        logger.warning('Contest: Can not register contest %s! Contest not found!' % contest_id)
-        raise Http404('Contest does not exist, can not register.')
-    if can_register_log(request.user, contest):
-        contestant = Contestant(contest = contest,user = request.user)
-        contestant.save()
-        logger.info('Contest: User %s attends Contest %s!' % (request.user.username,contest.id))
+    contest = get_contest_or_404(contest_id)
+    #get group id or register as single user
+    group_id = request.GET.get('group')
+    if(group_id is not None):
+        register_group(request, group_id, contest)
+    else:
+        register_user(request.user, contest)
+    
+    return redirect('contest:archive')
 
+
+@login_required
+def register_group(request, group_id, contest):
+    group = get_group_or_404(group_id)
+    if user_info.has_group_ownership(request.user, group):
+        register_group_impl(group, contest)
+    else:
+        logger.warning('Contest: User %s can not register group %s. Does not have ownership!' 
+            % (request.user.username, group_id))
     return redirect('contest:archive')
 
 @login_required
