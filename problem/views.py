@@ -32,6 +32,7 @@ from problem.models import Problem, Tag, Testcase
 from problem.forms import ProblemForm
 from problem.problem_info import *
 from utils import log_info
+from utils.render_helper import render_index
 
 import os
 import json
@@ -62,7 +63,7 @@ def problem(request):
             p.pass_rate = float(p.ac_count) / float(p.total_submission) * 100.0
             p.not_pass_rate = 100.0 - p.pass_rate
 
-    return render(request, 'problem/panel.html', 
+    return render_index(request, 'problem/panel.html', 
                   {'all_problem': all_problem, 
                    'can_add_problem': can_add_problem})
 
@@ -74,7 +75,7 @@ def detail(request, pid):
         logger.warning('problem %s not found' % (pid))
         raise Http404('problem %s does not exist' % (pid))
     problem.testcase = get_testcase(problem)
-    return render(request, 'problem/detail.html', {'problem': problem})
+    return render_index(request, 'problem/detail.html', {'problem': problem})
 
 @login_required
 def edit(request, pid=None):
@@ -119,10 +120,10 @@ def edit(request, pid=None):
     if not request.user.is_admin:
         del form.fields['owner']
     if is_new:
-        return render(request, 'problem/edit.html', 
+        return render_index(request, 'problem/edit.html', 
                     { 'form': form, 'owner': request.user, 'is_new': True })
     else:
-        return render(request, 'problem/edit.html', 
+        return render_index(request, 'problem/edit.html', 
                   {'form': form, 'pid': pid, 'is_new': False,
                    'tags': tags, 'description': problem.description,
                    'input': problem.input, 'output': problem.output,
@@ -231,4 +232,4 @@ def preview(request):
     problem.output = request.GET['output_description']
     problem.sample_in = request.GET['sample_in']
     problem.sample_out = request.GET['sample_out']
-    return render(request, 'problem/preview.html', {'problem': problem, 'preview': True})
+    return render_index(request, 'problem/preview.html', {'problem': problem, 'preview': True})
