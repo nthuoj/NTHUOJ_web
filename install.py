@@ -78,3 +78,6 @@ if ans == '' or ans == 'y' or ans == 'Y':
 django_manage('syncdb')
 django_manage('makemigrations')
 django_manage('migrate')
+
+# Bower
+django_manage('bower install')
