@@ -36,7 +36,7 @@ SOFTWARE.
         <td>
           {% if user == p.owner or user.is_admin %}
             <span id='rejudge' class='glyphicon glyphicon-refresh' 
-            data-toggle="tooltip" data-placement="left" title="Rejudge"></span>
+                  data-toggle="tooltip" data-placement="left" title="Rejudge"></span>
           {% endif %}
           &nbsp;{{p.pk}}
         </td>
@@ -61,7 +61,8 @@ SOFTWARE.
         </td>
         <td>
           {% if user == p.owner or user.is_admin %}
-            <a data-target="{{p.pk}}" class="btn btn-primary" href="{% url 'problem:delete_problem' p.pk %}">Delete</a>
+            <a data-target="{{p.pk}}" class="btn btn-primary" 
+              href="{% url 'problem:delete_problem' p.pk %}">Delete</a>
           {% endif %}
         </td>
       </tr>
