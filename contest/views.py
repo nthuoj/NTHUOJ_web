@@ -20,10 +20,8 @@
 from datetime import datetime
 
 from django.shortcuts import redirect
-from django.template import RequestContext
 from django.forms.models import model_to_dict
 
-from index.views import custom_proc
 from contest.contest_info import get_clarifications
 from contest.contestArchive import get_contests
 from contest.models import Contest
@@ -39,9 +37,7 @@ from contest.contest_info import can_edit_contest
 from contest.contest_info import can_delete_contest
 from contest.contest_info import get_scoreboard
 from contest.contest_info import can_register_log
-
 from utils import user_info
-from utils.render_helper import render_index
 from status.views import *
 
 
@@ -68,10 +64,9 @@ def archive(request, page = None):
     next = int(page)+1
     max_page = int(paginator.num_pages)
     pager = {'previous':previous, 'this':this, 'next':next, 'max_page':max_page}
-    return render(request,
+    return render_index(request,
         'contest/contestArchive.html',
-        {'contests':contests,'user':user,'pager':pager},
-        context_instance = RequestContext(request, processors = [custom_proc]))
+        {'contests':contests,'user':user,'pager':pager})
 
 def contest(request, contest_id):
     try:
@@ -94,11 +89,10 @@ def contest(request, contest_id):
 
         initial_reply_form = {'contest':contest,'replier':user}
         reply_form = ReplyForm(initial = initial_reply_form)
-        return render(request, 'contest/contest.html',
+        return render_index(request, 'contest/contest.html',
             {'contest':contest, 'clarifications':clarifications, 'user':user,
             'form':form, 'reply_form':reply_form,
-            'scoreboard':scoreboard, 'status': status},
-            context_instance = RequestContext(request, processors = [custom_proc]))
+            'scoreboard':scoreboard, 'status': status})
     else:
         raise PermissionDenied
 
@@ -109,7 +103,7 @@ def new(request):
         if request.method == 'GET':
             form = ContestForm(initial={'owner':request.user})
             title = "New Contest"
-            return render(request,'contest/editContest.html',{'form':form,'title':title})
+            return render_index(request,'contest/editContest.html',{'form':form,'title':title})
         if request.method == 'POST':
             form = ContestForm(request.POST)
             if form.is_valid():

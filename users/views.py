@@ -29,9 +29,9 @@ from django.core.context_processors import csrf
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.core.urlresolvers import reverse
 from django.shortcuts import get_object_or_404
-from django.shortcuts import redirect
 from axes.decorators import *
 from django.http import Http404
+from django.shortcuts import redirect
 
 from users.admin import UserCreationForm, AuthenticationForm
 from users.forms import CodeSubmitForm

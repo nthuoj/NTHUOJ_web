@@ -21,13 +21,16 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
+import time
+from datetime import datetime
+
 from django.shortcuts import render
 from django.template import RequestContext
 from django.http import Http404
 from django.core.exceptions import PermissionDenied
 from django.core.exceptions import SuspiciousOperation
 
-from index.views import custom_proc
+from users.models import Notification
 
 
 class CustomHttpExceptionMiddleware(object):
@@ -49,3 +52,15 @@ def render_index(request, *args, **kwargs):
     kwargs.update({'context_instance': RequestContext(request, processors=[custom_proc])})
 
     return render(request, *args, **kwargs)
+
+
+def custom_proc(request):
+    amount = Notification.objects.filter \
+        (receiver=request.user, read=False).count()
+
+    t = time.time()
+    tstr = datetime.fromtimestamp(t).strftime('%Y/%m/%d %H:%M:%S')
+    return {
+        'tstr': tstr,
+        'amount': amount
+    }
