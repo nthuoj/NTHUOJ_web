@@ -34,17 +34,13 @@ class CustomHttpExceptionMiddleware(object):
     def process_exception(self, request, exception):
         message = unicode(exception)
         if isinstance(exception, Http404):
-            return render(request, 'index/404.html',
-                {}, status=404)
+            return render(request, 'index/404.html', {'error_message': message}, status=404)
         elif isinstance(exception, SuspiciousOperation):
-            return render(request, 'index/400.html',
-                {'error_message': message}, status=400)
+            return render(request, 'index/400.html', {'error_message': message}, status=400)
         elif isinstance(exception, PermissionDenied):
-            return render(request, 'index/403.html',
-                {'error_message': message}, status=403)
+            return render(request, 'index/403.html', {'error_message': message}, status=403)
         elif isinstance(exception, Exception):
-            return render(request, 'index/500.html',
-                {'error_message': message}, status=500)
+            return render(request, 'index/500.html', {'error_message': message}, status=500)
 
 
 def render_index(request, *args, **kwargs):
