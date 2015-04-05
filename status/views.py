@@ -60,7 +60,7 @@ def status(request, username=None):
             user = User.objects.get(username=username)
             submissions = submissions.filter(user=user)
         except:
-            raise Http404
+            raise Http404('User %s not found' % username)
 
     paginator = Paginator(submissions, 25)  # Show 25 submissions per page
     page = request.GET.get('page')
@@ -103,11 +103,11 @@ def error_message(request, sid):
             return render_index(request, 'status/errorMessage.html', {'error_message': error_msg})
         else:
             logger.warning('User %s attempt to view detail of SID %s' % (request.user, sid))
-            raise PermissionDenied('You don\'t have permission to view detail of SID %s' % sid)
+            raise PermissionDenied("You don't have permission to view detail of SID %s" % sid)
 
     except Submission.DoesNotExist:
         logger.warning('SID %s Not Found!' % sid)
-        raise Http404
+        raise Http404('SID %s Not Found!' % sid)
 
 
 @login_required()
@@ -123,10 +123,10 @@ def view_code(request, sid):
             return render_index(request, 'users/submit.html', {'form': codesubmitform})
         else:
             logger.warning('User %s attempt to view detail of SID %s' % (request.user, sid))
-            raise PermissionDenied('You don\'t have permission to view detail of SID %s' % sid)
+            raise PermissionDenied("You don't have permission to view detail of SID %s" % sid)
     except Submission.DoesNotExist:
         logger.warning('SID %s Not Found!' % sid)
-        raise Http404
+        raise Http404('SID %s Not Found!' % sid)
     except IOError:
-        logger.warning('File %s.cpp Not Found!' % sid)
-        raise Http404
+        logger.warning('File %s.%s Not Found!' % (sid, codesubmitform.language.lower()))
+        raise Http404('File %s.%s Not Found!' % (sid, codesubmitform.language.lower()))

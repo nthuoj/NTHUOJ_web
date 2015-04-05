@@ -81,17 +81,17 @@ class StatusTestCase(TestCase):
                 Submission.objects.create(problem=problem, user=self.user)
 
     def test_admin_view_submissions(self):
-        '''Test if admin can view all submissions'''
+        """Test if admin can view all submissions"""
         submissions = Submission.objects.all()
         for submission in submissions:
             can_show = show_submission(submission, self.admin)
             self.assertEqual(can_show, True)
 
     def test_not_admin_view_submissions(self):
-        '''When the user is not admin, they are treated as normal user if they
+        """When the user is not admin, they are treated as normal user if they
         don't have special authorities (problem owner, contest owner, etc)
 
-        In this case, we use user to test that kind of authorties'''
+        In this case, we use user to test that kind of authorties"""
         hidden_submissions = []
         # all submission should be seen except these 4 conditions
         # 1. admin's submissions can't be seen

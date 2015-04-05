@@ -106,7 +106,7 @@ def user_profile(request, username):
 
     except User.DoesNotExist:
         logger.warning('User %s does not exist' % username)
-        raise Http404
+        raise Http404('User %s does not exist' % username)
 
 
 def user_create(request):
