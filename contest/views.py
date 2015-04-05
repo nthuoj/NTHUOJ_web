@@ -41,6 +41,7 @@ from contest.contest_info import get_scoreboard
 from contest.contest_info import can_register_log
 
 from utils import user_info
+from utils.render_helper import render_index
 from status.views import *
 
 
