@@ -223,11 +223,12 @@ def delete_problem(request, pid):
     return redirect('/problem/')
 
 def preview(request):
-    form = ProblemForm(request.GET)
-    problem = form.save()
-    problem.description = request.GET['description']
-    problem.input= request.GET['input_description']
-    problem.output = request.GET['output_description']
-    problem.sample_in = request.GET['sample_in']
-    problem.sample_out = request.GET['sample_out']
+    problem = Problem()
+    problem.pname = request.POST['pname']
+    problem.description = request.POST['description']
+    problem.input= request.POST['input_description']
+    problem.output = request.POST['output_description']
+    problem.sample_in = request.POST['sample_in']
+    problem.sample_out = request.POST['sample_out']
+    problem.tag = request.POST['tags'].split(',')
     return render_index(request, 'problem/preview.html', {'problem': problem, 'preview': True})

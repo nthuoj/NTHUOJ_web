@@ -52,8 +52,8 @@ SOFTWARE.
     <div class="tab-content">
       <form method="POST" id="problem_info" action="" enctype="multipart/form-data">
         <div>
-          <input type="submit" value="Preview" class="btn btn-success" target="_blank" id="preview_button">
-          <input type="submit" value="Save" class="btn btn-primary">
+          <input type="submit" value="Preview" class="btn btn-success" id="preview_button">
+          <input type="submit" value="Save" class="btn btn-primary" id="save_button">
           <a class="btn btn-warning" href="{% url 'problem:detail' pid %}">Cancel</a>
         </div>
         {% csrf_token %}

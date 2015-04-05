@@ -101,9 +101,15 @@ SOFTWARE.
   </div>
   <h3>Tags</h3>
   <div id='tags' style='float:left;width:60%'>
-    {% for tag in problem.tags.all %}
-      <span class='label label-info'>{{tag.tag_name}}</span>
-    {% endfor %}
+    {% if preview %}
+      {% for tag in problem.tag %}
+        <span class='label label-info'>{{tag}}</span>
+      {% endfor %}
+    {% else %}
+      {% for tag in problem.tags.all %}
+        <span class='label label-info'>{{tag.tag_name}}</span>
+      {% endfor %}
+    {% endif %}
   </div>
   <form id='addTag'>
     {% csrf_token %}

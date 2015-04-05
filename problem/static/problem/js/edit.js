@@ -123,13 +123,26 @@ function add_new_testcase(pid, data) {
 }
 
 $("#preview_button").click(function() {
-    var data = $("#problem_info :input").serialize();
-    MyWindow = window.open('/problem/preview?' + data,
-        "MyWindow",
-        "toolbar=no,location=no,directories=no,status=no,menubar=no, \
-        scrollbars=yes,resizable=yes,width=600,height=30"
-    );
-    return false;
+    var form = document.forms.problem_info;
+    form.target = "_blank";
+    form.action = "/problem/preview/";
+    var input = document.createElement('input');
+    input.type = 'hidden';
+    input.name = 'tags';
+    tags = []
+    $("#tagTable td:first-child").each(function(num, element) {
+	tags[tags.length] = element.innerHTML;
+    });
+    input.value = tags.join();
+    form.appendChild(input);
+    return true;
+});
+
+$("#save_button").click(function() {
+    var form = document.forms.problem_info;
+    form.target = "";
+    form.action = "";
+    return true;
 });
 
 function hide_field() {
