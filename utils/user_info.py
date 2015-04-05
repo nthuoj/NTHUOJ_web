@@ -210,7 +210,7 @@ def create_anonymous(need):
     new_users = []
     for index in range(we_have, we_have + need):
         username = ANONYMOUS_PREFIX + "{:0>4d}".format(index)
-        new_user = User.objects.create_user(username,"000")
+        new_user = User.objects.create_user(username, "000")
         logger.info('user %s created' % str(new_user))
         new_users.append(new_user)
     return new_users
