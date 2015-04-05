@@ -111,20 +111,24 @@ def get_scoreboard(contest):
 
     return scoreboard
 
-def get_scoreboard_csv(contest_id):
-    try:
-        contest = Contest.objects.get(pk = contest_id)
-    except Contest.DoesNotExist:
-        logger.warning('Contest: Can not download Contest scoreboard %s! Contest not found!' % contest_id)
-        raise Http404('Contest does not exist, can not download scoreboard.')
+def get_scoreboard_csv(contest_id, scoreboard_type):
+    contest = get_contest_or_404(contest_id)
     scoreboard = get_scoreboard(contest)
     
     response = HttpResponse(content_type='text/csv')
-    filename = str(contest.cname) + "-scoreboard"
+    filename = str(contest.cname) + '-scoreboard-' + str(scoreboard_type)
     response['Content-Disposition'] = 'attachment; filename=' + filename
 
     #init
     writer = csv.writer(response)
+    if scoreboard_type == "penalty":
+        write_scoreboard_csv_penalty(writer, contest, scoreboard)
+    elif scoreboard_type == "testcases":
+        write_scoreboard_csv_testcases(writer, contest, scoreboard)
+
+    return response
+
+def write_scoreboard_csv_penalty(writer, contest, scoreboard):
     #penalty scoreboard csv
     scoreboard.sort_users_by_penalty()
     #title
@@ -135,7 +139,7 @@ def get_scoreboard_csv(contest_id):
     writer.writerow(title)
     #user data
     for counter, user in enumerate(scoreboard.users):
-        user_row = [counter, user.username]
+        user_row = [counter+1, user.username]
         for problem in user.problems:
             penalty = problem.get_penalty(contest.start_time)
             user_row.append(penalty)
@@ -148,9 +152,7 @@ def get_scoreboard_csv(contest_id):
         footer.append(problem.pass_user)
     writer.writerow(footer)
 
-    #to saparate two scoreboard
-    writer.writerow([])
-
+def write_scoreboard_csv_testcases(writer, contest, scoreboard):
     #testcases scoreboard csv
     scoreboard.sort_users_by_solved_testcases()
     #title
@@ -161,7 +163,7 @@ def get_scoreboard_csv(contest_id):
     writer.writerow(title)
     #user data
     for counter, user in enumerate(scoreboard.users):
-        user_row = [counter, user.username]
+        user_row = [counter+1, user.username]
         for problem in user.problems:
             passed_testcases = problem.get_testcases_solved()
             total_testcases = problem.total_testcases
@@ -174,8 +176,6 @@ def get_scoreboard_csv(contest_id):
     for problem in scoreboard.problems:
         footer.append(problem.total_solved)
     writer.writerow(footer)
-
-    return response
 
 def get_clarifications(user, contest):
 

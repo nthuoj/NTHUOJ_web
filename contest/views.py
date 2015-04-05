@@ -29,8 +29,6 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.template import RequestContext
 from django.forms.models import model_to_dict
 
-from index.views import custom_proc
-
 from contest.contest_info import get_scoreboard
 from contest.contest_info import get_scoreboard_csv
 
@@ -260,7 +258,8 @@ def reply(request):
 def download(request):
     what = request.POST.get('type')
     if what == 'scoreboard':
+        scoreboard_type = request.POST.get('scoreboard_type')
         contest_id = request.POST.get('contest')
-        scoreboard_file = get_scoreboard_csv(contest_id)
+        scoreboard_file = get_scoreboard_csv(contest_id, scoreboard_type)
         return scoreboard_file
     raise Http404('file not found')

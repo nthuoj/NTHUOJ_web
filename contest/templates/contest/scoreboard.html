@@ -18,17 +18,6 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 -->
 <h3>Scoreboard</h3>
-<div style="float:right">
-  <form method="POST" action="{% url 'contest:download' %}">
-    {% csrf_token %}
-    <input type="hidden" name="type" value="scoreboard">
-    <input type="hidden" name="contest" value="{{ contest.id }}">
-    <button type="sybmit" class="btn btn-default" data-toggle="tooltip" data-placement="top" 
-            title="Download Scoreboard">
-      <span class="glyphicon glyphicon-download"></span>
-    </button>
-  </form>
-</div>
 <h4>{{ contest.cname }}</h4> {% load staticfiles %}
 <script src="{% static 'contest/js/scoreboard.js' %}"></script>
 <link href="{% static 'contest/css/scoreboard.css' %}" rel="stylesheet">
@@ -47,6 +36,18 @@ SOFTWARE.
   <div class="tab-content">
     <!-- testcase -->
     <div role="tabpanel" class="tab-pane active" id="testcase">
+      <div style="float:right">
+        <form method="POST" action="{% url 'contest:download' %}">
+          {% csrf_token %}
+          <input type="hidden" name="type" value="scoreboard">
+          <input type="hidden" name="scoreboard_type" value="testcases">
+          <input type="hidden" name="contest" value="{{ contest.id }}">
+          <button type="sybmit" class="btn btn-default" data-toggle="tooltip" data-placement="top" 
+                  title="Download Testcase Scoreboard">
+            <span class="glyphicon glyphicon-download"></span>
+          </button>
+        </form>
+      </div>
       <table class="table" style="table-layout:fixed">
         <thead>
           <tr>
@@ -87,6 +88,18 @@ SOFTWARE.
     </div>
     <!-- penalty  -->
     <div role="tabpanel" class="tab-pane" id="penalty">
+      <div style="float:right">
+        <form method="POST" action="{% url 'contest:download' %}">
+          {% csrf_token %}
+          <input type="hidden" name="type" value="scoreboard">
+          <input type="hidden" name="scoreboard_type" value="penalty">
+          <input type="hidden" name="contest" value="{{ contest.id }}">
+          <button type="sybmit" class="btn btn-default" data-toggle="tooltip" data-placement="top" 
+                  title="Download Penalty Scoreboard">
+            <span class="glyphicon glyphicon-download"></span>
+          </button>
+        </form>
+      </div>
       <table class="table" style="table-layout:fixed">
         <thead>
           <tr>
