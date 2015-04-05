@@ -31,12 +31,12 @@ from django.core.mail import EmailMultiAlternatives
 from django.template.loader import render_to_string
 
 from contest.models import Contest
-from emailInfo import EMAIL_HOST_USER
 from problem.models import Submission, SubmissionDetail
 from users.models import User, UserProfile
 from utils.log_info import get_logger
+from utils.config_info import get_config
 
-
+EMAIL_HOST_USER='1'
 logger = get_logger()
 
 
