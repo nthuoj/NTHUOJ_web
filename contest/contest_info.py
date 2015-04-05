@@ -163,6 +163,7 @@ admin or owner can delete contest
 def can_delete_contest(user, contest):
     user = validate_user(user)
     return user.has_admin_auth() or (user == contest.owner)
+
 '''
 1. contest is not ended
 2. contest is open_register
@@ -206,6 +207,7 @@ def can_register_return_status(user, contest):
         return IS_ADMIN
 
     return OK
+
 '''
 return boolean
 '''
@@ -213,6 +215,7 @@ def can_register(user, contest):
     if can_register_return_status(user, contest) is OK:
         return True
     return False
+
 '''
 depend on error msg and write to log
 '''

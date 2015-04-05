@@ -33,7 +33,7 @@ SOFTWARE.
       <hr>
       <div class="modal-body" id="register">
         <table width='100%'>
-          {% if user|has_auth:contest.id or user|is_anonymous %}
+          {% if not user|can_register:contest or user|is_anonymous %}
           <tr>
             <td class="not-clickable-area">
               <div>

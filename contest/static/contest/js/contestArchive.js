@@ -27,6 +27,6 @@ $(document).ready(function() {
         $('[name=infoTab] a[href="#others"]').tab('show')
     });
     $('[data-toggle="tooltip"]').tooltip({
-    'placement': 'top'
+        'placement': 'top'
     });
 });
