@@ -36,7 +36,7 @@ from users.models import User, UserProfile
 from utils.log_info import get_logger
 from utils.config_info import get_config
 
-EMAIL_HOST_USER='1'
+EMAIL_HOST_USER = get_config('email', 'user')
 logger = get_logger()
 
 

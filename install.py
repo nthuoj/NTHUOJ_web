@@ -30,6 +30,7 @@ from func import *
 CONFIG_PATH = 'nthuoj/config/nthuoj.cfg'
 
 config = ConfigParser.RawConfigParser()
+config.optionxform = str
 config.read(CONFIG_PATH)
 
 
