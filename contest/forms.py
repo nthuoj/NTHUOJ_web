@@ -21,8 +21,13 @@ from django import forms
 from django.views.generic.edit import UpdateView
 from contest.models import Contest
 from contest.models import Clarification
+from users.models import User
 
 class ContestForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super(ContestForm, self).__init__(*args, **kwargs)
+        # access object through self.instance...
+        self.fields['coowner'].queryset = User.objects.exclude(user_level=User.USER)
     class Meta:
         model = Contest
         fields = [
@@ -78,7 +83,7 @@ class ReplyForm(forms.ModelForm):
         model = Clarification
         fields = (
             'reply',
-            'replyer',
+            'replier',
             'reply_time',
             'reply_all'
         )

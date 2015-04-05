@@ -35,7 +35,7 @@ def write_ini_file(host, db, user, pwd):
     ini_file.close()
 
 def write_email_file(user, pwd):
-    email_file = open('emailInfo.py', 'w') 
+    email_file = open('emailInfo.py', 'w')
     email_file.write('EMAIL_HOST_USER = \'%s\'\n' % user)
     email_file.write('EMAIL_HOST_PASSWORD = \'%s\'\n' % pwd)
     email_file.close()
@@ -49,4 +49,3 @@ def db_migrate():
     for app in apps:
         django_manage('makemigrations ' + app)
     django_manage('migrate')
-

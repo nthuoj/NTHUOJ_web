@@ -22,9 +22,10 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 -->
 {% extends 'index/base.html' %}
-  {% block import_source %}
+{% block import_source %}
   {% load staticfiles %}
   <link rel="stylesheet" href="{% static 'problem/css/problem.css' %}">
+  {% include "autocomplete_light/static.html" %}
 {% endblock %}
 {% block body_block %}
 {% endblock body_block %}

@@ -16,28 +16,20 @@
     LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
     OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
     SOFTWARE.
-    '''
-from contest.models import Contest
-from contest.models import Contestant
+'''
+from django import forms
+from index.models import Announcement
+from datetimewidget.widgets import DateTimeWidget, DateWidget, TimeWidget
 
-from contest.contest_info import get_contest_or_404
-from contest.contest_info import can_register
-
-from group.models import Group
-
-from utils.log_info import get_logger
-
-logger = get_logger()
-
-def register_user(user, contest):
-    if can_register(user, contest):
-        contestant = Contestant(contest = contest, user = user)
-        contestant.save()
-        logger.info('Contest: User %s attends Contest %s!' % (user.username, contest.id))
-
-def register_group(group, contest):
-    if not contest.open_register:
-        logger.info('Contest: Registration for Contest %s is closed, can not register.' % contest.id)
-        return
-    for member in group.member.all():
-        register_user(member, contest)
+class AnnouncementCreationForm(forms.ModelForm):
+    dateTimeOptions = {
+            'format': 'yyyy-mm-dd hh:ii:ss',
+            'todayBtn': 'true',
+            'minuteStep': 30,
+    }
+    content = forms.CharField(widget=forms.Textarea)
+    start_time = forms.DateTimeField(widget=DateTimeWidget(options=dateTimeOptions, bootstrap_version=3))
+    end_time = forms.DateTimeField(widget=DateTimeWidget(options=dateTimeOptions, bootstrap_version=3))
+    class Meta:
+        model = Announcement
+        fields = ('content', 'start_time', 'end_time')
