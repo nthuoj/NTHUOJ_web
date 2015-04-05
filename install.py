@@ -51,9 +51,12 @@ if not config.has_section('email'):
     print '========================================'
 
 # Change defaut path
-ans = raw_input('Customize source code, testcase path? [Y/n] ')
+paths = dict(config.items('path'))
+print 'Default path configuration is:\n'
+for key in paths:
+    print '%s: %s' % (key, paths[key])
+ans = raw_input('\nCustomize source code, testcase path? [Y/n] ')
 if ans == '' or ans == 'y' or ans == 'Y':
-    paths = dict(config.items('path'))
     for key in paths:
         path = raw_input('%s: ' % key)
         paths[key] = path
