@@ -125,7 +125,7 @@ def get_scoreboard_csv(contest_id):
     #penalty scoreboard csv
     scoreboard.sort_users_by_penalty()
     #title
-    title = ['Penalty','User']
+    title = ['Penalty', 'User']
     for problem in scoreboard.problems:
         title.append(problem.id)
     title.append('Total')
@@ -140,7 +140,7 @@ def get_scoreboard_csv(contest_id):
         user_row.append(total_penalty)
         writer.writerow(user_row)
 
-    footer = ['Passed','']  
+    footer = ['Passed', '']  
     for problem in scoreboard.problems:
         footer.append(problem.pass_user)
     writer.writerow(footer)
@@ -151,7 +151,7 @@ def get_scoreboard_csv(contest_id):
     #testcases scoreboard csv
     scoreboard.sort_users_by_solved_testcases()
     #title
-    title = ['Testcase','User']
+    title = ['Testcase', 'User']
     for problem in scoreboard.problems:
         title.append(problem.id)
     title.append('Total')
@@ -167,7 +167,7 @@ def get_scoreboard_csv(contest_id):
         user_row.append(user_total_testcases)
         writer.writerow(user_row)
 
-    footer = ['Passed Testcases','']  
+    footer = ['Passed Testcases', '']  
     for problem in scoreboard.problems:
         footer.append(problem.total_solved)
     writer.writerow(footer)
@@ -262,7 +262,7 @@ def can_register_return_status(user, contest):
     if has_ownership:
         return OWN_CONTEST
 
-    has_attended = Contestant.objects.filter(contest = contest,user = user).exists()
+    has_attended = Contestant.objects.filter(contest = contest, user = user).exists()
     if has_attended:
         return HAS_ATTENDED
     
