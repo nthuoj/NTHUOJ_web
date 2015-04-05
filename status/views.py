@@ -27,7 +27,7 @@ from django.contrib.auth.decorators import login_required
 from django.http import Http404
 from django.shortcuts import render
 from django.template import RequestContext
-from index.views import custom_proc
+from utils.render_helper import render_index
 from problem.models import Submission, SubmissionDetail
 from status.templatetags.status_filters import show_detail
 from users.forms import CodeSubmitForm
@@ -73,11 +73,10 @@ def status(request, username=None):
 
     submissions.object_list = regroup_submission(submissions.object_list)
 
-    return render(
+    return render_index(
         request,
         'status/status.html',
-        {'submissions': submissions},
-        context_instance=RequestContext(request, processors=[custom_proc]))
+        {'submissions': submissions})
 
 
 def contest_status(request, contest):
@@ -130,7 +129,7 @@ def view_code(request, sid):
             f.close()
             codesubmitform = CodeSubmitForm(
                 initial={'code': code, 'pid': submission.problem.id})
-            return render(request, 'users/submit.html', {'form': codesubmitform})
+            return render_index(request, 'users/submit.html', {'form': codesubmitform})
         else:
             logger.warning('User %s attempt to view detail of SID %s' % (request.user, sid))
             return render(
