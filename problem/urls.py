@@ -33,7 +33,7 @@ urlpatterns = patterns('',
     # /problem/10/delete : delete problem 10
     url(r'^(?P<pid>\d+)/edit/$', views.edit, name='edit'),
     # /problem/10/edit : edit problem 10
-    url(r'^new/$', views.edit, name='new'),
+    url(r'^new/$', views.new, name='new'),
     # /problem/new : create new problem
     url(r'^(?P<pid>\d+)/tag/$', views.tag, name='tag'),
     # post /problem/10/tag: add tag to problem 10

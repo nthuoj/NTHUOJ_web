@@ -78,35 +78,36 @@ def detail(request, pid):
     return render_index(request, 'problem/detail.html', {'problem': problem})
 
 @login_required
+def new(request):
+    if request.method == "GET":
+        return render_index(request, "problem/new.html")
+    elif request.method == "POST":
+        if 'pname' in request.POST and request.POST['pname'].strip() != "":
+            p = Problem(pname=request.POST['pname'], owner=request.user)
+            p.save()
+            return redirect("/problem/%d/edit/" % p.pk)
+        else:
+            return render_index(request, "problem/new.html", {"error": "Problem name empty"})
+
+@login_required
 def edit(request, pid=None):
-    if pid is not None:
-        is_new = False
-        try:
-            problem = Problem.objects.get(pk=pid)
-            if not request.user.is_admin and request.user != problem.owner:
-                logger.warning("user %s has no permission to edit problem %s" % (request.user, pid))
-                raise PermissionDenied()
-        except Problem.DoesNotExist:
-            logger.warning("problem %s does not exist" % (pid))
-            raise Http404("problem %s does not exist" % (pid))
-        testcase = Testcase.objects.filter(problem=problem)
-        tags = problem.tags.all()
-    else:
-        is_new = True
+    try:
+        problem = Problem.objects.get(pk=pid)
+        if not request.user.is_admin and request.user != problem.owner:
+            logger.warning("user %s has no permission to edit problem %s" % (request.user, pid))
+            raise PermissionDenied()
+    except Problem.DoesNotExist:
+        logger.warning("problem %s does not exist" % (pid))
+        raise Http404("problem %s does not exist" % (pid))
+    testcase = Testcase.objects.filter(problem=problem)
+    tags = problem.tags.all()
     if request.method == 'GET':
-        if is_new:
-            form = ProblemForm(initial={'owner': request.user.username})
-        else:
-            form = ProblemForm(instance=problem,
-                               initial={'owner': request.user.username})
+        form = ProblemForm(instance=problem,
+                           initial={'owner': request.user.username})
     if request.method == 'POST':
-        if is_new:
-            form = ProblemForm(request.POST,
-                               initial={'owner': request.user.username})
-        else:
-            form = ProblemForm(request.POST,
-                               instance=problem,
-                               initial={'owner': request.user.username})
+        form = ProblemForm(request.POST,
+                           instance=problem,
+                           initial={'owner': request.user.username})
         if form.is_valid():
             problem = form.save()
             problem.description = request.POST['description']
@@ -119,12 +120,9 @@ def edit(request, pid=None):
             return redirect('/problem/%d' % (problem.pk))
     if not request.user.is_admin:
         del form.fields['owner']
-    if is_new:
-        return render_index(request, 'problem/edit.html', 
-                    { 'form': form, 'owner': request.user, 'is_new': True })
     else:
         return render_index(request, 'problem/edit.html', 
-                  {'form': form, 'pid': pid, 'is_new': False,
+                    {'form': form, 'pid': pid, 'pname': problem.pname,
                    'tags': tags, 'description': problem.description,
                    'input': problem.input, 'output': problem.output,
                    'sample_in': problem.sample_in, 'sample_out': problem.sample_out,
