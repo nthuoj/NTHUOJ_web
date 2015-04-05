@@ -48,6 +48,7 @@ class ProblemForm(forms.ModelForm):
             'pname',
             'owner',
             'visible',
+            'judge_language',
             'judge_source',
             'judge_type',
             'error_torrence',
