@@ -158,7 +158,7 @@ def get_scoreboard_csv(contest_id):
     writer.writerow(title)
     #user data
     for counter, user in enumerate(scoreboard.users):
-        user_row = [counter,  user.username]
+        user_row = [counter, user.username]
         for problem in user.problems:
             passed_testcases = problem.get_testcases_solved()
             total_testcases = problem.total_testcases
