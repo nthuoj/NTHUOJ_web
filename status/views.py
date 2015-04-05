@@ -27,7 +27,6 @@ from django.contrib.auth.decorators import login_required
 from django.http import Http404
 from django.shortcuts import render
 from django.template import RequestContext
-from utils.render_helper import custom_proc
 from utils.render_helper import render_index
 from problem.models import Submission, SubmissionDetail
 from status.templatetags.status_filters import show_detail

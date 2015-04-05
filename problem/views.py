@@ -25,7 +25,6 @@ from django.http import HttpResponse, HttpResponseBadRequest, Http404
 from django.shortcuts import render, redirect
 from django.core.exceptions import PermissionDenied
 from django.contrib.auth.decorators import login_required
-from utils.render_helper import custom_proc
 from utils.render_helper import render_index
 from users.models import User
 from problem.models import Problem, Tag, Testcase

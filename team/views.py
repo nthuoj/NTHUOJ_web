@@ -26,7 +26,6 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 import json
 import random
 import datetime
-from utils.render_helper import custom_proc
 from utils.render_helper import render_index
 from django.template import RequestContext
 # Create your views here.

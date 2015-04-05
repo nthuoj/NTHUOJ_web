@@ -27,9 +27,6 @@ from django.shortcuts import render
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.template import RequestContext
 from django.forms.models import model_to_dict
-
-from utils.render_helper import custom_proc
-
 from contest.contest_info import get_clarifications
 
 from contest.contestArchive import get_contests

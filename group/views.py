@@ -29,7 +29,6 @@ from group.forms import GroupForm, GroupFormEdit
 from group.models import Group
 from utils.user_info import has_group_ownership
 from utils.log_info import get_logger
-from utils.render_helper import custom_proc
 from utils.render_helper import render_index
 
 logger = get_logger()

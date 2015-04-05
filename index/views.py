@@ -36,7 +36,6 @@ from django.shortcuts import render, redirect
 from utils.render_helper import render_index
 from django.template import RequestContext
 from utils.user_info import validate_user
-from utils.render_helper import custom_proc
 from django.core.urlresolvers import reverse
 from django.template import RequestContext
 from index.forms import AnnouncementCreationForm
