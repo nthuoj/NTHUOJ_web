@@ -38,6 +38,9 @@ from users.models import User
 from utils.user_info import has_contest_ownership
 from utils.user_info import validate_user
 from utils.log_info import get_logger
+from utils import user_info
+
+from django.http import Http404
 
 import csv
 from django.http import HttpResponse
@@ -231,6 +234,7 @@ admin or owner can delete contest
 def can_delete_contest(user, contest):
     user = validate_user(user)
     return user.has_admin_auth() or (user == contest.owner)
+
 '''
 1. contest is not ended
 2. contest is open_register
@@ -246,6 +250,10 @@ OWN_CONTEST = "own_contest"
 HAS_ATTENDED = "has_attended"
 IS_ADMIN = "is_admin"
 OK = "OK"
+
+'''
+return error or success message
+'''
 def can_register_return_status(user, contest):
     if not user.is_authenticated():
         return NOT_LOGGED_IN
@@ -271,11 +279,17 @@ def can_register_return_status(user, contest):
 
     return OK
 
+'''
+return boolean
+'''
 def can_register(user, contest):
     if can_register_return_status(user, contest) is OK:
         return True
     return False
 
+'''
+depend on error msg and write to log
+'''
 def can_register_log(user, contest):
     status = can_register_return_status(user, contest)
     if status is OK:
@@ -294,6 +308,14 @@ def can_register_log(user, contest):
         logger.info('Contest: User %s is admin. Can not register contest %s!' % (user.username, contest.id))
 
     return False
+
+def get_contest_or_404(contest_id):
+    try:
+        contest = Contest.objects.get(id = contest_id)
+        return contest
+    except Contest.DoesNotExist:
+        logger.warning('Contest: Can not register contest %s! Contest not found!' % contest_id)
+        raise Http404('Can not register contest %s! Contest not found!' % contest_id)
 
 def is_ended(contest):
     return (datetime.now() > contest.end_time)
