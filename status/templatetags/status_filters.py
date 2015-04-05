@@ -100,41 +100,36 @@ def show_detail(submission, user):
     user = validate_user(user)
 
     # basic requirement: submission must be shown
-    if show_submission(submission, user):
-        # admin can see everyone's detail
-        if user.user_level == user.ADMIN:
-            return True
-        # no one can see admin's detail
-        if submission.user.user_level == user.ADMIN:
-            return False
+    # admin can see everyone's detail
+    if user.user_level == user.ADMIN:
+        return True
+    # no one can see admin's detail
+    if submission.user.user_level == user.ADMIN:
+        return False
 
-        contests = Contest.objects.filter(
-            is_homework=False,
-            start_time__lte=datetime.now(),
-            end_time__gte=datetime.now())
-        # during the contest, only owner/coowner with user level sub-judge/judge
-        # can view the detail
-        if contests:
-            contests = contests.filter(problem=submission.problem)
-            owners = []
-            for contest in contests:
-                owners.append(contest.owner)
-                owners.extend(contest.coowner.all())
-            if user in owners:
+    contests = Contest.objects.filter(
+        is_homework=False,
+        start_time__lte=datetime.now(),
+        end_time__gte=datetime.now())
+    # during the contest, only owner/coowner with user level sub-judge/judge
+    # can view the detail
+    if contests:
+        contests = contests.filter(problem=submission.problem)
+        for contest in contests:
+            if user == contest.owner or user in contest.coowner.all():
                 return True
-            else:
-                return False
-        # a user can view his own detail
-        if submission.user == user:
+        return False
+    # a user can view his own detail
+    if submission.user == user:
+        return True
+    # a problem owner can view his problem's detail
+    if submission.problem.owner_id == user.username:
+        return True
+    # a user can view his team member's detail
+    if submission.team:
+        team_member = TeamMember.objects.filter(team=submission.team, member=user)
+        if team_member or submission.team.leader == user:
             return True
-        # a problem owner can view his problem's detail
-        if submission.problem.owner_id == user.username:
-            return True
-        # a user can view his team member's detail
-        if submission.team:
-            team_member = TeamMember.objects.filter(team=submission.team, member=user)
-            if team_member or submission.team.leader == user:
-                return True
     # no condition is satisfied
     return False
 

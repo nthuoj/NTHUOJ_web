@@ -19,9 +19,12 @@ git clone git@github.com:bruce3557/NTHUOJ_web.git
 * mysql-server
 * python-mysqldb
 * django-axes
+* django-autocomplete-light
 * bower
 * django-bower
 * curl
+* django-datetime-widget
+* django-bootstrap-form
 
 ###Installation:
 * Execute install.py for initial setting.

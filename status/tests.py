@@ -72,7 +72,7 @@ class StatusTestCase(TestCase):
         for user in users:
             for problem in problems:
                 submission = Submission.objects.create(problem=problem, user=user)
-        
+
         for problem in problems:
             if problem.visible:  # by no mean will a normal user send invisible problem
                 submission = Submission.objects.create(problem=problem, user=self.user)
@@ -190,7 +190,7 @@ class StatusTestCase(TestCase):
             for submission in submissions:
                 can_show = show_detail(submission, user)
                 self.assertEqual(can_show, True)
-        
+
         # 3. team member can see all detail when submitted as team
         # create a team with subjudge as leader and user as member
         team = Team.objects.create(team_name='test_team', leader=self.subjudge)

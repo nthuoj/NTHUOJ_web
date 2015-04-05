@@ -51,6 +51,12 @@ from contest.register_contest import MAX_ANONYMOUS
 
 from contest.contest_info import can_ask
 from contest.contest_info import can_reply
+from contest.contest_info import can_create_contest
+from contest.contest_info import can_edit_contest
+from contest.contest_info import can_delete_contest
+from contest.contest_info import get_scoreboard
+from contest.contest_info import can_register
+from contest.contest_info import can_register_log
 from contest.contest_info import get_contest_or_404
 
 from group.models import Group
@@ -60,6 +66,11 @@ from group.group_info import get_group_or_404
 from utils.user_info import is_anonymous
 from utils.log_info import get_logger
 from utils import user_info
+from utils.render_helper import render_index
+from utils.log_info import get_logger
+from utils import user_info
+
+from status.views import *
 
 logger = get_logger()
 
@@ -67,7 +78,6 @@ def archive(request, page = None):
     user = request.user
     all_contests = get_contests(user)
     groups = get_owned_group(user)
-    own_group = (len(groups)!=0)
     #show 15 contests
     paginator = Paginator(all_contests, 15)
 
@@ -87,13 +97,10 @@ def archive(request, page = None):
     max_page = int(paginator.num_pages)
     pager = {'previous':previous, 'this':this, 'next':next, 'max_page':max_page}
 
-    max_anonymous = MAX_ANONYMOUS
-
-    return render(request, 
+    return render_index(request,
         'contest/contestArchive.html',
-        {'contests':contests,'user':user,'groups':groups, 'own_group':own_group,
-        'pager':pager, 'max_anonymous':max_anonymous},
-        context_instance = RequestContext(request, processors = [custom_proc]))
+        {'contests':contests,'user':user,'groups':groups,'pager':pager,
+         'max_anonymous':MAX_ANONYMOUS})
 
 def contest(request, contest_id):
     try:
@@ -104,101 +111,110 @@ def contest(request, contest_id):
 
     now = datetime.now()
     #if contest has not started and user is not the owner
-    if ((contest.start_time > now) and not user_info.has_contest_ownership(request.user,contest)):
-        raise PermissionDenied
-    else:
+    if ((contest.start_time < now) or user_info.has_contest_ownership(request.user,contest) or\
+        request.user.has_admin_auth()):
         scoreboard = get_scoreboard(contest)
+        status = contest_status(request, contest)
         user = request.user
         clarifications = get_clarifications(user,contest)
 
         initial_form = {'contest':contest,'asker':user}
         form = ClarificationForm(initial=initial_form)
 
-        initial_reply_form = {'contest':contest,'replyer':user}
+        initial_reply_form = {'contest':contest,'replier':user}
         reply_form = ReplyForm(initial = initial_reply_form)
-        return render(request, 'contest/contest.html',
+        return render_index(request, 'contest/contest.html',
             {'contest':contest, 'clarifications':clarifications, 'user':user,
             'form':form, 'reply_form':reply_form,
-            'scoreboard':scoreboard},
-            context_instance = RequestContext(request, processors = [custom_proc]))
+            'scoreboard':scoreboard, 'status': status})
+    else:
+        raise PermissionDenied
 
+
+@login_required
 def new(request):
-    if request.user.is_authenticated() and request.user.has_judge_auth():
+    if can_create_contest(request.user):
         if request.method == 'GET':
             form = ContestForm(initial={'owner':request.user})
-            return render(request,'contest/editContest.html',{'form':form})
+            title = "New Contest"
+            return render_index(request,'contest/editContest.html',{'form':form,'title':title})
         if request.method == 'POST':
             form = ContestForm(request.POST)
             if form.is_valid():
                 new_contest = form.save()
-                logger.info('Contest: Create a new contest %s!' % new_contest.id)
+                logger.info('Contest: User %s Create a new contest %s!' %
+                    (request.user ,new_contest.id))
                 return redirect('contest:archive')
     raise PermissionDenied
 
-
+@login_required
 def edit(request, contest_id):
-    if request.user.is_authenticated():
-        try:
-            contest = Contest.objects.get(id = contest_id)
-        except Contest.DoesNotExist:
-            logger.warning('Contest: Can not edit contest %s! Contest not found!' % contest_id)
-            raise Http404('Contest does not exist, can not edit.')
+    try:
+        contest = Contest.objects.get(id = contest_id)
+    except Contest.DoesNotExist:
+        logger.warning('Contest: Can not edit contest %s! Contest not found!' % contest_id)
+        raise Http404('Contest does not exist, can not edit.')
+    title = "Edit Contest"
+    if can_edit_contest(request.user,contest):
+        if request.method == 'GET':
+            contest_dic = model_to_dict(contest)
+            form = ContestForm(initial = contest_dic)
+            return render_index(request,'contest/editContest.html',
+                    {'form':form,'user':request.user,'title':title})
+        if request.method == 'POST':
+            form = ContestForm(request.POST, instance = contest)
+            if form.is_valid():
+                modified_contest = form.save()
+                logger.info('Contest: User %s edited contest %s!' %
+                    (request.user, modified_contest.id))
+                return archive(request)
+            else:
+                return render_index(request,'contest/editContest.html',
+                    {'form':form,'user':request.user,'title':title})
 
-        if user_info.has_contest_ownership(request.user,contest):
-            if request.method == 'GET':
-                contest_dic = model_to_dict(contest)
-                form = ContestForm(initial = contest_dic)
-                return render(request,'contest/editContest.html',{'form':form,'user':request.user})
-            if request.method == 'POST':
-                form = ContestForm(request.POST, instance = contest)
-                if form.is_valid():
-                    modified_contest = form.save()
-                    logger.info('Contest: Modified contest %s!' % modified_contest.id)
-                return redirect('contest:archive')
-    raise PermissionDenied
-
+@login_required
 def delete(request, contest_id):
-    if request.user.is_authenticated():
-        try:
-            contest = Contest.objects.get(id = contest_id)
-        except Contest.DoesNotExist:
-            logger.warning('Contest: Can not delete contest %s! Contest not found!' % contest_id)
-            raise Http404('Contest does not exist, can not delete.')
+    try:
+        contest = Contest.objects.get(id = contest_id)
+    except Contest.DoesNotExist:
+        logger.warning('Contest: Can not delete contest %s! Contest not found!' % contest_id)
+        raise Http404('Contest does not exist, can not delete.')
 
-        # only contest owner can delete
-        if request.user == contest.owner:
-            deleted_contest_id = contest.id
-            contest.delete()
-            logger.info('Contest: Delete contest %s!' % deleted_contest_id)
-            return redirect('contest:archive')
+    if can_delete_contest(request.user, contest):
+        deleted_contest_id = contest.id
+        contest.delete()
+        logger.info('Contest: User %s delete contest %s!' %
+            (request.user, deleted_contest_id))
+        return redirect('contest:archive')
     raise PermissionDenied
 
 @login_required
 def register(request, contest_id):
-    if request.method == 'POST' and not is_anonymous(request.user):
-        contest = get_contest_or_404(contest_id)
-        #can only register not ended contest
-        if contest.end_time > datetime.now():
-            #get group id or register as single user
-            group_id = request.POST.get('group')
-            if(group_id is not None):
-                register_group(request,contest,group_id)
+    contest = get_contest_or_404(contest_id)
+    #get group id or register as single user
+    group_id = request.POST.get('group')
+    anonymous = request.POST.get('anonymous')
+    #get group id or register as single user
+    if(group_id is not None):
+        register_group(request, group_id, contest)
 
-            anonymous = request.POST.get('anonymous')
-            if(anonymous is not None):
-                register_anonymous(request,contest,anonymous)
-
-            if (group_id is None) and (anonymous is None):
-                register_user(contest, request.user)
+    #get group id or register as single user
+    if(anonymous is not None):
+        register_anonymous(request, contest, anonymous)
+    else:
+        register_user(request.user, contest)
     
     return redirect('contest:archive')
 
 
 @login_required
-def register_group(request, contest, group_id):
+def register_group(request, group_id, contest):
     group = get_group_or_404(group_id)
     if user_info.has_group_ownership(request.user, group):
-        register_group_impl(contest, group)
+        register_group_impl(group, contest)
+    else:
+        logger.warning('Contest: User %s can not register group %s. Does not have ownership!' 
+            % (request.user.username, group_id))
     return redirect('contest:archive')
 
 @login_required
@@ -222,7 +238,7 @@ def ask(request):
             form = ClarificationForm(request.POST)
             if form.is_valid():
                 new_clarification = form.save()
-                logger.info('Clarification: User %s create Clarification %s!' 
+                logger.info('Clarification: User %s create Clarification %s!'
                     % (request.user.username, new_clarification.id))
             return redirect('contest:contest',contest)
     return redirect('contest:archive')
@@ -238,7 +254,7 @@ def reply(request):
         logger.warning('Clarification: User %s can not reply Clarification %s!'
             % (request.user.username, clarification.id))
         return redirect('contest:archive')
-    
+
     if can_reply(request.user,contest_obj):
         if request.method == 'POST':
             form = ReplyForm(request.POST or None, instance = instance)
@@ -246,7 +262,7 @@ def reply(request):
                 replied_clarification = form.save()
                 replied_clarification.reply_time = datetime.now()
                 replied_clarification.save()
-                logger.info('Clarification: User %s reply Clarification %s!' 
+                logger.info('Clarification: User %s reply Clarification %s!'
                     % (request.user.username, replied_clarification.id))
             return redirect('contest:contest',contest)
     return redirect('contest:archive')

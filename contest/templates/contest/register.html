@@ -44,20 +44,24 @@ SOFTWARE.
           {% else %}
           <tr>
             <td>
-              <a class="btn btn-primary btn-lg btn-block" href="{% url 'contest:register' contest.id %}">as {{ user.username }}</a>
+              <a class="btn btn-primary btn-lg btn-block" 
+              href="{% url 'contest:register' contest.id %}">as {{ user.username }}</a>
             </td>
           </tr>
           {% endif %}
         </table>
-        {% if own_group %}
         <table width='100%'>
           <tr class="saparate-area"></tr>
+          {% if groups %}
           <tr>
             <td>
-              <a class="btn btn-success btn-lg btn-block" data-toggle="collapse" data-target="#group_select{{ contest.id }}">a Group</a>
+              <a class="btn btn-success btn-lg btn-block" 
+                 data-toggle="collapse" data-target="#group_select{{ contest.id }}">a Group</a>
             </td>
           </tr>
+          {% endif %}
         </table>
+        {% if groups %}
         <div class="collapse" id="group_select{{ contest.id }}">
           <div class="well">
             <form class="form-inline" method="POST" action="{% url 'contest:register' contest.id %}">

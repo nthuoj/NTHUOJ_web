@@ -34,32 +34,25 @@ from utils.user_info import create_anonymous
 logger = get_logger()
 MAX_ANONYMOUS = 200
 
-def register(contest, user):
-    contestant = Contestant(contest = contest,user = user)
-    contestant.save()
-    logger.info('Contest: User %s attends Contest %s!' % (user.username, contest.id))
-    return True
+def register_user(user, contest):
+    if can_register(user, contest):
+        contestant = Contestant(contest = contest, user = user)
+        contestant.save()
+        logger.info('Contest: User %s attends Contest %s!' % (user.username, contest.id))
 
-def register_user(contest, user):
-    if can_register(contest, user):
-        return register(contest,user)
-    return False
-
-def register_group(contest, group):
+def register_group(group, contest):
     if not contest.open_register:
         logger.info('Contest: Registration for Contest %s is closed, can not register.' % contest.id)
-        return False
+        return
     for member in group.member.all():
-        if can_register(contest, member):
-            register(contest, member)
-    return True
+        register_user(member, contest)
 
 def register_anonymous(contest, account_num):
     if not is_integer(account_num):
         logger.warning('Contest: input word is not interger! Can not register anonymous!')
         return False
     account_num = int(account_num)  
-    if anonymous < 0:
+    if account_num < 0:
         logger.warning('Contest: input word is less than 0. Can not register anonymous!')
         return False
     if account_num > MAX_ANONYMOUS:
@@ -92,7 +85,7 @@ def register_anonymous(contest, account_num):
 
     if (account_num < attended):
         for index,user in enumerate(attended_anonymous):
-            if index == (attended-anonymous):
+            if index == (attended-account_num):
                 return True
             username = user.username
             contestant = Contestant.objects.get(user = user,contest = contest)
@@ -104,8 +97,8 @@ def register_anonymous(contest, account_num):
     if(available >= still_need):
         for user in available_anonymous:
             if (still_need > 0):
-                if can_register(contest, user):
-                    register(contest, user)
+                if can_register(user, contest):
+                    register_user(user, contest)
                     user.is_active = True
                     still_need -= 1
             else:
@@ -115,12 +108,12 @@ def register_anonymous(contest, account_num):
         need_to_create = still_need - available
         user_created = create_anonymous(need_to_create)
         for user in available_anonymous:
-            if can_register(contest, user):
-                register(contest, user)
+            if can_register(user, contest):
+                register_user(user, contest)
                 user.is_active = True
         for user in user_created:
-            if can_register(contest, user):
-                register(contest, user)
+            if can_register(user, contest):
+                register_user(user, contest)
                 user.is_active = True
                 user.save()
     for user in public_users:
