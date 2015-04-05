@@ -183,14 +183,15 @@ def forget_password_confirm(request, activation_key):
     '''check if there is UserProfile which matches
     the activation key (if not then display 404)
     '''
-    user_profile = get_object_or_404(UserProfile, activation_key=activation_key,
-                                     active_time__gte=datetime.datetime.now())
+    # clear expired activation_key
+    UserProfile.objects.filter(active_time__lte=datetime.datetime.now()).delete()
+
+    user_profile = get_object_or_404(UserProfile, activation_key=activation_key)
     user = user_profile.user
     user.backend = 'django.contrib.auth.backends.ModelBackend'
     # Let user login, so as to modify password
     login(request, user)
     logger.info('User %s is ready to reset his/her password' % user.username)
-    user_profile.delete()
     return redirect(reverse('users:profile', kwargs={'username': user.username}))
 
 
@@ -232,7 +233,6 @@ def register_confirm(request, activation_key):
     user.is_active = True
     user.save()
     logger.info('user %s has already been activated' % user.username)
-    user_profile.delete()
     return render_index(request, 'users/confirm.html', {'username': user.username})
 
 
