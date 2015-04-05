@@ -115,7 +115,7 @@ def view_code(request, sid):
     try:
         submission = Submission.objects.get(id=sid)
         if show_detail(submission, request.user):
-            f = open('%s%s.cpp' % (CodeSubmitForm.SUBMIT_PATH, sid), 'r')
+            f = open('%s%s.%s' % (CodeSubmitForm.SUBMIT_PATH, sid, submission.language.lower()), 'r')
             code = f.read()
             f.close()
             codesubmitform = CodeSubmitForm(
