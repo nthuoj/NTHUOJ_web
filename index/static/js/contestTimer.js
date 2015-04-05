@@ -61,7 +61,7 @@ function getRestTime() {
         var result = (remaining_time[i] - serverTime) / 1000;
 
         if(result <= freezes[i]*60){
-            document.getElementById("contest_" + contest_id[i]).className = "info";
+            document.getElementById("contest_" + contest_id[i]).className = "danger";
         }
         if (serverTime <= remaining_time[i]){
             var s = parseInt(result % 60);

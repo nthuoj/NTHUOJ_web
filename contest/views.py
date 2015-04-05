@@ -39,6 +39,7 @@ from contest.contest_info import can_edit_contest
 from contest.contest_info import can_delete_contest
 from contest.contest_info import get_scoreboard
 from contest.contest_info import can_register_log
+
 from utils import user_info
 from status.views import *
 
@@ -99,7 +100,7 @@ def contest(request, contest_id):
             context_instance = RequestContext(request, processors = [custom_proc]))
     else:
         raise PermissionDenied
-        
+
 
 @login_required
 def new(request):
@@ -112,7 +113,7 @@ def new(request):
             form = ContestForm(request.POST)
             if form.is_valid():
                 new_contest = form.save()
-                logger.info('Contest: User %s Create a new contest %s!' % 
+                logger.info('Contest: User %s Create a new contest %s!' %
                     (request.user ,new_contest.id))
                 return redirect('contest:archive')
     raise PermissionDenied
@@ -135,7 +136,7 @@ def edit(request, contest_id):
             form = ContestForm(request.POST, instance = contest)
             if form.is_valid():
                 modified_contest = form.save()
-                logger.info('Contest: User %s edited contest %s!' % 
+                logger.info('Contest: User %s edited contest %s!' %
                     (request.user, modified_contest.id))
                 return archive(request)
             else:
@@ -153,7 +154,7 @@ def delete(request, contest_id):
     if can_delete_contest(request.user, contest):
         deleted_contest_id = contest.id
         contest.delete()
-        logger.info('Contest: User %s delete contest %s!' % 
+        logger.info('Contest: User %s delete contest %s!' %
             (request.user, deleted_contest_id))
         return redirect('contest:archive')
     raise PermissionDenied
