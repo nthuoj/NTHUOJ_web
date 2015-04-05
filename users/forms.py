@@ -65,8 +65,7 @@ class UserProfileForm(forms.ModelForm):
     username = forms.CharField(label='Username',
                                widget=forms.TextInput(attrs={'readonly': True}))
     email = forms.EmailField(label='Email')
-    theme = forms.ChoiceField(label='Theme',
-                              choices=User.THEME_CHOICE)
+    theme = forms.ChoiceField(label='Theme', choices=User.THEME_CHOICE)
     password1 = forms.CharField(label='Password', required=False,
                                 widget=forms.PasswordInput())
     password2 = forms.CharField(label='Password Confirmation', required=False,
@@ -103,8 +102,7 @@ class UserProfileForm(forms.ModelForm):
 
 class UserLevelForm(forms.ModelForm):
     """A form for updating user's userlevel."""
-    user_level = forms.ChoiceField(label='Userlevel',
-                                   choices=User.USER_LEVEL_CHOICE)
+    user_level = forms.ChoiceField(label='Userlevel', choices=User.USER_LEVEL_CHOICE)
 
     class Meta:
         model = User
