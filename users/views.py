@@ -240,10 +240,6 @@ def register_confirm(request, activation_key):
     login(request, user)
     return render_index(request, 'users/confirm.html', {'username': user.username})
 
-    return render_index(
-        request,
-        'users/confirm.html',
-        {'username':user.username})
 
 @login_required()
 def user_notification(request, current_tab='none'):
