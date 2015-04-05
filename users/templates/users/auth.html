@@ -33,15 +33,15 @@ SOFTWARE.
     {% csrf_token %}
     {{ form|bootstrap_horizontal }}
     <div class="modal-footer">
-      <div id='msg' class='col-md-4'>{{ message }}</div>
+      <div id='msg' class='col-md-6'>{{ message }}</div>
       <button type="submit" class="btn btn-primary">Submit</button>
     </div>
     <hr>
-    <div class="poptxt_login">
+    <div>
       Don't have an account? You can
-      <a href={% url "users:create" %}>
-        <p class="p6">register here</p>
-      </a>
+      <a href={% url "users:create" %}>register here</a>.<br>
+      Forget your password? You can change your password
+      <a href={% url "users:forget_password" %}>here</a>.
     </div>
   </form>
 </div>

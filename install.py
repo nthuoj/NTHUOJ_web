@@ -46,7 +46,6 @@ if not os.path.isfile('emailInfo.py'):
 # Database Migratinos
 db_migrate()
 
-
 # Create super user
 ans = raw_input('Create super user?[Y/n] ')
 if ans == '' or ans == 'y' or ans == 'Y':
