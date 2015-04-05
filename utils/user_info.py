@@ -39,9 +39,9 @@ from problem.models import Submission, SubmissionDetail
 from users.models import User, UserProfile
 from utils.log_info import get_logger
 
+from django.conf import settings
 
 logger = get_logger()
-ANONYMOUS_PREFIX = "OJ"
 
 def has_contest_ownership(curr_user, curr_contest):
     curr_user = validate_user(curr_user)
@@ -195,7 +195,7 @@ def send_forget_password_email(request, user):
         logger.warning("There is an error when sending email to %s's mailbox" % username)
 
 def get_public_users():
-    return User.objects.filter(username__startswith = ANONYMOUS_PREFIX)
+    return User.objects.filter(username__startswith = settings.ANONYMOUS_PREFIX)
 
 def attends_not_ended_contest(user):
     user_attends = Contestant.objects.filter(user = user)
@@ -209,11 +209,11 @@ def create_anonymous(need):
     we_have = len(public_user)
     new_users = []
     for index in range(we_have, we_have + need):
-        username = ANONYMOUS_PREFIX + "{:0>4d}".format(index)
+        username = settings.ANONYMOUS_PREFIX + "{:0>4d}".format(index)
         new_user = User.objects.create_user(username, "000")
         logger.info('user %s created' % str(new_user))
         new_users.append(new_user)
     return new_users
 
 def is_anonymous(user):
-    return user.username.startswith(ANONYMOUS_PREFIX)
+    return user.username.startswith(settings.ANONYMOUS_PREFIX)

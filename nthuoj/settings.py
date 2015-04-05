@@ -142,3 +142,8 @@ STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
     'djangobower.finders.BowerFinder',
 )
+
+#maximum of anonymous contestant for a single contest
+MAX_ANONYMOUS = 200
+#anonymous contestant username prefix
+ANONYMOUS_PREFIX = "OJ"

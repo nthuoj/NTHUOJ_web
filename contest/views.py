@@ -47,7 +47,6 @@ from contest.forms import ReplyForm
 from contest.register_contest import register_user
 from contest.register_contest import register_group as register_group_impl
 from contest.register_contest import register_anonymous as register_anonymous_impl
-from contest.register_contest import MAX_ANONYMOUS
 
 from contest.contest_info import can_ask
 from contest.contest_info import can_reply
@@ -71,6 +70,7 @@ from utils.log_info import get_logger
 from utils import user_info
 
 from status.views import *
+from django.conf import settings
 
 logger = get_logger()
 
@@ -100,7 +100,7 @@ def archive(request, page = None):
     return render_index(request,
         'contest/contestArchive.html',
         {'contests':contests,'user':user,'groups':groups,'pager':pager,
-         'max_anonymous':MAX_ANONYMOUS})
+         'max_anonymous':settings.MAX_ANONYMOUS})
 
 def contest(request, contest_id):
     try:

@@ -22,6 +22,7 @@ from contest.models import Contestant
 
 from contest.contest_info import get_contest_or_404
 from contest.contest_info import can_register
+from contest.contest_info import can_register_log
 
 from group.models import Group
 from users.models import User
@@ -31,11 +32,13 @@ from utils.user_info import get_public_users
 from utils.user_info import attends_not_ended_contest
 from utils.user_info import create_anonymous
 
+from django.conf import settings 
+
+
 logger = get_logger()
-MAX_ANONYMOUS = 200
 
 def register_user(user, contest):
-    if can_register(user, contest):
+    if can_register_log(user, contest):
         contestant = Contestant(contest = contest, user = user)
         contestant.save()
         logger.info('Contest: User %s attends Contest %s!' % (user.username, contest.id))
@@ -55,11 +58,11 @@ def register_anonymous(contest, account_num):
     if account_num < 0:
         logger.warning('Contest: input word is less than 0. Can not register anonymous!')
         return False
-    if account_num > MAX_ANONYMOUS:
-        too_many_anonymous_info = 'Contest: register anonymous more than ' \
-             + str(MAX_ANONYMOUS) + '! Set to ' + str(MAX_ANONYMOUS) + '!'
-        logger.info(too_many_anonymous_info)
-        account_num = MAX_ANONYMOUS
+    if account_num > settings.MAX_ANONYMOUS:
+        too_many_anonymous_warning = 'Contest: register anonymous more than ' \
+             + str(settings.MAX_ANONYMOUS) + '! Set to ' + str(settings.MAX_ANONYMOUS) + '!'
+        logger.warning(too_many_anonymous_warning)
+        account_num = settings.MAX_ANONYMOUS
 
     public_users = get_public_users()
     available = 0
@@ -76,7 +79,7 @@ def register_anonymous(contest, account_num):
     all_contestant = Contestant.objects.filter(contest = contest).order_by('-user')
     attended_anonymous = []
     for contestant in all_contestant:
-        if contestant.user.username.startswith('OJ'):
+        if contestant.user.username.startswith(settings.ANONYMOUS_PREFIX):
             attended_anonymous.append(contestant.user)
 
     attended = len(attended_anonymous)

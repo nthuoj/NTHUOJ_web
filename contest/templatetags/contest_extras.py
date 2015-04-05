@@ -31,7 +31,6 @@ from contest.scoreboard import User
 from users.models import User
 from utils import user_info 
 
-
 register = template.Library()
 
 # check if user has contest ownership
@@ -113,7 +112,6 @@ register.filter("total_contestant", total_contestant)
 def can_register(user, contest):
     return contest_info.can_register(user, contest)
 register.filter("can_register", can_register)
-
 
 '''
 Contest should not be end. 
