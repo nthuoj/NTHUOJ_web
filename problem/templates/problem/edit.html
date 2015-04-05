@@ -53,6 +53,7 @@ SOFTWARE.
         <div>
           <input type="submit" value="Preview" class="btn btn-success" target="_blank" id="preview_button">
           <input type="submit" value="Save" class="btn btn-primary">
+          <a class="btn btn-warning" href="{% url 'problem:detail' pid %}">Cancel</a>
         </div>
         {% csrf_token %}
         <div class="tab-pane active" id="info">

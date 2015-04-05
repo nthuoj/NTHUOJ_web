@@ -97,7 +97,7 @@ def edit(request, pid=None):
             form = ProblemForm(initial={'owner': request.user.username})
         else:
             form = ProblemForm(instance=problem,
-                               initial={'owner': reuqest.user.username})
+                               initial={'owner': request.user.username})
     if request.method == 'POST':
         if is_new:
             form = ProblemForm(request.POST,
@@ -105,7 +105,7 @@ def edit(request, pid=None):
         else:
             form = ProblemForm(request.POST,
                                instance=problem,
-                               initial={'owner': reuqest.user.username})
+                               initial={'owner': request.user.username})
         if form.is_valid():
             problem = form.save()
             problem.description = request.POST['description']
