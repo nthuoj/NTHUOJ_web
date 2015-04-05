@@ -33,8 +33,10 @@ from datetime import datetime, timedelta
 from index.models import Announcement
 from users.models import User, Notification
 from django.shortcuts import render, redirect
+from utils.render_helper import render_index
 from django.template import RequestContext
 from utils.user_info import validate_user
+from utils.render_helper import custom_proc
 from django.core.urlresolvers import reverse
 from django.template import RequestContext
 from index.forms import AnnouncementCreationForm
@@ -58,10 +60,9 @@ def index(request, alert_info='none'):
         (start_time__gt=present, start_time__lt=time_threshold, is_homework=False)
     announcements = Announcement.objects.filter \
         (start_time__lt=present, end_time__gt=present)
-    return render(request, 'index/index.html',
+    return render_index(request, 'index/index.html',
                 {'c_runnings':c_runnings, 'c_upcomings':c_upcomings,
-                'announcements':announcements, 'alert_info':alert_info},
-                context_instance=RequestContext(request, processors=[custom_proc]))
+                'announcements':announcements, 'alert_info':alert_info})
 
 @login_required()
 def announcement_create(request):
@@ -75,9 +76,8 @@ def announcement_create(request):
             return redirect(reverse('index:index'))
     else:
         form = AnnouncementCreationForm()
-    return render(request, 'index/announcement.html',
-                {'form': form, 'title': 'Create Announcement'},
-                context_instance=RequestContext(request, processors=[custom_proc]))
+    return render_index(request, 'index/announcement.html',
+                {'form': form, 'title': 'Create Announcement'})
 
 @login_required()
 def announcement_update(request, aid):
@@ -97,9 +97,8 @@ def announcement_update(request, aid):
             return redirect(reverse('index:index'))
     else:
         form = AnnouncementCreationForm(instance=announcement)
-    return render(request, 'index/announcement.html',
-                {'form': form, 'announcement':announcement, 'title': 'Update Announcement'},
-                context_instance=RequestContext(request, processors=[custom_proc]))
+    return render_index(request, 'index/announcement.html',
+                {'form': form, 'announcement':announcement, 'title': 'Update Announcement'})
 
 @login_required()
 def announcement_delete(request, aid):
@@ -150,24 +149,9 @@ def custom_500(request):
     return render(request, 'index/500.html',{'error_message':'error'}, status=500)
 
 def base(request):
-    return render(request, 'index/base.html',{},
-                context_instance=RequestContext(request, processors=[custom_proc]))
+    return render_index(request, 'index/base.html',{})
 
 def get_time(request):
     t = time.time()
     tstr = datetime.fromtimestamp(t).strftime('%Y/%m/%d %H:%M:%S')
     return HttpResponse(tstr)
-
-def custom_proc(request):
-
-    amount = Notification.objects.filter \
-        (receiver=request.user, read=False).count()
-
-    t = time.time()
-    tstr = datetime.fromtimestamp(t).strftime('%Y/%m/%d %H:%M:%S')
-    people = random.randint(100,999)
-    return {
-        'tstr': tstr,
-        'people': people,
-        'amount': amount
-    }
