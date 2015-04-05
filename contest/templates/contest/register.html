@@ -33,10 +33,11 @@ SOFTWARE.
       <hr>
       <div class="modal-body" id="register">
         <table width='100%'>
-          {% if not user|has_auth:contest.id %}
+          {% if user|can_register:contest %}
           <tr>
             <td>
-              <a class="btn btn-primary btn-lg btn-block" href="{% url 'contest:register' contest.id %}">as {{ user.username }}</a>
+              <a class="btn btn-primary btn-lg btn-block" 
+                 href="{% url 'contest:register' contest.id %}">as {{ user.username }}</a>
             </td>
           </tr>
           {% else %}
@@ -52,7 +53,8 @@ SOFTWARE.
           {% if groups %}
           <tr>
             <td>
-              <a class="btn btn-success btn-lg btn-block" data-toggle="collapse" data-target="#group_select{{ contest.id }}">a Group</a>
+              <a class="btn btn-success btn-lg btn-block" 
+                 data-toggle="collapse" data-target="#group_select{{ contest.id }}">a Group</a>
             </td>
           </tr>
           {% endif %}
