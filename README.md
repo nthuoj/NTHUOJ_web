@@ -32,7 +32,7 @@ git clone git@github.com:bruce3557/NTHUOJ_web.git
     python install.py
     ```
 
-* After installing, you can modify `'<project/root>/config/nthuoj.cfg'` if your want to change project configurations.
+* After installing, you can modify `'project_root/config/nthuoj.cfg'` if your want to change project configurations.
 
 ###Email host:
 * The email host should be gmail.

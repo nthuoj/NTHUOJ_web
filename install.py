@@ -62,10 +62,16 @@ if ans == '' or ans == 'y' or ans == 'Y':
     write_path_config(config, paths)
     print '========================================'
 
-
 # Writing our configuration file
 with open(CONFIG_PATH, 'wb') as configfile:
     config.write(configfile)
 
+# Create super user
+ans = raw_input('Create super user?[Y/n] ')
+if ans == '' or ans == 'y' or ans == 'Y':
+    django_manage('createsuperuser')
+
 # Database Migratinos
-db_migrate()
+django_manage('syncdb')
+django_manage('makemigrations')
+django_manage('migrate')
