@@ -94,14 +94,18 @@ def edit(request, pid=None):
         is_new = True
     if request.method == 'GET':
         if is_new:
-            form = ProblemForm()
+            form = ProblemForm(initial={'owner': request.user.username})
         else:
-            form = ProblemForm(instance=problem)
+            form = ProblemForm(instance=problem,
+                               initial={'owner': reuqest.user.username})
     if request.method == 'POST':
         if is_new:
-            form = ProblemForm(request.POST)
+            form = ProblemForm(request.POST,
+                               initial={'owner': request.user.username})
         else:
-            form = ProblemForm(request.POST, instance=problem)
+            form = ProblemForm(request.POST,
+                               instance=problem,
+                               initial={'owner': reuqest.user.username})
         if form.is_valid():
             problem = form.save()
             problem.description = request.POST['description']

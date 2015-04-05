@@ -24,13 +24,14 @@ SOFTWARE.
 from django import forms
 from problem.models import Problem
 from users.models import User
+from django.db.models import Q
 
 import autocomplete_light
 
 # create autocomplete interface and register
 class UserAutocomplete(autocomplete_light.AutocompleteModelBase):
     search_fields = ['^username']
-    choices = User.objects.all()
+    choices = User.objects.filter(Q(user_level=User.ADMIN) | Q(user_level=User.JUDGE) | Q(user_level=User.SUB_JUDGE))
     model = User
     attrs = {
         'placeholder': '',
