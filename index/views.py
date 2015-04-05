@@ -28,17 +28,20 @@ from django.http import Http404
 from django.utils import timezone
 from utils.log_info import get_logger
 from contest.models import Contest
-from django.shortcuts import render
 from django.http import HttpResponse
 from datetime import datetime, timedelta
+from index.models import Announcement
 from users.models import User, Notification
+from django.shortcuts import render, redirect
 from django.template import RequestContext
 from utils.user_info import validate_user
+from django.core.urlresolvers import reverse
 from django.template import RequestContext
+from index.forms import AnnouncementCreationForm
+from django.core.exceptions import PermissionDenied
+from django.contrib.auth.decorators import login_required
 from django.db.models import Q
-from users.models import User
 from problem.models import Problem
-from contest.models import Contest
 from group.models import Group
 
 # Create your views here.
@@ -46,16 +49,69 @@ logger = get_logger()
 
 
 def index(request, alert_info='none'):
+
     present = timezone.now()
     time_threshold = datetime.now() + timedelta(days=1);
     c_runnings = Contest.objects.filter \
         (start_time__lt=present, end_time__gt=present, is_homework=False)
     c_upcomings = Contest.objects.filter \
         (start_time__gt=present, start_time__lt=time_threshold, is_homework=False)
+    announcements = Announcement.objects.filter \
+        (start_time__lt=present, end_time__gt=present)
     return render(request, 'index/index.html',
                 {'c_runnings':c_runnings, 'c_upcomings':c_upcomings,
-                'alert_info':alert_info},
+                'announcements':announcements, 'alert_info':alert_info},
                 context_instance=RequestContext(request, processors=[custom_proc]))
+
+@login_required()
+def announcement_create(request):
+    if User.has_admin_auth(request.user) == False:
+        raise PermissionDenied('User %s does not have the permission!' % str(request.user))
+    if request.method == 'POST':
+        form = AnnouncementCreationForm(request.POST)
+        if form.is_valid():
+            announcement = form.save()
+            announcement.backend = 'django.contrib.auth.backends.ModelBackend'
+            return redirect(reverse('index:index'))
+    else:
+        form = AnnouncementCreationForm()
+    return render(request, 'index/announcement.html',
+                {'form': form, 'title': 'Create Announcement'},
+                context_instance=RequestContext(request, processors=[custom_proc]))
+
+@login_required()
+def announcement_update(request, aid):
+    if User.has_admin_auth(request.user) == False:
+        raise PermissionDenied('User %s does not have the permission' % str(request.user))
+
+    try:
+        announcement = Announcement.objects.get(id=long(aid))
+    except Announcement.DoesNotExist:
+        raise Exception('Announcement %ld does not exist' % long(aid))
+
+    if request.method == 'POST':
+        form = AnnouncementCreationForm(request.POST, instance=announcement)
+        if form.is_valid():
+            updating = form.save()
+            updating.backend = 'django.contrib.auth.backends.ModelBackend'
+            return redirect(reverse('index:index'))
+    else:
+        form = AnnouncementCreationForm(instance=announcement)
+    return render(request, 'index/announcement.html',
+                {'form': form, 'announcement':announcement, 'title': 'Update Announcement'},
+                context_instance=RequestContext(request, processors=[custom_proc]))
+
+@login_required()
+def announcement_delete(request, aid):
+    if User.has_admin_auth(request.user) == False:
+        raise PermissionDenied('User %s does not have the permission' % str(request.user))
+
+    try:
+        announcement = Announcement.objects.get(id=long(aid))
+        announcement.delete()
+    except Announcement.DoesNotExist:
+        raise Exception('Announcement %ld does not exist' % long(aid))
+    return redirect(reverse('index:index'))
 
 def navigation_autocomplete(request):
     q = request.GET.get('q', '')
@@ -81,6 +137,11 @@ def navigation_autocomplete(request):
 
     return render(request, 'index/navigation_autocomplete.html', queries)
 
+def custom_400(request):
+    return render(request, 'index/400.html', status=400)
+
+def custom_403(request):
+    return render(request, 'index/403.html', status=403)
 
 def custom_404(request):
     return render(request, 'index/404.html', status=404)
