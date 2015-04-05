@@ -30,7 +30,6 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404
 from django.shortcuts import render, redirect, render_to_response
 from django.template import RequestContext
-from index.views import custom_proc
 from users.admin import UserCreationForm, AuthenticationForm
 from users.forms import CodeSubmitForm
 from users.forms import UserProfileForm, UserLevelForm, UserForgetPasswordForm
@@ -60,11 +59,10 @@ def list(request):
         # If page is out of range (e.g. 9999), deliver last page of results.
         users = paginator.page(paginator.num_pages)
 
-    return render(
+    return render_index(
         request,
         'users/userList.html',
-        {'users': users},
-        context_instance=RequestContext(request, processors=[custom_proc]))
+        {'users': users})
 
 
 def profile(request, username):
@@ -104,11 +102,10 @@ def profile(request, username):
                     render_data['userlevel_message'] = 'You can\'t switch user %s to %s' % \
                         (profile_user, user_level)
 
-        return render(
+        return render_index(
             request,
             'users/profile.html',
-            render_data,
-            context_instance=RequestContext(request, processors=[custom_proc]))
+            render_data)
 
     except User.DoesNotExist:
         logger.warning('User %s does not exist' % username)
@@ -131,15 +128,13 @@ def user_create(request):
             logger.info('user %s created' % str(user))
             return redirect(reverse('index:alert', kwargs={'alert_info': 'mailbox'}))
         else:
-            return render(
+            return render_index(
                 request, 'users/auth.html',
-                {'form': user_form, 'title': 'Sign Up'},
-                context_instance=RequestContext(request, processors=[custom_proc]))
-    return render(
+                {'form': user_form, 'title': 'Sign Up'})
+    return render_index(
         request,
         'users/auth.html',
-        {'form': UserCreationForm(), 'title': 'Sign Up'},
-        context_instance=RequestContext(request, processors=[custom_proc]))
+        {'form': UserCreationForm(), 'title': 'Sign Up'})
 
 
 def user_logout(request):
@@ -168,16 +163,14 @@ def user_login(request):
         else:
             user_form.add_error(None,
                 "You will be blocked for 6 minutes if you have over 3 wrong tries.")
-            return render(
+            return render_index(
                 request,
                 'users/auth.html',
-                {'form': user_form, 'title': 'Login'},
-                context_instance=RequestContext(request, processors=[custom_proc]))
-    return render(
+                {'form': user_form, 'title': 'Login'})
+    return render_index(
         request,
         'users/auth.html',
-        {'form': AuthenticationForm(), 'title': 'Login'},
-        context_instance=RequestContext(request, processors=[custom_proc]))
+        {'form': AuthenticationForm(), 'title': 'Login'})
 
 
 def user_forget_password(request):
@@ -192,17 +185,15 @@ def user_forget_password(request):
             send_forget_password_email(request, user)
             message = 'Conform email has sent to you.'
         else:
-            return render(
+            return render_index(
                 request,
                 'users/auth.html',
-                {'form': user_form, 'title': 'Forget Password'},
-                context_instance=RequestContext(request, processors=[custom_proc]))
+                {'form': user_form, 'title': 'Forget Password'})
 
-    return render(
+    return render_index(
         request,
         'users/auth.html',
-        {'form': UserForgetPasswordForm(), 'title': 'Forget Password', 'message': message},
-        context_instance=RequestContext(request, processors=[custom_proc]))
+        {'form': UserForgetPasswordForm(), 'title': 'Forget Password', 'message': message})
 
 
 def forget_password_confirm(request, activation_key):
@@ -245,15 +236,13 @@ def submit(request, pid=None):
             codesibmitform.submit()
             return redirect(reverse('status:status'))
         else:
-            return render(
+            return render_index(
                 request,
-                'users/submit.html', {'form': codesibmitform},
-                context_instance=RequestContext(request, processors=[custom_proc]))
+                'users/submit.html', {'form': codesibmitform})
 
-    return render(
+    return render_index(
         request,
-        'users/submit.html', {'form': CodeSubmitForm(initial={'pid': pid})},
-        context_instance=RequestContext(request, processors=[custom_proc]))
+        'users/submit.html', {'form': CodeSubmitForm(initial={'pid': pid})})
 
 
 def register_confirm(request, activation_key):
@@ -272,11 +261,10 @@ def register_confirm(request, activation_key):
     user.save()
     logger.info('user %s has already been activated' % user.username)
     user_profile.delete()
-    return render(
+    return render_index(
         request,
         'users/confirm.html',
-        {'username':user.username},
-        context_instance=RequestContext(request, processors=[custom_proc]))
+        {'username':user.username})
 
 @login_required()
 def notification(request, current_tab='none'):
@@ -287,12 +275,11 @@ def notification(request, current_tab='none'):
     all_notifications = Notification.objects.filter \
         (receiver=request.user).order_by('-id')
 
-    return render(
+    return render_index(
         request, 'users/notification.html',
         {'all_notifications':all_notifications,
          'unread_notifications':unread_notifications,
-         'current_tab':current_tab},
-        context_instance=RequestContext(request, processors=[custom_proc]))
+         'current_tab':current_tab})
 
 @login_required()
 def readify(request, read_id, current_tab):

@@ -25,7 +25,7 @@ from django.http import HttpResponse, HttpResponseBadRequest, Http404
 from django.shortcuts import render, redirect
 from django.core.exceptions import PermissionDenied
 from django.contrib.auth.decorators import login_required
-
+from utils.render_helper import render_index
 from users.models import User
 from problem.models import Problem, Tag, Testcase
 from problem.forms import ProblemForm
@@ -41,7 +41,8 @@ logger = log_info.get_logger()
 def problem(request):
     a = {'name': 'my_problem', 'pid': 1, 'pass': 60, 'not_pass': 40}
     b = {'name': 'all_problem', 'pid': 1, 'pass': 60, 'not_pass': 40}
-    return render(request, 'problem/panel.html', {'my_problem':[a,a,a], 'all_problem':[a,a,a,b,b,b]})
+    return render_index(request, 'problem/panel.html',
+                {'my_problem':[a,a,a], 'all_problem':[a,a,a,b,b,b]})
 
 def volume(request):
     problem_id=[]
@@ -56,7 +57,7 @@ def volume(request):
                 end_id = i * 100
             problem_id.append(str(start_id) + ' ~ ' + str(end_id))
 
-    return render(request, 'problem/volume.html', {'problem_id':problem_id})
+    return render_index(request, 'problem/volume.html', {'problem_id':problem_id})
 
 def detail(request, pid):
     user = request.user
@@ -66,7 +67,7 @@ def detail(request, pid):
         logger.warning('problem %s not found' % (pid))
         raise Http404('problem %s does not exist' % (pid))
     problem.testcase = get_testcase(problem)
-    return render(request, 'problem/detail.html', {'problem': problem})
+    return render_index(request, 'problem/detail.html', {'problem': problem})
 
 @login_required
 def edit(request, pid=None):
@@ -107,10 +108,10 @@ def edit(request, pid=None):
     if not request.user.is_admin:
         del form.fields['owner']
     if is_new:
-        return render(request, 'problem/edit.html', 
+        return render_index(request, 'problem/edit.html',
                     { 'form': form, 'owner': request.user, 'is_new': True })
     else:
-        return render(request, 'problem/edit.html', 
+        return render_index(request, 'problem/edit.html',
                   {'form': form, 'pid': pid, 'is_new': False,
                    'tags': tags, 'description': problem.description,
                    'input': problem.input, 'output': problem.output,
@@ -178,7 +179,7 @@ def testcase(request, pid, tid=None):
             testcase.memory_limit = request.POST['memory_limit']
             testcase.save()
             logger.info("testcase saved, tid = %s" % (testcase.pk))
-            return HttpResponse(json.dumps({'tid': testcase.pk}), 
+            return HttpResponse(json.dumps({'tid': testcase.pk}),
                                 content_type="application/json")
     return HttpResponse()
 
@@ -207,4 +208,5 @@ def preview(request):
     problem.output = request.GET['output_description']
     problem.sample_in = request.GET['sample_in']
     problem.sample_out = request.GET['sample_out']
-    return render(request, 'problem/preview.html', {'problem': problem, 'preview': True})
+    return render_index(request, 'problem/preview.html',
+                {'problem': problem, 'preview': True})
