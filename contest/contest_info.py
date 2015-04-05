@@ -178,6 +178,10 @@ OWN_CONTEST = "own_contest"
 HAS_ATTENDED = "has_attended"
 IS_ADMIN = "is_admin"
 OK = "OK"
+
+'''
+return error or success message
+'''
 def can_register_return_status(user, contest):
     if not user.is_authenticated():
         return NOT_LOGGED_IN
@@ -202,12 +206,16 @@ def can_register_return_status(user, contest):
         return IS_ADMIN
 
     return OK
-
+'''
+return boolean
+'''
 def can_register(user, contest):
     if can_register_return_status(user, contest) is OK:
         return True
     return False
-
+'''
+depend on error msg and write to log
+'''
 def can_register_log(user, contest):
     status = can_register_return_status(user, contest)
     if status is OK:
