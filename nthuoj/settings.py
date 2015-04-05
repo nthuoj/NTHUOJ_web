@@ -11,8 +11,7 @@ https://docs.djangoproject.com/en/1.7/ref/settings/
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
-from emailInfo import EMAIL_HOST_USER
-from emailInfo import EMAIL_HOST_PASSWORD
+from utils.config_info import get_config
 
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."),)
@@ -72,13 +71,13 @@ WSGI_APPLICATION = 'nthuoj.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/1.7/ref/settings/#databases
-INI_PATH = os.path.join(BASE_DIR, 'nthuoj.ini')
+CONFIG_PATH = os.path.join(BASE_DIR, 'nthuoj/config/nthuoj.cfg')
 
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'OPTIONS': {
-            'read_default_file': INI_PATH,
+            'read_default_file': CONFIG_PATH,
         },
     }
 }
@@ -118,7 +117,9 @@ AXES_COOLOFF_TIME = 0.1
 
 EMAIL_USE_TLS = True
 EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_PORT = 587
+EMAIL_HOST_USER = get_config('email', 'user')
+EMAIL_HOST_PASSWORD = get_config('email', 'password')
+EMAIL_PORT = 689
 
 # django-bower settings
 BOWER_COMPONENTS_ROOT = os.path.join(PROJECT_ROOT, 'components')
@@ -134,7 +135,7 @@ BOWER_INSTALLED_APPS = (
     'https://github.com/zeroclipboard/zeroclipboard.git',
     'https://github.com/lou/multi-select.git', # multiselect
     'https://github.com/riklomas/quicksearch.git', # quicksearch
-    'ckeditor#full/stable',
+    'ckeditor#full/stable', # ckeditor
 )
 
 STATICFILES_FINDERS = (

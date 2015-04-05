@@ -261,6 +261,9 @@ def register_confirm(request, activation_key):
     user.save()
     logger.info('user %s has already been activated' % user.username)
     user_profile.delete()
+    user.backend = 'django.contrib.auth.backends.ModelBackend'
+    login(request, user)
+
     return render_index(
         request,
         'users/confirm.html',
