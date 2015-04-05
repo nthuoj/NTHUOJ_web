@@ -49,6 +49,7 @@ class ProblemForm(forms.ModelForm):
             'owner',
             'visible',
             'judge_source',
+            'judge_type',
             'error_torrence',
             'other_judge_id',
             'partial_judge_code',

@@ -34,6 +34,8 @@ $(document).ready(function() {
     $(".tab-pane").hide();
     $("#info").show();
     hide_field();
+    show_field($("#id_judge_source").val());
+    show_field($("#id_judge_type").val());
     $("a[role='tab']").click(function(e) {
         e.preventDefault()
         switchTab(this);
@@ -135,17 +137,36 @@ function hide_field() {
   $("#id_other_judge_id").parent().hide();
   $("#id_partial_judge_code").parent().hide();
   $("#id_special_judge_code").parent().hide();
+  $("#id_judge_type option").hide();
 }
+
+function show_field(option) {
+    if (option == "ERR_TOLERANT")
+        $("#id_error_torrence").parent().show();
+    else if (option == "PARTIAL")
+        $("#id_partial_judge_code").parent().show();
+    else if (option == "SPECIAL")
+        $("#id_special_judge_code").parent().show();
+    else if (option == "OTHER") {
+	    console.log("other");
+        $("#id_other_judge_id").parent().show();
+	$("option[value='UVA']").show();
+	$("option[value='POJ']").show();
+	$("option[value='ICPC']").show();
+	$("#id_judge_type").val("UVA");
+    } else if (option == "LOCAL") {
+	    console.log("local");
+	$("#id_judge_type option").show();
+	$("option[value='UVA']").hide();
+	$("option[value='POJ']").hide();
+	$("option[value='ICPC']").hide();
+	$("#id_judge_type").val("NORMAL");
+    }
+}
+
 $("select").on("change", function(e) {
     hide_field();
-    if (this.value == "ERR_TORRENT")
-        $("#id_error_torrence").parent().show();
-    else if (this.value == "OTHER")
-        $("#id_other_judge_id").parent().show();
-    else if (this.value == "PARTIAL")
-        $("#id_partial_judge_code").parent().show();
-    else if (this.value == "SPECIAL")
-        $("#id_special_judge_code").parent().show();
+    show_field(this.value);
 });
 
 function refreshTestcaseEvent() {
