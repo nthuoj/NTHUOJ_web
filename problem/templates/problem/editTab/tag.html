@@ -36,22 +36,13 @@ SOFTWARE.
 </table>
 <br>
 <br>
-<table>
-  <tr>
-    <th>Add Tag</th>
-    <td>
-      <form id="addTag">
-        <div class='input-group'>
-          {% csrf_token %}
-          <input type='text' id='newTag' name='tag' class='form-control' width='25%'>
-          <span class='input-group-btn'>
-            <button id='add_tag_button' class='btn btn-default'>Add</button>
-          </span>
-        </div>
-      </form>
-    </td>
-  </tr>
-</table>
+<form id="addTag">
+  <div class='input-group'>
+    {% csrf_token %}
+    {{ tag_form }}
+    <button id='add_tag_button' class='btn btn-default'>Add</button>
+  </div>
+</form>
 <script>
 $(document).ready(function() {
     $("#addTag").submit(function(e) {

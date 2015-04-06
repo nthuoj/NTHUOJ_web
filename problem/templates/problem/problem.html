@@ -111,15 +111,15 @@ SOFTWARE.
       {% endfor %}
     {% endif %}
   </div>
+  {% if tag_form %}
   <form id='addTag'>
     {% csrf_token %}
-    <div class='input-group' style='float:right;width:30%'>
-      <input type='text' name='tag' id='newTag' class='form-control' width='25%'>
-      <span class='input-group-btn'>
-        <button id='addTagButton' class='btn btn-default'>Add Tag</button>
-      </span>
+    <div class='input-group'>
+      {{ tag_form }}
+      <button id='addTagButton' class='btn btn-default'>Add Tag</button>
     </div>
   </form>
+  {% endif %}
 
   <br>
   <br>

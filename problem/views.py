@@ -29,7 +29,7 @@ from django.contrib.auth.decorators import login_required
 
 from users.models import User
 from problem.models import Problem, Tag, Testcase
-from problem.forms import ProblemForm
+from problem.forms import ProblemForm, TagForm
 from problem.problem_info import *
 from utils import log_info
 from utils.render_helper import render_index
@@ -69,13 +69,14 @@ def problem(request):
 
 def detail(request, pid):
     user = request.user
+    tag_form = TagForm()
     try:
         problem = Problem.objects.get(pk=pid)
     except Problem.DoesNotExist:
         logger.warning('problem %s not found' % (pid))
         raise Http404('problem %s does not exist' % (pid))
     problem.testcase = get_testcase(problem)
-    return render_index(request, 'problem/detail.html', {'problem': problem})
+    return render_index(request, 'problem/detail.html', {'problem': problem, 'tag_form': tag_form})
 
 @login_required
 def new(request):
@@ -91,6 +92,7 @@ def new(request):
 
 @login_required
 def edit(request, pid=None):
+    tag_form = TagForm()
     try:
         problem = Problem.objects.get(pk=pid)
         if not request.user.is_admin and request.user != problem.owner:
@@ -120,18 +122,17 @@ def edit(request, pid=None):
             return redirect('/problem/%d' % (problem.pk))
     if not request.user.is_admin:
         del form.fields['owner']
-    else:
-        return render_index(request, 'problem/edit.html', 
-                    {'form': form, 'pid': pid, 'pname': problem.pname,
-                   'tags': tags, 'description': problem.description,
-                   'input': problem.input, 'output': problem.output,
-                   'sample_in': problem.sample_in, 'sample_out': problem.sample_out,
-                   'testcase': testcase })
+    return render_index(request, 'problem/edit.html', 
+                {'form': form, 'pid': pid, 'pname': problem.pname,
+                 'tags': tags, 'tag_form': tag_form, 'description': problem.description,
+                 'input': problem.input, 'output': problem.output,
+                 'sample_in': problem.sample_in, 'sample_out': problem.sample_out,
+                 'testcase': testcase })
 
 @login_required
 def tag(request, pid):
     if request.method == "POST":
-        tag = request.POST['tag']
+        tag = request.POST['tag_name']
         try:
             problem = Problem.objects.get(pk=pid)
         except Problem.DoesNotExist:

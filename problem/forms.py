@@ -22,7 +22,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 '''
 from django import forms
-from problem.models import Problem
+from problem.models import Problem, Tag
 from users.models import User
 from django.db.models import Q
 
@@ -37,7 +37,17 @@ class UserAutocomplete(autocomplete_light.AutocompleteModelBase):
         'placeholder': '',
         'data-autocomplete-minimum-characters': 1
     }
+
+class TagAutocomplete(autocomplete_light.AutocompleteModelBase):
+    search_fields = ['^tag_name']
+    choices = Tag.objects.all()
+    model = Tag
+    attrs = {
+        'placeholder': '',
+        'data-autocomplete-minimum-characters': 1
+    }
 autocomplete_light.register(UserAutocomplete)
+autocomplete_light.register(TagAutocomplete)
 
 class ProblemForm(forms.ModelForm):
     other_judge_id = forms.IntegerField(required=False, min_value=0)
@@ -62,5 +72,15 @@ class ProblemForm(forms.ModelForm):
         }
         widgets = {
             'owner': autocomplete_light.TextWidget('UserAutocomplete')
+        }
+
+
+class TagForm(forms.ModelForm):
+    class Meta:
+        model = Tag
+        field = ['tag_name']
+        labels = {'tag_name': 'Add Tag'}
+        widgets = {
+            'tag_name': autocomplete_light.TextWidget('TagAutocomplete')
         }
 
