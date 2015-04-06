@@ -61,6 +61,8 @@ from contest.contest_info import can_register
 from contest.contest_info import can_register_log
 from contest.contest_info import get_contest_or_404
 
+from problem.problem_info import get_testcase
+
 from group.models import Group
 from group.group_info import get_owned_group
 from group.group_info import get_group_or_404
@@ -113,6 +115,8 @@ def contest(request, contest_id):
     #if contest has not started and user is not the owner
     if ((contest.start_time < now) or user_info.has_contest_ownership(request.user,contest) or\
         request.user.has_admin_auth()):
+        for problem in contest.problem.all():
+            problem.testcase = get_testcase(problem)
         scoreboard = get_scoreboard(contest)
         status = contest_status(request, contest)
         user = request.user

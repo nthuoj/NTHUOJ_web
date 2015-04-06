@@ -34,10 +34,7 @@ function select(target, description){
 function tabInit(){
     $('#contest_tab a').click(function(e) {
         e.preventDefault()
-        $('#contest_tab a[href="#overview"]').tab('show')
-        $('#contest_tab a[href="#problem"]').tab('show')
-        $('#contest_tab a[href="#scoreboard"]').tab('show')
-        $('#contest_tab a[href="#status"]').tab('show')
+        $(this).tab('show')
     });
 }
 
