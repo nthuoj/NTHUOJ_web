@@ -198,12 +198,17 @@ def testcase(request, pid, tid=None):
             logger.info("testcase saved, tid = %s" % (testcase.pk))
         if 't_in' in request.FILES:
             TESTCASE_PATH = config_info.get_config('path', 'testcase_path')
-            with open('%s%s.in' % (TESTCASE_PATH, testcase.pk), 'w') as t_in:
-                for chunk in request.FILES['t_in'].chunks():
-                    t_in.write(chunk)
-            with open('%s%s.out' % (TESTCASE_PATH, testcase.pk), 'w') as t_out:
-                for chunk in request.FILES['t_out'].chunks():
-                    t_out.write(chunk)
+            try:
+                with open('%s%s.in' % (TESTCASE_PATH, testcase.pk), 'w') as t_in:
+                    for chunk in request.FILES['t_in'].chunks():
+                        t_in.write(chunk)
+                    logger.info("testcase %s.in saved" % (testcase.pk))
+                with open('%s%s.out' % (TESTCASE_PATH, testcase.pk), 'w') as t_out:
+                    for chunk in request.FILES['t_out'].chunks():
+                        t_out.write(chunk)
+                    logger.info("testcase %s.out saved" % (testcase.pk))
+            except IOError:
+                logger.error("saving testcase error")
             return HttpResponse(json.dumps({'tid': testcase.pk}), 
                                 content_type="application/json")
     return HttpResponse()
