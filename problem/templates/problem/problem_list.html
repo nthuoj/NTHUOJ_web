@@ -51,11 +51,11 @@ SOFTWARE.
         </td>
         <td>
           <div class="progress">
-            <div class="progress-bar progress-bar-success" style="width: {{p.pass_rate}}%;">
-              {{p.pass_rate}}%
+            <div class="progress-bar progress-bar-success" style="width: {{p.pass_rate}}%;" 
+              data-toggle="tooltip" data-placement="top" title="{{p.pass_rate}}%">
             </div>
-            <div class="progress-bar progress-bar-danger" style="width: {{p.not_pass_rate}}%;">
-              {{p.not_pass_rate}}%
+            <div class="progress-bar progress-bar-danger" style="width: {{p.not_pass_rate}}%;" 
+              data-toggle="tooltip" data-placement="top" title="{{p.not_pass_rate}}%">
             </div>
           </div>
         </td>
