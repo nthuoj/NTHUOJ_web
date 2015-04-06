@@ -122,51 +122,52 @@ function add_new_testcase(pid, data) {
 }
 
 $("#preview_button").click(function() {
-    var form = document.forms.problem_info;
-    form.target = "_blank";
-    form.action = "/problem/preview/";
-    var input = document.createElement('input');
-    input.type = 'hidden';
-    input.name = 'tags';
-    tags = []
+    var form = $("#problem_info");
+    form.attr("target", "_blank");
+    form.attr("action", "/problem/preview/");
+    var input = $("<input>");
+    input.attr("type", "hidden");
+    input.attr("name", "tags");
+    var tags = []
     $("#tagTable td:first-child").each(function(num, element) {
 	tags[tags.length] = element.innerHTML;
     });
-    input.value = tags.join();
-    form.appendChild(input);
+    input.val(tags.join());
+    $("input[name='tags']").remove();
+    form.append(input);
     return true;
 });
 
 $("#save_button").click(function() {
-    var form = document.forms.problem_info;
-    form.target = "";
-    form.action = "";
+    var form = $("#problem_info");
+    form.attr("target", "");
+    form.attr("action", "");
     return true;
 });
 
 function hide_field() {
-  $("#id_error_torrence").parent().hide();
-  $("#id_other_judge_id").parent().hide();
-  $("#id_partial_judge_code").parent().hide();
-  $("#id_special_judge_code").parent().hide();
+  $("#id_error_torrence").parent().parent().hide();
+  $("#id_other_judge_id").parent().parent().hide();
+  $("#id_partial_judge_code").parent().parent().hide();
+  $("#id_special_judge_code").parent().parent().hide();
 }
 
 function choose_judge_type(option) {
     hide_field();
     if (option == "ERR_TOLERANT")
-        $("#id_error_torrence").parent().show();
+        $("#id_error_torrence").parent().parent().show();
     else if (option == "PARTIAL")
-        $("#id_partial_judge_code").parent().show();
+        $("#id_partial_judge_code").parent().parent().show();
     else if (option == "SPECIAL")
-        $("#id_special_judge_code").parent().show();
-    else {
-        $("#id_other_judge_id").parent().show();
+        $("#id_special_judge_code").parent().parent().show();
+    else if (option != "NORMAL") {
+        $("#id_other_judge_id").parent().parent().show();
     }
 }
 
 function choose_judge_source(option) {
     if (option == "OTHER") {
-        $("#id_other_judge_id").parent().show();
+        $("#id_other_judge_id").parent().parent().show();
 	$("#id_judge_type option").hide();
 	$("option[value='UVA']").show();
 	$("option[value='POJ']").show();
@@ -224,7 +225,7 @@ function refreshTestcaseEvent() {
             type: 'GET',
             url: '/problem/' + pid + '/testcase/' + tid + '/delete/',
             success: function(data) {
-              row.hide();
+              row.remove();
             }
         });
         return false;
