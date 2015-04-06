@@ -119,7 +119,7 @@ SOFTWARE.
             <td>{{ forloop.counter }}</td>
             <td>{{ user.username }}</td>
             {% for problem in user.problems %}
-            <td>{{ problem.penalty }}/{{ problem.submit_times }}</td>
+            <td>{{ problem.submit_times }}/{{ problem.penalty }}</td>
             {% endfor %}
             <td>{{ user.solved }}</td>
             <td>{{ user.penalty }}</td>

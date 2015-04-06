@@ -70,6 +70,13 @@ def get_penalty(obj, start_time):
     else:
         return penalty
 
+def get_submit_times(problem):
+    submit_times = problem.submit_times()
+    if submit_times == 0:
+        return '--'
+    else:
+        return submit_times
+
 def get_scoreboard(contest):
     contestants = get_contestant_list(contest)
     
@@ -95,7 +102,7 @@ def get_scoreboard(contest):
                 scoreboard.get_problem(new_problem.id).add_pass_user()
             #setup problem attribute
             new_problem.penalty = get_penalty(new_problem,scoreboard.start_time)
-            new_problem.submit_times = new_problem.submit_times()
+            new_problem.submit_times = get_submit_times(new_problem)
             new_problem.solved = new_problem.is_solved()
             new_problem.testcases_solved = new_problem.get_testcases_solved()
             #to get single problem's total passed submission
@@ -132,7 +139,7 @@ def write_scoreboard_csv_penalty(writer, contest, scoreboard):
     #penalty scoreboard csv
     scoreboard.sort_users_by_penalty()
     #title
-    title = ['Penalty', 'User']
+    title = ['Rank', 'User']
     for problem in scoreboard.problems:
         title.append(problem.id)
     title.append('Total')
@@ -141,8 +148,9 @@ def write_scoreboard_csv_penalty(writer, contest, scoreboard):
     for counter, user in enumerate(scoreboard.users):
         user_row = [counter+1, user.username]
         for problem in user.problems:
-            penalty = problem.get_penalty(contest.start_time)
-            user_row.append(penalty)
+            submit_times = problem.submit_times
+            penalty = get_penalty(problem, contest.start_time)
+            user_row.append(str(submit_times) + '/' + str(penalty))
         total_penalty = user.get_penalty(contest.start_time)
         user_row.append(total_penalty)
         writer.writerow(user_row)
@@ -156,7 +164,7 @@ def write_scoreboard_csv_testcases(writer, contest, scoreboard):
     #testcases scoreboard csv
     scoreboard.sort_users_by_solved_testcases()
     #title
-    title = ['Testcase', 'User']
+    title = ['Rank', 'User']
     for problem in scoreboard.problems:
         title.append(problem.id)
     title.append('Total')
