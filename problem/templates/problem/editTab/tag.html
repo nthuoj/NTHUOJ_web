@@ -70,7 +70,7 @@ function refreshEventListener() {
             type: 'GET',
             url: '/problem/'+{{pid}}+'/tag/'+tid+'/delete/',
             success: function(data) {
-              row.hide();
+              row.remove();
             }
         });
         return false;
