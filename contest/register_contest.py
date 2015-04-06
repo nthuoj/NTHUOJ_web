@@ -68,9 +68,7 @@ def register_anonymous(contest, account_num):
     available = 0
     available_anonymous = []
     for user in public_users:
-        if attends_not_ended_contest(user):
-            user.is_active = True
-        else:
+        if not attends_not_ended_contest(user):
             user.is_active = False
             available_anonymous.append(user)
             available += 1
