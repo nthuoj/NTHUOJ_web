@@ -150,17 +150,20 @@ function hide_field() {
   $("#id_other_judge_id").parent().parent().hide();
   $("#id_partial_judge_code").parent().parent().hide();
   $("#id_special_judge_code").parent().parent().hide();
+  $("#id_judge_language").parent().parent().hide();
 }
 
 function choose_judge_type(option) {
     hide_field();
     if (option == "ERR_TOLERANT")
         $("#id_error_torrence").parent().parent().show();
-    else if (option == "PARTIAL")
+    else if (option == "PARTIAL") {
         $("#id_partial_judge_code").parent().parent().show();
-    else if (option == "SPECIAL")
+	$("#id_judge_language").parent().parent().show();
+    } else if (option == "SPECIAL") {
         $("#id_special_judge_code").parent().parent().show();
-    else if (option != "NORMAL") {
+	$("#id_judge_language").parent().parent().show();
+    } else if (option != "NORMAL") {
         $("#id_other_judge_id").parent().parent().show();
     }
 }
