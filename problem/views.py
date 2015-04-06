@@ -227,12 +227,12 @@ def delete_testcase(request, pid, tid):
     if not request.user.is_admin and request.user != problem.owner:
         raise PermissionDenied
     logger.info("testcase %d deleted" % (testcase.pk))
-    testcase.delete()
     try:
-        os.remove('%s%s.in' % (TESTCASE_PATH, testcase.pk))
-        os.remove('%s%s.out' % (TESTCASE_PATH, testcase.pk))
-    except IOError:
+        os.remove('%s%d.in' % (TESTCASE_PATH, testcase.pk))
+        os.remove('%s%d.out' % (TESTCASE_PATH, testcase.pk))
+    except IOError, OSError:
         logger.error("remove testcase %s error" % (testcase.pk))
+    testcase.delete()
     return HttpResponse()
 
 def preview(request):
