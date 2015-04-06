@@ -42,6 +42,10 @@ from utils import user_info
 
 from django.http import Http404
 
+import csv
+from django.http import HttpResponse
+from datetime import datetime
+
 logger = get_logger()
 
 def get_contestant_list(contest):
@@ -65,6 +69,13 @@ def get_penalty(obj, start_time):
         return '--'
     else:
         return penalty
+
+def get_submit_times(problem):
+    submit_times = problem.submit_times()
+    if submit_times == 0:
+        return '--'
+    else:
+        return submit_times
 
 def get_scoreboard(contest):
     contestants = get_contestant_list(contest)
@@ -91,7 +102,7 @@ def get_scoreboard(contest):
                 scoreboard.get_problem(new_problem.id).add_pass_user()
             #setup problem attribute
             new_problem.penalty = get_penalty(new_problem,scoreboard.start_time)
-            new_problem.submit_times = new_problem.submit_times()
+            new_problem.submit_times = get_submit_times(new_problem)
             new_problem.solved = new_problem.is_solved()
             new_problem.testcases_solved = new_problem.get_testcases_solved()
             #to get single problem's total passed submission
@@ -107,7 +118,75 @@ def get_scoreboard(contest):
 
     return scoreboard
 
+def get_scoreboard_csv(contest_id, scoreboard_type):
+    contest = get_contest_or_404(contest_id)
+    scoreboard = get_scoreboard(contest)
+    
+    response = HttpResponse(content_type='text/csv')
+    filename = str(contest.cname) + '-scoreboard-' + str(scoreboard_type)
+    response['Content-Disposition'] = 'attachment; filename=' + filename
+
+    #init
+    writer = csv.writer(response)
+    if scoreboard_type == "penalty":
+        write_scoreboard_csv_penalty(writer, contest, scoreboard)
+    elif scoreboard_type == "testcases":
+        write_scoreboard_csv_testcases(writer, contest, scoreboard)
+
+    return response
+
+def write_scoreboard_csv_penalty(writer, contest, scoreboard):
+    #penalty scoreboard csv
+    scoreboard.sort_users_by_penalty()
+    #title
+    title = ['Rank', 'User']
+    for problem in scoreboard.problems:
+        title.append(problem.id)
+    title.append('Total')
+    writer.writerow(title)
+    #user data
+    for counter, user in enumerate(scoreboard.users):
+        user_row = [counter+1, user.username]
+        for problem in user.problems:
+            submit_times = problem.submit_times
+            penalty = get_penalty(problem, contest.start_time)
+            user_row.append(str(submit_times) + '/' + str(penalty))
+        total_penalty = user.get_penalty(contest.start_time)
+        user_row.append(total_penalty)
+        writer.writerow(user_row)
+
+    footer = ['Passed', '']  
+    for problem in scoreboard.problems:
+        footer.append(problem.pass_user)
+    writer.writerow(footer)
+
+def write_scoreboard_csv_testcases(writer, contest, scoreboard):
+    #testcases scoreboard csv
+    scoreboard.sort_users_by_solved_testcases()
+    #title
+    title = ['Rank', 'User']
+    for problem in scoreboard.problems:
+        title.append(problem.id)
+    title.append('Total')
+    writer.writerow(title)
+    #user data
+    for counter, user in enumerate(scoreboard.users):
+        user_row = [counter+1, user.username]
+        for problem in user.problems:
+            passed_testcases = problem.get_testcases_solved()
+            total_testcases = problem.total_testcases
+            user_row.append(str(passed_testcases) + '/' + str(total_testcases))
+        user_total_testcases = user.get_testcases_solved()
+        user_row.append(user_total_testcases)
+        writer.writerow(user_row)
+
+    footer = ['Passed Testcases', '']  
+    for problem in scoreboard.problems:
+        footer.append(problem.total_solved)
+    writer.writerow(footer)
+
 def get_clarifications(user, contest):
+
     if has_contest_ownership(user,contest):
         return Clarification.objects.filter(contest = contest)
     reply_all = Clarification.objects.filter(contest = contest, reply_all = True)
@@ -199,7 +278,7 @@ def can_register_return_status(user, contest):
     if has_ownership:
         return OWN_CONTEST
 
-    has_attended = Contestant.objects.filter(contest = contest,user = user).exists()
+    has_attended = Contestant.objects.filter(contest = contest, user = user).exists()
     if has_attended:
         return HAS_ATTENDED
     
