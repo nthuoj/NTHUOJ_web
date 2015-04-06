@@ -26,7 +26,7 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 import json
 import random
 import datetime
-from index.views import custom_proc
+from utils.render_helper import render_index
 from django.template import RequestContext
 # Create your views here.
 
@@ -56,11 +56,10 @@ def team_list(request):
         # If page is out of range (e.g. 9999), deliver last page of results.
         teams = paginator.page(paginator.num_pages)
 
-    return render(
+    return render_index(
         request,
         'team/teamList.html',
-        {'team_list': teams},
-        context_instance = RequestContext(request, processors = [custom_proc]))
+        {'team_list': teams})
 
 
 def team_profile(request):
@@ -79,11 +78,11 @@ def team_profile(request):
         'create_time': datetime.datetime.now()
     }
 
-    return render(
+    return render_index(
         request,
         'team/teamProfile.html',
         {
             'piechart_data': json.dumps(piechart_data),
             'team_stat': team_stat,
             'team_profile': team_profile
-        },context_instance = RequestContext(request, processors = [custom_proc]))
+        })

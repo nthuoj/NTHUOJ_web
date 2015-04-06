@@ -1,4 +1,4 @@
-'''
+"""
 The MIT License (MIT)
 
 Copyright (c) 2014 NTHUOJ team
@@ -20,7 +20,7 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
-'''
+"""
 from datetime import datetime
 from threading import Thread
 import hashlib
@@ -31,12 +31,12 @@ from django.core.mail import EmailMultiAlternatives
 from django.template.loader import render_to_string
 
 from contest.models import Contest
-from emailInfo import EMAIL_HOST_USER
 from problem.models import Submission, SubmissionDetail
 from users.models import User, UserProfile
 from utils.log_info import get_logger
+from utils.config_info import get_config
 
-
+EMAIL_HOST_USER = get_config('email', 'user')
 logger = get_logger()
 
 
@@ -158,6 +158,32 @@ def send_activation_email(request, user):
     email_subject = 'Account confirmation'
     email_body = render_to_string('index/activation_email.html',
                     {'username': username, 'activation_link': activation_link})
+    msg = EmailMultiAlternatives(email_subject, email_body, EMAIL_HOST_USER, [email])
+    msg.attach_alternative(email_body, "text/html")
+
+    try:
+        Thread(target=msg.send, args=()).start()
+    except:
+        logger.warning("There is an error when sending email to %s's mailbox" % username)
+
+
+def send_forget_password_email(request, user):
+    username = user.username
+    email = user.email
+    salt = hashlib.sha1(str(random.random())).hexdigest()[:5]
+    activation_key = hashlib.sha1(salt+email).hexdigest()
+    # Create and save user profile
+    UserProfile.objects.filter(user=user).delete()
+    new_profile = UserProfile(user=user, activation_key=activation_key)
+    new_profile.save()
+
+    # Send email with activation key
+    profile_link = request.META['HTTP_HOST'] + \
+        reverse('users:forget_password_confirm', kwargs={'activation_key': activation_key})
+    email_subject = 'Password Reset'
+    email_body = render_to_string('index/forget_password_email.html',
+                    {'username': username, 'profile_link': profile_link,
+                    'active_time': new_profile.active_time})
     msg = EmailMultiAlternatives(email_subject, email_body, EMAIL_HOST_USER, [email])
     msg.attach_alternative(email_body, "text/html")
 

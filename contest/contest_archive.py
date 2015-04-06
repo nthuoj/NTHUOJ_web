@@ -21,18 +21,16 @@ from datetime import datetime
 from django.db.models import Q
 from contest.models import Contest 
 from contest.models import Contestant
+from utils.user_info import validate_user
 
 def get_contests(user):
-    if user.is_authenticated():
-        if user.has_admin_auth():
-            #admin show all
-            contests_info = Contest.objects.order_by('-start_time')
-        elif user.has_subjudge_auth():
-            contests_info = get_owned_or_started_contests(user)
-        else:
-            contests_info = get_started_contests()
+    user = validate_user(user)
+    if user.has_admin_auth():
+        #admin show all
+        contests_info = Contest.objects.order_by('-start_time')
+    elif user.has_subjudge_auth():
+        contests_info = get_owned_or_started_contests(user)
     else:
-        #user not logged in
         contests_info = get_started_contests()
 
     contests = []

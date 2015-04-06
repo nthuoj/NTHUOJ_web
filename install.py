@@ -21,38 +21,63 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 '''
-
-
 import getpass
 import os.path
+import ConfigParser
 
 from func import *
 
+CONFIG_PATH = 'nthuoj/config/nthuoj.cfg'
 
-if not os.path.isfile('nthuoj.ini'):
-    # Setting nthuoj.ini
+config = ConfigParser.RawConfigParser()
+config.optionxform = str
+config.read(CONFIG_PATH)
+
+
+if not config.has_section('client'):
+    # Setting mysql info
     host = raw_input('Mysql host: ')
     db = raw_input('Mysql database: ')
-    user = raw_input('Please input your mysql user: ')
+    user = raw_input('Mysql user: ')
     pwd = getpass.getpass()
-    write_ini_file(host, db, user, pwd)
+    write_mysql_client_config(config, host, db, user, pwd)
+    print '========================================'
 
-if not os.path.isfile('emailInfo.py'):
-    # Setting emailInfo.py
+if not config.has_section('email'):
+    # Setting email info
     email_host = raw_input('Email host(gmail): ')
-    email_host_pwd = getpass.getpass('Email host\'s password : ')
-    write_email_file(email_host, email_host_pwd)
+    email_host_pwd = getpass.getpass("Email host's password : ")
+    write_email_config(config, email_host, email_host_pwd)
+    print '========================================'
 
-# Database Migratinos
-db_migrate()
+# Change defaut path
+paths = dict(config.items('path'))
+print 'Default path configuration is:\n'
+for key in paths:
+    print '%s: %s' % (key, paths[key])
+ans = raw_input('\nCustomize source code, testcase path? [Y/n] ')
+if ans == '' or ans == 'y' or ans == 'Y':
+    for key in paths:
+        path = raw_input('%s: ' % key)
+        paths[key] = path
+        os.system('mkdir %s' % path)
 
+    write_path_config(config, paths)
+    print '========================================'
+
+# Writing our configuration file
+with open(CONFIG_PATH, 'wb') as configfile:
+    config.write(configfile)
 
 # Create super user
 ans = raw_input('Create super user?[Y/n] ')
 if ans == '' or ans == 'y' or ans == 'Y':
     django_manage('createsuperuser')
 
-# Install needed library & setup
-
-# django-axes
+# Database Migratinos
 django_manage('syncdb')
+django_manage('makemigrations')
+django_manage('migrate')
+
+# Bower
+django_manage('bower install')
