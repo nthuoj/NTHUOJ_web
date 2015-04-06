@@ -74,11 +74,11 @@ def register_anonymous(contest, account_num):
             available += 1
 
     #if attend more than request, then kick some out
-    all_contestant = Contestant.objects.filter(contest = contest).order_by('-user')
+    all_contestant = User.objects.filter(user__contest = contest).order_by('-user')
     attended_anonymous = []
-    for contestant in all_contestant:
-        if contestant.user.username.startswith(settings.ANONYMOUS_PREFIX):
-            attended_anonymous.append(contestant.user)
+    for user in all_contestant:
+        if user.username.startswith(settings.ANONYMOUS_PREFIX):
+            attended_anonymous.append(user)
 
     attended = len(attended_anonymous)
     if account_num == attended:
