@@ -34,6 +34,7 @@ from status.templatetags.status_filters import show_detail
 from users.forms import CodeSubmitForm
 from users.models import User
 from utils.log_info import get_logger
+from utils.file_info import get_extension
 from utils.render_helper import render_index
 
 # Create your views here.
@@ -114,7 +115,7 @@ def error_message(request, sid):
 def view_code(request, sid):
     try:
         submission = Submission.objects.get(id=sid)
-        filename = '%s.%s' % (sid, 'c' if submission.language == Submission.C else 'cpp')
+        filename = '%s.%s' % (sid, get_extension(submission.language))
         if show_detail(submission, request.user):
             f = open('%s%s' % (CodeSubmitForm.SUBMIT_PATH, filename), 'r')
             code = f.read()

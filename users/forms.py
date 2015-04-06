@@ -2,8 +2,7 @@ from django import forms
 
 from users.models import User
 from problem.models import Problem, Submission, SubmissionDetail, Testcase
-from utils import log_info, user_info, config_info
-
+from utils import log_info, user_info, config_info, file_info
 
 logger = log_info.get_logger()
 
@@ -44,8 +43,7 @@ class CodeSubmitForm(forms.Form):
             problem=problem,
             language=language)
         try:
-            filename = '%s.%s' % (submission.id,
-                'c' if submission.language == Submission.C else 'cpp')
+            filename = '%s.%s' % (submission.id, file_info.get_extension(submission.language))
             f = open('%s%s' % (self.SUBMIT_PATH, filename), 'w')
             f.write(code.encode('utf-8'))
             f.close()
