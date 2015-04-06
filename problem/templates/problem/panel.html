@@ -27,8 +27,18 @@ SOFTWARE.
   <h2>Problem Panel</h2>
   <div>
     {% if can_add_problem %}
-    <a style='float:left' class="btn btn-warning" href="{% url 'problem:new' %}"
-      data-toggle="tooltip" data-placement="right" title="add problem">+</a>
+    <button id="add_problem_btn" style='display:inline-block' class="btn btn-warning" href="{% url 'problem:new' %}"
+      data-toggle="tooltip" data-placement="top" title="add problem">+</button>
+    <div id="add_problem_form" style="display:inline-block;margin-left:10px">
+      <form action="{% url 'problem:new' %}" method="POST" class="form-inline">
+        {% csrf_token %}
+        <div class="form-group">
+          <label for="id_pname">Problem Name</label>
+          <input type="text" class="form-control" id="id_pname" name="pname" required>
+        </div>
+        <button type="submit" class="btn btn-default">Create</button>
+      </form>
+    </div>
     {% endif %}
   </div>
   <div style='padding-top: 50px;'>
@@ -39,6 +49,10 @@ SOFTWARE.
 </div>
 <script>
 $('[data-toggle="tooltip"]').tooltip();
+$("#add_problem_form").hide();
+$("#add_problem_btn").click(function (e) {
+    $("#add_problem_form").show();
+});
 </script>
 
 {% endblock %}
