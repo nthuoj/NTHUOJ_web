@@ -26,6 +26,7 @@ from django.http import HttpResponse, HttpResponseBadRequest, Http404
 from django.shortcuts import render, redirect
 from django.core.exceptions import PermissionDenied
 from django.contrib.auth.decorators import login_required
+from django.core.servers.basehttp import FileWrapper
 
 from users.models import User
 from problem.models import Problem, Tag, Testcase
@@ -233,3 +234,13 @@ def preview(request):
     problem.sample_in = request.GET['sample_in']
     problem.sample_out = request.GET['sample_out']
     return render(request, 'problem/preview.html', {'problem': problem, 'preview': True})
+
+def download_testcase(request, filename):
+    try:
+        f = open(TESTCASE_PATH+filename, "r")
+    except IOError:
+        raise Http404()
+    response = HttpResponse(FileWrapper(f), content_type="text/plain")
+    response['Content-Disposition'] = 'attachment; filename=' + filename
+    return response
+

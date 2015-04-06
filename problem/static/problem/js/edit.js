@@ -102,9 +102,9 @@ function add_new_testcase(pid, data) {
               var tid = data.tid;
               var new_row = $("<tr data-target="+tid+">");
               new_row.append($("<td>").append(
-                  $("<a>" + tid + ".in</a>")));
+                  $("<a href='/problem/testcase/"+tid+".in'>" + tid + ".in</a>")));
               new_row.append($("<td>").append(
-                  $("<a>" + tid + ".out</a>")));
+                  $("<a href='/problem/testcase/"+tid+".out'>" + tid + ".out</a>")));
               new_row.append($("<td>").append(
                   $("<input type='number' id='" + tid
                       + "_time' name='time_limit' value='" + time_limit +
