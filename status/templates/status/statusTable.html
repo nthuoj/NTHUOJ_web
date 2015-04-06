@@ -42,7 +42,7 @@ SOFTWARE.
           title="
             <ol style='margin:15px'>
               {% for detail in submission.list %}
-                <li class='row'>{{ detail.get_verdict_display }} CPU: {{ detail.cpu }}</li>
+                <li class='row'>{{ detail.get_verdict_display }} CPU: {{ detail.cpu|floatformat }} ms</li>
               {% endfor %}
             </ol>"
           {% endif %}
