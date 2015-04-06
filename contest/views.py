@@ -17,14 +17,19 @@
     OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
     SOFTWARE.
     '''
+
+from django.http import HttpResponse
+from django.contrib.auth.decorators import login_required
 from datetime import datetime
 
 from django.shortcuts import redirect
 from django.forms.models import model_to_dict
+from contest.contest_info import get_scoreboard
+from contest.contest_info import get_scoreboard_csv
 from contest.contest_info import get_clarifications
 from contest.contestArchive import get_contests
-from contest.contest_info import get_scoreboard
 from contest.contest_info import can_ask
+from contest.contest_info import can_reply
 from contest.contest_archive import get_contests
 from contest.models import Contest
 from contest.models import Contestant
@@ -34,7 +39,6 @@ from contest.forms import ClarificationForm
 from contest.forms import ReplyForm
 from contest.register_contest import register_user
 from contest.register_contest import register_group as register_group_impl
-from contest.contest_info import can_reply
 from contest.contest_info import can_create_contest
 from contest.contest_info import can_edit_contest
 from contest.contest_info import can_delete_contest
@@ -229,3 +233,12 @@ def reply(request):
                     % (request.user.username, replied_clarification.id))
             return redirect('contest:contest',contest)
     return redirect('contest:archive')
+
+def download(request):
+    what = request.POST.get('type')
+    if what == 'scoreboard':
+        scoreboard_type = request.POST.get('scoreboard_type')
+        contest_id = request.POST.get('contest')
+        scoreboard_file = get_scoreboard_csv(contest_id, scoreboard_type)
+        return scoreboard_file
+    raise Http404('file not found')
