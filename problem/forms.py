@@ -31,7 +31,9 @@ import autocomplete_light
 # create autocomplete interface and register
 class UserAutocomplete(autocomplete_light.AutocompleteModelBase):
     search_fields = ['^username']
-    choices = User.objects.filter(Q(user_level=User.ADMIN) | Q(user_level=User.JUDGE) | Q(user_level=User.SUB_JUDGE))
+    choices = User.objects.filter(Q(user_level=User.ADMIN) | \
+                                  Q(user_level=User.JUDGE) | \
+                                  Q(user_level=User.SUB_JUDGE))
     model = User
     attrs = {
         'placeholder': '',
@@ -62,7 +64,7 @@ class ProblemForm(forms.ModelForm):
             'judge_source',
             'judge_type',
             'judge_language',
-            'error_torrence',
+            'error_tolerance',
             'other_judge_id',
             'partial_judge_code',
             'special_judge_code',

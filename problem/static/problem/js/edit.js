@@ -146,7 +146,7 @@ $("#save_button").click(function() {
 });
 
 function hide_field() {
-  $("#id_error_torrence").parent().parent().hide();
+  $("#id_error_tolerance").parent().parent().hide();
   $("#id_other_judge_id").parent().parent().hide();
   $("#id_partial_judge_code").parent().parent().hide();
   $("#id_special_judge_code").parent().parent().hide();
@@ -156,7 +156,7 @@ function hide_field() {
 function choose_judge_type(option) {
     hide_field();
     if (option == "ERR_TOLERANT")
-        $("#id_error_torrence").parent().parent().show();
+        $("#id_error_tolerance").parent().parent().show();
     else if (option == "PARTIAL") {
         $("#id_partial_judge_code").parent().parent().show();
 	$("#id_judge_language").parent().parent().show();
