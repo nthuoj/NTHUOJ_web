@@ -119,7 +119,7 @@ EMAIL_USE_TLS = True
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_HOST_USER = get_config('email', 'user')
 EMAIL_HOST_PASSWORD = get_config('email', 'password')
-EMAIL_PORT = 689
+EMAIL_PORT = 587
 
 # django-bower settings
 BOWER_COMPONENTS_ROOT = os.path.join(PROJECT_ROOT, 'components')
