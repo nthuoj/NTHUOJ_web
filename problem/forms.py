@@ -40,6 +40,7 @@ class UserAutocomplete(autocomplete_light.AutocompleteModelBase):
 autocomplete_light.register(UserAutocomplete)
 
 class ProblemForm(forms.ModelForm):
+    other_judge_id = forms.IntegerField(required=False, min_value=0)
     partial_judge_code = forms.FileField(required=False)
     special_judge_code = forms.FileField(required=False)
     class Meta:
