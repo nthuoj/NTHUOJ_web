@@ -24,7 +24,7 @@ SOFTWARE.
 from django.http import HttpResponse, HttpResponseBadRequest, Http404
 from django.shortcuts import render, redirect
 from django.core.exceptions import PermissionDenied
-from django.core.paginator import Paginator
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.contrib.auth.decorators import login_required
 
 from users.models import User
@@ -61,6 +61,8 @@ def problem(request):
         if p.total_submission != 0:
             p.pass_rate = float(p.ac_count) / float(p.total_submission) * 100.0
             p.not_pass_rate = 100.0 - p.pass_rate
+            p.pass_rate = "%.2f" % (p.pass_rate)
+            p.not_pass_rate = "%.2f" % (p.not_pass_rate)
 
     return render(request, 'problem/panel.html', 
                   {'all_problem': all_problem, 
@@ -97,7 +99,7 @@ def edit(request, pid=None):
             form = ProblemForm(initial={'owner': request.user.username})
         else:
             form = ProblemForm(instance=problem,
-                               initial={'owner': reuqest.user.username})
+                               initial={'owner': request.user.username})
     if request.method == 'POST':
         if is_new:
             form = ProblemForm(request.POST,
@@ -105,7 +107,7 @@ def edit(request, pid=None):
         else:
             form = ProblemForm(request.POST,
                                instance=problem,
-                               initial={'owner': reuqest.user.username})
+                               initial={'owner': request.user.username})
         if form.is_valid():
             problem = form.save()
             problem.description = request.POST['description']
