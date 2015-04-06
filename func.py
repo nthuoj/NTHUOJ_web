@@ -24,29 +24,28 @@ SOFTWARE.
 
 import os
 
-def write_ini_file(host, db, user, pwd):
-    ini_file = open('nthuoj.ini', 'w')
-    ini_file.write('[client]\n')
-    ini_file.write('host = %s\n' % host)
-    ini_file.write('database = %s\n' % db)
-    ini_file.write('user = %s\n' % user)
-    ini_file.write('password = %s\n' % pwd)
-    ini_file.write('default-character-set = utf8\n')
-    ini_file.close()
 
-def write_email_file(user, pwd):
-    email_file = open('emailInfo.py', 'w') 
-    email_file.write('EMAIL_HOST_USER = \'%s\'\n' % user)
-    email_file.write('EMAIL_HOST_PASSWORD = \'%s\'\n' % pwd)
-    email_file.close()
+def write_mysql_client_config(config, host, db, user, pwd):
+    config.add_section('client')
+    config.set('client', 'host', host)
+    config.set('client', 'database', db)
+    config.set('client', 'user', user)
+    config.set('client', 'password', pwd)
+    config.set('client', 'default-character-set', 'utf8')
+
+
+def write_email_config(config, user, pwd):
+    config.add_section('email')
+    config.set('email', 'user', user)
+    config.set('email', 'password', pwd)
+
+
+def write_path_config(config, paths):
+    for key in paths:
+        config.set('path', key, paths[key])
+
 
 def django_manage(args):
     cmd = 'python ./manage.py ' + args
     os.system(cmd)
-
-def db_migrate():
-    apps = ['index', 'problem', 'users', 'contest', 'team', 'group']
-    for app in apps:
-        django_manage('makemigrations ' + app)
-    django_manage('migrate')
 

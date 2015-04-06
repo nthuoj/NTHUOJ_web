@@ -22,31 +22,37 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 -->
 <!DOCTYPE html>
+{% extends "index/base.html" %}
 {% load static %}
-
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <!-- bootstrap, bootwatch JS & CSS -->
-  {% if user.is_authenticated %}
-  <link rel="stylesheet" href="{% static '' %}bootswatch/{{user.theme}}/bootstrap.css">
-  {% else %}
-  <link rel="stylesheet" href={% static "bootswatch/paper/bootstrap.css" %}>
-  {% endif %}
-  <script src={% static "bootstrap/dist/js/bootstrap.min.js" %}></script>
-  <link rel="stylesheet" href={% static "./css/index.css"%} media="screen">
-</head>
-<body>
-  <div style="position:relative;bottom:0px;">
-    <p class="status" >4&nbsp0&nbsp4</p>
-  </div>
-  <br>
-  <p class="status-title">Page Not Found</p>
-  <br>
-  <p class="status-message">{{ error_message }}</p>
-  <br>
-  <p class="status-condition">
-    Sorry , the page you are looking for seems to be missing.
-  </p>
-</body>
-</html>
+{% load bootstrap %}
+{% block title_name %}
+  <title>{{ title }}</title>
+{% endblock title_name %}
+{% block import_source %}
+{{ form.media }}
+<link rel="stylesheet" href={% static "css/announcement.css" %} media="screen">
+{% endblock import_source %}
+{% block body_block %}
+<br>
+<div class="container" style="width:50%">
+  <form action="" method="post" role="form">
+    {% csrf_token %}
+    {% for field in form %}
+    {% if field.label_tag == form.content.label_tag %}
+      <div class="panel panel-default">
+        <div class="panel-heading" style="font-size:25px">Set Content</div>
+        <div class="panel-body">{{ field|bootstrap }}</div>
+      </div>
+    {% else %}
+      {{ field|bootstrap }}
+    {% endif %}
+    {% endfor %}
+    {% if title == 'Create Announcement' %}
+    <button type="submit" class="btn btn-primary">Add</button>
+    {% else %}
+    <button type="submit" class="btn btn-primary">Update</button>
+    {% endif %}
+  </form>
+</div>
+<br>
+{% endblock body_block %}

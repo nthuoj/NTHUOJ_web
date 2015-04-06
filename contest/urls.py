@@ -17,7 +17,6 @@
     OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
     SOFTWARE.
     '''
-
 from django.conf.urls import patterns, url
 from contest import views
 
@@ -38,5 +37,6 @@ urlpatterns = patterns('contest.views',
     url(r'^register/(?P<contest_id>\d+)/$',views.register,name='register'),
     #user create new clarification
     url(r'^ask/$',views.ask,name='ask'),
-    url(r'^reply/$',views.reply,name='reply')
+    url(r'^reply/$',views.reply,name='reply'),
+    url(r'^download/$',views.download,name='download'),
 )

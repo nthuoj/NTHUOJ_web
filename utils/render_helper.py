@@ -1,4 +1,4 @@
-'''
+"""
 The MIT License (MIT)
 
 Copyright (c) 2014 NTHUOJ team
@@ -20,33 +20,47 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
-'''
+"""
+import time
+from datetime import datetime
+
 from django.shortcuts import render
-from index.views import custom_proc
 from django.template import RequestContext
+from django.http import Http404
+from django.core.exceptions import PermissionDenied
+from django.core.exceptions import SuspiciousOperation
 
-def render_404(request, message):
-    '''Help to render 404 page
-
-    example: 
-        render_404(request, 'Page not found')
-    '''
-    return render(request, 'index/404.html',
-        {'error_message': message}, status=500)
+from users.models import Notification
 
 
-def render_500(request, message):
-    '''Help to render 500 page
+class CustomHttpExceptionMiddleware(object):
+    def process_exception(self, request, exception):
+        message = unicode(exception)
+        if isinstance(exception, Http404):
+            return render(request, 'index/404.html', {'error_message': message}, status=404)
+        elif isinstance(exception, SuspiciousOperation):
+            return render(request, 'index/400.html', {'error_message': message}, status=400)
+        elif isinstance(exception, PermissionDenied):
+            return render(request, 'index/403.html', {'error_message': message}, status=403)
+        elif isinstance(exception, Exception):
+            return render(request, 'index/500.html', {'error_message': message}, status=500)
 
-    example: 
-        render_500(request, 'Request query does not exist')
-    '''
-    return render(request, 'index/500.html',
-        {'error_message': message}, status=500)
 
 def render_index(request, *args, **kwargs):
-    '''Helper to render index page with custom_proc'''
+    """Helper to render index page with custom_proc"""
     # add context_instance keyword
     kwargs.update({'context_instance': RequestContext(request, processors=[custom_proc])})
 
     return render(request, *args, **kwargs)
+
+
+def custom_proc(request):
+    amount = Notification.objects.filter \
+        (receiver=request.user, read=False).count()
+
+    t = time.time()
+    tstr = datetime.fromtimestamp(t).strftime('%Y/%m/%d %H:%M:%S')
+    return {
+        'tstr': tstr,
+        'amount': amount
+    }

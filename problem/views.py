@@ -26,7 +26,7 @@ from django.shortcuts import render, redirect
 from django.core.exceptions import PermissionDenied
 from django.core.paginator import Paginator
 from django.contrib.auth.decorators import login_required
-
+from utils.render_helper import render_index
 from users.models import User
 from problem.models import Problem, Tag, Testcase
 from problem.forms import ProblemForm, TagForm
@@ -190,7 +190,7 @@ def testcase(request, pid, tid=None):
             testcase.memory_limit = request.POST['memory_limit']
             testcase.save()
             logger.info("testcase saved, tid = %s" % (testcase.pk))
-            return HttpResponse(json.dumps({'tid': testcase.pk}), 
+            return HttpResponse(json.dumps({'tid': testcase.pk}),
                                 content_type="application/json")
     return HttpResponse()
 
@@ -233,3 +233,4 @@ def preview(request):
     problem.sample_out = request.POST['sample_out']
     problem.tag = request.POST['tags'].split(',')
     return render_index(request, 'problem/preview.html', {'problem': problem, 'preview': True})
+

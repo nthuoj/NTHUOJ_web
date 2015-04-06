@@ -16,17 +16,20 @@
     LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
     OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
     SOFTWARE.
-    '''
+'''
+from django import forms
+from index.models import Announcement
+from datetimewidget.widgets import DateTimeWidget, DateWidget, TimeWidget
 
-from django.conf.urls import patterns, url
-import views
-
-urlpatterns = patterns('',
-    url(r'^get_time/$', views.get_time),
-    url(r'^$', views.index, name='index'),
-    url(r'^index/(?P<alert_info>\w+)/$', views.index, name='alert'),
-    url(r'^search/$', views.navigation_autocomplete, name='search'),
-    url(r'^announcement_create/$', views.announcement_create, name='announcement_create'),
-    url(r'^announcement_update/(?P<aid>\w+)$', views.announcement_update, name='announcement_update'),
-    url(r'^announcement_delete/(?P<aid>\w+)$', views.announcement_delete, name='announcement_delete'),
-)
+class AnnouncementCreationForm(forms.ModelForm):
+    dateTimeOptions = {
+            'format': 'yyyy-mm-dd hh:ii:ss',
+            'todayBtn': 'true',
+            'minuteStep': 30,
+    }
+    content = forms.CharField(widget=forms.Textarea)
+    start_time = forms.DateTimeField(widget=DateTimeWidget(options=dateTimeOptions, bootstrap_version=3))
+    end_time = forms.DateTimeField(widget=DateTimeWidget(options=dateTimeOptions, bootstrap_version=3))
+    class Meta:
+        model = Announcement
+        fields = ('content', 'start_time', 'end_time')

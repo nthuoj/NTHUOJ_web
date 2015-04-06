@@ -17,16 +17,25 @@
     OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
     SOFTWARE.
     '''
+from django.db.models import Q
+from group.models import Group
 
-from django.conf.urls import patterns, url
-import views
+from users.models import User
+from utils import user_info
+from utils.log_info import get_logger
+from django.http import Http404
 
-urlpatterns = patterns('',
-    url(r'^get_time/$', views.get_time),
-    url(r'^$', views.index, name='index'),
-    url(r'^index/(?P<alert_info>\w+)/$', views.index, name='alert'),
-    url(r'^search/$', views.navigation_autocomplete, name='search'),
-    url(r'^announcement_create/$', views.announcement_create, name='announcement_create'),
-    url(r'^announcement_update/(?P<aid>\w+)$', views.announcement_update, name='announcement_update'),
-    url(r'^announcement_delete/(?P<aid>\w+)$', views.announcement_delete, name='announcement_delete'),
-)
+logger = get_logger()
+
+def get_owned_group(user):
+    request = Q(owner = user)|Q(coowner = user)
+    owned_groups = Group.objects.filter(request)
+    return owned_groups
+
+def get_group_or_404(group_id):
+    try:
+        group = Group.objects.get(id = group_id)
+        return group
+    except Group.DoesNotExist:
+        logger.warning('Group: Group %s not found!' % group_id)
+        raise Http404('Group %s not found!' % group_id)
