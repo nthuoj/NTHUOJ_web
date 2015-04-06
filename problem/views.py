@@ -71,9 +71,6 @@ def detail(request, pid):
 
 @login_required
 def edit(request, pid=None):
-    SPECIAL_PATH = config_info.get_config('path', 'special_judge_path')
-    PARTIAL_PATH = config_info.get_config('path', 'partial_judge_path')
-    TESTCASE_PATH = config_info.get_config('path', 'testcase_path')
     if pid is not None:
         is_new = False
         try:
