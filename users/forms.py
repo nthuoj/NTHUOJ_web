@@ -44,7 +44,9 @@ class CodeSubmitForm(forms.Form):
             problem=problem,
             language=language)
         try:
-            f = open('%s%s.%s' % (self.SUBMIT_PATH, submission.id, submission.language.lower()), 'w')
+            filename = '%s.%s' % (submission.id,
+                'c' if submission.language == Submission.C else 'cpp')
+            f = open('%s%s' % (self.SUBMIT_PATH, filename), 'w')
             f.write(code.encode('utf-8'))
             f.close()
         except IOError:

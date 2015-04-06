@@ -114,12 +114,13 @@ def error_message(request, sid):
 def view_code(request, sid):
     try:
         submission = Submission.objects.get(id=sid)
+        filename = '%s.%s' % (sid, 'c' if submission.language == Submission.C else 'cpp')
         if show_detail(submission, request.user):
-            f = open('%s%s.%s' % (CodeSubmitForm.SUBMIT_PATH, sid, submission.language.lower()), 'r')
+            f = open('%s%s' % (CodeSubmitForm.SUBMIT_PATH, filename), 'r')
             code = f.read()
             f.close()
             codesubmitform = CodeSubmitForm(
-                initial={'code': code, 'pid': submission.problem.id})
+                initial={'code': code, 'pid': submission.problem.id, 'language': submission.language})
             return render_index(request, 'users/submit.html', {'form': codesubmitform})
         else:
             logger.warning('User %s attempt to view detail of SID %s' % (request.user, sid))
@@ -128,5 +129,5 @@ def view_code(request, sid):
         logger.warning('SID %s Not Found!' % sid)
         raise Http404('SID %s Not Found!' % sid)
     except IOError:
-        logger.warning('File %s.%s Not Found!' % (sid, codesubmitform.language.lower()))
-        raise Http404('File %s.%s Not Found!' % (sid, codesubmitform.language.lower()))
+        logger.warning('File %s Not Found!' % filename)
+        raise Http404('File %s Not Found!' % filename)
