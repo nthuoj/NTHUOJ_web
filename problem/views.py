@@ -228,6 +228,11 @@ def delete_testcase(request, pid, tid):
         raise PermissionDenied
     logger.info("testcase %d deleted" % (testcase.pk))
     testcase.delete()
+    try:
+        os.remove('%s%s.in' % (TESTCASE_PATH, testcase.pk))
+        os.remove('%s%s.out' % (TESTCASE_PATH, testcase.pk))
+    except IOError:
+        logger.error("remove testcase %s error" % (testcase.pk))
     return HttpResponse()
 
 def preview(request):
