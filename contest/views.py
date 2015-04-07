@@ -27,7 +27,6 @@ from django.forms.models import model_to_dict
 from contest.contest_info import get_scoreboard
 from contest.contest_info import get_scoreboard_csv
 from contest.contest_info import get_clarifications
-from contest.contestArchive import get_contests
 from contest.contest_info import can_ask
 from contest.contest_info import can_reply
 from contest.contest_archive import get_contests
