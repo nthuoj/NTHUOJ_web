@@ -195,19 +195,19 @@ def testcase(request, pid, tid=None):
             testcase.time_limit = request.POST['time_limit']
             testcase.memory_limit = request.POST['memory_limit']
             testcase.save()
-            logger.info("testcase saved, tid = %s" % (testcase.pk))
+            logger.info("testcase saved, tid = %s by %s" % (testcase.pk, request.user))
         if 't_in' in request.FILES:
             TESTCASE_PATH = config_info.get_config('path', 'testcase_path')
             try:
                 with open('%s%s.in' % (TESTCASE_PATH, testcase.pk), 'w') as t_in:
                     for chunk in request.FILES['t_in'].chunks():
                         t_in.write(chunk)
-                    logger.info("testcase %s.in saved" % (testcase.pk))
+                    logger.info("testcase %s.in saved by %s" % (testcase.pk, request.user))
                 with open('%s%s.out' % (TESTCASE_PATH, testcase.pk), 'w') as t_out:
                     for chunk in request.FILES['t_out'].chunks():
                         t_out.write(chunk)
-                    logger.info("testcase %s.out saved" % (testcase.pk))
-            except IOError:
+                    logger.info("testcase %s.out saved by %s" % (testcase.pk, request.user))
+            except IOError, OSError:
                 logger.error("saving testcase error")
             return HttpResponse(json.dumps({'tid': testcase.pk}), 
                                 content_type="application/json")
@@ -233,6 +233,7 @@ def delete_testcase(request, pid, tid):
     except IOError, OSError:
         logger.error("remove testcase %s error" % (testcase.pk))
     testcase.delete()
+    logger.info("testcase %d deleted by %s" % (testcase.pk, request.user))
     return HttpResponse()
 
 def preview(request):
