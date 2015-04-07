@@ -86,6 +86,7 @@ def new(request):
         if 'pname' in request.POST and request.POST['pname'].strip() != "":
             p = Problem(pname=request.POST['pname'], owner=request.user)
             p.save()
+            logger.info("problem %s created by %s" % (p.pk, request.user))
             return redirect("/problem/%d/edit/" % p.pk)
         else:
             return render_index(request, "problem/new.html", {"error": "Problem name empty"})
@@ -142,7 +143,7 @@ def tag(request, pid):
             new_tag, created = Tag.objects.get_or_create(tag_name=tag)
             problem.tags.add(new_tag)
             problem.save()
-            logger.info("add new tag '%s' to problem %s by" % (tag, pid, request.user))
+            logger.info("add new tag '%s' to problem %s by %s" % (tag, pid, request.user))
             return HttpResponse(json.dumps({'tag_id': new_tag.pk}),
                                 content_type="application/json")
         return HttpRequestBadRequest()
