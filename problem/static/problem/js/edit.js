@@ -131,7 +131,7 @@ $("#preview_button").click(function() {
 });
 
 function hide_field() {
-  $("#id_error_torrence").parent().hide();
+  $("#id_error_tolerance").parent().hide();
   $("#id_other_judge_id").parent().hide();
   $("#id_partial_judge_code").parent().hide();
   $("#id_special_judge_code").parent().hide();
@@ -139,7 +139,7 @@ function hide_field() {
 $("select").on("change", function(e) {
     hide_field();
     if (this.value == "ERR_TORRENT")
-        $("#id_error_torrence").parent().show();
+        $("#id_error_tolerance").parent().show();
     else if (this.value == "OTHER")
         $("#id_other_judge_id").parent().show();
     else if (this.value == "PARTIAL")

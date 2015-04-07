@@ -31,7 +31,7 @@ SOFTWARE.
     </tr>
   </thead>
   <tbody>
-    {% for p in problem%}
+    {% for p in problem %}
       <tr>
         <td>
           {% if user == p.owner or user.is_admin %}
@@ -50,14 +50,18 @@ SOFTWARE.
           {% endif %}
         </td>
         <td>
-          <div class="progress">
-            <div class="progress-bar progress-bar-success" style="width: {{p.pass_rate}}%;" 
-              data-toggle="tooltip" data-placement="top" title="{{p.pass_rate}}%">
+          {% if p.no_submission %}
+            No submission
+          {% else %}
+            <div class="progress">
+              <div class="progress-bar progress-bar-success" style="width: {{p.pass_rate}}%;" 
+                data-toggle="tooltip" data-placement="top" title="{{p.pass_rate}}%">
+              </div>
+              <div class="progress-bar progress-bar-danger" style="width: {{p.not_pass_rate}}%;" 
+                data-toggle="tooltip" data-placement="top" title="{{p.not_pass_rate}}%">
+              </div>
             </div>
-            <div class="progress-bar progress-bar-danger" style="width: {{p.not_pass_rate}}%;" 
-              data-toggle="tooltip" data-placement="top" title="{{p.not_pass_rate}}%">
-            </div>
-          </div>
+          {% endif %}
         </td>
         <td>
           {% if user == p.owner or user.is_admin %}

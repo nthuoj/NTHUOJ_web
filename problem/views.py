@@ -63,6 +63,8 @@ def problem(request):
             p.not_pass_rate = 100.0 - p.pass_rate
             p.pass_rate = "%.2f" % (p.pass_rate)
             p.not_pass_rate = "%.2f" % (p.not_pass_rate)
+        else:
+            p.no_submission = True
 
     return render(request, 'problem/panel.html', 
                   {'all_problem': all_problem, 
