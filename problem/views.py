@@ -118,7 +118,7 @@ def edit(request, pid=None):
             problem.sample_in = request.POST['sample_in']
             problem.sample_out = request.POST['sample_out']
             problem.save()
-            logger.info('edit problem, pid = %d' % (problem.pk))
+            logger.info('edit problem, pid = %d by %s' % (problem.pk, request.user))
             return redirect('/problem/%d' % (problem.pk))
     if not request.user.is_admin:
         del form.fields['owner']
@@ -139,10 +139,10 @@ def tag(request, pid):
             logger.warning("problem %s does not exist" % (pid))
             raise Http404("problem %s does not exist" % (pid))
         if not problem.tags.filter(tag_name=tag).exists():
-            logger.info("add new tag '%s' to problem %s" % (tag, pid))
             new_tag, created = Tag.objects.get_or_create(tag_name=tag)
             problem.tags.add(new_tag)
             problem.save()
+            logger.info("add new tag '%s' to problem %s by" % (tag, pid, request.user))
             return HttpResponse(json.dumps({'tag_id': new_tag.pk}),
                                 content_type="application/json")
         return HttpRequestBadRequest()
@@ -161,7 +161,7 @@ def delete_tag(request, pid, tag_id):
         raise Http404("tag %s does not exist" % (tag_id))
     if not request.user.is_admin and request.user != problem.owner:
         raise PermissionDenied()
-    logger.info("tag %d deleted" % (tag.pk))
+    logger.info("tag %s deleted by %s" % (tag.tag_name, request.user))
     problem.tags.remove(tag)
     return HttpResponse()
 
@@ -219,7 +219,7 @@ def delete_problem(request, pid):
         raise Http404("problem %s does not exist" % (pid))
     if not request.user.is_admin and request.user != problem.owner:
         raise PermissionDenied
-    logger.info("problem %d deleted" % (problem.pk))
+    logger.info("problem %d deleted by %s" % (problem.pk, request.user))
     problem.delete()
     return redirect('/problem/')
 
