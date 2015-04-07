@@ -1,4 +1,4 @@
-'''
+"""
 The MIT License (MIT)
 
 Copyright (c) 2014 NTHUOJ team
@@ -20,12 +20,18 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
-'''
+"""
 from datetime import date, datetime, timedelta
+
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 from django.db import models
+
 from utils.config_info import get_config_items
+
+
 # Create your models here.
+
+
 class UserManager(BaseUserManager):
     def create_user(self, username, password=None):
         """

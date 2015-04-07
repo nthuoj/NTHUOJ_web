@@ -1,22 +1,21 @@
 from django import forms
-from django.conf import settings
-from django.forms import ModelForm
 
 from users.models import User
 from problem.models import Problem, Submission, SubmissionDetail, Testcase
-from utils import log_info, user_info, config_info
+from utils import log_info, user_info, config_info, file_info
 
 logger = log_info.get_logger()
+
 
 class CodeSubmitForm(forms.Form):
     SUBMIT_PATH = config_info.get_config('path', 'submission_code_path')
     LANGUAGE_CHOICE = tuple(config_info.get_config_items('compiler_option'))
 
     pid = forms.CharField()
-    language = forms.ChoiceField(choices=LANGUAGE_CHOICE, initial='CPP',
-        widget=forms.RadioSelect())
+    language = forms.ChoiceField(choices=LANGUAGE_CHOICE, initial=Submission.CPP,
+                                 widget=forms.RadioSelect())
     code = forms.CharField(max_length=10000,
-        widget=forms.Textarea(attrs={'id': 'code_editor'}))
+                           widget=forms.Textarea(attrs={'id': 'code_editor'}))
 
     def clean_pid(self):
         pid = self.cleaned_data['pid']
@@ -44,7 +43,8 @@ class CodeSubmitForm(forms.Form):
             problem=problem,
             language=language)
         try:
-            f = open('%s%s.cpp' % (self.SUBMIT_PATH, submission.id), 'w')
+            filename = '%s.%s' % (submission.id, file_info.get_extension(submission.language))
+            f = open('%s%s' % (self.SUBMIT_PATH, filename), 'w')
             f.write(code.encode('utf-8'))
             f.close()
         except IOError:
@@ -57,19 +57,19 @@ class CodeSubmitForm(forms.Form):
         self.user = kwargs.pop('user', User())
         super(CodeSubmitForm, self).__init__(*args, **kwargs)
 
+
 class UserProfileForm(forms.ModelForm):
     """A form for updating user's profile. Includes all the required
     fields, plus a repeated password."""
 
     username = forms.CharField(label='Username',
-        widget=forms.TextInput(attrs={'readonly': True}))
+                               widget=forms.TextInput(attrs={'readonly': True}))
     email = forms.EmailField(label='Email')
-    theme = forms.ChoiceField(label='Theme',
-        choices=User.THEME_CHOICE)
+    theme = forms.ChoiceField(label='Theme', choices=User.THEME_CHOICE)
     password1 = forms.CharField(label='Password', required=False,
-        widget=forms.PasswordInput())
+                                widget=forms.PasswordInput())
     password2 = forms.CharField(label='Password Confirmation', required=False,
-        widget=forms.PasswordInput())
+                                widget=forms.PasswordInput())
 
     class Meta:
         model = User
@@ -102,8 +102,7 @@ class UserProfileForm(forms.ModelForm):
 
 class UserLevelForm(forms.ModelForm):
     """A form for updating user's userlevel."""
-    user_level = forms.ChoiceField(label='Userlevel',
-        choices=User.USER_LEVEL_CHOICE)
+    user_level = forms.ChoiceField(label='Userlevel', choices=User.USER_LEVEL_CHOICE)
 
     class Meta:
         model = User
@@ -121,9 +120,10 @@ class UserLevelForm(forms.ModelForm):
         # judge can change user to sub-judge, user
         user_level = self.cleaned_data['user_level']
         if user.has_judge_auth() and \
-            (user_level == User.SUB_JUDGE or user_level == User.USER):
+                (user_level == User.SUB_JUDGE or user_level == User.USER):
             return True
         return False
+
 
 class UserForgetPasswordForm(forms.Form):
     username = forms.CharField()
