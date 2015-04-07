@@ -232,8 +232,8 @@ def delete_testcase(request, pid, tid):
         os.remove('%s%d.out' % (TESTCASE_PATH, testcase.pk))
     except IOError, OSError:
         logger.error("remove testcase %s error" % (testcase.pk))
-    testcase.delete()
     logger.info("testcase %d deleted by %s" % (testcase.pk, request.user))
+    testcase.delete()
     return HttpResponse()
 
 def preview(request):
