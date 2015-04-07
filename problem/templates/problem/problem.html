@@ -22,9 +22,9 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 -->
 {% load static %}
-<div style='height:90px;' class='panel panel-default'>
-  <div style='padding-left:10px;padding-right:10px'>
-    <div style='float:left;width:60%;'>
+<div class="pname_block panel">
+  <div class="left">
+    <div class="pname">
       <h2>{{ problem.pname }} &nbsp;&nbsp;
         {% if problem.owner == user or user.user_level == 'ADMIN'%}
           {% if not preview %}
@@ -33,14 +33,14 @@ SOFTWARE.
         {% endif %}
       </h2>
     </div>
-    <div class="problem-option" style="float:right;">
-      <h5>
-        <a>Status</a> &nbsp;|&nbsp;
-        <a>Printable </a> &nbsp;|&nbsp; 
-        <a>Rank</a> &nbsp;|&nbsp;
-        <a data-toggle='modal' data-target='#myModal'>Limits</a>
-      </h5>
-      <a class="btn btn-primary btn-lg" style='float:right' href="{% url 'users:submit' problem.pk %}">Submit</a>
+  </div>
+  <div class="right">
+    <div class="problem-option">
+      <a>Status</a> &nbsp;|&nbsp;
+      <a>Printable </a> &nbsp;|&nbsp; 
+      <a>Rank</a> &nbsp;|&nbsp;
+      <a data-toggle='modal' data-target='#myModal'>Limits</a>
+      <a class="btn btn-primary" href="{% url 'users:submit' problem.pk %}">Submit</a>
     </div>
   </div>
 </div>
