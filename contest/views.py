@@ -104,7 +104,7 @@ def archive(request, page = None):
 
     return render_index(request,
         'contest/contestArchive.html',
-        {'contests':contests,'user':user,'groups':groups,'pager':pager,
+        {'contests':contests, 'user':user, 'groups':groups, 'pager':pager,
          'max_anonymous':settings.MAX_ANONYMOUS})
 
 def contest(request, contest_id):
