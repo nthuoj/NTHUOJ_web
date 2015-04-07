@@ -1,4 +1,4 @@
-'''
+"""
 The MIT License (MIT)
 
 Copyright (c) 2014 NTHUOJ team
@@ -20,14 +20,17 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
-'''
-from users.models import User
-from django.test import TestCase
-from contest.models import Contest
+"""
 from datetime import datetime, timedelta
+
+from django.test import TestCase
+
+from users.models import User
+from contest.models import Contest
 from team.models import Team, TeamMember
-from problem.models import Problem, Submission, SubmissionDetail, Testcase
+from problem.models import Problem, Submission
 from status.templatetags.status_filters import show_detail, show_submission
+
 
 # Create your tests here.
 
@@ -71,24 +74,24 @@ class StatusTestCase(TestCase):
         # generate submissions of different case
         for user in users:
             for problem in problems:
-                submission = Submission.objects.create(problem=problem, user=user)
+                Submission.objects.create(problem=problem, user=user)
 
         for problem in problems:
             if problem.visible:  # by no mean will a normal user send invisible problem
-                submission = Submission.objects.create(problem=problem, user=self.user)
+                Submission.objects.create(problem=problem, user=self.user)
 
     def test_admin_view_submissions(self):
-        '''Test if admin can view all submissions'''
+        """Test if admin can view all submissions"""
         submissions = Submission.objects.all()
         for submission in submissions:
             can_show = show_submission(submission, self.admin)
             self.assertEqual(can_show, True)
 
     def test_not_admin_view_submissions(self):
-        '''When the user is not admin, they are treated as normal user if they
+        """When the user is not admin, they are treated as normal user if they
         don't have special authorities (problem owner, contest owner, etc)
 
-        In this case, we use user to test that kind of authorties'''
+        In this case, we use user to test that kind of authorties"""
         hidden_submissions = []
         # all submission should be seen except these 4 conditions
         # 1. admin's submissions can't be seen
@@ -135,14 +138,14 @@ class StatusTestCase(TestCase):
             self.assertEqual(can_show, True)
 
     def test_admin_view_details(self):
-        '''Test if admin can view everyone's details'''
+        """Test if admin can view everyone's details"""
         submissions = Submission.objects.all()
         for submission in submissions:
             can_show = show_detail(submission, self.admin)
             self.assertEqual(can_show, True)
 
     def test_not_admin_view_details_with_contests(self):
-        '''Test if non-admin can view details when there are contests'''
+        """Test if non-admin can view details when there are contests"""
         # during the contest, only contest owner/coowner can view detail
 
         # 1. judge/subjudge can view all contest detail (as a contest owner/coowner)
@@ -171,7 +174,7 @@ class StatusTestCase(TestCase):
             self.assertEqual(can_show, False)
 
     def test_not_admin_view_details_without_contests(self):
-        '''Test if non-admin can view details when there are no contests'''
+        """Test if non-admin can view details when there are no contests"""
         # delete all contests
         Contest.objects.all().delete()
         # all submissions exclude admin's
