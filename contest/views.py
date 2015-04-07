@@ -17,47 +17,31 @@
     OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
     SOFTWARE.
     '''
+
 from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
 from datetime import datetime
-from django.shortcuts import redirect
-from django.core.exceptions import PermissionDenied
-from django.shortcuts import redirect
-from django.http import Http404
-from django.shortcuts import render
-from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-from django.template import RequestContext
-from django.forms.models import model_to_dict
 
+from django.shortcuts import redirect
+from django.forms.models import model_to_dict
 from contest.contest_info import get_scoreboard
 from contest.contest_info import get_scoreboard_csv
-
 from contest.contest_info import get_clarifications
-from contest.contest_info import get_scoreboard
-from contest.contest_info import can_ask
-
+from contest.contestArchive import get_contests
 from contest.contest_info import can_ask
 from contest.contest_info import can_reply
 from contest.contest_archive import get_contests
-
 from contest.models import Contest
 from contest.models import Contestant
 from contest.models import Clarification
-
 from contest.forms import ContestForm
 from contest.forms import ClarificationForm
 from contest.forms import ReplyForm
-
 from contest.register_contest import register_user
 from contest.register_contest import register_group as register_group_impl
-
-from contest.contest_info import can_ask
-from contest.contest_info import can_reply
 from contest.contest_info import can_create_contest
 from contest.contest_info import can_edit_contest
 from contest.contest_info import can_delete_contest
-from contest.contest_info import get_scoreboard
-from contest.contest_info import can_register
 from contest.contest_info import can_register_log
 from contest.contest_info import get_contest_or_404
 
@@ -66,15 +50,11 @@ from problem.problem_info import get_testcase
 from group.models import Group
 from group.group_info import get_owned_group
 from group.group_info import get_group_or_404
-
 from utils.log_info import get_logger
 from utils import user_info
 from utils.render_helper import render_index
-
-from utils.log_info import get_logger
-from utils import user_info
-
 from status.views import *
+
 
 logger = get_logger()
 
@@ -201,7 +181,7 @@ def register(request, contest_id):
         register_group(request, group_id, contest)
     else:
         register_user(request.user, contest)
-    
+
     return redirect('contest:archive')
 
 
@@ -211,7 +191,7 @@ def register_group(request, group_id, contest):
     if user_info.has_group_ownership(request.user, group):
         register_group_impl(group, contest)
     else:
-        logger.warning('Contest: User %s can not register group %s. Does not have ownership!' 
+        logger.warning('Contest: User %s can not register group %s. Does not have ownership!'
             % (request.user.username, group_id))
     return redirect('contest:archive')
 
