@@ -40,7 +40,9 @@ SOFTWARE.
       <a>Printable </a> &nbsp;|&nbsp; 
       <a>Rank</a> &nbsp;|&nbsp;
       <a data-toggle='modal' data-target='#myModal'>Limits</a>
-      <a class="btn btn-primary" href="{% url 'users:submit' problem.pk %}">Submit</a>
+      {% if not preview %}
+        <a class="btn btn-primary" href="{% url 'users:submit' problem.pk %}">Submit</a>
+      {% endif %}
     </div>
   </div>
 </div>
