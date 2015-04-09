@@ -17,26 +17,27 @@
     OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
     SOFTWARE.
     '''
-from django.conf.urls import patterns, url
-from contest import views
+from contest.models import Contest
+from contest.models import Contestant
 
-urlpatterns = patterns('contest.views',
-    #default contest archive
-    url(r'^$',views.archive,name='archive'),
-    #explicit page of contest archive
-    url(r'^page/(?P<page>\d+)/$',views.archive,name='archive'),
-    #create new contest
-    url(r'^new/$',views.new,name='new'),
-    #edit existing contest
-    url(r'^edit/(?P<contest_id>\d+)/$',views.edit,name='edit'),
-    #delete contest
-    url(r'^delete/(?P<contest_id>\d+)/$',views.delete,name='delete'),
-    #detail of contest
-    url(r'^(?P<contest_id>\d+)/$',views.contest,name='contest'),
-    #user register contest
-    url(r'^register/(?P<contest_id>\d+)/$',views.register,name='register'),
-    #user create new clarification
-    url(r'^ask/$',views.ask,name='ask'),
-    url(r'^reply/$',views.reply,name='reply'),
-    url(r'^download/$',views.download,name='download'),
-)
+from contest.contest_info import get_contest_or_404
+from contest.contest_info import can_register
+
+from group.models import Group
+
+from utils.log_info import get_logger
+
+logger = get_logger()
+
+def register_user(user, contest):
+    if can_register(user, contest):
+        contestant = Contestant(contest = contest, user = user)
+        contestant.save()
+        logger.info('Contest: User %s attends Contest %s!' % (user.username, contest.id))
+
+def register_group(group, contest):
+    if not contest.open_register:
+        logger.info('Contest: Registration for Contest %s is closed, can not register.' % contest.id)
+        return
+    for member in group.member.all():
+        register_user(member, contest)
