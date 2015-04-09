@@ -1,4 +1,4 @@
-'''
+"""
 The MIT License (MIT)
 
 Copyright (c) 2014 NTHUOJ team
@@ -20,14 +20,18 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
-'''
+"""
 import getpass
-import os.path
 import ConfigParser
 
 from func import *
 
+
 CONFIG_PATH = 'nthuoj/config/nthuoj.cfg'
+
+if not os.path.isfile(CONFIG_PATH):
+    # If the config file does not exist, write default config
+    write_default_config(CONFIG_PATH)
 
 config = ConfigParser.RawConfigParser()
 config.optionxform = str
@@ -55,8 +59,8 @@ paths = dict(config.items('path'))
 print 'Default path configuration is:\n'
 for key in paths:
     print '%s: %s' % (key, paths[key])
-ans = raw_input('\nCustomize source code, testcase path? [Y/n] ')
-if ans == '' or ans == 'y' or ans == 'Y':
+
+if prompt('Customize source code, testcase path?'):
     for key in paths:
         path = raw_input('%s: ' % key)
         paths[key] = path
@@ -70,8 +74,7 @@ with open(CONFIG_PATH, 'wb') as configfile:
     config.write(configfile)
 
 # Create super user
-ans = raw_input('Create super user?[Y/n] ')
-if ans == '' or ans == 'y' or ans == 'Y':
+if prompt('Create super user?'):
     django_manage('createsuperuser')
 
 # Database Migratinos
@@ -80,4 +83,5 @@ django_manage('makemigrations')
 django_manage('migrate')
 
 # Bower
-django_manage('bower install')
+if prompt('Install static file by `bower install`?'):
+    django_manage('bower install')
