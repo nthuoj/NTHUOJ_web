@@ -79,6 +79,7 @@ if prompt('Create super user?'):
 
 # Database Migratinos
 django_manage('syncdb')
+
 django_manage('makemigrations')
 django_manage('migrate')
 
