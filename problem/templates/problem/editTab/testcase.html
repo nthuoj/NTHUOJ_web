@@ -11,10 +11,10 @@
   {% for t in testcase %}
   <tr data-target="{{t.pk}}">
     <td>
-      <a href="">{{t.pk}}.in</a>
+      <a href="/problem/testcase/{{t.pk}}.in">{{t.pk}}.in</a>
     </td>
     <td>
-      <a href="">{{t.pk}}.out</a>
+      <a href="/problem/testcase/{{t.pk}}.out">{{t.pk}}.out</a>
     </td>
     <td><input type="number" id="{{t.pk}}_time" name="time_limit" value="{{t.time_limit}}" min="0"></td>
     <td><input type="number" id="{{t.pk}}_memory" name="memory_limit" value="{{t.memory_limit}}" min="0"></td>
