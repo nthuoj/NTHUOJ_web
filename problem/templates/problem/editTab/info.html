@@ -38,6 +38,12 @@ SOFTWARE.
     </div>
   {% endif %}
 {% endfor %}
+{% if has_special_judge_code %}
+Special Judge Code: <a href="/{{path.SPECIAL_PATH}}{{pid}}{{file_ex}}">{{pid}}{{file_ex}}</a>
+{% endif %}
+{% if has_partial_judge_code %}
+Partial Judge Code: <a href="/{{path.PARTIAL_PATH}}{{pid}}{{file_ex}}">{{pid}}{{file_ex}}</a>
+{% endif %}
 <br>
 <br>
 <br>
