@@ -118,7 +118,7 @@ SOFTWARE.
         {% for c_upcoming in c_upcomings %}
           <tr>
             <td>
-              {% if user|has_auth:c_upcoming.id and user.has_admin_auth %}
+              {% if user|has_auth:c_upcoming.id or user.has_admin_auth %}
               <a href="{% url 'contest:contest' c_upcoming.id %}">{{ c_upcoming.cname }}</a>
               {% else %}
               {{ c_upcoming.cname }}
