@@ -29,6 +29,7 @@ from django.template import RequestContext
 from django.http import Http404
 from django.core.exceptions import PermissionDenied
 from django.core.exceptions import SuspiciousOperation
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 from users.models import Notification
 
@@ -64,3 +65,24 @@ def custom_proc(request):
         'tstr': tstr,
         'amount': amount
     }
+
+
+def get_current_page(request, objects, slice=25):
+    """Template for paging
+        `objects` is the universe of the set.
+
+        Returns a subset of `objects` of the given page.
+    """
+    paginator = Paginator(objects, slice)  # Show 25 items per page by default
+    page = request.GET.get('page')
+
+    try:
+        objects = paginator.page(page)
+    except PageNotAnInteger:
+        # If page is not an integer, deliver first page.
+        objects = paginator.page(1)
+    except EmptyPage:
+        # If page is out of range (e.g. 9999), deliver last page of results.
+        objects = paginator.page(paginator.num_pages)
+
+    return objects
