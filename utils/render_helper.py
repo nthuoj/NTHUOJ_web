@@ -71,7 +71,7 @@ def get_current_page(request, objects, slice=25):
     """Template for paging
         `objects` is the universe of the set.
 
-        Returns a subset of `objects` of the given page.
+        Returns a subset of `objects` according to the given page.
     """
     paginator = Paginator(objects, slice)  # Show 25 items per page by default
     page = request.GET.get('page')
