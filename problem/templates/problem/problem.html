@@ -22,9 +22,9 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 -->
 {% load static %}
-<div style='height:90px;' class='panel panel-default'>
-  <div style='padding-left:10px;padding-right:10px'>
-    <div style='float:left;width:60%;'>
+<div class="pname_block panel">
+  <div class="left">
+    <div class="pname">
       <h2>{{ problem.pname }} &nbsp;&nbsp;
         {% if problem.owner == user or user.user_level == 'ADMIN'%}
           {% if not preview %}
@@ -33,14 +33,16 @@ SOFTWARE.
         {% endif %}
       </h2>
     </div>
-    <div class="problem-option" style="float:right;">
-      <h5>
-        <a>Status</a> &nbsp;|&nbsp;
-        <a>Printable </a> &nbsp;|&nbsp; 
-        <a>Rank</a> &nbsp;|&nbsp;
-        <a data-toggle='modal' data-target='#myModal'>Limits</a>
-      </h5>
-      <button class="btn btn-primary btn-lg" style='float:right'>Submit</button>
+  </div>
+  <div class="right">
+    <div class="problem-option">
+      <a>Status</a> &nbsp;|&nbsp;
+      <a>Printable </a> &nbsp;|&nbsp; 
+      <a>Rank</a> &nbsp;|&nbsp;
+      <a data-toggle='modal' data-target='#myModal'>Limits</a>
+      {% if not preview %}
+        <a class="btn btn-primary" href="{% url 'users:submit' problem.pk %}">Submit</a>
+      {% endif %}
     </div>
   </div>
 </div>
@@ -101,19 +103,25 @@ SOFTWARE.
   </div>
   <h3>Tags</h3>
   <div id='tags' style='float:left;width:60%'>
-    {% for tag in problem.tags.all %}
-      <span class='label label-info'>{{tag.tag_name}}</span>
-    {% endfor %}
+    {% if preview %}
+      {% for tag in problem.tag %}
+        <span class='label label-info'>{{tag}}</span>
+      {% endfor %}
+    {% else %}
+      {% for tag in problem.tags.all %}
+        <span class='label label-info'>{{tag.tag_name}}</span>
+      {% endfor %}
+    {% endif %}
   </div>
+  {% if tag_form %}
   <form id='addTag'>
     {% csrf_token %}
-    <div class='input-group' style='float:right;width:30%'>
-      <input type='text' name='tag' id='newTag' class='form-control' width='25%'>
-      <span class='input-group-btn'>
-        <button id='addTagButton' class='btn btn-default'>Add Tag</button>
-      </span>
+    <div class='input-group'>
+      {{ tag_form }}
+      <button id='addTagButton' class='btn btn-default'>Add Tag</button>
     </div>
   </form>
+  {% endif %}
 
   <br>
   <br>

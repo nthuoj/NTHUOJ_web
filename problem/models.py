@@ -87,6 +87,8 @@ class Problem(models.Model):
     judge_source = models.CharField(max_length=11, choices=JUDGE_SOURCE_CHOICE, default=LOCAL)
     judge_type = models.CharField(max_length=11, choices=JUDGE_TYPE_CHOICE, default=NORMAL)
     judge_language = models.CharField(max_length=11, choices=LANGUAGE_CHOICE, default=CPP)
+    ac_count = models.IntegerField(default=0)
+    total_submission = models.IntegerField(default=0)
 
     def __unicode__(self):
         return str(self.id) + ' - ' + self.pname
