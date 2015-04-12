@@ -23,7 +23,6 @@ SOFTWARE.
 """
 import re
 
-from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.contrib.auth.decorators import login_required
 from django.http import Http404
 from django.shortcuts import render
@@ -35,7 +34,7 @@ from users.forms import CodeSubmitForm
 from users.models import User
 from utils.log_info import get_logger
 from utils.file_info import get_extension
-from utils.render_helper import render_index
+from utils.render_helper import render_index, get_current_page
 
 # Create your views here.
 
@@ -63,17 +62,7 @@ def status(request, username=None):
         except:
             raise Http404('User %s not found' % username)
 
-    paginator = Paginator(submissions, 25)  # Show 25 submissions per page
-    page = request.GET.get('page')
-
-    try:
-        submissions = paginator.page(page)
-    except PageNotAnInteger:
-        # If page is not an integer, deliver first page.
-        submissions = paginator.page(1)
-    except EmptyPage:
-        # If page is out of range (e.g. 9999), deliver last page of results.
-        submissions = paginator.page(paginator.num_pages)
+    submissions = get_current_page(request, submissions)
 
     submissions.object_list = regroup_submission(submissions.object_list)
 

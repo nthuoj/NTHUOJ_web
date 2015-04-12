@@ -1,5 +1,4 @@
 '''
-if 
 The MIT License (MIT)
 
 Copyright (c) 2014 NTHUOJ team
@@ -25,7 +24,6 @@ SOFTWARE.
 from django.http import HttpResponse, HttpResponseBadRequest, Http404
 from django.shortcuts import render, redirect
 from django.core.exceptions import PermissionDenied
-from django.core.paginator import Paginator
 from django.contrib.auth.decorators import login_required
 from django.core.servers.basehttp import FileWrapper
 
@@ -36,7 +34,7 @@ from problem.forms import ProblemForm, TagForm
 from utils import log_info, config_info
 from problem.problem_info import *
 from utils import log_info
-from utils.render_helper import render_index
+from utils.render_helper import render_index, get_current_page
 
 import os
 import json
@@ -51,24 +49,14 @@ def problem(request):
     else:
         can_add_problem = request.user.has_subjudge_auth()
     all_problem_list = get_problem_list(request.user)
-    paginator = Paginator(all_problem_list, 10)
-    if "page" in request.GET:
-        page = request.GET["page"]
-    else:
-        page = 1
-    try:
-        all_problem = paginator.page(page)
-    except PageNotAnInteger:
-        all_problem = paginator.page(1)
-    except EmptyPage:
-        all_problem = paginator.page(paginator.num_pages)
+    all_problem = get_current_page(request, all_problem_list, 15)
     for p in all_problem:
         if p.total_submission != 0:
             p.pass_rate = float(p.ac_count) / float(p.total_submission) * 100.0
             p.not_pass_rate = 100.0 - p.pass_rate
 
-    return render_index(request, 'problem/panel.html', 
-                  {'all_problem': all_problem, 
+    return render_index(request, 'problem/panel.html',
+                  {'all_problem': all_problem,
                    'can_add_problem': can_add_problem})
 
 def detail(request, pid):
@@ -143,10 +131,10 @@ def edit(request, pid=None):
                              'tags': tags, 'tag_form': tag_form, 'description': problem.description,
                              'input': problem.input, 'output': problem.output,
                              'sample_in': problem.sample_in, 'sample_out': problem.sample_out,
-                             'testcase': testcase, 
+                             'testcase': testcase,
                              'path': {
-                                 'TESTCASE_PATH': TESTCASE_PATH, 
-                                 'SPECIAL_PATH': SPECIAL_PATH, 
+                                 'TESTCASE_PATH': TESTCASE_PATH,
+                                 'SPECIAL_PATH': SPECIAL_PATH,
                                  'PARTIAL_PATH': PARTIAL_PATH, },
                              'has_special_judge_code': has_special_judge_code(problem),
                              'has_partial_judge_code': has_partial_judge_code(problem),
@@ -226,7 +214,7 @@ def testcase(request, pid, tid=None):
                     logger.info("testcase %s.out saved by %s" % (testcase.pk, request.user))
             except IOError, OSError:
                 logger.error("saving testcase error")
-            return HttpResponse(json.dumps({'tid': testcase.pk}), 
+            return HttpResponse(json.dumps({'tid': testcase.pk}),
                                 content_type="application/json")
     return HttpResponse()
 
