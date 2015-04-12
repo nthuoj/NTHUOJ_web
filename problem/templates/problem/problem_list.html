@@ -35,7 +35,7 @@ SOFTWARE.
       <tr>
         <td>
           {% if user == p.owner or user.is_admin %}
-            <span id='rejudge' class='glyphicon glyphicon-refresh' 
+            <span id='rejudge' class='glyphicon glyphicon-refresh'
                   data-toggle="tooltip" data-placement="left" title="Rejudge"></span>
           {% endif %}
           &nbsp;{{p.pk}}
@@ -44,7 +44,7 @@ SOFTWARE.
         <td><a href="{% url 'problem:problem.views.detail' p.pk %}">{{p.pname}}</a>&nbsp;
           {% if user == p.owner or user.is_admin %}
             <a href="{% url 'problem:problem.views.edit' p.pk %}">
-              <span id='edit' class='glyphicon glyphicon-pencil' 
+              <span id='edit' class='glyphicon glyphicon-pencil'
               data-toggle="tooltip" data-placement="right" title="Edit"></span>
             </a>
           {% endif %}
@@ -61,22 +61,31 @@ SOFTWARE.
         </td>
         <td>
           {% if user == p.owner or user.is_admin %}
-            <a data-target="{{p.pk}}" class="btn btn-primary" 
+            <a data-target="{{p.pk}}" class="btn btn-primary"
               href="{% url 'problem:delete_problem' p.pk %}">Delete</a>
           {% endif %}
         </td>
       </tr>
     {% endfor %}
-    <tr>
-      <td colspan="3" style="text-align:center">
-      {% if problem.has_previous %}
-        <a href="?page={{problem.previous_page_number}}">previous</a>
-      {% endif %}
-      Page {{problem.number}} of {{problem.paginator.num_pages}}.
-      {% if problem.has_next %}
-        <a href="?page={{problem.next_page_number}}">next</a>
-      {% endif %}
-      </td>
-    </tr>
   </tbody>
 </table>
+
+<ul class="pager">
+  <span class="step-links">
+    {% if problem.has_previous %}
+      <li class="previous">
+        <a href="?page={{ problem.previous_page_number }}">← Previous</a>
+      </li>
+     {% endif %}
+
+    <span class="current">
+      Page {{ problem.number }} of {{ problem.paginator.num_pages }}.
+    </span>
+
+    {% if problem.has_next %}
+      <li class="next">
+        <a href="?page={{ problem.next_page_number }}">Next →</a>
+      </li>
+    {% endif %}
+  </span>
+</ul>
