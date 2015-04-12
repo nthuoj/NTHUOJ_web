@@ -25,15 +25,18 @@ SOFTWARE.
 from django.http import HttpResponse, HttpResponseBadRequest, Http404
 from django.shortcuts import render, redirect
 from django.core.exceptions import PermissionDenied
+from django.core.paginator import Paginator
 from django.contrib.auth.decorators import login_required
 from django.core.servers.basehttp import FileWrapper
 
 from utils.render_helper import render_index
 from users.models import User
 from problem.models import Problem, Tag, Testcase
-from problem.forms import ProblemForm
+from problem.forms import ProblemForm, TagForm
 from utils import log_info, config_info
 from problem.problem_info import *
+from utils import log_info
+from utils.render_helper import render_index
 
 import os
 import json
@@ -42,62 +45,76 @@ logger = log_info.get_logger()
 
 # Create your views here.
 def problem(request):
-    a = {'name': 'my_problem', 'pid': 1, 'pass': 60, 'not_pass': 40}
-    b = {'name': 'all_problem', 'pid': 1, 'pass': 60, 'not_pass': 40}
-    return render_index(request, 'problem/panel.html',
-                {'my_problem':[a,a,a], 'all_problem':[a,a,a,b,b,b]})
+    can_add_problem = False
+    if request.user.is_anonymous():
+        can_add_problem = False
+    else:
+        can_add_problem = request.user.has_subjudge_auth()
+    all_problem_list = get_problem_list(request.user)
+    paginator = Paginator(all_problem_list, 10)
+    if "page" in request.GET:
+        page = request.GET["page"]
+    else:
+        page = 1
+    try:
+        all_problem = paginator.page(page)
+    except PageNotAnInteger:
+        all_problem = paginator.page(1)
+    except EmptyPage:
+        all_problem = paginator.page(paginator.num_pages)
+    for p in all_problem:
+        if p.total_submission != 0:
+            p.pass_rate = float(p.ac_count) / float(p.total_submission) * 100.0
+            p.not_pass_rate = 100.0 - p.pass_rate
 
-def volume(request):
-    problem_id=[]
-    if Problem.objects.count() != 0:
-        problems = Problem.objects.latest('id')
-        volume_number = (problems.id - 1) // 100
-        for i in range(1,volume_number + 2):
-            start_id = ((i - 1) * 100 + 1)
-            if problems.id < i * 100:
-                end_id = problems.id
-            else:
-                end_id = i * 100
-            problem_id.append(str(start_id) + ' ~ ' + str(end_id))
-
-    return render_index(request, 'problem/volume.html', {'problem_id':problem_id})
+    return render_index(request, 'problem/panel.html', 
+                  {'all_problem': all_problem, 
+                   'can_add_problem': can_add_problem})
 
 def detail(request, pid):
     user = request.user
+    tag_form = TagForm()
     try:
         problem = Problem.objects.get(pk=pid)
     except Problem.DoesNotExist:
         logger.warning('problem %s not found' % (pid))
         raise Http404('problem %s does not exist' % (pid))
     problem.testcase = get_testcase(problem)
-    return render_index(request, 'problem/detail.html', {'problem': problem})
+    return render_index(request, 'problem/detail.html', {'problem': problem, 'tag_form': tag_form})
+
+@login_required
+def new(request):
+    if request.method == "GET":
+        return render_index(request, "problem/new.html")
+    elif request.method == "POST":
+        if 'pname' in request.POST and request.POST['pname'].strip() != "":
+            p = Problem(pname=request.POST['pname'], owner=request.user)
+            p.save()
+            logger.info("problem %s created by %s" % (p.pk, request.user))
+            return redirect("/problem/%d/edit/" % p.pk)
+        else:
+            return render_index(request, "problem/new.html", {"error": "Problem name empty"})
 
 @login_required
 def edit(request, pid=None):
-    if pid is not None:
-        is_new = False
-        try:
-            problem = Problem.objects.get(pk=pid)
-            if not request.user.is_admin and request.user != problem.owner:
-                logger.warning("user %s has no permission to edit problem %s" % (request.user, pid))
-                raise PermissionDenied()
-        except Problem.DoesNotExist:
-            logger.warning("problem %s does not exist" % (pid))
-            raise Http404("problem %s does not exist" % (pid))
-        testcase = Testcase.objects.filter(problem=problem)
-        tags = problem.tags.all()
-    else:
-        is_new = True
+    tag_form = TagForm()
+    try:
+        problem = Problem.objects.get(pk=pid)
+        if not request.user.is_admin and request.user != problem.owner:
+            logger.warning("user %s has no permission to edit problem %s" % (request.user, pid))
+            raise PermissionDenied()
+    except Problem.DoesNotExist:
+        logger.warning("problem %s does not exist" % (pid))
+        raise Http404("problem %s does not exist" % (pid))
+    testcase = Testcase.objects.filter(problem=problem)
+    tags = problem.tags.all()
     if request.method == 'GET':
-        if is_new:
-            form = ProblemForm()
-        else:
-            form = ProblemForm(instance=problem)
+        form = ProblemForm(instance=problem,
+                           initial={'owner': request.user.username})
     if request.method == 'POST':
-        if is_new:
-            form = ProblemForm(request.POST)
-        else:
-            form = ProblemForm(request.POST, instance=problem)
+        form = ProblemForm(request.POST,
+                           instance=problem,
+                           initial={'owner': request.user.username})
         if form.is_valid():
             problem = form.save()
             problem.description = request.POST['description']
@@ -115,42 +132,40 @@ def edit(request, pid=None):
                 with open('%s%s%s' % (PARTIAL_PATH, problem.pk, file_ex), 'w') as t_in:
                     for chunk in request.FILES['partial_judge_code'].chunks():
                         t_in.write(chunk)
+            logger.info('edit problem, pid = %d by %s' % (problem.pk, request.user))
             logger.info('edit problem, pid = %d' % (problem.pk))
             return redirect('/problem/%d' % (problem.pk))
     if not request.user.is_admin:
         del form.fields['owner']
-    if is_new:
-        return render_index(request, 'problem/edit.html',
-                    { 'form': form, 'owner': request.user, 'is_new': True })
     else:
         return render_index(request, 'problem/edit.html',
-                  {'form': form, 'pid': pid, 'is_new': False,
-                   'tags': tags, 'description': problem.description,
-                   'input': problem.input, 'output': problem.output,
-                   'sample_in': problem.sample_in, 'sample_out': problem.sample_out,
-                   'testcase': testcase, 
-                   'path': {
-                       'TESTCASE_PATH': TESTCASE_PATH, 
-                       'SPECIAL_PATH': SPECIAL_PATH, 
-                       'PARTIAL_PATH': PARTIAL_PATH, },
-                   'has_special_judge_code': has_special_judge_code(problem),
-                   'has_partial_judge_code': has_partial_judge_code(problem),
-                   'file_ex': get_problem_file_extension(problem)})
+                            {'form': form, 'pid': pid, 'pname': problem.pname,
+                             'tags': tags, 'tag_form': tag_form, 'description': problem.description,
+                             'input': problem.input, 'output': problem.output,
+                             'sample_in': problem.sample_in, 'sample_out': problem.sample_out,
+                             'testcase': testcase, 
+                             'path': {
+                                 'TESTCASE_PATH': TESTCASE_PATH, 
+                                 'SPECIAL_PATH': SPECIAL_PATH, 
+                                 'PARTIAL_PATH': PARTIAL_PATH, },
+                             'has_special_judge_code': has_special_judge_code(problem),
+                             'has_partial_judge_code': has_partial_judge_code(problem),
+                             'file_ex': get_problem_file_extension(problem)})
 
 @login_required
 def tag(request, pid):
     if request.method == "POST":
-        tag = request.POST['tag']
+        tag = request.POST['tag_name']
         try:
             problem = Problem.objects.get(pk=pid)
         except Problem.DoesNotExist:
             logger.warning("problem %s does not exist" % (pid))
             raise Http404("problem %s does not exist" % (pid))
         if not problem.tags.filter(tag_name=tag).exists():
-            logger.info("add new tag '%s' to problem %s" % (tag, pid))
             new_tag, created = Tag.objects.get_or_create(tag_name=tag)
             problem.tags.add(new_tag)
             problem.save()
+            logger.info("add new tag '%s' to problem %s by %s" % (tag, pid, request.user))
             return HttpResponse(json.dumps({'tag_id': new_tag.pk}),
                                 content_type="application/json")
         return HttpRequestBadRequest()
@@ -169,7 +184,7 @@ def delete_tag(request, pid, tag_id):
         raise Http404("tag %s does not exist" % (tag_id))
     if not request.user.is_admin and request.user != problem.owner:
         raise PermissionDenied()
-    logger.info("tag %d deleted" % (tag.pk))
+    logger.info("tag %s deleted by %s" % (tag.tag_name, request.user))
     problem.tags.remove(tag)
     return HttpResponse()
 
@@ -238,15 +253,28 @@ def delete_testcase(request, pid, tid):
     testcase.delete()
     return HttpResponse()
 
+def delete_problem(request, pid):
+    try:
+        problem = Problem.objects.get(pk=pid)
+    except Problem.DoesNotExist:
+        logger.warning("problem %s does not exist" % (pid))
+        raise Http404("problem %s does not exist" % (pid))
+    if not request.user.is_admin and request.user != problem.owner:
+        raise PermissionDenied
+    logger.info("problem %d deleted by %s" % (problem.pk, request.user))
+    problem.delete()
+    return redirect('/problem/')
+
 def preview(request):
-    form = ProblemForm(request.GET)
-    problem = form.save()
-    problem.description = request.GET['description']
-    problem.input= request.GET['input_description']
-    problem.output = request.GET['output_description']
-    problem.sample_in = request.GET['sample_in']
-    problem.sample_out = request.GET['sample_out']
-    return render(request, 'problem/preview.html', {'problem': problem, 'preview': True})
+    problem = Problem()
+    problem.pname = request.POST['pname']
+    problem.description = request.POST['description']
+    problem.input= request.POST['input_description']
+    problem.output = request.POST['output_description']
+    problem.sample_in = request.POST['sample_in']
+    problem.sample_out = request.POST['sample_out']
+    problem.tag = request.POST['tags'].split(',')
+    return render_index(request, 'problem/preview.html', {'problem': problem, 'preview': True})
 
 def download_testcase(request, filename):
     try:

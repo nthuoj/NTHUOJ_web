@@ -23,7 +23,7 @@ SOFTWARE.
 */
 $(document).ready(function() {
     $("#addTagButton").click(function() {
-        var new_tag = $('#newTag').val().trim();
+        var new_tag = $('#id_tag_name').val().trim();
         if (new_tag == '') return false;
         $.ajax({
             url: "/problem/"+pid+"/tag/",
