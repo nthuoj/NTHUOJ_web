@@ -66,7 +66,7 @@ SOFTWARE.
   <ul class="pager">
     <span class="step-links">
       {% if users.has_previous %}
-        <li class="previous">
+        <li>
           <a href="?page={{ users.previous_page_number }}">← Previous</a>
         </li>
        {% endif %}
@@ -76,7 +76,7 @@ SOFTWARE.
       </span>
 
       {% if users.has_next %}
-        <li class="next">
+        <li>
           <a href="?page={{ users.next_page_number }}">Next →</a>
         </li>
       {% endif %}

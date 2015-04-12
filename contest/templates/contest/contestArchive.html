@@ -17,17 +17,17 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 -->
-{% extends "index/base.html" %} 
-{% load staticfiles %} 
+{% extends "index/base.html" %}
+{% load staticfiles %}
 
 {% block title_name %}
 <title>Contest Archive</title>
-{% endblock title_name %} 
+{% endblock title_name %}
 
 {% block import_source %}
 <link href="{% static 'contest/css/contestArchive.css' %}" rel="stylesheet">
 <script src="{% static 'contest/js/contestArchive.js' %}"></script>
-{% endblock import_source %} 
+{% endblock import_source %}
 
 {% load contest_extras %}
 
@@ -56,7 +56,7 @@ SOFTWARE.
         <th>
           {% if user|can_create_contest %}
           <a href="{% url 'contest:new' %}">
-            <button type="button" class="btn btn-success btn-xs" 
+            <button type="button" class="btn btn-success btn-xs"
                     data-toggle="tooltip" data-placement="top" title="New Contest">
               <span class="glyphicon glyphicon-plus"></span>
             </button>
@@ -75,14 +75,14 @@ SOFTWARE.
       <tr>
         <td>
           <a data-toggle="tooltip" data-placement="top" title="Contest Info">
-            <button type="button" class="btn btn-info btn-xs" data-toggle="modal" 
+            <button type="button" class="btn btn-info btn-xs" data-toggle="modal"
                     data-target="#contestInfo{{ contest.id }}">
               <span class="glyphicon glyphicon-info-sign"></span>
           </button>
           </a>
           {% if user|can_delete_contest:contest %}
           <a href="{% url 'contest:delete' contest.id %}">
-            <button type="button" class="btn btn-danger btn-xs" data-toggle="tooltip" 
+            <button type="button" class="btn btn-danger btn-xs" data-toggle="tooltip"
                   data-placement="top" title="Delete Contest">
               <span class="glyphicon glyphicon-remove"></span>
             </button>
@@ -90,7 +90,7 @@ SOFTWARE.
           {% endif %}
           {% if user|can_edit_contest:contest %}
           <a href="{% url 'contest:edit' contest.id %}">
-            <button type="button" class="btn btn-warning btn-xs" data-toggle="tooltip" 
+            <button type="button" class="btn btn-warning btn-xs" data-toggle="tooltip"
                   data-placement="top" title="Edit Contest">
               <span class="glyphicon glyphicon-pencil"></span>
             </button>
@@ -118,10 +118,10 @@ SOFTWARE.
 <nav>
   <ul class="pager">
     {% if pager.this > 1 %}
-    <li class="previous"><a href="{% url 'contest:archive' pager.previous %}"><span>&larr;</span> Newer</a></li>
+    <li><a href="{% url 'contest:archive' pager.previous %}"><span>&larr;</span> Newer</a></li>
     {% endif %}
     {% if pager.this < pager.max_page %}
-    <li class="next"><a href="{% url 'contest:archive' pager.next %}">Older <span>&rarr;</span></a></li>
+    <li><a href="{% url 'contest:archive' pager.next %}">Older <span>&rarr;</span></a></li>
     {% endif %}
   </ul>
 </nav>
