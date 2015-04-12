@@ -1,4 +1,4 @@
-'''
+"""
 The MIT License (MIT)
 
 Copyright (c) 2014 NTHUOJ team
@@ -20,9 +20,52 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
-'''
+"""
 
 import os
+
+DEFAULT_CONFIG = """
+[path]
+submission_code_path = /var/nthuoj/code/
+testcase_path = /var/nthuoj/testdata/
+special_judge_path = /var/nthuoj/specialJudge/
+partial_judge_path = /var/nthuoj/partialJudge/
+
+[compiler_option]
+C = C: -O2 -lm -std=c99
+CPP = C++:  -O2 -lm -std=c++
+CPP11 = C++11: -O2 -lm -std=c++11
+
+[file_extension]
+C = c
+CPP = cpp
+CPP11 = cpp
+
+[web_theme]
+paper = Paper
+cosmo = Cosmo
+darkly = Darkly
+lumen = Lumen
+readable = Readable
+simplex = Simplex
+spacelab = Spacelab
+united = United
+cerulean = Cerulean
+cyborg = Cyborg
+flatly = Flatly
+journal = Journal
+sandstone = Sandstone
+slate = Slate
+superhero = Superhero
+yeti = Yeti
+"""
+
+
+def write_default_config(path):
+    print 'Writing default config...',
+    with open(path, 'w') as f:
+        f.write(DEFAULT_CONFIG)
+    print 'done\n'
 
 
 def write_mysql_client_config(config, host, db, user, pwd):
@@ -48,4 +91,12 @@ def write_path_config(config, paths):
 def django_manage(args):
     cmd = 'python ./manage.py ' + args
     os.system(cmd)
+
+
+def prompt(question):
+    """Prompt user's intention (yes or no)"""
+    ans = raw_input(question + '[Y/n] ')
+    if ans == '' or ans == 'y' or ans == 'Y':
+        return True
+    return False
 
