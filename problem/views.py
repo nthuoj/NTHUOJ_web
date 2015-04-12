@@ -1,4 +1,5 @@
 '''
+if 
 The MIT License (MIT)
 
 Copyright (c) 2014 NTHUOJ team
@@ -26,10 +27,13 @@ from django.shortcuts import render, redirect
 from django.core.exceptions import PermissionDenied
 from django.core.paginator import Paginator
 from django.contrib.auth.decorators import login_required
+from django.core.servers.basehttp import FileWrapper
+
 from utils.render_helper import render_index
 from users.models import User
 from problem.models import Problem, Tag, Testcase
 from problem.forms import ProblemForm, TagForm
+from utils import log_info, config_info
 from problem.problem_info import *
 from utils import log_info
 from utils.render_helper import render_index
@@ -119,16 +123,34 @@ def edit(request, pid=None):
             problem.sample_in = request.POST['sample_in']
             problem.sample_out = request.POST['sample_out']
             problem.save()
+            file_ex = get_problem_file_extension(problem)
+            if "special_judge_code" in request.FILES:
+                with open('%s%s%s' % (SPECIAL_PATH, problem.pk, file_ex), 'w') as t_in:
+                    for chunk in request.FILES['special_judge_code'].chunks():
+                        t_in.write(chunk)
+            if "partial_judge_code" in request.FILES:
+                with open('%s%s%s' % (PARTIAL_PATH, problem.pk, file_ex), 'w') as t_in:
+                    for chunk in request.FILES['partial_judge_code'].chunks():
+                        t_in.write(chunk)
             logger.info('edit problem, pid = %d by %s' % (problem.pk, request.user))
+            logger.info('edit problem, pid = %d' % (problem.pk))
             return redirect('/problem/%d' % (problem.pk))
     if not request.user.is_admin:
         del form.fields['owner']
-    return render_index(request, 'problem/edit.html', 
-                {'form': form, 'pid': pid, 'pname': problem.pname,
-                 'tags': tags, 'tag_form': tag_form, 'description': problem.description,
-                 'input': problem.input, 'output': problem.output,
-                 'sample_in': problem.sample_in, 'sample_out': problem.sample_out,
-                 'testcase': testcase })
+    else:
+        return render_index(request, 'problem/edit.html',
+                            {'form': form, 'pid': pid, 'pname': problem.pname,
+                             'tags': tags, 'tag_form': tag_form, 'description': problem.description,
+                             'input': problem.input, 'output': problem.output,
+                             'sample_in': problem.sample_in, 'sample_out': problem.sample_out,
+                             'testcase': testcase, 
+                             'path': {
+                                 'TESTCASE_PATH': TESTCASE_PATH, 
+                                 'SPECIAL_PATH': SPECIAL_PATH, 
+                                 'PARTIAL_PATH': PARTIAL_PATH, },
+                             'has_special_judge_code': has_special_judge_code(problem),
+                             'has_partial_judge_code': has_partial_judge_code(problem),
+                             'file_ex': get_problem_file_extension(problem)})
 
 @login_required
 def tag(request, pid):
@@ -190,8 +212,21 @@ def testcase(request, pid, tid=None):
             testcase.time_limit = request.POST['time_limit']
             testcase.memory_limit = request.POST['memory_limit']
             testcase.save()
-            logger.info("testcase saved, tid = %s" % (testcase.pk))
-            return HttpResponse(json.dumps({'tid': testcase.pk}),
+            logger.info("testcase saved, tid = %s by %s" % (testcase.pk, request.user))
+        if 't_in' in request.FILES:
+            TESTCASE_PATH = config_info.get_config('path', 'testcase_path')
+            try:
+                with open('%s%s.in' % (TESTCASE_PATH, testcase.pk), 'w') as t_in:
+                    for chunk in request.FILES['t_in'].chunks():
+                        t_in.write(chunk)
+                    logger.info("testcase %s.in saved by %s" % (testcase.pk, request.user))
+                with open('%s%s.out' % (TESTCASE_PATH, testcase.pk), 'w') as t_out:
+                    for chunk in request.FILES['t_out'].chunks():
+                        t_out.write(chunk)
+                    logger.info("testcase %s.out saved by %s" % (testcase.pk, request.user))
+            except IOError, OSError:
+                logger.error("saving testcase error")
+            return HttpResponse(json.dumps({'tid': testcase.pk}), 
                                 content_type="application/json")
     return HttpResponse()
 
@@ -209,6 +244,12 @@ def delete_testcase(request, pid, tid):
     if not request.user.is_admin and request.user != problem.owner:
         raise PermissionDenied
     logger.info("testcase %d deleted" % (testcase.pk))
+    try:
+        os.remove('%s%d.in' % (TESTCASE_PATH, testcase.pk))
+        os.remove('%s%d.out' % (TESTCASE_PATH, testcase.pk))
+    except IOError, OSError:
+        logger.error("remove testcase %s error" % (testcase.pk))
+    logger.info("testcase %d deleted by %s" % (testcase.pk, request.user))
     testcase.delete()
     return HttpResponse()
 
@@ -234,4 +275,13 @@ def preview(request):
     problem.sample_out = request.POST['sample_out']
     problem.tag = request.POST['tags'].split(',')
     return render_index(request, 'problem/preview.html', {'problem': problem, 'preview': True})
+
+def download_testcase(request, filename):
+    try:
+        f = open(TESTCASE_PATH+filename, "r")
+    except IOError:
+        raise Http404()
+    response = HttpResponse(FileWrapper(f), content_type="text/plain")
+    response['Content-Disposition'] = 'attachment; filename=' + filename
+    return response
 

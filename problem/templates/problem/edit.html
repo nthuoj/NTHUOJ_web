@@ -61,7 +61,7 @@ SOFTWARE.
           {% if owner %}
           <input type="hidden" name="owner" value="{{owner}}">
           {% endif %}
-          {% include "problem/editTab/info.html" with form=form %}
+          {% include "problem/editTab/info.html" with form=form pid=pid path=path %}
         </div>
         <div class="tab-pane" id="description">
           <strong>Description</strong>
