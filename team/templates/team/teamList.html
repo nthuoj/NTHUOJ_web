@@ -22,7 +22,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 -->
 {% extends "index/base.html" %}
-{% load static %} 
+{% load static %}
 
 {% block body_block %}
 <div class="panel panel-default">
@@ -76,7 +76,7 @@ SOFTWARE.
     <ul class="pager">
       <span class="step-links">
         {% if team_list.has_previous %}
-          <li class="previous">
+          <li>
             <a href="?page={{ team_list.previous_page_number }}">← Previous</a>
           </li>
         {% endif %}
@@ -86,7 +86,7 @@ SOFTWARE.
         </span>
 
         {% if team_list.has_next %}
-          <li class="next">
+          <li>
             <a href="?page={{ team_list.next_page_number }}">Next →</a>
           </li>
         {% endif %}

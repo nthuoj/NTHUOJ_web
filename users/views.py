@@ -26,7 +26,6 @@ from json import dumps
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
 from django.core.context_processors import csrf
-from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.core.urlresolvers import reverse
 from django.shortcuts import get_object_or_404
 from axes.decorators import *
@@ -40,7 +39,7 @@ from users.models import UserProfile, Notification
 from users.templatetags.profile_filters import can_change_userlevel
 from utils.log_info import get_logger
 from utils.user_info import get_user_statistics, send_activation_email, send_forget_password_email
-from utils.render_helper import render_index
+from utils.render_helper import render_index, get_current_page
 
 
 # Create your views here.
@@ -49,18 +48,7 @@ logger = get_logger()
 
 
 def user_list(request):
-    users = User.objects.all()
-    paginator = Paginator(users, 25)  # Show 25 users per page
-    page = request.GET.get('page')
-
-    try:
-        users = paginator.page(page)
-    except PageNotAnInteger:
-        # If page is not an integer, deliver first page.
-        users = paginator.page(1)
-    except EmptyPage:
-        # If page is out of range (e.g. 9999), deliver last page of results.
-        users = paginator.page(paginator.num_pages)
+    users = get_current_page(request, User.objects.all())
 
     return render_index(request, 'users/userList.html', {'users': users})
 

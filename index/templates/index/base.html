@@ -109,15 +109,19 @@ SOFTWARE.
     <!-- navbar -->
     <nav class="navbar navbar-inverse newbar" >
       <div class="container-fluid">
-        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-2">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="{% url 'index:index' %}">NTHU Online Judge</a>
+        </div>
+        <div class="collapse navbar-collapse">
           <ul class="nav navbar-nav">
-            <li class="nav-text-brand">
-              <a href="{% url 'index:index' %}">
-                NTHU Online Judge
-              </a>
-            </li>
             <li class="nav-text"><a href="{% url 'contest:archive' %}">Contest</a></li>
-            <li class="nav-text"><a href="{% url 'problem:volume' %}">Problem</a></li>
+            <li class="nav-text"><a href="{% url 'problem:problem' %}">Problem</a></li>
             <li class="nav-text"><a href="{% url 'users:submit' %}">Submit</a></li>
             <li class="nav-text"><a href="{% url 'status:status' %}">Status</a></li>
             <li class="nav-text"><a href="{% url 'group:list' %}">Group</a></li>
