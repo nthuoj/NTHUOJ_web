@@ -20,14 +20,7 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
-<<<<<<< HEAD
-'''
-from contest.models import Contest
-from contest.models import Contestant
-from users.models import UserManager
-=======
 """
->>>>>>> dev
 from datetime import datetime
 from threading import Thread
 import hashlib
@@ -38,6 +31,7 @@ from django.core.mail import EmailMultiAlternatives
 from django.template.loader import render_to_string
 
 from contest.models import Contest
+from contest.models import Contestant
 from problem.models import Submission, SubmissionDetail
 from users.models import User, UserProfile
 from utils.log_info import get_logger
