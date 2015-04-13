@@ -117,11 +117,14 @@ SOFTWARE.
 </div>
 <nav>
   <ul class="pager">
-    {% if pager.this > 1 %}
-    <li><a href="{% url 'contest:archive' pager.previous %}"><span>&larr;</span> Newer</a></li>
+    {% if contests.has_previous %}
+    <li><a href="?page={{ contests.previous_page_number }}">← Previous</a></li>
     {% endif %}
-    {% if pager.this < pager.max_page %}
-    <li><a href="{% url 'contest:archive' pager.next %}">Older <span>&rarr;</span></a></li>
+    <span class="current">
+      Page {{ contests.number }} of {{ contests.paginator.num_pages }}.
+    </span>
+    {% if contests.has_next %}
+    <li><a href="?page={{ contests.next_page_number }}">Next →</a></li>
     {% endif %}
   </ul>
 </nav>
