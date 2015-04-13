@@ -22,6 +22,7 @@ $(document).ready(function() {
     init();
 });
 
+
 function init(){
     tabInit();
 }
@@ -32,12 +33,14 @@ function select(target, description){
 }
 
 function tabInit(){
+    //initialize
     $('#contest_tab a').click(function(e) {
         e.preventDefault()
-        $('#contest_tab a[href="#overview"]').tab('show')
-        $('#contest_tab a[href="#problem"]').tab('show')
-        $('#contest_tab a[href="#scoreboard"]').tab('show')
-        $('#contest_tab a[href="#status"]').tab('show')
+        $(this).tab('show')
+    });
+    //trigger contest_tab from overview
+    $(".overview_problem").click(function(e) {
+        $("#contest_tab li:eq(1) a").tab('show')
     });
 }
 
