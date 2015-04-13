@@ -17,7 +17,10 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 -->
-{% load contest_extras %}
+{% load contest_extras %} {% load staticfiles %} {% block import_source %}
+<link href="{% static 'contest/css/overview.css' %}" rel="stylesheet">
+<script src="{%static 'contest/js/overview.js'%}"></script>
+{% endblock import_source %}
 <table class="table table-striped">
   <thead>
     <tr>
@@ -30,24 +33,25 @@ SOFTWARE.
     {% for problem in scoreboard.problems %}
     <tr>
       <td>{{ problem.id }}</td>
-      <td><a href="#">{{ problem.pname }}</td>
-        <td>
-          <div class="progress">
-            <div name="pass" class="progress-bar progress-bar-success" role="progressbar" 
-                 aria-valuenow="30" aria-valuemin="0" aria-valuemax="100" style="width: 0%;">
-              <span name="pass_ratio">
+      <td>
+        <a href="#problem{{ problem.id }}" class="overview_problem" 
+           tabindex="-1" role="tab" data-toggle="tab">{{ problem.pname }}</a>
+      </td>
+      <td>
+        <div class="progress">
+          <div name="pass" class="progress-bar progress-bar-success" 
+               role="progressbar" aria-valuenow="30" aria-valuemin="0" aria-valuemax="100" style="width: 0%;">
+            <span name="pass_ratio">
               {{ problem.pass_user }}/{{ scoreboard|total_contestant }}
               </span>
-            </div>
-            <div name="not_pass" class="progress-bar progress-bar-danger" role="progressbar"
-                 aria-valuenow="30" aria-valuemin="0" aria-valuemax="100" style="width: 0%;">
-            </div>
           </div>
-        </td>
-      </tr>
-      {% endfor %}
+          <div name="not_pass" class="progress-bar progress-bar-danger" 
+           role="progressbar" aria-valuenow="30" aria-valuemin="0" aria-valuemax="100" style="width: 0%;">
+          </div>
+        </div>
+      </td>
+    </tr>
+    {% endfor %}
   </tbody>
 </table>
 {% load staticfiles %}
-<link href="{% static 'contest/css/overview.css' %}" rel="stylesheet">
-<script src="{%static 'contest/js/overview.js'%}"></script>

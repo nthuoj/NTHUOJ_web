@@ -57,7 +57,7 @@ def get_total_testcases(problem):
 
 def get_contestant_problem_submission_list(contest, contestant, problem):
     return Submission.objects.filter(problem = problem, submit_time__lte = contest.end_time,
-        submit_time__gte = contest.start_time,user = contestant.user).order_by('submit_time')
+        submit_time__gte = contest.start_time, user = contestant.user).order_by('submit_time')
 
 def get_passed_testcases(submission):
     passed_testcases = SubmissionDetail.objects.filter(sid = submission, verdict = SubmissionDetail.AC)

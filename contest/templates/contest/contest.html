@@ -111,22 +111,36 @@ SOFTWARE.
     <!--Contest detail-->
     <div id="detail">
       <ul class="nav nav-tabs" role="tablist" id="contest_tab">
-        <li class="active"><a href="#overview" role="tab" data-toggle="tab">Overview</a>
+        <li class="active" role="presentation">
+          <a href="#overview" role="tab" data-toggle="tab">Overview</a>
         </li>
-        <li><a href="#problem" role="tab" data-toggle="tab">Problem</a>
+        <li class="dropdown" role="presentation">
+          <a href="#problem" class="dropdown-toggle" data-toggle="dropdown">
+            Problem<span class="caret"></span>
+          </a>
+          <ul class="dropdown-menu" role="menu">
+            {% for problem in contest.problem.all %}
+            <li role="presentation">
+              <a href="#problem{{ problem.id }}" tabindex="-1" role="tab"
+               data-toggle="tab">{{ problem.pname }}</a>
+            </li>
+            {% endfor %}
+          </ul>
         </li>
-        <li><a href="#scoreboard" role="tab" data-toggle="tab">Scoreboard</a>
+        <li role="presentation"><a href="#scoreboard" role="tab" data-toggle="tab">Scoreboard</a>
         </li>
-        <li><a href="#status" role="tab" data-toggle="tab">Status</a>
+        <li role="presentation"><a href="#status" role="tab" data-toggle="tab">Status</a>
         </li>
       </ul>
       <div class="tab-content" id="content">
         <div class="tab-pane active" id="overview">
           {% include "contest/overview.html" %}
         </div>
-        <div class="tab-pane" id="problem">
-          {% include "contest/problem.html" %}
+        {% for problem in contest.problem.all %}
+        <div class="tab-pane" id="problem{{ problem.id }}">
+          {% include "problem/problem.html" %}
         </div>
+        {% endfor %}
         <div class="tab-pane" id="scoreboard">
           {% include "contest/scoreboard.html" %}
         </div>
