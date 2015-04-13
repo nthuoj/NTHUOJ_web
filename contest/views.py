@@ -50,7 +50,7 @@ from utils.log_info import get_logger
 from utils import user_info
 from utils.render_helper import render_index
 from status.views import *
-
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 logger = get_logger()
 
