@@ -29,6 +29,7 @@ SOFTWARE.
 {% endblock %}
 {% block body_block %} 
 <div class="container" id="Body">
+  <h4>You are editing problem {{pid}}: {{pname}}</h4>
   <div style="width:80%; float:left;">
     <ul class="nav nav-tabs" role="tablist">
       <li class="active">
@@ -51,15 +52,16 @@ SOFTWARE.
     <div class="tab-content">
       <form method="POST" id="problem_info" action="" enctype="multipart/form-data">
         <div>
-          <input type="submit" value="Preview" class="btn btn-success" target="_blank" id="preview_button">
-          <input type="submit" value="Save" class="btn btn-primary">
+          <input type="submit" value="Preview" class="btn btn-success" id="preview_button">
+          <input type="submit" value="Save" class="btn btn-primary" id="save_button">
+          <a class="btn btn-warning" href="{% url 'problem:detail' pid %}">Cancel</a>
         </div>
         {% csrf_token %}
         <div class="tab-pane active" id="info">
           {% if owner %}
           <input type="hidden" name="owner" value="{{owner}}">
           {% endif %}
-          {% include "problem/editTab/info.html" with form=form %}
+          {% include "problem/editTab/info.html" with form=form pid=pid path=path %}
         </div>
         <div class="tab-pane" id="description">
           <strong>Description</strong>

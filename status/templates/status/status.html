@@ -31,7 +31,7 @@ SOFTWARE.
   <ul class="pager">
     <span class="step-links">
       {% if submissions.has_previous %}
-        <li class="previous">
+        <li>
           <a href="?page={{ submissions.previous_page_number }}">← Previous</a>
         </li>
        {% endif %}
@@ -41,7 +41,7 @@ SOFTWARE.
       </span>
 
       {% if submissions.has_next %}
-        <li class="next">
+        <li>
           <a href="?page={{ submissions.next_page_number }}">Next →</a>
         </li>
       {% endif %}
