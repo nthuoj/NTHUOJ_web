@@ -22,22 +22,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 -->
 {% csrf_token %}
-{% for field in form %}
-  {% if field.label_tag == form.visible.label_tag %}
-    <div class="fieldWrapper checkbox">
-      {{ field.errors }}
-      <label>
-      {{ field }} Visible
-      </label>
-      </div>
-    {% else %}
-      <div class="fieldWrapper form-group">
-      {{ field.errors }}
-      {{ field.label_tag }}
-      {{ field }}
-    </div>
-  {% endif %}
-{% endfor %}
+{% load bootstrap %}
+{{ form|bootstrap }}
 <br>
 <br>
 <br>
