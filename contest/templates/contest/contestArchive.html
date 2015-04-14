@@ -74,11 +74,12 @@ SOFTWARE.
       {% for contest in contests %}
       <tr>
         <td>
-          <a data-toggle="tooltip" data-placement="top" title="Contest Info">
-            <button type="button" class="btn btn-info btn-xs" data-toggle="modal"
-                    data-target="#contestInfo{{ contest.id }}">
+          <a data-toggle="modal" data-target="#contestInfo" 
+           data-load-remote="{% url 'contest:contest_info' contest.id %}">
+            <button type="button" class="btn btn-info btn-xs contest-info-btn"
+             data-toggle="tooltip" data-placement="top" title="Contest Info">
               <span class="glyphicon glyphicon-info-sign"></span>
-          </button>
+            </button>
           </a>
           {% if user|can_delete_contest:contest %}
           <a href="{% url 'contest:delete' contest.id %}">
@@ -130,6 +131,11 @@ SOFTWARE.
 </nav>
 {% for contest in contests %}
 {% include 'contest/register.html' %}
-{% include "contest/contestInfo.html" %}
 {% endfor %}
+<div class="modal fade" id="contestInfo" tabindex="-1" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content" id="contestInfoContent">
+    </div> <!-- /.modal-content -->
+  </div> <!-- /.modal-dialog -->
+</div> <!-- /.modal -->
 {% endblock body_block %}

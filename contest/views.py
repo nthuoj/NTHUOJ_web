@@ -35,6 +35,7 @@ from contest.contest_info import can_delete_contest
 from contest.contest_info import can_register_log
 from contest.contest_info import get_contest_or_404
 from contest.contest_archive import get_contests
+from contest.contest_archive import add_contestants
 from contest.models import Contest
 from contest.models import Contestant
 from contest.models import Clarification
@@ -66,11 +67,19 @@ def archive(request):
         'contest/contestArchive.html',
         {'contests':contests,'user':user,'groups':groups})
 
-def contest(request, contest_id):
+def contest_info(request, cid):
+    contest = get_contest_or_404(cid)
+    contest = add_contestants(contest)
+    logger.info('hi')
+    return render_index(request,
+        'contest/contestInfo.html',
+        {'contest':contest})
+
+def contest(request, cid):
     try:
-        contest = Contest.objects.get(id = contest_id)
+        contest = Contest.objects.get(id = cid)
     except Contest.DoesNotExist:
-        logger.warning('Contest: Can not find contest %s!' % contest_id)
+        logger.warning('Contest: Can not find contest %s!' % cid)
         raise Http404('Contest does not exist')
 
     now = datetime.now()
@@ -114,11 +123,11 @@ def new(request):
     raise PermissionDenied
 
 @login_required
-def edit(request, contest_id):
+def edit(request, cid):
     try:
-        contest = Contest.objects.get(id = contest_id)
+        contest = Contest.objects.get(id = cid)
     except Contest.DoesNotExist:
-        logger.warning('Contest: Can not edit contest %s! Contest not found!' % contest_id)
+        logger.warning('Contest: Can not edit contest %s! Contest not found!' % cid)
         raise Http404('Contest does not exist, can not edit.')
     title = "Edit Contest"
     if can_edit_contest(request.user,contest):
@@ -139,24 +148,24 @@ def edit(request, contest_id):
                     {'form':form,'user':request.user,'title':title})
 
 @login_required
-def delete(request, contest_id):
+def delete(request, cid):
     try:
-        contest = Contest.objects.get(id = contest_id)
+        contest = Contest.objects.get(id = cid)
     except Contest.DoesNotExist:
-        logger.warning('Contest: Can not delete contest %s! Contest not found!' % contest_id)
+        logger.warning('Contest: Can not delete contest %s! Contest not found!' % cid)
         raise Http404('Contest does not exist, can not delete.')
 
     if can_delete_contest(request.user, contest):
-        deleted_contest_id = contest.id
+        deleted_cid = contest.id
         contest.delete()
         logger.info('Contest: User %s delete contest %s!' %
-            (request.user, deleted_contest_id))
+            (request.user, deleted_cid))
         return redirect('contest:archive')
     raise PermissionDenied
 
 @login_required
-def register(request, contest_id):
-    contest = get_contest_or_404(contest_id)
+def register(request, cid):
+    contest = get_contest_or_404(cid)
     #get group id or register as single user
     group_id = request.GET.get('group')
     if(group_id is not None):
@@ -225,7 +234,7 @@ def download(request):
     what = request.POST.get('type')
     if what == 'scoreboard':
         scoreboard_type = request.POST.get('scoreboard_type')
-        contest_id = request.POST.get('contest')
-        scoreboard_file = get_scoreboard_csv(contest_id, scoreboard_type)
+        cid = request.POST.get('contest')
+        scoreboard_file = get_scoreboard_csv(cid, scoreboard_type)
         return scoreboard_file
     raise Http404('file not found')

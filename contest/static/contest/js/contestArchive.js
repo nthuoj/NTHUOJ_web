@@ -18,15 +18,15 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 $(document).ready(function() {
-    $('[name=infoTab] a').click(function(e) {
-        e.preventDefault()
-        $('[name=infoTab] a[href="#problem"]').tab('show')
-        $('[name=infoTab] a[href="#contestant"]').tab('show')
-        $('[name=infoTab] a[href="#time"]').tab('show')
-        $('[name=infoTab] a[href="#coowner"]').tab('show')
-        $('[name=infoTab] a[href="#others"]').tab('show')
-    });
     $('[data-toggle="tooltip"]').tooltip({
-    'placement': 'top'
+        'placement': 'top'
+    });
+    $('[data-load-remote]').on('click', function(e) {
+        e.preventDefault();
+        var $this = $(this);
+        var remote = $this.data('load-remote');
+        if (remote) {
+            $('#contestInfoContent').load(remote);
+        }
     });
 });
