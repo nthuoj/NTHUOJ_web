@@ -22,21 +22,31 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 function switchTab(t) {
+    if ($(t).length == 0) return;
     $("a[role='tab']").parent().removeClass("active");
     $(t).parent().addClass("active");
     $(".tab-pane").removeClass("active");
-    $($(t).attr("href")).addClass("active");
+    $(t).addClass("active");
     $(".tab-pane").hide();
-    $($(t).attr("href")).show();
+    $(t).show();
 }
 
 $(document).ready(function() {
     $(".tab-pane").hide();
     $("#info").show();
     hide_field();
+    if (window.location.href.indexOf('?') != -1) {
+        var param = window.location.href.slice(window.location.href.indexOf('?')+1).split('&');
+	for (var i = 0; i < param.length; i++) {
+	    if (param[i].split('=')[0] == "tab") {
+		switchTab('#'+param[i].split('=')[1]);
+		break;
+	    }
+	}
+    }
     $("a[role='tab']").click(function(e) {
         e.preventDefault()
-        switchTab(this);
+        switchTab($(this).attr('href'));
     });
     CKEDITOR.replace("des", {
     	fontSize_sizes: '12/12px;16/16px;24/24px;48/48px;'
@@ -56,7 +66,7 @@ $(document).ready(function() {
         e.preventDefault();
         $.ajax({
           type: "POST",
-          url: "/problem/pid/testcase/" + update_tid + "/",
+          url: "/problem/" + pid + "/testcase/" + update_tid + "/",
           data: new FormData(this),  
           processData: false,
           contentType: false,
@@ -65,12 +75,50 @@ $(document).ready(function() {
           }
         });
     });
-    refreshTestcaseEvent();
+    $("body").on("click", ".reupload_btn", function(e) {
+        update_tid = $(this).parents("tr").attr('data-target');
+    });
+    $("body").on("click", ".update_btn", function(e) {
+        var tid = $(this).parents("tr").attr('data-target');
+        var time = $("#" + tid + "_time").serialize();
+        var memory = $("#"+tid+"_memory").serialize();
+        if ($("#" + tid + "_time").val() < 0) {
+            alert("time limit can't be negative");
+            return false;
+        }
+        if ($("#" + tid +"_memory").val() < 0) {
+            alert("memory limit can't be negative");
+            return false;
+        }
+        $.ajax({
+            type: "POST",
+            url: "/problem/" + pid + "/testcase/" + tid + "/",
+            data: time + "&" + memory + "&" + csrf,
+            success: function(data) {
+              alert('testcase updated');
+	      window.location.href = "/problem/" + pid + "/edit/?tab=testcase";
+            }
+        });
+        return false;
+    });
+    $("body").on('click', '.del_testcase_btn', function(e) {
+        var row = $(this).parents("tr");
+        var tid = $(this).parents("tr").attr('data-target');
+        $.ajax({
+            type: 'GET',
+            url: '/problem/' + pid + '/testcase/' + tid + '/delete/',
+            success: function(data) {
+              alert('testcase deleted');
+	      window.location.href = "/problem/" + pid + "/edit/?tab=testcase";
+            }
+        });
+        return false;
+    });
 });
 
 
 function add_new_tag(pid) {
-    var new_tag = $('#newTag').val().trim();
+    var new_tag = $('#id_tag_name').val().trim();
     if (new_tag == '') return false;
     $.ajax({
         url: "/problem/" + pid + "/tag/",
@@ -97,55 +145,83 @@ function add_new_testcase(pid, data) {
           processData: false,
           contentType: false,
           success: function(data) {
-              var tid = data.tid;
-              var new_row = $("<tr data-target="+tid+">");
-              new_row.append($("<td>").append(
-                  $("<a>" + tid + ".in</a>")));
-              new_row.append($("<td>").append(
-                  $("<a>" + tid + ".out</a>")));
-              new_row.append($("<td>").append(
-                  $("<input type='number' id='" + tid
-                      + "_time' name='time_limit' value='" + time_limit +
-		      "' min='0'></td>")));
-              new_row.append($("<td>").append(
-                  $("<input type='number' id='" + tid
-                      + "_memory' name='memory_limit' value='" + memory_limit
-		      + "' min='0'></td>")));
-              new_row.append("<td><button class='btn btn-primary' onclick='return false'\
-                    data-toggle='modal' data-target='#edit_testcase'>ReUpload</button></td>");
-              new_row.append("<td><button class='btn btn-primary update_btn'>Update</button></td>");
-              new_row.append("<td><button class='btn btn-danger del_testcase_btn'>Delete</button></td>");
-              $("#testcase_table tr:last-child").before(new_row);
+	      window.location.href = "/problem/" + pid + "/edit/?tab=testcase";
           }
       });
 }
 
 $("#preview_button").click(function() {
-    var data = $("#problem_info :input").serialize();
-    MyWindow = window.open('/problem/preview?' + data,
-        "MyWindow",
-        "toolbar=no,location=no,directories=no,status=no,menubar=no, \
-        scrollbars=yes,resizable=yes,width=600,height=30"
-    );
-    return false;
+    var form = $("#problem_info");
+    form.attr("target", "_blank");
+    form.attr("action", "/problem/preview/");
+    var input = $("<input>");
+    input.attr("type", "hidden");
+    input.attr("name", "tags");
+    var tags = []
+    $("#tagTable td:first-child").each(function(num, element) {
+	tags[tags.length] = element.innerHTML;
+    });
+    input.val(tags.join());
+    $("input[name='tags']").remove();
+    form.append(input);
+    return true;
+});
+
+$("#save_button").click(function() {
+    var form = $("#problem_info");
+    form.attr("target", "");
+    form.attr("action", "");
+    return true;
 });
 
 function hide_field() {
-  $("#id_error_tolerance").parent().hide();
-  $("#id_other_judge_id").parent().hide();
-  $("#id_partial_judge_code").parent().hide();
-  $("#id_special_judge_code").parent().hide();
+  $("#id_error_tolerance").parent().parent().hide();
+  $("#id_other_judge_id").parent().parent().hide();
+  $("#id_partial_judge_code").parent().parent().hide();
+  $("#id_special_judge_code").parent().parent().hide();
+  $("#id_judge_language").parent().parent().hide();
 }
-$("select").on("change", function(e) {
+
+function choose_judge_type(option) {
     hide_field();
-    if (this.value == "ERR_TORRENT")
-        $("#id_error_tolerance").parent().show();
-    else if (this.value == "OTHER")
-        $("#id_other_judge_id").parent().show();
-    else if (this.value == "PARTIAL")
-        $("#id_partial_judge_code").parent().show();
-    else if (this.value == "SPECIAL")
-        $("#id_special_judge_code").parent().show();
+    if (option == "ERR_TOLERANT")
+        $("#id_error_tolerance").parent().parent().show();
+    else if (option == "PARTIAL") {
+        $("#id_partial_judge_code").parent().parent().show();
+	$("#id_judge_language").parent().parent().show();
+    } else if (option == "SPECIAL") {
+        $("#id_special_judge_code").parent().parent().show();
+	$("#id_judge_language").parent().parent().show();
+    } else if (option != "NORMAL") {
+        $("#id_other_judge_id").parent().parent().show();
+    }
+}
+
+function choose_judge_source(option) {
+    if (option == "OTHER") {
+        $("#id_other_judge_id").parent().parent().show();
+	$("#id_judge_type option").hide();
+	$("option[value='UVA']").show();
+	$("option[value='POJ']").show();
+	$("option[value='ICPC']").show();
+	$("#id_judge_type").val("UVA");
+    } else if (option == "LOCAL") {
+	    console.log("local");
+	$("#id_judge_type option").show();
+	$("option[value='UVA']").hide();
+	$("option[value='POJ']").hide();
+	$("option[value='ICPC']").hide();
+	$("#id_judge_type").val("NORMAL");
+    }
+}
+
+$("#id_judge_source").on("change", function(e) {
+    hide_field();
+    choose_judge_source(this.value);
+});
+
+$("#id_judge_type").on("change", function(e) {
+    choose_judge_type(this.value);
 });
 
 function refreshTestcaseEvent() {
@@ -181,7 +257,7 @@ function refreshTestcaseEvent() {
             type: 'GET',
             url: '/problem/' + pid + '/testcase/' + tid + '/delete/',
             success: function(data) {
-              row.hide();
+              row.remove();
             }
         });
         return false;

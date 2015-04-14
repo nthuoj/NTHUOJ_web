@@ -5,6 +5,7 @@ from django.db.models import Q
 
 SPECIAL_PATH = config_info.get_config('path', 'special_judge_path')
 PARTIAL_PATH = config_info.get_config('path', 'partial_judge_path')
+TESTCASE_PATH = config_info.get_config('path', 'testcase_path')
 
 def get_testcase(problem):
     return Testcase.objects.filter(problem=problem)
@@ -18,15 +19,17 @@ def get_problem_list(user):
         else:
             return Problem.objects.filter(Q(visible=True) | Q(owner=user)).order_by('id')
 
-def has_special_judge_code(problem):
+def get_problem_file_extension(problem):
     if problem.judge_language == problem.C:
-        return os.path.isfile("%s%d.c" % (SPECIAL_PATH, problem.pk))
+        return ".c"
     if problem.judge_language == problem.CPP:
-        return os.path.isfile("%s%d.cpp" % (SPECIAL_PATH, problem.pk))
+        return ".cpp"
+
+def has_special_judge_code(problem):
+    file_ex = get_problem_file_extension(problem)
+    return os.path.isfile("%s%d%s" % (SPECIAL_PATH, problem.pk, file_ex))
 
 def has_partial_judge_code(problem):
-    if problem.judge_language == problem.C:
-        return os.path.isfile("%s%d.c" % (PARTIAL_PATH, problem.pk))
-    if problem.judge_language == problem.CPP:
-        return os.path.isfile("%s%d.cpp" % (PARTIAL_PATH, problem.pk))
+    file_ex = get_problem_file_extension(problem)
+    return os.path.isfile("%s%d%s" % (PARTIAL_PATH, problem.pk, file_ex))
 
