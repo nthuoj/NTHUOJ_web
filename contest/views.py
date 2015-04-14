@@ -55,26 +55,31 @@ from utils import user_info
 from utils.render_helper import render_index, get_current_page
 from status.views import *
 
-
 logger = get_logger()
 
 def archive(request):
-    user = request.user
-    all_contests = get_contests(user)
+    all_contests = get_contests(request.user)
     contests = get_current_page(request, all_contests)
-    groups = get_owned_group(user)
     return render_index(request,
         'contest/contestArchive.html',
-        {'contests':contests,'user':user,'groups':groups})
+        {'contests':contests})
 
+#dynamically load contest info and register page
 def contest_info(request, cid):
     contest = get_contest_or_404(cid)
     contest = add_contestants(contest)
-    logger.info('hi')
     return render_index(request,
         'contest/contestInfo.html',
         {'contest':contest})
 
+def register_page(request, cid):
+    contest = get_contest_or_404(cid)
+    groups = get_owned_group(request.user)
+    return render_index(request,
+        'contest/register.html',
+        {'contest':contest, 'groups':groups})
+
+#contest datail page
 def contest(request, cid):
     try:
         contest = Contest.objects.get(id = cid)

@@ -75,8 +75,9 @@ SOFTWARE.
       <tr>
         <td>
           <a data-toggle="modal" data-target="#contestInfo" 
-           data-load-remote="{% url 'contest:contest_info' contest.id %}">
-            <button type="button" class="btn btn-info btn-xs contest-info-btn"
+           data-load-remote="{% url 'contest:contest_info' contest.id %}"
+           data-remote-target="#contestInfoContent">
+            <button type="button" class="btn btn-info btn-xs"
              data-toggle="tooltip" data-placement="top" title="Contest Info">
               <span class="glyphicon glyphicon-info-sign"></span>
             </button>
@@ -99,10 +100,14 @@ SOFTWARE.
           {% endif%}
 
           {% if user|show_register_btn:contest %}
-          <button type="button" class="btn btn-success btn-xs"
-                  data-toggle="modal" data-target="#register{{ contest.id }}">
-            <span class="glyphicon glyphicon-plus"></span>
-          </button>
+          <a data-toggle="modal" data-target="#register" 
+           data-load-remote="{% url 'contest:register_page' contest.id %}"
+           data-remote-target="#registerContestContent">
+            <button type="button" class="btn btn-success btn-xs"
+             data-toggle="tooltip" data-placement="top" title="Register">
+              <span class="glyphicon glyphicon-plus"></span>
+            </button>
+          </a>
           {% endif %}
         </td>
         <td>{{ contest.id }}</td>
@@ -129,9 +134,14 @@ SOFTWARE.
     {% endif %}
   </ul>
 </nav>
-{% for contest in contests %}
-{% include 'contest/register.html' %}
-{% endfor %}
+<!-- register contest -->
+<div class="modal fade" id="register" tabindex="-1" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content" id="registerContestContent">
+    </div> <!-- /.modal-content -->
+  </div> <!-- /.modal-dialog -->
+</div> <!-- /.modal -->
+<!-- contest info -->
 <div class="modal fade" id="contestInfo" tabindex="-1" role="dialog">
   <div class="modal-dialog">
     <div class="modal-content" id="contestInfoContent">

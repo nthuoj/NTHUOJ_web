@@ -25,6 +25,8 @@ urlpatterns = patterns('contest.views',
     url(r'^$',views.archive,name='archive'),
     #get contest info modal
     url(r'^info/(?P<cid>\d+)/$',views.contest_info,name='contest_info'),
+    #get contest register modal
+    url(r'^register-page/(?P<cid>\d+)/$',views.register_page,name='register_page'),
     #create new contest
     url(r'^new/$',views.new,name='new'),
     #edit existing contest

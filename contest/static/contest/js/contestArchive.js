@@ -26,7 +26,11 @@ $(document).ready(function() {
         var $this = $(this);
         var remote = $this.data('load-remote');
         if (remote) {
-            $('#contestInfoContent').load(remote);
+            $($this.data('remote-target')).load(remote);
         }
+    });
+    $('[name=infoTab] a').click(function(e) {
+        e.preventDefault()
+        $('#infoTab a').tab('show')
     });
 });
