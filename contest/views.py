@@ -81,6 +81,7 @@ def register_page(request, cid):
 
 #contest datail page
 def contest(request, cid):
+    user = request.user
     try:
         contest = Contest.objects.get(id = cid)
     except Contest.DoesNotExist:
@@ -95,7 +96,6 @@ def contest(request, cid):
             problem.testcase = get_testcase(problem)
         scoreboard = get_scoreboard(contest)
         status = contest_status(request, contest)
-        user = request.user
         clarifications = get_clarifications(user,contest)
 
         initial_form = {'contest':contest,'asker':user}
@@ -104,7 +104,7 @@ def contest(request, cid):
         initial_reply_form = {'contest':contest,'replier':user}
         reply_form = ReplyForm(initial = initial_reply_form)
         return render_index(request, 'contest/contest.html',
-            {'contest':contest, 'clarifications':clarifications, 'user':user,
+            {'contest':contest, 'clarifications':clarifications,
             'form':form, 'reply_form':reply_form,
             'scoreboard':scoreboard, 'status': status})
     else:
