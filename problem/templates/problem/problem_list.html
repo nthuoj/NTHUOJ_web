@@ -55,10 +55,10 @@ SOFTWARE.
           {% else %}
             <div class="progress">
               <div class="progress-bar progress-bar-success" style="width: {{p.pass_rate}}%;" 
-                data-toggle="tooltip" data-placement="top" title="{{p.pass_rate}}" data-original-title="{{p.pass_rate}}"> 
+                data-toggle="tooltip" data-placement="top" title="{{p.pass_rate|floatformat:2}}">
               </div>
               <div class="progress-bar progress-bar-danger" style="width: {{p.not_pass_rate}}%;" 
-                data-toggle="tooltip" data-placement="top" title="{{p.not_pass_rate}}%">
+                data-toggle="tooltip" data-placement="top" title="{{p.not_pass_rate|floatformat:2}}%">
               </div>
             </div>
           {% endif %}
