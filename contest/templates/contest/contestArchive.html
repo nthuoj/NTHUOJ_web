@@ -74,11 +74,13 @@ SOFTWARE.
       {% for contest in contests %}
       <tr>
         <td>
-          <a data-toggle="tooltip" data-placement="top" title="Contest Info">
-            <button type="button" class="btn btn-info btn-xs" data-toggle="modal"
-                    data-target="#contestInfo{{ contest.id }}">
+          <a data-toggle="modal" data-target="#contestInfo" 
+           data-load-remote="{% url 'contest:contest_info' contest.id %}"
+           data-remote-target="#contestInfoContent">
+            <button type="button" class="btn btn-info btn-xs"
+             data-toggle="tooltip" data-placement="top" title="Contest Info">
               <span class="glyphicon glyphicon-info-sign"></span>
-          </button>
+            </button>
           </a>
           {% if user|can_delete_contest:contest %}
           <a href="{% url 'contest:delete' contest.id %}">
@@ -98,10 +100,14 @@ SOFTWARE.
           {% endif%}
 
           {% if user|show_register_btn:contest %}
-          <button type="button" class="btn btn-success btn-xs"
-                  data-toggle="modal" data-target="#register{{ contest.id }}">
-            <span class="glyphicon glyphicon-plus"></span>
-          </button>
+          <a data-toggle="modal" data-target="#register" 
+           data-load-remote="{% url 'contest:register_page' contest.id %}"
+           data-remote-target="#registerContestContent">
+            <button type="button" class="btn btn-success btn-xs"
+             data-toggle="tooltip" data-placement="top" title="Register">
+              <span class="glyphicon glyphicon-plus"></span>
+            </button>
+          </a>
           {% endif %}
         </td>
         <td>{{ contest.id }}</td>
@@ -117,16 +123,29 @@ SOFTWARE.
 </div>
 <nav>
   <ul class="pager">
-    {% if pager.this > 1 %}
-    <li><a href="{% url 'contest:archive' pager.previous %}"><span>&larr;</span> Newer</a></li>
+    {% if contests.has_previous %}
+    <li><a href="?page={{ contests.previous_page_number }}">← Previous</a></li>
     {% endif %}
-    {% if pager.this < pager.max_page %}
-    <li><a href="{% url 'contest:archive' pager.next %}">Older <span>&rarr;</span></a></li>
+    <span class="current">
+      Page {{ contests.number }} of {{ contests.paginator.num_pages }}.
+    </span>
+    {% if contests.has_next %}
+    <li><a href="?page={{ contests.next_page_number }}">Next →</a></li>
     {% endif %}
   </ul>
 </nav>
-{% for contest in contests %}
-{% include 'contest/register.html' %}
-{% include "contest/contestInfo.html" %}
-{% endfor %}
+<!-- register contest -->
+<div class="modal fade" id="register" tabindex="-1" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content" id="registerContestContent">
+    </div> <!-- /.modal-content -->
+  </div> <!-- /.modal-dialog -->
+</div> <!-- /.modal -->
+<!-- contest info -->
+<div class="modal fade" id="contestInfo" tabindex="-1" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content" id="contestInfoContent">
+    </div> <!-- /.modal-content -->
+  </div> <!-- /.modal-dialog -->
+</div> <!-- /.modal -->
 {% endblock body_block %}
