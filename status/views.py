@@ -53,7 +53,7 @@ def regroup_submission(submissions):
     return submission_groups
 
 
-def status(request, username=None):
+def status(request):
     username = request.GET.get('username')
     cid = request.GET.get('cid')
     pid = request.GET.get('pid')
