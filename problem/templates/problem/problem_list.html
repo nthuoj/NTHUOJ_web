@@ -55,7 +55,7 @@ SOFTWARE.
           {% else %}
             <div class="progress">
               <div class="progress-bar progress-bar-success" style="width: {{p.pass_rate}}%;" 
-                data-toggle="tooltip" data-placement="top" title="{{p.pass_rate}}%">
+                data-toggle="tooltip" data-placement="top" title="{{p.pass_rate}}" data-original-title="{{p.pass_rate}}"> 
               </div>
               <div class="progress-bar progress-bar-danger" style="width: {{p.not_pass_rate}}%;" 
                 data-toggle="tooltip" data-placement="top" title="{{p.not_pass_rate}}%">
@@ -83,3 +83,9 @@ SOFTWARE.
     </tr>
   </tbody>
 </table>
+<script>
+$(document).ready(function () {
+  $('[data-toggle="tooltip"]').tooltip();
+  $('.progress').css('overflow', 'inherit');
+});
+</script>
