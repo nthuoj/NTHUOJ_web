@@ -28,7 +28,8 @@ from django.http import Http404
 from django.shortcuts import render
 from django.core.exceptions import PermissionDenied
 
-from problem.models import Submission, SubmissionDetail
+from contest.models import Contest
+from problem.models import Submission, SubmissionDetail, Problem
 from status.templatetags.status_filters import show_detail
 from users.forms import CodeSubmitForm
 from users.models import User
@@ -53,6 +54,9 @@ def regroup_submission(submissions):
 
 
 def status(request, username=None):
+    username = request.GET.get('username')
+    cid = request.GET.get('cid')
+    pid = request.GET.get('pid')
     submissions = Submission.objects.all().order_by('-id')
 
     if username:
@@ -62,11 +66,29 @@ def status(request, username=None):
         except:
             raise Http404('User %s not found' % username)
 
+    if pid:
+        try:
+            problem = Problem.objects.get(id=pid)
+            submissions = submissions.filter(problem=problem)
+        except:
+            raise Http404('Problem %s not found' % pid)
+
+    if cid:
+        try:
+            contest = Contest.objects.get(id=cid)
+            problems = contest.problem.all()
+            submissions = submissions.filter(
+                problem__in=problems,
+                submit_time__gte=contest.start_time,
+                submit_time__lte=contest.end_time)
+        except:
+            raise Http404('Contest %s not found' % cid)
+
     submissions = get_current_page(request, submissions)
 
     submissions.object_list = regroup_submission(submissions.object_list)
 
-    return render_index(request, 'status/status.html', {'submissions': submissions})
+    return render_index(request, 'status/status.html', {'submissions': submissions, 'request': request})
 
 
 def contest_status(request, contest):
