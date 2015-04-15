@@ -1,32 +1,30 @@
 from django import forms
-from django.conf import settings
-from django.forms import ModelForm
 
 from users.models import User
 from problem.models import Problem, Submission, SubmissionDetail, Testcase
-from utils import log_info, user_info, config_info
+from utils import log_info, user_info, config_info, file_info
 
 logger = log_info.get_logger()
+
 
 class CodeSubmitForm(forms.Form):
     SUBMIT_PATH = config_info.get_config('path', 'submission_code_path')
     LANGUAGE_CHOICE = tuple(config_info.get_config_items('compiler_option'))
 
-    pid = forms.CharField(
-        widget=forms.TextInput(attrs={'class': 'form-control'}))
-    language = forms.ChoiceField(choices=LANGUAGE_CHOICE, initial='CPP',
-        widget=forms.RadioSelect())
+    pid = forms.CharField()
+    language = forms.ChoiceField(choices=LANGUAGE_CHOICE, initial=Submission.CPP,
+                                 widget=forms.RadioSelect())
     code = forms.CharField(max_length=10000,
-        widget=forms.Textarea(
-            attrs={'class': 'form-control', 'rows': 20,
-                'id': 'code_editor'}))
+                           widget=forms.Textarea(attrs={'id': 'code_editor'}))
 
     def clean_pid(self):
         pid = self.cleaned_data['pid']
+        if not unicode(pid).isnumeric():
+            raise forms.ValidationError("Pid must be a number")
         try:
             problem = Problem.objects.get(id=pid)
             if not user_info.has_problem_auth(self.user, problem):
-                raise forms.ValidationError('You don\'t have permission to submit that problem')
+                raise forms.ValidationError("You don't have permission to submit that problem")
         except Problem.DoesNotExist:
             logger.warning('Pid %s doe not exist' % pid)
             raise forms.ValidationError('Problem of this pid does not exist')
@@ -39,13 +37,16 @@ class CodeSubmitForm(forms.Form):
         language = self.cleaned_data['language']
 
         problem = Problem.objects.get(id=pid)
+        problem.total_submission += 1
+        problem.save()
         testcases = Testcase.objects.filter(problem=problem)
         submission = Submission.objects.create(
             user=self.user,
             problem=problem,
             language=language)
         try:
-            f = open('%s%s.cpp' % (self.SUBMIT_PATH, submission.id), 'w')
+            filename = '%s.%s' % (submission.id, file_info.get_extension(submission.language))
+            f = open('%s%s' % (self.SUBMIT_PATH, filename), 'w')
             f.write(code.encode('utf-8'))
             f.close()
         except IOError:
@@ -58,21 +59,19 @@ class CodeSubmitForm(forms.Form):
         self.user = kwargs.pop('user', User())
         super(CodeSubmitForm, self).__init__(*args, **kwargs)
 
+
 class UserProfileForm(forms.ModelForm):
     """A form for updating user's profile. Includes all the required
     fields, plus a repeated password."""
 
     username = forms.CharField(label='Username',
-        widget=forms.TextInput(attrs={'class': 'form-control', 'readonly': True}))
-    email = forms.EmailField(label='Email',
-        widget=forms.TextInput(attrs={'class': 'form-control'}))
-    theme = forms.ChoiceField(label='Theme',
-        choices=User.THEME_CHOICE,
-        widget=forms.Select(attrs={'class': 'form-control'}))
+                               widget=forms.TextInput(attrs={'readonly': True}))
+    email = forms.EmailField(label='Email')
+    theme = forms.ChoiceField(label='Theme', choices=User.THEME_CHOICE)
     password1 = forms.CharField(label='Password', required=False,
-        widget=forms.PasswordInput(attrs={'class': 'form-control'}))
+                                widget=forms.PasswordInput())
     password2 = forms.CharField(label='Password Confirmation', required=False,
-        widget=forms.PasswordInput(attrs={'class': 'form-control'}))
+                                widget=forms.PasswordInput())
 
     class Meta:
         model = User
@@ -105,9 +104,7 @@ class UserProfileForm(forms.ModelForm):
 
 class UserLevelForm(forms.ModelForm):
     """A form for updating user's userlevel."""
-    user_level = forms.ChoiceField(label='Userlevel',
-        choices=User.USER_LEVEL_CHOICE,
-        widget=forms.Select(attrs={'class': 'form-control'}))
+    user_level = forms.ChoiceField(label='Userlevel', choices=User.USER_LEVEL_CHOICE)
 
     class Meta:
         model = User
@@ -125,6 +122,22 @@ class UserLevelForm(forms.ModelForm):
         # judge can change user to sub-judge, user
         user_level = self.cleaned_data['user_level']
         if user.has_judge_auth() and \
-            (user_level == User.SUB_JUDGE or user_level == User.USER):
+                (user_level == User.SUB_JUDGE or user_level == User.USER):
             return True
         return False
+
+
+class UserForgetPasswordForm(forms.Form):
+    username = forms.CharField()
+    email = forms.EmailField()
+
+    def clean_email(self):
+        # Check that if username and email match or not
+        username = self.cleaned_data['username']
+        email = self.cleaned_data['email']
+        if username and email and User.objects.filter(username=username, email=email):
+            return email
+        raise forms.ValidationError("Username and Email don't match")
+
+
+

@@ -22,7 +22,11 @@ from django.conf.urls import patterns, url
 import views
 
 urlpatterns = patterns('',
+    url(r'^get_time/$', views.get_time),
     url(r'^$', views.index, name='index'),
     url(r'^index/(?P<alert_info>\w+)/$', views.index, name='alert'),
-    url(r'^get_time/$', views.get_time),
+    url(r'^search/$', views.navigation_autocomplete, name='search'),
+    url(r'^announcement_create/$', views.announcement_create, name='announcement_create'),
+    url(r'^announcement_update/(?P<aid>\w+)$', views.announcement_update, name='announcement_update'),
+    url(r'^announcement_delete/(?P<aid>\w+)$', views.announcement_delete, name='announcement_delete'),
 )

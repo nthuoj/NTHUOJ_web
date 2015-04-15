@@ -26,7 +26,10 @@ Usage: add_attribute(element_id, attribute_to_set, value_attribute_should_be);
 function add_attribute(id, attribute, value) {
     var att = document.createAttribute(attribute);
     att.value = value;
-    document.getElementById(id).setAttributeNode(att);
+	obj = document.getElementById(id);
+    if (obj!=null){
+		obj.setAttributeNode(att);
+    } 
 }
 
 /*
@@ -47,4 +50,28 @@ Usage: hide(id_of_element_to_hide)
 
 function hide(id){
     add_attribute(id,'type','hidden');
+}
+
+/*
+to modify html
+Usage: modify_html(jquery_selector, html_to_replace)
+ex1. 
+<a id="sometext">Hello NTHUOJ</a>
+modify_html("#sometext","HI");
+<a id="sometext">HI</a>
+
+ex2. 
+<a class="sometext">Hello NTHUOJ</a>
+modify_html(".sometext","HI");
+<a id="sometext">HI</a>
+
+ex3. 
+<a anything="sometext">Hello NTHUOJ</a>
+modify_html("[anything=sometext]","HI");
+<a id="sometext">HI</a>
+
+*/
+
+function modify_html(where, innerHTML){
+    $(where).html(innerHTML);
 }

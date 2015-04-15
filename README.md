@@ -19,9 +19,12 @@ git clone git@github.com:bruce3557/NTHUOJ_web.git
 * mysql-server
 * python-mysqldb
 * django-axes
+* django-autocomplete-light
 * bower
 * django-bower
 * curl
+* django-datetime-widget
+* django-bootstrap-form
 
 ###Installation:
 * Execute install.py for initial setting.
@@ -29,10 +32,7 @@ git clone git@github.com:bruce3557/NTHUOJ_web.git
     python install.py
     ```
 
-* After installing, you can modify `'<project/root>/nthuoj.ini'` if your database setting is modified.
-
-
-* After installing, you can modify `'<project/root>/emailInfo.py'` if your email host setting is modified.
+* After installing, you can modify `'project_root/config/nthuoj.cfg'` if your want to change project configurations.
 
 ###Email host:
 * The email host should be gmail.

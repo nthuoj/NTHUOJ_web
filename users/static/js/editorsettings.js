@@ -41,7 +41,7 @@ $(function () {
         showCursorWhenSelecting: true
     });
 
-    adjustEditorSize = function (editor) {
+    var adjustEditorSize = function (editor) {
         // Adjust editor size according to the line count
         lineCount = editor.lineCount()
         lineHeight = $('.CodeMirror-gutter-wrapper').height()
@@ -49,12 +49,23 @@ $(function () {
         editorHeight = Math.max(400, Math.min(lineCount*lineHeight + 50, 2000))
         editor.setSize(editorWidth, editorHeight)
     }
+    var fire;
+    var sublimePatch = function (editor, key) {
+        // Fix sublime keybinding can't use Backspace
+        if(fire && editor.getCursor().ch == 0 && key == 'Backspace') {
+            editor.execCommand('delCharBefore');
+            fire = false;
+        }
+        fire = editor.getCursor().ch == 0;
+    }
 
     // Adjust editor size on load
     adjustEditorSize(editor)
 
     // Adjust editor size on change
     editor.on('change', adjustEditorSize)
+
+    editor.on('keyHandled', sublimePatch)
 
     $('#fileinput').bootstrapFileInput();
 

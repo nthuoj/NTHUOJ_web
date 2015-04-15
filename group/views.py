@@ -20,24 +20,33 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.'''
-from django.http import HttpResponse, Http404
+from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render_to_response, render
-from group.models import Group
 from django.utils import timezone
-from general_tools import log
-from group.forms import GroupForm
-from django.http import HttpResponseRedirect
+from django.core.exceptions import PermissionDenied
+from django.forms.models import model_to_dict
+from group.forms import GroupForm, GroupFormEdit
+from group.models import Group
+from utils.user_info import has_group_ownership
+from utils.log_info import get_logger
+from utils.render_helper import render_index
 
+logger = get_logger()
 
-logger = log.get_logger()
-
-def get_running_contest(request, group_id):
-        
+def get_group(group_id):
     try:
         group = Group.objects.get(id = group_id)
-    except:
-        logger.warning('Group: group does not exist - gid: %s!' % group_id)
-        raise Http404('Group does not exist')
+    except Group.DoesNotExist:
+        logger.warning('Group: Can not edit group %s! Group is not exist!' % group_id)
+        return render(
+            request,
+            'index/404.html',
+            {'error_message': 'Group: Can not edit group %s! Group is not exist!' % group_id})
+    return group
+
+def get_running_contest(request, group_id):
+
+    group = get_group(group_id)
 
     all_contest = group.trace_contest.all()
     all_running_contest_list = []
@@ -45,22 +54,18 @@ def get_running_contest(request, group_id):
 
     for contest in all_contest:
         if contest.start_time < now and contest.end_time > now:
-                all_running_contest_list.append(contest)
+            all_running_contest_list.append(contest)
 
-    return render(
+    return render_index(
         request, 'group/viewall.html', {
-            'data_list': all_running_contest_list, 
+            'data_list': all_running_contest_list,
             'title': 'running contest',
             'list_type': 'runContest',
         })
 
 def get_ended_contest(request, group_id):
-        
-    try:
-        group = Group.objects.get(id = group_id)
-    except:
-        logger.warning('Group: group does not exist - gid: %s!' % group_id)
-        raise Http404('Group does not exist')
+
+    group = get_group(group_id)
 
     all_contest = group.trace_contest.all()
     all_ended_contest_list = []
@@ -70,43 +75,36 @@ def get_ended_contest(request, group_id):
         if contest.end_time < now:
             all_ended_contest_list.append(contest)
 
-    return render(
+    return render_index(
         request, 'group/viewall.html', {
-            'data_list': all_ended_contest_list, 
+            'data_list': all_ended_contest_list,
             'title': 'ended contest',
             'list_type': 'endContest',
         })
 
 def get_all_announce(request, group_id):
 
-    try:
-        group = Group.objects.get(id = group_id)
-    except:
-        logger.warning('Group: group does not exist - gid: %s!' % group_id)
-        raise Http404('Group does not exist')
+    group = get_group(group_id)
 
     all_announce_list = group.announce.all()
-    return render(
+    return render_index(
         request, 'group/viewall.html', {
-            'data_list': all_announce_list, 
+            'data_list': all_announce_list,
             'title': 'announce',
             'list_type': 'announce',
         })
 
-    
-def detail(request, group_id):
-    
-    try:
-        group = Group.objects.get(id = group_id)
-    except:
-        logger.warning('Group: group does not exist - gid: %s!' % group_id)
-        raise Http404('Group does not exist')
 
-    all_contest = group.trace_contest.all()[0:5]
-    annowence_list = group.announce.all()[0:5]
-    student_list = group.member.all()
+def detail(request, group_id):
+
+    group = get_group(group_id)
+    show_number = 5; #number for brief list to show in group detail page.
+    all_contest = group.trace_contest.all()
+    annowence_list = group.announce.all()
+    student_list = group.member.order_by('user_level')
     coowner_list = group.coowner.all()
     owner = group.owner
+    user_is_owner = has_group_ownership(request.user, group)
 
     running_contest_list = []
     ended_contest_list = []
@@ -117,36 +115,83 @@ def detail(request, group_id):
         elif contest.end_time < now:
             ended_contest_list.append(contest)
 
-    return render(
+    return render_index(
         request, 'group/groupDetail.html', {
-            'rc_list': running_contest_list, 
-            'ec_list': ended_contest_list,
+            'rc_list': running_contest_list[0:show_number],
+            'ec_list': ended_contest_list[0:show_number],
             'an_list': annowence_list,
             'coowner_list': coowner_list,
             'owner': owner,
             's_list': student_list,
-            'group_name': group.gname, 
+            'group_name': group.gname,
             'group_description': group.description,
             'group_id': group.id,
+            'user_is_owner': user_is_owner,
         })
 
 
 def list(request):
 
-    group_list = Group.objects.order_by('-creation_time')
-    return render(
+    all_group_list = Group.objects.order_by('-creation_time')
+    unsorted_group_list = Group.objects.filter(member__username__contains=request.user.username)
+    my_group_list = unsorted_group_list.order_by('-creation_time')
+    return render_index(
         request,'group/groupList.html', {
-            'g_list': group_list
+            'a_g_list': all_group_list,
+            'm_g_list': my_group_list,
         })
 
 def new(request):
-    if request.method == 'GET':
+
+    if request.user.has_judge_auth():
+        if request.method == 'GET':
             form = GroupForm()
-            return render(request,'group/editGroup.html',{'form':form})
-    if request.method == 'POST':
-        form = GroupForm(request.POST)
-        if form.is_valid():
-            new_group = form.save()
-            return HttpResponseRedirect('/group/list')
+            return render_index(request,'group/editGroup.html',{'form':form})
+        if request.method == 'POST':
+            form = GroupForm(request.POST)
+            if form.is_valid():
+                new_group = form.save()
+                logger.info('Group: Create a new group %s!' % new_group.id)
+                return HttpResponseRedirect('/group/list')
+            else:
+                return render(
+                    request,
+                    'index/404.html',
+                    {'error_message': 'Cannot create group! Info is blank!'})
+    else:
+        raise PermissionDenied
+
+def delete(request, group_id):
+
+    if request.user.has_judge_auth():
+        get_group(group_id)
+        deleted_gid = group.id
+        group.delete()
+        logger.info('Group: Delete group %s!' % deleted_gid)
+        return HttpResponseRedirect('/group/list')
+    else:
+        raise PermissionDenied
+
+def edit(request, group_id):
+
+        group = get_group(group_id)
+
+        coowner_list = []
+        all_coowner = group.coowner.all()
+        for coowner in all_coowner:
+            coowner_list.append(coowner.username)
+
+        if request.user.username == group.owner.username or \
+           request.user.username in coowner_list:
+            if request.method == 'GET':
+                group_dic = model_to_dict(group)
+                form = GroupFormEdit(initial = group_dic)
+                return render_index(request,'group/editGroup.html',{'form':form})
+            if request.method == 'POST':
+                form = GroupFormEdit(request.POST, instance = group)
+                if form.is_valid():
+                    modified_group = form.save()
+                    logger.info('Group: Modified group %s!' % modified_group.id)
+                    return HttpResponseRedirect('/group/detail/%s' % modified_group.id)
         else:
-            raise Http404('Cannot create group! Info is blank!')
+            raise PermissionDenied

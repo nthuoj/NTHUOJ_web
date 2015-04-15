@@ -18,10 +18,16 @@
     SOFTWARE.
     '''
 from django import forms
+from django.views.generic.edit import UpdateView
 from contest.models import Contest
 from contest.models import Clarification
+from users.models import User
 
 class ContestForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super(ContestForm, self).__init__(*args, **kwargs)
+        # access object through self.instance...
+        self.fields['coowner'].queryset = User.objects.exclude(user_level=User.USER)
     class Meta:
         model = Contest
         fields = [
@@ -56,9 +62,31 @@ class ClarificationForm(forms.ModelForm):
             'problem',
             'content',
             'asker',
-            'reply_all'
         )
         widgets = {
             'content': forms.Textarea(),
         }
 
+class ReplyForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super(ReplyForm, self).__init__(*args, **kwargs)
+        #only problems contest contains will be shown in list
+        initial = kwargs.get('initial',{})
+        contest = initial.get('contest',{})
+        if type(contest) is Contest:
+            clarifications = Clarification.objects.filter(contest = contest)
+            self.fields['clarification'] = forms.ChoiceField(
+                choices=[(clarification.id,clarification.content) 
+                for clarification in clarifications.all()])
+
+    class Meta:
+        model = Clarification
+        fields = (
+            'reply',
+            'replier',
+            'reply_time',
+            'reply_all'
+        )
+        widgets = {
+            'reply': forms.Textarea(),
+        }

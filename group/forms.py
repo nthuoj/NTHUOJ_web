@@ -33,4 +33,14 @@ class GroupForm(forms.ModelForm):
             'announce',
             'trace_contest',
         ]
-        
+
+class GroupFormEdit(forms.ModelForm):
+    class Meta:
+        model = Group
+        fields = [
+            'coowner',
+            'member',
+            'description',
+            'announce',
+            'trace_contest',
+        ]

@@ -1,13 +1,11 @@
+# Configs
+config/
+
 # Bower
-components
+components/
 
 # Migrations
 migrations/
-
-# Config files
-nthuoj.ini
-emailInfo.py
-
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
@@ -64,5 +62,3 @@ docs/_build/
 # PyBuilder
 target/
 
-#bootstrap
-bootstrap/

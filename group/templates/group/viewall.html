@@ -25,14 +25,21 @@ SOFTWARE.
 {% extends "index/base.html" %} 
 {% load static %} 
 {% block body_block %}
-<h4>All {{ title }}</h4>
+<br>
+<div class="span12">
+      <div class="hero-unit">
+        <div class="hero-unit">
+          <span>
+            <h3 style="margin-left:15px">All {{ title }}</h3>
+          </span>
+        </div>
+      </div>
+    </div>
 <div class="modal-body">
-  <div class="input-group">
+  <div class="input-group" style="">
     <span class="input-group-addon">search {{ title }} by id</span>
-    <input type="text" class="form-control">
-    <span class="input-group-btn">
-      <button class="btn btn-default btn-sm" type="button">search</button>
-    </span>
+    <input type="text" class="form-control" style="width:30%">
+    <button class="btn btn-default btn-sm" type="button" style="float:left">search</button>
   </div>
   <br>
   <table class="table table-hover">
@@ -40,7 +47,7 @@ SOFTWARE.
       <th>{{ title }} title</th>
       {% if list_type == "announce" %}
       <th>announce content</th>
-      {% endif %} {% if list_type == "runContest" %}
+      {% else %}
       <th>start time</th>
       <th>end time</th>
       {% endif %} 
@@ -48,12 +55,35 @@ SOFTWARE.
     <tbody>
       {% for archive in data_list %}
       <tr>
-        {% if list_type == 'runContest' or list_type == "endContest" %}
-        <td>{{ archive.cname }}</td>
-        <td>{{ archive.start_time }}</td>
-        <td>{{ archive.end_time }}</td>
-        {% endif %}
-        {% if list_type == "announce" %}
+        {% if list_type == 'runContest'%}
+          {% if archive.is_homework %}
+            <tr style="background-color:#F1F7EA">
+              <td>{{ archive.cname }}</td>
+              <td>{{ archive.start_time }}</td>
+              <td>{{ archive.end_time }}</td>
+            </tr>
+          {% else %}
+            <tr style="background-color:#E3E8E3">
+              <td>{{ archive.cname }}</td>
+              <td>{{ archive.start_time }}</td>
+              <td>{{ archive.end_time }}</td>
+            </tr>
+          {% endif %}
+        {% elif list_type == 'endContest'%}
+          {% if archive.is_homework %}
+            <tr style="background-color:#D6DBD0">
+              <td>{{ archive.cname }}</td>
+              <td>{{ archive.start_time }}</td>
+              <td>{{ archive.end_time }}</td>
+            </tr>
+          {% else %}
+            <tr style="background-color:#C5C9C5">
+              <td>{{ archive.cname }}</td>
+              <td>{{ archive.start_time }}</td>
+              <td>{{ archive.end_time }}</td>
+            </tr>
+          {% endif %}
+        {% elif list_type == "announce" %}
         <td>{{ archive.title }}</td>
         <td>{{ archive.content }}</td>
         <td>

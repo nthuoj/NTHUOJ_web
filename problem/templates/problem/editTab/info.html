@@ -21,76 +21,9 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 -->
-<table>
-  <tr>
-    <th style="width:20%">Problem Name:</th>
-    <td>
-      <input class="form-control" name="probName">
-    </td>
-  </tr>
-  <tr>
-    <th style="width:20%">Owner:</th>
-    <td>
-      <input class="form-control" name="owner">
-    </td>
-  </tr>
-  <tr>
-    <th style="width:20%">Visible:</th>
-    <td>
-      <input type="checkbox" value="visible" name='visible'>
-    </td>
-  </tr>
-  <tr>
-    <th style="width:20%">Judge Source:</th>
-    <td>
-      <select class="form-control" name='source'>
-        <option>Local (Default)</option>
-        <option>ICPC</option>
-        <option>POJ</option>
-        <option>ZOJ</option>
-        <option>UVA</option>
-      </select>
-    </td>
-  </tr>
-  <tr>
-    <th style="width:20%">Real ID:</th>
-    <td>
-      <input class="form-control" name='realID'>
-    </td>
-  </tr>
-  <tr>
-    <th style="width:20%">Problem Page:</th>
-    <td>
-      <input class="form-control" name='probPage'>
-    </td>
-  </tr>
-  <tr>
-    <th style="width:20%">Special Judge:</th>
-    <td>
-      <input type="radio" name="special" value='no'>No&nbsp;
-      <input type="radio" name="special" value='c'>C&nbsp;
-      <input type="radio" name="special" value='cpp'>C++
-    </td>
-  </tr>
-  <tr>
-    <th>Floating Point Error:</th>
-    <td>
-      <input type="checkbox" onclick='floatError(this)' name='float'>&nbsp;&nbsp;
-      <input type="text" name="error" id="error" class='form-control' style="display:inline;width:20%">
-    </td>
-    <script>
-    $("#error").hide();
-
-    function floatError(cb) {
-      if (cb.checked) {
-        $("#error").show();
-      } else {
-        $("#error").hide();
-      }
-    }
-    </script>
-  </tr>
-</table>
+{% csrf_token %}
+{% load bootstrap %}
+{{ form|bootstrap }}
 <br>
 <br>
 <br>
