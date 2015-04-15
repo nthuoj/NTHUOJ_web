@@ -22,15 +22,17 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
 import re
+import json
 
 from django.contrib.auth.decorators import login_required
-from django.http import Http404
+from django.http import Http404, HttpResponse
 from django.shortcuts import render
 from django.core.exceptions import PermissionDenied
+from django.core.serializers import serialize
 
 from contest.models import Contest
 from problem.models import Submission, SubmissionDetail, Problem
-from status.templatetags.status_filters import show_detail
+from status.templatetags.status_filters import show_detail, submission_filter
 from users.forms import CodeSubmitForm
 from users.models import User
 from utils.log_info import get_logger
@@ -85,8 +87,16 @@ def status(request):
             raise Http404('Contest %s not found' % cid)
 
     submissions = get_current_page(request, submissions)
-
+    # Regroup submission details
     submissions.object_list = regroup_submission(submissions.object_list)
+    # Filter what that user can see
+    submissions.object_list = submission_filter(submissions.object_list, request.user)
+
+    # Serialize to json
+    if 'type' in request.GET and request.GET['type'] == 'json':
+        submissions = [submission['grouper'] for submission in submissions.object_list]
+        return HttpResponse(serialize("json", submissions),
+            content_type="application/json")
 
     return render_index(request, 'status/status.html', {'submissions': submissions, 'request': request})
 
