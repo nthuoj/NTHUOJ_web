@@ -12,12 +12,12 @@ def get_testcase(problem):
 
 def get_problem_list(user):
     if user.is_anonymous():
-        return Problem.objects.filter(visible=True)
+        return Problem.objects.filter(visible=True).order_by('id')
     else:
         if user.is_admin:
-            return Problem.objects.all()
+            return Problem.objects.all().order_by('id')
         else:
-            return Problem.objects.filter(Q(visible=True) | Q(owner=user))
+            return Problem.objects.filter(Q(visible=True) | Q(owner=user)).order_by('id')
 
 def get_problem_file_extension(problem):
     if problem.judge_language == problem.C:
