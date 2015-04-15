@@ -21,19 +21,19 @@ SOFTWARE.
 
 {% block title_name %}
 <title>Contest</title>
-{% endblock title_name %} 
+{% endblock title_name %}
 
 {% block import_source %}
 <link href="{% static 'contest/css/contest.css' %}" rel="stylesheet">
 <script src="{%static 'contest/js/contest.js'%}"></script>
-{% endblock import_source %} 
+{% endblock import_source %}
 
 {% block body_block %}
 <body onload="getRestTime()">
   <div class="container">
     <!--Title-->
     <div class="well">
-      <h1>{{ contest.cname }}</h1>
+      <h2>{{ contest.cname }}</h2>
     </div>
     <div class="panel panel-info">
       <div class="panel-heading">
@@ -50,7 +50,7 @@ SOFTWARE.
         </table>
       </div>
       <div class="progress" style="margin-left:5%;width:90%;">
-        <div id="timeline" class="progress-bar progress-bar-info" role="progressbar" 
+        <div id="timeline" class="progress-bar progress-bar-info" role="progressbar"
         aria-valuenow="20" aria-valuemin="0" aria-valuemax="100" style="width:20%">
           <span class="sr-only"></span>
         </div>
@@ -65,66 +65,95 @@ SOFTWARE.
         <table class="table">
           <thead>
             <tr>
+              {% if user|can_reply:contest %}
+                <th></th>
+              {% endif %}
               <th>#</th>
               <th>Problem</th>
               <th>Asker</th>
               <th>Description</th>
               <th>Reply</th>
-              <th>Replyer</th>
+              <th>Replier</th>
               <th>Reply Time</th>
             </tr>
           </thead>
           <tbody>
             {% for clarification in clarifications %}
             <tr>
+              {% if user|can_reply:contest %}
+              <td>
+              <button name="reply" type="button" class="btn btn-warning btn-xs"
+                      data-toggle="modal" data-target="#reply"
+                      onclick="select({{ clarification.id }},'{{ clarification.content }}')">Reply</button>
+              </td>
+              {% endif %}
               <td>{{ forloop.counter }}</td>
               <td>{{ clarification.problem }}</td>
               <td>{{ clarification.asker }}</td>
               <td>{{ clarification.content }}</td>
               <td>{{ clarification.reply }}</td>
-              <td>{{ clarification.replyer }}</td>
+              <td>{{ clarification.replier }}</td>
               <td>{{ clarification.reply_time }}</td>
             </tr>
             {% endfor %}
           </tbody>
         </table>
-        {% if user|can_ask:contest %}
+
         <div align="center">
-          <button type="button" class="btn btn-primary btn-lg" data-toggle="modal" 
+          {% if user|can_ask:contest %}
+          <button type="button" class="btn btn-primary btn-lg" data-toggle="modal"
                   data-target="#clarification">Clarify</button>
+          {% endif %}
         </div>
-        {% endif %}
       </div>
     </div>
     <hr>
     <!--Contest detail-->
     <div id="detail">
-      <ul class="nav nav-tabs" role="tablist" id="myTab">
-        <li class="active"><a href="#overview" role="tab" data-toggle="tab">Overview</a>
+      <ul class="nav nav-tabs" role="tablist" id="contest_tab">
+        <li class="active" role="presentation">
+          <a href="#overview" role="tab" data-toggle="tab">Overview</a>
         </li>
-        <li><a href="#problem" role="tab" data-toggle="tab">Problem</a>
+        <li class="dropdown" role="presentation">
+          <a href="#problem" class="dropdown-toggle" data-toggle="dropdown">
+            Problem<span class="caret"></span>
+          </a>
+          <ul class="dropdown-menu" role="menu">
+            {% for problem in contest.problem.all %}
+            <li role="presentation">
+              <a href="#problem{{ problem.id }}" tabindex="-1" role="tab"
+               data-toggle="tab">{{ problem.pname }}</a>
+            </li>
+            {% endfor %}
+          </ul>
         </li>
-        <li><a href="#scoreboard" role="tab" data-toggle="tab">Scoreboard</a>
+        <li role="presentation"><a href="#scoreboard" role="tab" data-toggle="tab">Scoreboard</a>
         </li>
-        <li><a href="#status" role="tab" data-toggle="tab">Status</a>
+        <li role="presentation"><a href="#status" role="tab" data-toggle="tab">Status</a>
         </li>
       </ul>
       <div class="tab-content" id="content">
         <div class="tab-pane active" id="overview">
           {% include "contest/overview.html" %}
         </div>
-        <div class="tab-pane" id="problem">
-          {% include "contest/problem.html" %}
+        {% for problem in contest.problem.all %}
+        <div class="tab-pane" id="problem{{ problem.id }}">
+          {% include "problem/problem.html" %}
         </div>
+        {% endfor %}
         <div class="tab-pane" id="scoreboard">
           {% include "contest/scoreboard.html" %}
         </div>
-        <div class="tab-pane" id="status">4</div>
+        <div class="tab-pane" id="status">{{ status|safe }}</div>
       </div>
     </div>
     {% if user|can_ask:contest %}
     <!--Clarification Modal-->
     {% include "contest/clarification.html" %}
+    {% endif %}
+    {% if user|can_reply:contest %}
+    <!--Reply Modal-->
+    {% include "contest/reply.html" %}
     {% endif %}
   </div>
 </body>

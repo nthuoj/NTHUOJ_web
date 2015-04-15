@@ -22,6 +22,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 -->
 {%load static%}
+{% load bootstrap %}
 <!-- code mirror related -->
 <link rel="stylesheet" href={% static "codemirror/lib/codemirror.css" %}>
 <link rel="stylesheet" href={% static "codemirror/theme/solarized.css" %}>
@@ -52,21 +53,15 @@ SOFTWARE.
   <h3>Submit Code</h3>
   <form class="form-horizontal" action="/users/submit/" method="post">
     {% csrf_token %}
-    <div class="row" style="margin:10px;">
-      <div class="form-group col-lg-2">
-        <label class="control-label">PID:</label>
-        {{ form.pid }}
-        <strong style="color:red">{{ form.pid.errors }}</strong>
+    <div class="row">
+      <div class="col-lg-2">
+        {{ form.pid|bootstrap_horizontal }}
       </div>
-      <div class="col-lg-8">
-        <label class="control-label col-lg-1">Language:</label>
-        <div class="col-lg-11 radio">
-          {{ form.language }}
-        </div>
+      <div class="col-lg-offset-1 col-lg-6">
+        {{ form.language|bootstrap_horizontal }}
       </div>
     </div>
-    {{ form.code }}
-    <strong style="color:red">{{ form.code.errors }}</strong>
+    {{ form.code|bootstrap }}
     <a class="open-popup-link" href="#keybindings-popup">
         We support Sublime key bindings!
       </a>
@@ -83,6 +78,6 @@ SOFTWARE.
 
 <div id="keybindings-popup" class="mfp-hide">
   <div class="jumbotron">
-    {% include "users/keybindings.html" %}
+    {% include "users/keyBindings.html" %}
   </div>
 </div>

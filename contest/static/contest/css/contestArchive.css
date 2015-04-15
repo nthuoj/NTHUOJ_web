@@ -21,7 +21,7 @@ SOFTWARE.
 #contestArchive.container {
   width: 90%;
 }
-a {
+.black {
   color: black;
 }
 tr.past, tr.past>td>a {
@@ -29,10 +29,16 @@ tr.past, tr.past>td>a {
   background-color: #f8f8f8;
 }
 
-.green {
-    color: green;
+td.not-clickable-area {
+	background-color: #A0A0A0;
+	text-align:center;
+}
+
+.separate-area{
+	height:10px;
 }
 
 .red {
     color: red;
 }
+

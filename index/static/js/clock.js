@@ -1,4 +1,4 @@
-<!--
+/*
 The MIT License (MIT)
 Copyright (c) 2014 NTHUOJ team
 Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -16,28 +16,44 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
--->
-<!--This page will be replaced by including problem page-->
-<script>
-$(document).ready(function() {
-  $("a").tooltip({
-    placement: 'top'
-  });
+*/
+$(function(){
+    timer("time");
 });
-
-</script>
-<style>
-ul.center {
-  float: right;
+function timer(id) {
+    var server_time = new Date(document.getElementById(id).innerHTML);
+    var now = new Date();
+    var offset = server_time.getTime() - now.getTime();
+    showTime(id,offset);
 }
 
-</style>
-<div>
-  <ul class="pagination center">
-    {% for problem in contest.problem.all %}
-    <li><a href="#" data-toggle="tooltip" title="{{ problem.pname }}">{{ forloop.counter }}</a>
-    </li>
-    {% endfor %}
-  </ul>
-</div>
-<!-- include problem in the future-->
+function checkTime(i) {
+    if (i < 10) {
+        i = "0" + i
+    }; // add zero in front of numbers < 10
+    return i;
+}
+
+function showTime(id,offset) {
+    time = new Date();
+    time = time.getTime() + offset;
+    time = new Date(time);
+
+    y = time.getFullYear();
+    m = time.getMonth()+1;
+    d = time.getDate();
+    h = time.getHours();
+    h = checkTime(h);
+
+    min = time.getMinutes();
+    min = checkTime(min);
+
+    s = time.getSeconds();
+    s = checkTime(s);
+
+    document.getElementById(id).innerHTML = y + "/" + m + "/" + d + " " + h + ":" + min + ":" + s;
+    var one_second = 1000;
+    var t = setTimeout(function() {
+        showTime(id,offset);
+    }, one_second);
+}

@@ -21,26 +21,27 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 '''
-from django import template
-from users.models import User
 from datetime import datetime
+
+from django import template
+
 from contest.models import Contest
 from team.models import TeamMember
-from django.core.urlresolvers import reverse
 from utils.user_info import validate_user
+
 
 register = template.Library()
 
 
 def show_submission(submission, user):
-    '''Test if the user can see that submission
+    """Test if the user can see that submission
 
     Args:
         submission: a Submission object
         user: an User object
     Returns:
         a boolean of the judgement
-    '''
+    """
     # admin can see all submissions
     if user.user_level == user.ADMIN:
         return True
@@ -88,7 +89,7 @@ def show_submission(submission, user):
 
 @register.filter()
 def show_detail(submission, user):
-    '''Test if the user can see that submission's
+    """Test if the user can see that submission's
     details (code, error message, etc)
 
     Args:
@@ -96,59 +97,54 @@ def show_detail(submission, user):
         user: an User object
     Returns:
         a boolean of the judgement
-    '''
+    """
     user = validate_user(user)
 
     # basic requirement: submission must be shown
-    if show_submission(submission, user):
-        # admin can see everyone's detail
-        if user.user_level == user.ADMIN:
-            return True
-        # no one can see admin's detail
-        if submission.user.user_level == user.ADMIN:
-            return False
+    # admin can see everyone's detail
+    if user.user_level == user.ADMIN:
+        return True
+    # no one can see admin's detail
+    if submission.user.user_level == user.ADMIN:
+        return False
 
-        contests = Contest.objects.filter(
-            is_homework=False,
-            start_time__lte=datetime.now(),
-            end_time__gte=datetime.now())
-        # during the contest, only owner/coowner with user level sub-judge/judge
-        # can view the detail
-        if contests:
-            contests = contests.filter(problem=submission.problem)
-            owners = []
-            for contest in contests:
-                owners.append(contest.owner)
-                owners.extend(contest.coowner.all())
-            if user in owners:
+    contests = Contest.objects.filter(
+        is_homework=False,
+        start_time__lte=datetime.now(),
+        end_time__gte=datetime.now())
+    # during the contest, only owner/coowner with user level sub-judge/judge
+    # can view the detail
+    if contests:
+        contests = contests.filter(problem=submission.problem)
+        for contest in contests:
+            if user == contest.owner or user in contest.coowner.all():
                 return True
-            else:
-                return False
-        # a user can view his own detail
-        if submission.user == user:
+        return False
+    # a user can view his own detail
+    if submission.user == user:
+        return True
+    # a problem owner can view his problem's detail
+    if submission.problem.owner_id == user.username:
+        return True
+    # a user can view his team member's detail
+    if submission.team:
+        team_member = TeamMember.objects.filter(team=submission.team, member=user)
+        if team_member or submission.team.leader == user:
             return True
-        # a problem owner can view his problem's detail
-        if submission.problem.owner_id == user.username:
-            return True
-        # a user can view his team member's detail
-        if submission.team:
-            team_member = TeamMember.objects.filter(team=submission.team, member=user)
-            if team_member or submission.team.leader == user:
-                return True
     # no condition is satisfied
     return False
 
 
 @register.filter()
 def submission_filter(submission_list, user):
-    '''Return a list of submissions that the given user can see
+    """Return a list of submissions that the given user can see
 
     Args:
         submission_list: a list of submissions
         user: an User object
     Returns:
         a list of submissions
-    '''
+    """
     user = validate_user(user)
 
     # an admin can see all submissions because he/she is god
