@@ -1,7 +1,10 @@
 from django import forms
+from threading import Thread
+
 
 from users.models import User
 from problem.models import Problem, Submission, SubmissionDetail, Testcase
+from vjudge.submit import submit_to_vjudge
 from utils import log_info, user_info, config_info, file_info
 
 logger = log_info.get_logger()
@@ -52,8 +55,12 @@ class CodeSubmitForm(forms.Form):
         except IOError:
             logger.warning('Sid %s fail to save code' % submission.id)
 
-        for testcase in testcases:
-            SubmissionDetail.objects.create(tid=testcase, sid=submission)
+        if problem.judge_source == Problem.LOCAL:
+            for testcase in testcases:
+                SubmissionDetail.objects.create(tid=testcase, sid=submission)
+        elif problem.judge_source == Problem.OTHER:
+            submit_thread = Thread(target=submit_to_vjudge, args=(code, submission))
+            submit_thread.start()
 
     def __init__(self, *args, **kwargs):
         self.user = kwargs.pop('user', User())

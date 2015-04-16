@@ -50,7 +50,7 @@ class Problem(models.Model):
     ERROR_TOLERANT = 'ERR_TOLERANT'
     PARTIAL = 'PARTIAL'
     UVA_JUDGE = 'UVA'
-    ICPC_JUDGE = 'ICPC'
+    ICPC_JUDGE = 'UVALive'
     POJ_JUDGE = 'POJ'
     JUDGE_TYPE_CHOICE = (
         # Local Judge
