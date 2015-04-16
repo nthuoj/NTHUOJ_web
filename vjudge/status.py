@@ -13,7 +13,7 @@ result_map = {
     'Time limit exceeded': Submission.NOT_ACCEPTED
 }
 def gg():
-    for i in range(1):
+    while True:
         try:
             raw_status = requests.get(status_url, timeout=5).text.encode("utf-8")
             raw_status = json.loads(raw_status)['data']
