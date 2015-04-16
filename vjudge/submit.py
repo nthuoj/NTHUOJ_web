@@ -39,6 +39,7 @@ def submit_to_vjudge(code, submission):
         raw_status = json.loads(raw_status)['data']
         sid = raw_status[0][0]
         submission.other_judge_sid = sid
+        submission.status = Submission.JUDGING
         submission.save()
     except:
         logger.error('Submission %d fails to submit to vjudge' % submission.id)

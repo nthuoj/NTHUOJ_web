@@ -9,7 +9,8 @@ result_map = {
     'Compile Error': Submission.COMPILE_ERROR,
     'Runtime Error': Submission.NOT_ACCEPTED,
     'Compilation error': Submission.COMPILE_ERROR,
-    'Memory Limit Exceeded': Submission.NOT_ACCEPTED
+    'Memory Limit Exceeded': Submission.NOT_ACCEPTED,
+    'Time limit exceeded': Submission.NOT_ACCEPTED
 }
 def gg():
     while True:
