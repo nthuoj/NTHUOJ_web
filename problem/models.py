@@ -95,7 +95,6 @@ class Problem(models.Model):
 
 
 class Testcase(models.Model):
-
     problem = models.ForeignKey(Problem)
     description = models.TextField(blank=True)
     time_limit = models.IntegerField(default=1)

@@ -42,7 +42,6 @@ class CodeSubmitForm(forms.Form):
         problem = Problem.objects.get(id=pid)
         problem.total_submission += 1
         problem.save()
-        testcases = Testcase.objects.filter(problem=problem)
         submission = Submission.objects.create(
             user=self.user,
             problem=problem,
@@ -56,6 +55,7 @@ class CodeSubmitForm(forms.Form):
             logger.warning('Sid %s fail to save code' % submission.id)
 
         if problem.judge_source == Problem.LOCAL:
+            testcases = Testcase.objects.filter(problem=problem)
             for testcase in testcases:
                 SubmissionDetail.objects.create(tid=testcase, sid=submission)
         elif problem.judge_source == Problem.OTHER:
