@@ -95,8 +95,12 @@ def status(request):
     # Serialize to json
     if 'type' in request.GET and request.GET['type'] == 'json':
         submissions = [submission['grouper'] for submission in submissions.object_list]
-        return HttpResponse(serialize("json", submissions),
-            content_type="application/json")
+        # Remove unnecessary fields
+        submissions = serialize("python", submissions)
+        submissions = [s['fields'] for s in submissions]
+
+        return HttpResponse(json.dumps(submissions,
+            default=lambda obj: obj.isoformat() if hasattr(obj, 'isoformat') else obj))
 
     return render_index(request, 'status/status.html', {'submissions': submissions, 'request': request})
 
