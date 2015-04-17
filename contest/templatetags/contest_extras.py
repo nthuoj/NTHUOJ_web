@@ -37,7 +37,7 @@ register = template.Library()
 @register.filter
 def has_auth(user, contest_id):
     contest = Contest.objects.get(id = contest_id)
-    return user_info.has_contest_ownership(user, contest)
+    return user_info.has_contest_ownership(user, contest) | user.has_admin_auth()
 
 register.filter("has_auth", has_auth)
 
@@ -70,9 +70,7 @@ register.filter("can_reply", can_reply)
 #True is contest is ended
 @register.filter
 def is_ended(contest):
-    if datetime.now() > contest.end_time:
-        return True
-    return False
+    contest_info.is_ended(contest)
 register.filter("is_ended", is_ended)
 
 #check if user is anonymous user

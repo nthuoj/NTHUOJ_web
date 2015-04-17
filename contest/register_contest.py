@@ -19,112 +19,61 @@
     '''
 from contest.models import Contest
 from contest.models import Contestant
-
 from contest.contest_info import get_contest_or_404
+from contest.contest_info import user_can_register_contest
 from contest.contest_info import can_register
-from contest.contest_info import can_register_log
-
+from contest import public_user
 from group.models import Group
 from users.models import User
 
-from utils.log_info import get_logger
-from utils.user_info import get_public_users
-from utils.user_info import attends_not_ended_contest
-from utils.user_info import create_anonymous
-
-from django.conf import settings 
-
+from utils.log_info import get_logger 
 
 logger = get_logger()
 
-def register_user(user, contest):
-    if can_register_log(user, contest):
-        contestant = Contestant(contest = contest, user = user)
-        contestant.save()
-        logger.info('Contest: User %s attends Contest %s!' % (user.username, contest.id))
+# add one contestant
+def add_contestant(user, contest):
+    contestant = Contestant(contest = contest, user = user)
+    contestant.save()
+    logger.info('Contest: User %s attends Contest %s!' % (user.username, contest.id))
 
-def register_group(group, contest):
-    if not contest.open_register:
-        logger.info('Contest: Registration for Contest %s is closed, can not register.' % contest.id)
+# add many contestants
+def add_contestants(users, contest):
+    for user in users:
+         add_contestant(user, contest)
+
+# add many contestants and activate them
+def add_contestants_and_activate(users, contest):
+     add_contestants(users, contest)
+     public_user.activate_public_users(users)
+
+def user_register_contest(user, contest):
+    if can_register(user, contest):
+        add_contestant(user, contest)
+
+def group_register_contest(group, contest):
+    for user in group.member.all():
+        if user_can_register_contest(user, contest):
+            add_contestant(user, contest)
+
+def public_user_register_contest(account_num, contest):
+    account_num = public_user.check_account_num_valid(account_num)
+    #if invalid
+    if account_num == -1:
         return
-    for member in group.member.all():
-        register_user(member, contest)
-
-def register_anonymous(contest, account_num):
-    if not is_integer(account_num):
-        logger.warning('Contest: input word is not interger! Can not register anonymous!')
-        return False
-    account_num = int(account_num)  
-    if account_num < 0:
-        logger.warning('Contest: input word is less than 0. Can not register anonymous!')
-        return False
-    if account_num > settings.MAX_ANONYMOUS:
-        too_many_anonymous_warning = 'Contest: register anonymous more than ' \
-             + str(settings.MAX_ANONYMOUS) + '! Set to ' + str(settings.MAX_ANONYMOUS) + '!'
-        logger.warning(too_many_anonymous_warning)
-        account_num = settings.MAX_ANONYMOUS
-
-    public_users = get_public_users()
-    available = 0
-    available_anonymous = []
-    for user in public_users:
-        if not attends_not_ended_contest(user):
-            user.is_active = False
-            available_anonymous.append(user)
-            available += 1
-
-    #if attend more than request, then kick some out
-    all_contestant = User.objects.filter(user__contest = contest).order_by('-user')
-    attended_anonymous = []
-    for user in all_contestant:
-        if user.username.startswith(settings.ANONYMOUS_PREFIX):
-            attended_anonymous.append(user)
-
-    attended = len(attended_anonymous)
-    if account_num == attended:
-        return True
-
-    if (account_num < attended):
-        for index,user in enumerate(attended_anonymous):
-            if index == (attended-account_num):
-                return True
-            username = user.username
-            contestant = Contestant.objects.get(user = user,contest = contest)
-            contestant.delete()
-            logger.info('Contest: User %s leave Contest %s!' % (username, contest.id))
-            
-    still_need = account_num - attended
-    #available is more than request
-    if(available >= still_need):
-        for user in available_anonymous:
-            if (still_need > 0):
-                if can_register(user, contest):
-                    register_user(user, contest)
-                    user.is_active = True
-                    still_need -= 1
-            else:
-                break
-    #free anonymous user not enough
+    public_contestants = public_user.get_public_contestant(contest)
+    need = account_num - len(public_contestants)
+    # public contestant attend more than needed, kick some out
+    if need < 0:
+        public_user.delete_public_contestants(public_contestants[account_num:len(public_contestants)])
+        return
+    #public contestant is not enough
+    available_users = public_user.get_available_public_users()
+    lack = need - len(available_users)
+    # available public user is enough
+    if lack <=0:
+        add_contestants_and_activate(available_users[0:need], contest)
+    # available public user not enough, then create some
     else:
-        need_to_create = still_need - available
-        user_created = create_anonymous(need_to_create)
-        for user in available_anonymous:
-            if can_register(user, contest):
-                register_user(user, contest)
-                user.is_active = True
-        for user in user_created:
-            if can_register(user, contest):
-                register_user(user, contest)
-                user.is_active = True
-                user.save()
-    for user in public_users:
-        user.save()
-
-    return True
-    
-def is_integer(obj):
-    try:
-        int(obj)
-        return True
-    except ValueError:
-        return False
+        new_users = public_user.create_public_users(lack)
+        add_contestants_and_activate(new_users, contest)
+        add_contestants_and_activate(available_users, contest)

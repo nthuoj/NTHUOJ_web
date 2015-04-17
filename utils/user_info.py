@@ -166,7 +166,7 @@ def send_activation_email(request, user):
     try:
         Thread(target=msg.send, args=()).start()
     except:
-         logger.warning("There is an error when sending email to %s's mailbox" % username)
+        logger.warning("There is an error when sending email to %s's mailbox" % username)
 
 def send_forget_password_email(request, user):
     username = user.username
@@ -192,27 +192,3 @@ def send_forget_password_email(request, user):
         Thread(target=msg.send, args=()).start()
     except:
         logger.warning("There is an error when sending email to %s's mailbox" % username)
-
-def get_public_users():
-    return User.objects.filter(username__startswith = settings.ANONYMOUS_PREFIX)
-
-def attends_not_ended_contest(user):
-    user_attends = Contestant.objects.filter(user = user)
-    for contestant in user_attends:
-        if(datetime.now() < contestant.contest.end_time):
-            return True
-    return False
-
-def create_anonymous(need):
-    public_user = get_public_users()
-    we_have = len(public_user)
-    new_users = []
-    for index in range(we_have, we_have + need):
-        username = settings.ANONYMOUS_PREFIX + "{:0>4d}".format(index)
-        new_user = User.objects.create_user(username, "000")
-        logger.info('user %s created' % str(new_user))
-        new_users.append(new_user)
-    return new_users
-
-def is_anonymous(user):
-    return user.username.startswith(settings.ANONYMOUS_PREFIX)

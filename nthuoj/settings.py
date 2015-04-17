@@ -145,6 +145,6 @@ STATICFILES_FINDERS = (
 )
 
 #maximum of anonymous contestant for a single contest
-MAX_ANONYMOUS = 200
+MAX_PUBLIC_USER = 200
 #anonymous contestant username prefix
-ANONYMOUS_PREFIX = "OJ"
+PUBLIC_USER_PREFIX = "OJ"
