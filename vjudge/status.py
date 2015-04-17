@@ -25,7 +25,7 @@ def gg():
                 refined_status[sid] = result
 
             submissions = Submission.objects.filter(status__in=[Submission.WAIT, Submission.JUDGING])
-
+            print submissions
 
             for submission in [s for s in submissions if s.problem.judge_source == Problem.OTHER and s.other_judge_sid]:
                 status = refined_status.get(submission.other_judge_sid)
@@ -36,8 +36,7 @@ def gg():
                         submission.status = nthuoj_status
 
                 diff = datetime.now()-submission.submit_time
-                if diff.seconds > 300:
-                    submission.status = Submission.JUDGE_ERROR
+
                 submission.save()
 
             time.sleep(3)
