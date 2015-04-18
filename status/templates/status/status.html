@@ -23,27 +23,40 @@ SOFTWARE.
 -->
 {% extends "index/base.html" %}
 {% load status_filters %}
-
+{% load static %}
+{% block title_name %}
+<title>Status</title>
+{% endblock title_name %}
+{% block import_source %}
+<link href="{% static 'problem/css/problemPanel.css' %}" rel="stylesheet">
+<link href="{% static 'status/css/status.css' %}" rel="stylesheet">
+{% endblock import_source %}
 {% block body_block %}
 
-<div class="container-fluid">
-  <h1>Status</h1>
+<div class="container" id="statusBody">
+  <br>
+  <!--title-->
+  <div class="well">
+    <h2>Status</h2>
+  </div>
   {% include "status/statusTable.html" %}
   <ul class="pager">
     <span class="step-links">
       {% if submissions.has_previous %}
         <li>
-          <a href="?{% url_replace request 'page' submissions.previous_page_number %}">← Previous</a>
+          <a href="?{% url_replace request 'page' submissions.previous_page_number %}">
+            <span>&larr;</span> Previous
+          </a>
         </li>
       {% endif %}
-
       <span class="current">
         Page {{ submissions.number }} of {{ submissions.paginator.num_pages }}.
       </span>
-
       {% if submissions.has_next %}
         <li>
-          <a href="?{% url_replace request 'page' submissions.next_page_number %}">Next →</a>
+          <a href="?{% url_replace request 'page' submissions.next_page_number %}">
+            Next <span>&rarr;</span>
+          </a>
         </li>
       {% endif %}
     </span>

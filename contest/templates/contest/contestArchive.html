@@ -119,15 +119,17 @@ SOFTWARE.
 </div>
 <nav>
   <ul class="pager">
-    {% if contests.has_previous %}
-    <li><a href="?page={{ contests.previous_page_number }}"><span>&larr;</span> Previous</a></li>
-    {% endif %}
-    <span class="current">
-      Page {{ contests.number }} of {{ contests.paginator.num_pages }}.
-    </span>
-    {% if contests.has_next %}
-    <li><a href="?page={{ contests.next_page_number }}">Next <span>&rarr;</span></a></li>
-    {% endif %}
+    <span class="step-links">
+      {% if contests.has_previous %}
+      <li><a href="?page={{ contests.previous_page_number }}"><span>&larr;</span> Previous</a></li>
+      {% endif %}
+      <span class="current">
+        Page {{ contests.number }} of {{ contests.paginator.num_pages }}.
+      </span>
+      {% if contests.has_next %}
+      <li><a href="?page={{ contests.next_page_number }}">Next <span>&rarr;</span></a></li>
+      {% endif %}
+  </span>
   </ul>
 </nav>
 <!-- register contest -->
