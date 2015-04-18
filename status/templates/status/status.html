@@ -22,6 +22,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 -->
 {% extends "index/base.html" %}
+{% load status_filters %}
 
 {% block body_block %}
 
@@ -32,9 +33,9 @@ SOFTWARE.
     <span class="step-links">
       {% if submissions.has_previous %}
         <li>
-          <a href="?page={{ submissions.previous_page_number }}">← Previous</a>
+          <a href="?{% url_replace request 'page' submissions.previous_page_number %}">← Previous</a>
         </li>
-       {% endif %}
+      {% endif %}
 
       <span class="current">
         Page {{ submissions.number }} of {{ submissions.paginator.num_pages }}.
@@ -42,7 +43,7 @@ SOFTWARE.
 
       {% if submissions.has_next %}
         <li>
-          <a href="?page={{ submissions.next_page_number }}">Next →</a>
+          <a href="?{% url_replace request 'page' submissions.next_page_number %}">Next →</a>
         </li>
       {% endif %}
     </span>
