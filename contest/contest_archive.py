@@ -33,11 +33,7 @@ def get_contests(user):
     else:
         contests_info = get_started_contests()
 
-    contests = []
-    for contest in contests_info:
-        new_contest = add_contestants(contest)
-        contests.append(new_contest)
-    return contests
+    return contests_info
 
 def get_owned_or_started_contests(user):
     owned_contests = get_owned_contests(user)
