@@ -21,13 +21,16 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 -->
-{% extends "problem/base.html" %} 
+{% extends "problem/base.html" %}
 {% load staticfiles %}
+{% block title_name %}
+<title>Problem Edit</title>
+{% endblock title_name %}
 {% block import_source %}
   {{block.super}}
   <link rel="stylesheet" href="{% static 'problem/css/edit.css' %}">
 {% endblock %}
-{% block body_block %} 
+{% block body_block %}
 <div class="container" id="Body">
   <h4>You are editing problem {{pid}}: {{pname}}</h4>
   <div style="width:80%; float:left;">
@@ -75,12 +78,12 @@ SOFTWARE.
         <div class="tab-pane" id="sample_io">
           <div class="panel panel-default" style="float:left;width:47%">
             <div class="panel-heading">Sample Input</div>
-            <textarea name="sample_in" class="panel-body" 
+            <textarea name="sample_in" class="panel-body"
               style="width:100%" rows="20">{{sample_in}}</textarea>
           </div>
           <div class="panel panel-default" style="float:right;width:47%">
             <div class="panel-heading">Sample Output</div>
-            <textarea name="sample_out" class="panel-body" 
+            <textarea name="sample_out" class="panel-body"
               style="width:100%" rows="20">{{sample_out}}</textarea>
           </div>
         </div>

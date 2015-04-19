@@ -21,8 +21,11 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 -->
-{% extends "index/base.html" %} 
+{% extends "index/base.html" %}
 {% load static %}
+{% block title_name %}
+<title>Submit</title>
+{% endblock title_name %}
 {% block body_block %}
   {% include "users/codeEditor.html" %}
 {% endblock body_block %}

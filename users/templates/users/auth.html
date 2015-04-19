@@ -24,7 +24,9 @@ SOFTWARE.
 {% extends "index/base.html" %}
 {% load static %}
 {% load bootstrap %}
-
+{% block title_name %}
+<title>{{ title }}</title>
+{% endblock title_name %}
 {% block body_block %}
 <div class="container" style="width:40%">
   <h3>{{ title }}</h3>
