@@ -33,6 +33,9 @@ body {
   min-height: 100%;
   margin-bottom: 35px;
 }
+#list.container {
+  width: 75%;
+}
 #logo {
   margin-top: 30px;
   margin-right: 200px;
