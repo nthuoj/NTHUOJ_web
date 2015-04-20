@@ -115,7 +115,7 @@ def contest(request, cid):
 def new(request):
     if can_create_contest(request.user):
         if request.method == 'GET':
-            form = ContestForm(initial={'owner':request.user})
+            form = ContestForm(initial={'owner':request.user,'user': request.user})
             title = "New Contest"
             return render_index(request,'contest/editContest.html',{'form':form,'title':title})
         if request.method == 'POST':
@@ -138,6 +138,7 @@ def edit(request, cid):
     if can_edit_contest(request.user,contest):
         if request.method == 'GET':
             contest_dic = model_to_dict(contest)
+            contest_dic['user'] = request.user
             form = ContestForm(initial = contest_dic)
             return render_index(request,'contest/editContest.html',
                     {'form':form,'user':request.user,'title':title})

@@ -22,12 +22,22 @@ from django.views.generic.edit import UpdateView
 from contest.models import Contest
 from contest.models import Clarification
 from users.models import User
+from problem.models import Problem
+from django.db.models import Q
 
 class ContestForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(ContestForm, self).__init__(*args, **kwargs)
         # access object through self.instance...
+        initial = kwargs.get('initial',{})
+        owner = initial.get('owner',{})
+        user = initial.get('user',{})
         self.fields['coowner'].queryset = User.objects.exclude(user_level=User.USER)
+        if user.has_admin_auth():
+            self.fields['problem'].queryset = Problem.objects.all()
+        else:
+            self.fields['problem'].queryset = Problem.objects.filter(
+                Q(visible = True)|Q(owner = owner))
     class Meta:
         model = Contest
         fields = [
