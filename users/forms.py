@@ -54,11 +54,7 @@ class CodeSubmitForm(forms.Form):
         except IOError:
             logger.warning('Sid %s fail to save code' % submission.id)
 
-        if problem.judge_source == Problem.LOCAL:
-            testcases = Testcase.objects.filter(problem=problem)
-            for testcase in testcases:
-                SubmissionDetail.objects.create(tid=testcase, sid=submission)
-        elif problem.judge_source == Problem.OTHER:
+        if problem.judge_source == Problem.OTHER:
             submit_thread = Thread(target=submit_to_vjudge, args=(code, submission))
             submit_thread.start()
 
