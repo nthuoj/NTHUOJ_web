@@ -56,8 +56,7 @@ if not config.has_section('email'):
 
 if not config.has_section('vjudge'):
     # Setting virtual judge info
-    print 'We use virtual judge for other judge source(UVA, ICPC, etc.)'
-    print 'http://acm.hust.edu.cn/vjudge/toIndex.action'
+    print 'We use virtual judge(vjudge.net) for other judge source(UVA, ICPC, etc.)'
     vjudge_username = raw_input('Virtual judge username: ')
     vjudge_password = getpass.getpass("Virtual judge password: ")
     write_vjudge_config(config, vjudge_username, vjudge_password)
