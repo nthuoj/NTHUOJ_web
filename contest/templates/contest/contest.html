@@ -14,7 +14,16 @@
   <div class="container">
     <!--Title-->
     <div class="well">
-      <h2>{{ contest.cname }}</h2>
+      <h2>{{ contest.cname }}
+      {% if user|can_edit_contest:contest %}
+       <a href="{% url 'contest:edit' contest.id %}">
+        <button type="button" class="btn btn-warning btn-sm" data-toggle="tooltip"
+              data-placement="top" title="Edit Contest">
+          <span class="glyphicon glyphicon-pencil"></span>
+        </button>
+      </a>
+      {% endif %}
+      </h2>
     </div>
     <div class="panel panel-info">
       <div class="panel-heading">
