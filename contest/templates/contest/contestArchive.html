@@ -69,7 +69,7 @@
           {% if user|show_register_btn:contest %}
           <a data-toggle="modal" data-target="#register"
            data-load-remote="{% url 'contest:register_page' contest.id %}"
-           data-remote-target="#registerContestContent">
+           data-remote-target="#registerContent">
             <button type="button" class="btn btn-success btn-xs"
              data-toggle="tooltip" data-placement="top" title="Register">
               <span class="glyphicon glyphicon-plus"></span>
@@ -106,7 +106,8 @@
 <!-- register contest -->
 <div class="modal fade" id="register" tabindex="-1" role="dialog">
   <div class="modal-dialog">
-    <div class="modal-content" id="registerContestContent">
+    <div class="modal-content" id="registerContent">
+      <h3 style="text-align:center;">Loading...</h3>
     </div> <!-- /.modal-content -->
   </div> <!-- /.modal-dialog -->
 </div> <!-- /.modal -->
@@ -114,6 +115,7 @@
 <div class="modal fade" id="contestInfo" tabindex="-1" role="dialog">
   <div class="modal-dialog">
     <div class="modal-content" id="contestInfoContent">
+      <h3 style="text-align:center;">Loading...</h3>
     </div> <!-- /.modal-content -->
   </div> <!-- /.modal-dialog -->
 </div> <!-- /.modal -->
