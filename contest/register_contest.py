@@ -21,6 +21,7 @@ from contest.models import Contest
 from contest.models import Contestant
 from contest.contest_info import get_contest_or_404
 from contest.contest_info import can_register
+from contest.contest_info import user_can_register_contest
 from contest.contest_info import has_started
 from contest import public_user
 from group.models import Group
@@ -51,8 +52,10 @@ def user_register_contest(user, contest):
         add_contestant(user, contest)
 
 def group_register_contest(group, contest):
+    if has_started(contest):
+        return
     for user in group.member.all():
-        if can_register(user, contest):
+        if user_can_register_contest(user, contest):
             add_contestant(user, contest)
 
 def public_user_register_contest(account_num, contest):

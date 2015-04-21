@@ -41,7 +41,8 @@
   {% if groups %}
   <div class="collapse" id="group_select">
     <div class="well">
-      <form class="form-inline" method="GET" action="{% url 'contest:register' contest.id %}">
+      <form class="form-inline" method="POST" action="{% url 'contest:register' contest.id %}">
+        {% csrf_token %}
         <select name="group" class="form-control" style="width:70%;">
           {% for group in groups %}
           <option value="{{ group.id }}">{{ group.gname }}</option>
@@ -58,13 +59,14 @@
     <tr>
       <td>
         <a class="btn btn-success btn-lg btn-block" data-toggle="collapse" 
-        data-target="#public-user">Public User</a>
+           data-target="#public-user">Public User</a>
       </td>
     </tr>
   </table>
   <div class="collapse" id="public-user">
     <div class="well">
-      <form class="form-inline" method="POST" action="{% url 'contest:register' contest.id %}">
+      <form class="form-inline" method="POST" 
+            action="{% url 'contest:register' contest.id %}">
         {% csrf_token %}
         <label>How many Public User?</label>
         <br>
