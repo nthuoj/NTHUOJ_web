@@ -43,7 +43,6 @@ LANGUAGE_CHOICE = {
 
 def submit_to_vjudge(code, submission):
     try:
-        print vjudge_password, vjudge_username
         # Convert to vjudge problem id
         problem = submission.problem
         vjudge_id = VjudgeID.objects.get(
