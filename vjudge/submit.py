@@ -21,7 +21,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
-import requests, base64, json, bs4
+import requests, base64, json
 from problem.models import Submission, Problem
 from vjudge.models import VjudgeID
 from vjudge.status import status_url
