@@ -41,5 +41,5 @@ git clone git@github.com:bruce3557/NTHUOJ_web.git
 * Your google account seeting 'Access for less secure apps' should turn on.
 
 ###Virtual judge account
-* We use [virtual judge](vjudge.net) for judging codes from other resources(UVA, ICPC, etc).
+* We use [virtual judge](http://vjudge.net) for judging codes from other resources(UVA, ICPC, etc).
 
