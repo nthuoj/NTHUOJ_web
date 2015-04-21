@@ -30,14 +30,27 @@ class ContestForm(forms.ModelForm):
         super(ContestForm, self).__init__(*args, **kwargs)
         # access object through self.instance...
         initial = kwargs.get('initial',{})
-        owner = initial.get('owner',{})
-        user = initial.get('user',{})
+        user = initial.get('user',User())
+        method = initial.get('method','')
         self.fields['coowner'].queryset = User.objects.exclude(user_level=User.USER)
-        if user.has_admin_auth():
+        if method == 'GET':
+            contest_id = initial.get('id',0)
+            # if user not is admin
+            # get all problem when user is admin
+            if not user.has_admin_auth():
+                # edit contest
+                if contest_id:
+                    contest = Contest.objects.get(pk = contest_id)
+                    contest_problems = contest.problem.all().distinct()
+                    self.fields['problem'].queryset = Problem.objects.filter(
+                            Q(visible = True)|Q(owner = user)).distinct() | contest_problems
+                # create contest   
+                else:
+                    self.fields['problem'].queryset = Problem.objects.filter(
+                            Q(visible = True)|Q(owner = user))
+
+        elif method == 'POST':
             self.fields['problem'].queryset = Problem.objects.all()
-        else:
-            self.fields['problem'].queryset = Problem.objects.filter(
-                Q(visible = True)|Q(owner = owner))
     class Meta:
         model = Contest
         fields = [
