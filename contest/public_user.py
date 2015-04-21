@@ -62,8 +62,8 @@ def create_public_users(need):
     we_have = len(public_users)
     new_users = []
     for index in range(we_have, we_have + need):
-        username = settings.PUBLIC_USER_PREFIX + "{:0>4d}".format(index)
-        new_user = User.objects.create_user(username, "000")
+        username = settings.PUBLIC_USER_PREFIX + str(index)
+        new_user = User.objects.create_user(username, settings.PUBLIC_USER_DEFAULT_PASSWORD)
         logger.info('user %s created' % str(new_user))
         new_users.append(new_user)
     return new_users

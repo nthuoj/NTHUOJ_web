@@ -20,8 +20,8 @@
 from contest.models import Contest
 from contest.models import Contestant
 from contest.contest_info import get_contest_or_404
-from contest.contest_info import user_can_register_contest
 from contest.contest_info import can_register
+from contest.contest_info import has_started
 from contest import public_user
 from group.models import Group
 from users.models import User
@@ -52,19 +52,24 @@ def user_register_contest(user, contest):
 
 def group_register_contest(group, contest):
     for user in group.member.all():
-        if user_can_register_contest(user, contest):
+        if can_register(user, contest):
             add_contestant(user, contest)
 
 def public_user_register_contest(account_num, contest):
+    # can not register started contest
+    if has_started(contest):
+        return
+
     account_num = public_user.check_account_num_valid(account_num)
-    #if invalid
+    # if invalid
     if account_num == -1:
         return
     public_contestants = public_user.get_public_contestant(contest)
     need = account_num - len(public_contestants)
     # public contestant attend more than needed, kick some out
     if need < 0:
-        public_user.delete_public_contestants(public_contestants[account_num:len(public_contestants)])
+        public_user.delete_public_contestants(\
+            public_contestants[account_num:len(public_contestants)])
         return
     #public contestant is not enough
     available_users = public_user.get_available_public_users()

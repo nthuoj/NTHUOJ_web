@@ -200,9 +200,6 @@ def is_contestant(user, contest):
     contestant = Contestant.objects.filter(contest = contest, user = user)
     return (len(contestant)>=1)
 
-def is_ended(contest):
-    return datetime.now() > contest.end_time
-
 #check if user can create new clarification in contest
 '''
 admin and owner and coowner and contestant can create clarification

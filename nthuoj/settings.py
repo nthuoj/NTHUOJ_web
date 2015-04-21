@@ -144,7 +144,10 @@ STATICFILES_FINDERS = (
     'djangobower.finders.BowerFinder',
 )
 
-#maximum of anonymous contestant for a single contest
+#maximum of public users for a single contest
 MAX_PUBLIC_USER = 200
-#anonymous contestant username prefix
-PUBLIC_USER_PREFIX = "OJ"
+#public user username prefix
+PUBLIC_USER_PREFIX = "TEAM"
+
+PUBLIC_USER_DEFAULT_PASSWORD = "000"
+
