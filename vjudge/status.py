@@ -59,7 +59,7 @@ def status_daemon():
                     for keyword in status_keywords:
                         if keyword in status_lower:
                             submission.status = status
-                submission.save()
+                            submission.save()
 
             time.sleep(3)
         except:
