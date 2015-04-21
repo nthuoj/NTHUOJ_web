@@ -22,13 +22,33 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 -->
 <!DOCTYPE html>
-{% extends "index/base.html" %}
 {% load static %}
 
-{% block title_name %}
-  <title>submit</title>
-{% endblock title_name %}
-{% block import_source %}
-{% endblock import_source %}
-{% block body_block %}
-{% endblock body_block %}
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <!-- bootstrap, bootwatch JS & CSS -->
+  {% if user.is_authenticated %}
+  <link rel="stylesheet" href="{% static '' %}bootswatch/{{user.theme}}/bootstrap.css">
+  {% else %}
+  <link rel="stylesheet" href={% static "bootswatch/paper/bootstrap.css" %}>
+  {% endif %}
+  <script src={% static "bootstrap/dist/js/bootstrap.min.js" %}></script>
+  <link rel="stylesheet" href={% static "./css/index.css"%} media="screen">
+</head>
+<body>
+  <div style="background-color:#fcfcfc;border-radius:10px;">
+    <div style="position:relative;bottom:0px;">
+      <p class="status" >4&nbsp0&nbsp0</p>
+    </div>
+    <br>
+    <p class="status-title">Bad Request</p>
+    <br>
+    <p class="status-message">{{ error_message }}</p>
+    <br>
+    <p class="status-condition">
+      Your browser (or proxy) sent a request that this server could not understand.
+    </p>
+  </div>
+</body>
+</html>

@@ -33,122 +33,43 @@ body {
   min-height: 100%;
   margin-bottom: 35px;
 }
-.gray {
-  background-color: #E5E5E5;
-  height: 250px;
+#logo {
+  margin-top: 30px;
+  margin-right: 200px;
+  margin-left: 200px;
+
 }
-.hr1 {
-  margin: 0px;
-  position: relative;
-  top: -250px;
-  border-width: 3px;
-  color:gray;
+#logo-content {
+  border: 5px solid black;
+  border-radius: 25px;
 }
-.logo {
-  background-color: white;
-  padding-left: 40px;
-  padding-top: 20px;
-  padding-right: 40px;
-  padding-bottom: 30px;
-  margin: 0px;
-  width: 70%;
-  font-size: 22px;
-  border: 5px solid #1b2435;
-  border-radius: 10px;
-}
-.p1 {
-  font-size: 60px;
-  font-family: impact;
-  text-align: left;
-}
-.hr2 {
-  border-width: 2px;
+.center {
+  float: none;
+  margin-left: auto;
+  margin-right: auto;
 }
 .newbar {
   margin: 0px;
-  background-color: #1B2435;
   z-index: 0px;
-
-}
-.p2 {
-  font-size: 18px;
-  color: white;
-  margin: 0px;
-  padding: 0px;
-}
-.p3 {
-  color: white;
-  margin: 0px;
-  padding: 0px;
-  font-size: 26px;
 }
 .sticky-footer {
   padding: 0 auto;
-  background-color: #1b2435;
-  border-top: 1px solid #dddddd;
   border-bottom-right-radius: -1;
   border-bottom-left-radius: -1;
   position:relative;
   bottom: 0px;
   z-index: 1;
   width: 100%;
-  height: 35px;
   border-top-left-radius: 250px;
   border-top-right-radius: 250px;
   border-bottom-right-radius: 0px;
   border-bottom-left-radius: 0px;
 }
-.p4 {
-  color: white;
-  margin: 3px;
-  padding: 0px;
-  font-size: 20px;
-}
-.p7 {
-  font-size: 120px;
-  font-family: impact;
-  text-align: left;
-}
-.p8 {
-  font-size: 70px;
-  font-family: impact;
-  text-align: left;
-  color: black;
-}
-.p9 {
-  font-size: 30px;
-  font-family: impact;
-  text-align: left;
-  color: black;
-}
-.table1 {
-  width: 70%;
-  position: relative;
-  top: -150px;
-}
-.tlogo {
-  position: relative;
-  top: -200px;
-}
-.p5 {
-  font-size: 20px;
-  color: #444444;
-}
 .line {
   border: 3px none black;
-  border-bottom-style: solid;
+  border-top-style: solid;
 }
-.btn1 {
-  border-color: #444444;
-  background-color: gray;
-  color: #000;
-}
-.login {
-  font-size: 20px;
-}
-.p6 {
-  color: blue;
-}
+/*
 #mwt_mwt_slider_scroll {
   top: 0;
   left: -360px;
@@ -212,38 +133,12 @@ body {
   -webkit-transform: rotate(90deg);
   -moz-transform: rotate(90deg);
 }
-.information {
-  position: absolute;
-  right: 5px;
-  background-color: white;
-  font-size: 16px;
-  z-index: 999;
-  border: 2px solid #000;
-  border-radius: 3px;
-  padding: 10px;
-}
-.temp {
-  position: absolute;
-  right: 5px;
-  top: 200px;
-  z-index: 998;
-}
-.register {
-  font-size: 20px;
-}
+*/
 .forget {
   font-size: 20px;
 }
 .popdiv{
   padding:30px;
-}
-.txtbd{
-  border:1px black solid;
-}
-.poptxt_login{
-  display:inline;
-  float:left;
-  text-align:left;
 }
 textarea#inputSmall {
   height: 200px;
@@ -259,78 +154,83 @@ textarea#inputSmall {
   color:white;
 }
 #notification{
-  padding: 0px;
-  height: 50px;
-  width: 50px;
+  padding-left: 0px;
+  padding-right: 0px;
+  padding-top: 2px;
+  padding-bottom: 5px;
+  margin: 0px;
+  height: 40px;
+  width: 40px;
 }
 #notification_img{
   cursor: pointer;
-  height: 50px;
-  width: 50px;
+  height :40px;
+  width: 40px;
 }
 #notification_circle{
   position: relative;
-  top :-40px;
-  background-color: #4490DB;
-  height: 20px;
-  width: 20px;
+  top :-26px;
+  right: 1px;
+  background-color: white;
+  height: 18px;
+  width: 18px;
   border-radius: 25px;
   text-align: center;
 }
 #number{
   position: relative;
-  top :-2px;
-  left :-1px;
-  color: white;
+  top : -3px;
+  left : 0px;
+  color: red;
   font-size: 10px;
   -webkit-transform:scale(0.83);
   display: inline-block;
 }
-.err1 {
+.status {
   font-size: 120px;
-  font-family: impact;
-  text-align: left;
-  margin-bottom: -40px;
+  margin-bottom: -20px;
+  text-align: center;
 }
-.err2 {
+.status-title {
   font-size: 70px;
-  font-family: impact;
-  text-align: left;
-  color: black;
-  margin-bottom: 0px;
+  text-align: center;
 }
-.err3 {
+.status-message {
+  font-size: 50px;
+  text-align: center;
+}
+.status-condition {
   font-size: 30px;
-  font-family: impact;
-  text-align: left;
-  color: black;
-  margin-bottom: 0px;
+  text-align: center;
 }
 #time {
   margin-bottom: 0px;
   display: inline;
-  font-size: 18px;
+  font-size: 1vw;
   color: white;
   position: relative;
   float: right;
   right: 30px;
+  top: 2px;
 }
 #footer_text {
-  font-size: 18px;
+  font-size: 1vw;
   color: white;
   margin: 0px;
   padding: 0px;
   display: inline;
   position: relative;
-  left: 400px;
+  left: 25%;
 }
 #contact_us {
-  font-size: 18px;
+  font-size: 1vw;
   color: white;
-  margin: 3px;
+  margin: 0px;
   padding: 0px;
   position: relative;
   left: 30px;
+  background-color: transparent;
+  border: 0;
 }
 #alert_info{
   display:none;
@@ -340,4 +240,96 @@ textarea#inputSmall {
 }
 .start{
   display: none;
+}
+.nav-text{
+  font-size: 18px;
+}
+.nav-text-auth{
+  font-size: 25px;
+}
+.nav-text-brand{
+  font-size: 25px;
+  position: relative;
+  left: -12px;
+}
+.footer{
+  width: 100%;
+  border-top-left-radius: 250px;
+  border-top-right-radius: 250px;
+  padding-top: 2px;
+  padding-bottom: 2px;
+}
+#contest {
+  margin-right: 220px;
+  margin-left: 220px;
+  margin-bottom: 70px;
+}
+#announcement {
+  margin-right: 220px;
+  margin-left: 220px;
+  margin-bottom: 50px;
+}
+#name-text:hover {
+  text-decoration: underline;
+}
+.navbar-nav > li > a {
+  padding-top: 15px;
+  padding-bottom: 15px;
+  margin: 0px;
+}
+.navbar {
+  min-height: 3%;
+}
+#announcement-add {
+  position: relative;
+  top: -5px;
+  left: 10px;
+}
+.form-horizontal .control-label {
+  text-align: left;
+}
+.navbar-form {
+  margin: 0px;
+  padding-top: 5px;
+}
+.navbar-brand {
+  padding-top: 15px;
+  padding-bottom: 0px;
+  height: auto;
+}
+@media (max-width: 1300px) {
+  .navbar-header {
+    float: none;
+  }
+  .navbar-left,.navbar-right {
+    float: none !important;
+  }
+  .navbar-toggle {
+    display: block;
+  }
+  .navbar-collapse {
+    border-top: 1px solid transparent;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.1);
+  }
+  .navbar-fixed-top {
+    top: 0;
+    border-width: 0 0 1px;
+  }
+  .navbar-collapse.collapse {
+    display: none!important;
+  }
+  .navbar-nav {
+    float: none!important;
+    margin-top: 7.5px;
+  }
+  .navbar-nav>li {
+    float: none;
+  }
+  .navbar-nav>li>a {
+    padding-top: 10px;
+    padding-bottom: 10px;
+  }
+  .collapse.in{
+    display:block !important;
+  }
 }

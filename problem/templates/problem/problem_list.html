@@ -1,26 +1,3 @@
-<!--
-The MIT License (MIT)
-
-Copyright (c) 2014 NTHUOJ team
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
--->
 <table class="table">
   <thead>
     <tr>
@@ -31,35 +8,72 @@ SOFTWARE.
     </tr>
   </thead>
   <tbody>
-    {% for p in problem%}
+    {% for p in problem %}
       <tr>
         <td>
-          <span id='rejudge' class='glyphicon glyphicon-refresh' 
-          data-toggle="tooltip" data-placement="left" title="Rejudge"></span>&nbsp;{{p.pid}}</td>
-        <td><a href="{% url 'problem:problem.views.detail' p.pid %}">{{p.name}}</a>&nbsp;
-          <a href="{% url 'problem:problem.views.edit' p.pid %}">
-            <span id='edit' class='glyphicon glyphicon-pencil' 
-            data-toggle="tooltip" data-placement="right" title="Edit"></span>
-          </a>
+          {% if user == p.owner or user.is_admin %}
+            <span id='rejudge' class='glyphicon glyphicon-refresh'
+                  data-toggle="tooltip" data-placement="left" title="Rejudge"></span>
+          {% endif %}
+          &nbsp;{{p.pk}}
         </td>
-        <script>
-        $("#rejudge").tooltip('hide');
-        $("#edit").tooltip('hide');
-        </script>
-        <td>
-          <div class="progress">
-            <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="{{p.pass}}" aria-valuemin="0" aria-valuemax="100" style="width: {{p.pass}}%;">
-              {{p.pass}}%
-            </div>
-            <div class="progress-bar progress-bar-danger" role="progressbar" aria-valuenow="{{p.not_pass}}" aria-valuemin="0" aria-valuemax="100" style="width: {{p.not_pass}}%;">
-              {{p.not_pass}}%
-            </div>
-          </div>
+
+        <td><a href="{% url 'problem:problem.views.detail' p.pk %}">{{p.pname}}</a>&nbsp;
+          {% if user == p.owner or user.is_admin %}
+            <a href="{% url 'problem:problem.views.edit' p.pk %}">
+              <span id='edit' class='glyphicon glyphicon-pencil'
+              data-toggle="tooltip" data-placement="right" title="Edit"></span>
+            </a>
+          {% endif %}
         </td>
         <td>
-          <button class="btn btn-primary">Delete</button>
+          {% if p.no_submission %}
+            No submission
+          {% else %}
+            <div class="progress">
+              <div class="progress-bar progress-bar-success" style="width: {{p.pass_rate}}%;"
+                data-toggle="tooltip" data-placement="top" title="{{p.pass_rate|floatformat:2}}%">
+              </div>
+              <div class="progress-bar progress-bar-danger" style="width: {{p.not_pass_rate}}%;"
+                data-toggle="tooltip" data-placement="top" title="{{p.not_pass_rate|floatformat:2}}%">
+              </div>
+            </div>
+          {% endif %}
+        </td>
+        <td>
+          {% if user == p.owner or user.is_admin %}
+            <a data-target="{{p.pk}}" class="btn btn-primary"
+              href="{% url 'problem:delete_problem' p.pk %}">Delete</a>
+          {% endif %}
         </td>
       </tr>
     {% endfor %}
   </tbody>
 </table>
+<script>
+$(document).ready(function () {
+  $('[data-toggle="tooltip"]').tooltip();
+  $('.progress').css('overflow', 'inherit');
+});
+</script>
+
+<ul class="pager">
+  <span class="step-links">
+    {% if problem.has_previous %}
+      <li>
+        <a href="?page={{ problem.previous_page_number }}">← Previous</a>
+      </li>
+     {% endif %}
+
+    <span class="current">
+      Page {{ problem.number }} of {{ problem.paginator.num_pages }}.
+    </span>
+
+    {% if problem.has_next %}
+      <li>
+        <a href="?page={{ problem.next_page_number }}">Next →</a>
+      </li>
+    {% endif %}
+  </span>
+</ul>
+

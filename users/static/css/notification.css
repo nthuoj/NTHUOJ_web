@@ -28,6 +28,7 @@ SOFTWARE.
 }
 #notification-tab-type {
   margin: -1px;
+  width :60%;
 }
 .tab_content {
   margin-bottom: 0px;
