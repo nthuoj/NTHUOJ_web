@@ -115,11 +115,12 @@ def contest(request, cid):
 def new(request):
     if can_create_contest(request.user):
         if request.method == 'GET':
-            form = ContestForm(initial={'owner':request.user})
+            form = ContestForm(initial=\
+                {'user':request.user, 'method':request.method})
             title = "New Contest"
             return render_index(request,'contest/editContest.html',{'form':form,'title':title})
         if request.method == 'POST':
-            form = ContestForm(request.POST)
+            form = ContestForm(request.POST, initial={'method':request.method})
             if form.is_valid():
                 new_contest = form.save()
                 logger.info('Contest: User %s Create a new contest %s!' %
@@ -136,18 +137,20 @@ def edit(request, cid):
         raise Http404('Contest does not exist, can not edit.')
     title = "Edit Contest"
     if can_edit_contest(request.user,contest):
+        contest_dic = model_to_dict(contest)
+        contest_dic['user'] = request.user
+        contest_dic['method'] = request.method
         if request.method == 'GET':
-            contest_dic = model_to_dict(contest)
             form = ContestForm(initial = contest_dic)
             return render_index(request,'contest/editContest.html',
                     {'form':form,'user':request.user,'title':title})
         if request.method == 'POST':
-            form = ContestForm(request.POST, instance = contest)
+            form = ContestForm(request.POST, instance = contest, initial={'method':request.method})
             if form.is_valid():
                 modified_contest = form.save()
                 logger.info('Contest: User %s edited contest %s!' %
                     (request.user, modified_contest.id))
-                return archive(request)
+                return redirect('contest:archive')
             else:
                 return render_index(request,'contest/editContest.html',
                     {'form':form,'user':request.user,'title':title})
