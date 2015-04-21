@@ -6,32 +6,18 @@
 {% endblock title_name %}
 
 {% block import_source %}
-<link href="{% static 'contest/css/contestArchive.css' %}" rel="stylesheet">
 <script src="{% static 'contest/js/contestArchive.js' %}"></script>
 {% endblock import_source %}
-
 {% load contest_extras %}
-
 {% block body_block %}
-
-<div class="container" id="contestArchive">
+<div class="container" id="list">
+  <br>
   <!--title-->
   <div class="well">
     <h2>Contest Archive</h2>
   </div>
-  <!--contest filter-->
-  <div class="btn-group" role="group">
-    <button type="button" class="btn btn-default">All Contest</button>
-    <button type="button" class="btn btn-default">My Contest</button>
-  </div>
-  <!--search bar-->
-  <div style="width:20%;float:right" class="input-group"> <span class="input-group-addon">
-        <span class="glyphicon glyphicon-search"></span>
-    </span>
-    <input id="search" class="form-control">
-  </div>
   <!--contests overview-->
-  <table class="table table-hover">
+  <table class="table table-striped table-hover">
     <thead>
       <tr>
         <th>
@@ -104,15 +90,17 @@
 </div>
 <nav>
   <ul class="pager">
-    {% if contests.has_previous %}
-    <li><a href="?page={{ contests.previous_page_number }}">← Previous</a></li>
-    {% endif %}
-    <span class="current">
-      Page {{ contests.number }} of {{ contests.paginator.num_pages }}.
-    </span>
-    {% if contests.has_next %}
-    <li><a href="?page={{ contests.next_page_number }}">Next →</a></li>
-    {% endif %}
+    <span class="step-links">
+      {% if contests.has_previous %}
+      <li><a href="?page={{ contests.previous_page_number }}"><span>&larr;</span> Previous</a></li>
+      {% endif %}
+      <span class="current">
+        Page {{ contests.number }} of {{ contests.paginator.num_pages }}.
+      </span>
+      {% if contests.has_next %}
+      <li><a href="?page={{ contests.next_page_number }}">Next <span>&rarr;</span></a></li>
+      {% endif %}
+  </span>
   </ul>
 </nav>
 <!-- register contest -->

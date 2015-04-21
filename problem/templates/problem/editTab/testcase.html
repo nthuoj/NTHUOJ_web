@@ -25,7 +25,7 @@
   </tr>
   {% endfor %}
   <tr>
-    <form id="add_testcase" method="POST" 
+    <form id="add_testcase" method="POST"
       enctype="multipart/form-data" action="{% url 'problem:problem.views.testcase' pid %}">
       {% csrf_token %}
       <td><input type="file" name="t_in" required></td>
@@ -48,7 +48,7 @@
         </button>
         <h4 class='modal-title'>Edit Testcase</h4>
       </div>
-      <form id="update_testcase" method="POST" 
+      <form id="update_testcase" method="POST"
         enctype="multipart/form-data" action="{% url 'problem:problem.views.testcase' pid %}">
         {% csrf_token %}
         <div class='modal-body'>

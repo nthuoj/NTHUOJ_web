@@ -2,7 +2,9 @@
 {% load static %}
 {% load bootstrap %}
 {% load profile_filters %}
-
+{% block title_name %}
+<title>Profile</title>
+{% endblock title_name %}
 {% block body_block %}
 <br>
 <script src={% static "Chart.js/Chart.js" %}></script>
