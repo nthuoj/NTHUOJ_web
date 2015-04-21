@@ -49,9 +49,12 @@ def status_daemon():
                 result = status[3]
                 refined_status[sid] = result
 
-            submissions = Submission.objects.filter(status__in=[Submission.WAIT, Submission.JUDGING])
+            submissions = Submission.objects.filter(
+                status__in=[Submission.WAIT, Submission.JUDGING],
+                problem__judge_source=Problem.OTHER,
+                other_judge_sid__isnull=False)
 
-            for submission in [s for s in submissions if s.problem.judge_source == Problem.OTHER and s.other_judge_sid]:
+            for submission in submissions:
                 status = refined_status.get(submission.other_judge_sid)
                 if status:
                     status_lower = status.lower()
