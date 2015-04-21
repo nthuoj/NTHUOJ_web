@@ -147,7 +147,7 @@ def edit(request, cid):
                 modified_contest = form.save()
                 logger.info('Contest: User %s edited contest %s!' %
                     (request.user, modified_contest.id))
-                return archive(request)
+                return redirect('contest:archive')
             else:
                 return render_index(request,'contest/editContest.html',
                     {'form':form,'user':request.user,'title':title})
