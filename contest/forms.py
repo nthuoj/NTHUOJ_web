@@ -22,15 +22,23 @@ from django.views.generic.edit import UpdateView
 from contest.models import Contest
 from contest.models import Clarification
 from users.models import User
+from datetimewidget.widgets import DateTimeWidget, DateWidget, TimeWidget
 
 class ContestForm(forms.ModelForm):
+    dateTimeOptions = {
+            'format': 'yyyy-mm-dd hh:ii:ss',
+            'todayBtn': 'true',
+            'minuteStep': 1,
+    }
+    start_time = forms.DateTimeField(widget=DateTimeWidget(options=dateTimeOptions, bootstrap_version=3))
+    end_time = forms.DateTimeField(widget=DateTimeWidget(options=dateTimeOptions, bootstrap_version=3))
     def __init__(self, *args, **kwargs):
         super(ContestForm, self).__init__(*args, **kwargs)
         # access object through self.instance...
         self.fields['coowner'].queryset = User.objects.exclude(user_level=User.USER)
     class Meta:
         model = Contest
-        fields = [
+        fields = (
             'cname',
             'owner',
             'coowner',
@@ -40,7 +48,7 @@ class ContestForm(forms.ModelForm):
             'problem',
             'is_homework',
             'open_register',
-        ]
+        )
 
 class ClarificationForm(forms.ModelForm):
     
