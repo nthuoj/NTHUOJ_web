@@ -18,7 +18,7 @@
       {% if user|can_edit_contest:contest %}
        <a href="{% url 'contest:edit' contest.id %}">
         <button type="button" class="btn btn-warning btn-sm" data-toggle="tooltip"
-              data-placement="top" title="Edit Contest">
+                data-placement="top" title="Edit Contest">
           <span class="glyphicon glyphicon-pencil"></span>
         </button>
       </a>
