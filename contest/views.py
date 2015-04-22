@@ -118,7 +118,8 @@ def new(request):
         if request.method == 'GET':
             form = ContestForm(initial=\
                 {'owner':request.user, 'user':request.user, 'method':request.method})
-            return render_index(request,'contest/editContest.html',{'form':form,'title':title})
+            return render_index(request,'contest/editContest.html',
+                {'form':form,'title':title})
         if request.method == 'POST':
             form = ContestForm(request.POST, initial={'method':request.method})
             if form.is_valid():
@@ -127,7 +128,8 @@ def new(request):
                     (request.user ,new_contest.id))
                 return redirect('contest:archive')
             else:
-                return render_index(request,'contest/editContest.html',{'form':form,'title':title})
+                return render_index(request,'contest/editContest.html',
+                    {'form':form,'title':title})
     raise PermissionDenied
 
 @login_required
@@ -154,7 +156,8 @@ def edit(request, cid):
                     (request.user, modified_contest.id))
                 return redirect('contest:archive')
             else:
-                return render_index(request,'contest/editContest.html',{'form':form,'title':title})
+                return render_index(request,'contest/editContest.html',
+                    {'form':form,'title':title})
 
 @login_required
 def delete(request, cid):
