@@ -116,7 +116,7 @@ def new(request):
     if can_create_contest(request.user):
         if request.method == 'GET':
             form = ContestForm(initial=\
-                {'user':request.user, 'method':request.method})
+                {'owner':request.user, 'user':request.user, 'method':request.method})
             title = "New Contest"
             return render_index(request,'contest/editContest.html',{'form':form,'title':title})
         if request.method == 'POST':
@@ -126,6 +126,8 @@ def new(request):
                 logger.info('Contest: User %s Create a new contest %s!' %
                     (request.user ,new_contest.id))
                 return redirect('contest:archive')
+            else:
+                return redirect('contest:new')
     raise PermissionDenied
 
 @login_required
@@ -152,8 +154,7 @@ def edit(request, cid):
                     (request.user, modified_contest.id))
                 return redirect('contest:archive')
             else:
-                return render_index(request,'contest/editContest.html',
-                    {'form':form,'user':request.user,'title':title})
+                return redirect('contest:edit')
 
 @login_required
 def delete(request, cid):
