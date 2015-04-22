@@ -32,7 +32,6 @@ from contest.contest_info import can_reply
 from contest.contest_info import can_create_contest
 from contest.contest_info import can_edit_contest
 from contest.contest_info import can_delete_contest
-from contest.contest_info import can_register_log
 from contest.contest_info import get_contest_or_404
 from contest.contest_archive import get_contests
 from contest.contest_archive import add_contestants
@@ -42,18 +41,26 @@ from contest.models import Clarification
 from contest.forms import ContestForm
 from contest.forms import ClarificationForm
 from contest.forms import ReplyForm
-from contest.register_contest import register_user
-from contest.register_contest import register_group as register_group_impl
+from contest.register_contest import user_register_contest
+from contest.register_contest import group_register_contest
+from contest.register_contest import public_user_register_contest
+
+from contest.contest_info import can_create_contest
+from contest.contest_info import can_edit_contest
+from contest.contest_info import can_delete_contest
+from contest.contest_info import get_contest_or_404
 
 from problem.problem_info import get_testcase
 
 from group.models import Group
 from group.group_info import get_owned_group
 from group.group_info import get_group_or_404
+
 from utils.log_info import get_logger
 from utils import user_info
 from utils.render_helper import render_index, get_current_page
 from status.views import *
+from django.conf import settings
 
 logger = get_logger()
 
@@ -77,7 +84,7 @@ def register_page(request, cid):
     groups = get_owned_group(request.user)
     return render_index(request,
         'contest/register.html',
-        {'contest':contest, 'groups':groups})
+        {'contest':contest, 'groups':groups,'max_public_user':settings.MAX_PUBLIC_USER})
 
 #contest datail page
 def contest(request, cid):
@@ -179,11 +186,17 @@ def delete(request, cid):
 def register(request, cid):
     contest = get_contest_or_404(cid)
     #get group id or register as single user
-    group_id = request.GET.get('group')
+    group_id = request.POST.get('group')
+    public_user = request.POST.get('public_user')
+    #get group id or register as single user
     if(group_id is not None):
         register_group(request, group_id, contest)
+
+    #get group id or register as single user
+    if(public_user is not None):
+        register_public_user(request, public_user, contest)
     else:
-        register_user(request.user, contest)
+        user_register_contest(request.user, contest)
 
     return redirect('contest:archive')
 
@@ -192,10 +205,17 @@ def register(request, cid):
 def register_group(request, group_id, contest):
     group = get_group_or_404(group_id)
     if user_info.has_group_ownership(request.user, group):
-        register_group_impl(group, contest)
+        group_register_contest(group, contest)
     else:
         logger.warning('Contest: User %s can not register group %s. Does not have ownership!'
             % (request.user.username, group_id))
+    return redirect('contest:archive')
+
+@login_required
+def register_public_user(request, public_user, contest):
+    if (user_info.has_contest_ownership(request.user, contest) or
+        request.user.has_admin_auth()):
+        public_user_register_contest(public_user, contest)
     return redirect('contest:archive')
 
 @login_required
