@@ -114,11 +114,12 @@ def contest(request, cid):
 
 @login_required
 def new(request):
+    title = "New Contest"
     if can_create_contest(request.user):
         if request.method == 'GET':
             form = ContestForm(initial=\
                 {'owner':request.user, 'user':request.user, 'method':request.method})
-            title = "New Contest"
+            
             return render_index(request,'contest/editContest.html',{'form':form,'title':title})
         if request.method == 'POST':
             form = ContestForm(request.POST, initial={'method':request.method})
@@ -130,7 +131,9 @@ def new(request):
                 messages.success(request, message)
                 return redirect('contest:archive')
             else:
-                return redirect('contest:new')
+                message = 'Some fields are invalid!'
+                messages.error(request, message)
+                return render_index(request,'contest/editContest.html',{'form':form,'title':title})
     raise PermissionDenied
 
 @login_required
