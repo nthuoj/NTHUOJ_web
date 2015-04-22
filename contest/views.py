@@ -23,6 +23,7 @@ from django.contrib.auth.decorators import login_required
 from datetime import datetime
 from django.shortcuts import redirect
 from django.forms.models import model_to_dict
+from django.contrib import messages
 
 from contest.contest_info import get_scoreboard
 from contest.contest_info import get_scoreboard_csv
@@ -116,7 +117,7 @@ def new(request):
     if can_create_contest(request.user):
         if request.method == 'GET':
             form = ContestForm(initial=\
-                {'user':request.user, 'method':request.method})
+                {'owner':request.user, 'user':request.user, 'method':request.method})
             title = "New Contest"
             return render_index(request,'contest/editContest.html',{'form':form,'title':title})
         if request.method == 'POST':
@@ -125,7 +126,11 @@ def new(request):
                 new_contest = form.save()
                 logger.info('Contest: User %s Create a new contest %s!' %
                     (request.user ,new_contest.id))
+                message = 'Contest %s-%s created!' % (new_contest.id, new_contest.cname)
+                messages.success(request, message)
                 return redirect('contest:archive')
+            else:
+                return redirect('contest:new')
     raise PermissionDenied
 
 @login_required
@@ -142,8 +147,8 @@ def edit(request, cid):
         contest_dic['method'] = request.method
         if request.method == 'GET':
             form = ContestForm(initial = contest_dic)
-            return render_index(request,'contest/editContest.html',
-                    {'form':form,'user':request.user,'title':title})
+            return render_index(request, 'contest/editContest.html',
+                    {'form':form, 'title':title})
         if request.method == 'POST':
             form = ContestForm(request.POST, instance = contest, initial={'method':request.method})
             if form.is_valid():
@@ -153,7 +158,7 @@ def edit(request, cid):
                 return redirect('contest:archive')
             else:
                 return render_index(request,'contest/editContest.html',
-                    {'form':form,'user':request.user,'title':title})
+                    {'form':form, 'title':title})
 
 @login_required
 def delete(request, cid):

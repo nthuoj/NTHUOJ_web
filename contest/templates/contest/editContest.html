@@ -10,6 +10,7 @@
 <link href="{% static 'multiselect/css/multi-select.css'%}" media="screen" rel="stylesheet" type="text/css">
 {% endblock import_source %}
 {% block body_block %}
+{% include "contest/message.html" %}
 <div class="container" style="width:50%;">
     <div class="well"><h2>{{ title }}</h2></div>
     <form action="." method="POST">
