@@ -31,14 +31,16 @@ from django.core.mail import EmailMultiAlternatives
 from django.template.loader import render_to_string
 
 from contest.models import Contest
+from contest.models import Contestant
 from problem.models import Submission, SubmissionDetail
 from users.models import User, UserProfile
 from utils.log_info import get_logger
 from utils.config_info import get_config
+from django.conf import settings
 
 EMAIL_HOST_USER = get_config('email', 'user')
-logger = get_logger()
 
+logger = get_logger()
 
 def has_contest_ownership(curr_user, curr_contest):
     curr_user = validate_user(curr_user)
@@ -165,7 +167,6 @@ def send_activation_email(request, user):
         Thread(target=msg.send, args=()).start()
     except:
         logger.warning("There is an error when sending email to %s's mailbox" % username)
-
 
 def send_forget_password_email(request, user):
     username = user.username
