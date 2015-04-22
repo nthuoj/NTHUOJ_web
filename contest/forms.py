@@ -23,6 +23,8 @@ from contest.models import Contest
 from contest.models import Clarification
 from users.models import User
 from datetimewidget.widgets import DateTimeWidget, DateWidget, TimeWidget
+from problem.models import Problem
+from django.db.models import Q
 
 class ContestForm(forms.ModelForm):
     dateTimeOptions = {
@@ -35,7 +37,29 @@ class ContestForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(ContestForm, self).__init__(*args, **kwargs)
         # access object through self.instance...
-        self.fields['coowner'].queryset = User.objects.exclude(user_level=User.USER)
+        initial = kwargs.get('initial',{})
+        user = initial.get('user',User())
+        method = initial.get('method','')
+        self.fields['coowner'].queryset = User.objects.exclude(
+            Q(user_level=User.USER)|Q(pk = user.pk))
+        if method == 'GET':
+            contest_id = initial.get('id',0)
+            # if user not is admin
+            # get all problem when user is admin
+            if not user.has_admin_auth():
+                # edit contest
+                if contest_id:
+                    contest = Contest.objects.get(pk = contest_id)
+                    contest_problems = contest.problem.all().distinct()
+                    self.fields['problem'].queryset = Problem.objects.filter(
+                            Q(visible = True)|Q(owner = user)).distinct() | contest_problems
+                # create contest   
+                else:
+                    self.fields['problem'].queryset = Problem.objects.filter(
+                            Q(visible = True)|Q(owner = user))
+
+        elif method == 'POST':
+            self.fields['problem'].queryset = Problem.objects.all()
     class Meta:
         model = Contest
         fields = (

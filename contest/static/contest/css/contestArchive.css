@@ -18,15 +18,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-#contestArchive.container {
-  width: 90%;
-}
-.black {
+a.black {
   color: black;
-}
-tr.past, tr.past>td>a {
-  color: #d8d8d8;
-  background-color: #f8f8f8;
 }
 
 td.not-clickable-area {
@@ -37,8 +30,3 @@ td.not-clickable-area {
 .separate-area{
 	height:10px;
 }
-
-.red {
-    color: red;
-}
-
