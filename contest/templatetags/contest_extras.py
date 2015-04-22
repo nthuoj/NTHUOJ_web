@@ -28,7 +28,7 @@ from contest.scoreboard import UserProblem
 from contest.scoreboard import User
 
 from users.models import User
-from utils import user_info 
+from utils import user_info
 
 
 register = template.Library()

@@ -83,6 +83,7 @@ def register_page(request, cid):
 #contest datail page
 def contest(request, cid):
     user = request.user
+    user = user_info.validate_user(user)
     try:
         contest = Contest.objects.get(id = cid)
     except Contest.DoesNotExist:
@@ -92,7 +93,7 @@ def contest(request, cid):
     now = datetime.now()
     #if contest has not started and user is not the owner
     if ((contest.start_time < now) or user_info.has_contest_ownership(request.user,contest) or\
-        request.user.has_admin_auth()):
+        user.has_admin_auth()):
         for problem in contest.problem.all():
             problem.testcase = get_testcase(problem)
         scoreboard = get_scoreboard(contest)
@@ -119,7 +120,6 @@ def new(request):
         if request.method == 'GET':
             form = ContestForm(initial=\
                 {'owner':request.user, 'user':request.user, 'method':request.method})
-            
             return render_index(request,'contest/editContest.html',{'form':form,'title':title})
         if request.method == 'POST':
             form = ContestForm(request.POST, initial={'method':request.method})
@@ -158,8 +158,13 @@ def edit(request, cid):
                 modified_contest = form.save()
                 logger.info('Contest: User %s edited contest %s!' %
                     (request.user, modified_contest.id))
+                message = 'Contest %s-%s edited!' % \
+                    (modified_contest.id, modified_contest.cname)
+                messages.success(request, message)
                 return redirect('contest:archive')
             else:
+                message = 'Some fields are invalid!'
+                messages.error(request, message)
                 return render_index(request,'contest/editContest.html',
                     {'form':form, 'title':title})
 
@@ -174,6 +179,9 @@ def delete(request, cid):
     if can_delete_contest(request.user, contest):
         deleted_cid = contest.id
         contest.delete()
+        message = 'Contest %s deleted!' % \
+                    (deleted_cid)
+        messages.warning(request, message)
         logger.info('Contest: User %s delete contest %s!' %
             (request.user, deleted_cid))
         return redirect('contest:archive')
@@ -187,7 +195,14 @@ def register(request, cid):
     if(group_id is not None):
         register_group(request, group_id, contest)
     else:
-        register_user(request.user, contest)
+        if register_user(request.user, contest):
+            message = 'User %s register Contest %s!' % \
+                    (request.user.username, contest.id)
+            messages.success(request, message)
+        else:
+            message = 'User %s cannot register Contest %s!' % \
+                    (request.user.username, contest.id)
+            messages.warning(request, message)
 
     return redirect('contest:archive')
 
@@ -196,8 +211,17 @@ def register(request, cid):
 def register_group(request, group_id, contest):
     group = get_group_or_404(group_id)
     if user_info.has_group_ownership(request.user, group):
-        register_group_impl(group, contest)
+        if register_group_impl(group, contest):
+            message = 'Group %s-%s registered Contest %s-%s!' % \
+                    (group.id, group.gname, contest.id, contest.cname)
+            messages.success(request, message)
+        else:
+            message = 'Register Error!'
+            messages.error(request, message)
     else:
+        message = 'Register Error! %s does not have Group %s-%s ownership' % \
+                (request.user.username, group.id, group.gname)
+        messages.error(request, message)
         logger.warning('Contest: User %s can not register group %s. Does not have ownership!'
             % (request.user.username, group_id))
     return redirect('contest:archive')
@@ -219,8 +243,14 @@ def ask(request):
                 new_clarification = form.save()
                 logger.info('Clarification: User %s create Clarification %s!'
                     % (request.user.username, new_clarification.id))
-            return redirect('contest:contest',contest)
-    return redirect('contest:archive')
+            message = 'User %s successfully asked!' % \
+                    (request.user.username)
+            messages.success(request, message)
+            return redirect('contest:contest', contest)
+    message = 'User %s cannot ask!' % \
+             (request.user.username)
+    messages.error(request, message)
+    return redirect('contest:contest', contest)
 
 @login_required
 def reply(request):
@@ -243,7 +273,13 @@ def reply(request):
                 replied_clarification.save()
                 logger.info('Clarification: User %s reply Clarification %s!'
                     % (request.user.username, replied_clarification.id))
+                message = 'User %s successfully replied!' % \
+                    (request.user.username)
+                messages.success(request, message) 
             return redirect('contest:contest',contest)
+    message = 'User %s cannot reply!' % \
+             (request.user.username)
+    messages.error(request, message)    
     return redirect('contest:archive')
 
 def download(request):

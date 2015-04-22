@@ -34,10 +34,13 @@ def register_user(user, contest):
         contestant = Contestant(contest = contest, user = user)
         contestant.save()
         logger.info('Contest: User %s attends Contest %s!' % (user.username, contest.id))
+        return True
+    return False
 
 def register_group(group, contest):
     if not contest.open_register:
         logger.info('Contest: Registration for Contest %s is closed, can not register.' % contest.id)
-        return
+        return False
     for member in group.member.all():
         register_user(member, contest)
+    return True
