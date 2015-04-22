@@ -59,7 +59,7 @@ class Contest(models.Model):
 class Contestant(models.Model):
 
     contest = models.ForeignKey(Contest)
-    user = models.ForeignKey(User)
+    user = models.ForeignKey(User, related_name='user')
     team = models.ForeignKey(Team, blank=True, null=True)
 
     class Meta:
