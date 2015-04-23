@@ -26,6 +26,12 @@ import ConfigParser
 
 from func import *
 
+# Database Migratinos
+django_manage('syncdb')
+
+django_manage('makemigrations')
+django_manage('migrate')
+
 
 CONFIG_PATH = 'nthuoj/config/nthuoj.cfg'
 
@@ -76,12 +82,6 @@ with open(CONFIG_PATH, 'wb') as configfile:
 # Create super user
 if prompt('Create super user?'):
     django_manage('createsuperuser')
-
-# Database Migratinos
-django_manage('syncdb')
-
-django_manage('makemigrations')
-django_manage('migrate')
 
 # Bower
 if prompt('Install static file by `bower install`?'):
