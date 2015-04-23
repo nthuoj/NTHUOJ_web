@@ -143,3 +143,11 @@ STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
     'djangobower.finders.BowerFinder',
 )
+
+#maximum of public users for a single contest
+MAX_PUBLIC_USER = 200
+#public user username prefix
+PUBLIC_USER_PREFIX = "TEAM"
+
+PUBLIC_USER_DEFAULT_PASSWORD = "000"
+
