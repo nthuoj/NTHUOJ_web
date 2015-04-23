@@ -53,7 +53,7 @@
           {% if user|can_delete_contest:contest %}
           <a href="{% url 'contest:delete' contest.id %}">
             <button type="button" class="btn btn-danger btn-xs" data-toggle="tooltip"
-                  data-placement="top" title="Delete Contest">
+                  data-placement="top" title="Delete Contest" onclick="confirm_delete()">
               <span class="glyphicon glyphicon-remove"></span>
             </button>
           </a>
