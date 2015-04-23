@@ -1,75 +1,78 @@
-<!--
-The MIT License (MIT)
-
-Copyright (c) 2014 NTHUOJ team
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
--->
-
-{% extends "index/base.html" %} 
-{% load static %} 
+{% extends "index/base.html" %}
+{% load static %}
 {% block body_block %}
-<h4>All {{ title }}</h4>
+<br>
+<div class="span12">
+      <div class="hero-unit">
+        <div class="hero-unit">
+          <span>
+            <h3 style="margin-left:15px">All {{ title }}</h3>
+          </span>
+        </div>
+      </div>
+    </div>
 <div class="modal-body">
-  <div class="input-group">
+  <div class="input-group" style="">
     <span class="input-group-addon">search {{ title }} by id</span>
-    <input type="text" class="form-control">
-    <span class="input-group-btn">
-      <button class="btn btn-default btn-sm" type="button">search</button>
-    </span>
+    <input type="text" class="form-control" style="width:30%">
+    <button class="btn btn-default btn-sm" type="button" style="float:left">search</button>
   </div>
   <br>
   <table class="table table-hover">
     <thead>
       <th>{{ title }} title</th>
       {% if list_type == "announce" %}
-      <th>oringinal post</th>
-      {% endif %} {% if list_type == "runContest" %}
+      <th>announce content</th>
+      {% else %}
       <th>start time</th>
       <th>end time</th>
-      {% endif %} {% if list_type != "runContest" %}
-      <th>time</th>
       {% endif %}
     </thead>
     <tbody>
       {% for archive in data_list %}
       <tr>
-        <td>{{ archive.name }}</td>
-        {% if list_type == "announce" %}
-        <td>{{ archive.op }}</td>
-        {% endif %} {% if list_type == "runContest" %}
-        <td>{{ archive.s_time }}</td>
-        <td>{{ archive.e_time }}</td>
-        {% endif %} {% if list_type != "runContest" %}
-        <td>{{ archive.time }}</td>
-        {% endif %} {% if list_type == "announce" %}
+        {% if list_type == 'runContest'%}
+          {% if archive.is_homework %}
+            <tr style="background-color:#F1F7EA">
+              <td>{{ archive.cname }}</td>
+              <td>{{ archive.start_time }}</td>
+              <td>{{ archive.end_time }}</td>
+            </tr>
+          {% else %}
+            <tr style="background-color:#E3E8E3">
+              <td>{{ archive.cname }}</td>
+              <td>{{ archive.start_time }}</td>
+              <td>{{ archive.end_time }}</td>
+            </tr>
+          {% endif %}
+        {% elif list_type == 'endContest'%}
+          {% if archive.is_homework %}
+            <tr style="background-color:#D6DBD0">
+              <td>{{ archive.cname }}</td>
+              <td>{{ archive.start_time }}</td>
+              <td>{{ archive.end_time }}</td>
+            </tr>
+          {% else %}
+            <tr style="background-color:#C5C9C5">
+              <td>{{ archive.cname }}</td>
+              <td>{{ archive.start_time }}</td>
+              <td>{{ archive.end_time }}</td>
+            </tr>
+          {% endif %}
+        {% elif list_type == "announce" %}
+        <td>{{ archive.title }}</td>
+        <td>{{ archive.content }}</td>
         <td>
-          <a href="" class="btn btn-sm btn-default" data-toggle="modal" 
+          <a href="" class="btn btn-sm btn-default" data-toggle="modal"
              data-target="#annowenceContentModal{{archive.id}}" style="float:right">
             Detail</a>
           <!--1. Modal for Edit Annowence button-->
-          <div class="modal fade" id="annowenceContentModal{{archive.id}}" 
+          <div class="modal fade" id="annowenceContentModal{{archive.id}}"
                role="dialog" aria-hidden="true">
             <div class="modal-dialog">
               <div class="modal-content">
                 <div class="modal-header">
-                  <button type="btn-default" class="close" data-dismiss="modal" 
+                  <button type="btn-default" class="close" data-dismiss="modal"
                           aria-hidden="true">&times;</button>
                   <h4 class="modal-title">Edit Annowence</h4>
                 </div>

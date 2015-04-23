@@ -1,4 +1,4 @@
-<!--
+/*
 The MIT License (MIT)
 Copyright (c) 2014 NTHUOJ team
 Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -16,28 +16,20 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
--->
-<!--This page will be replaced by including problem page-->
-<script>
-$(document).ready(function() {
-  $("a").tooltip({
-    placement: 'top'
-  });
-});
-
-</script>
-<style>
-ul.center {
-  float: right;
+*/
+div.all-header{
+	color: #fff;
+	background-color: #d9534f;
+	border-color: #ac2925;
 }
 
-</style>
-<div>
-  <ul class="pagination center">
-    {% for problem in contest.problem.all %}
-    <li><a href="#" data-toggle="tooltip" title="{{ problem.pname }}">{{ forloop.counter }}</a>
-    </li>
-    {% endfor %}
-  </ul>
-</div>
-<!-- include problem in the future-->
+div.selected-header{
+	color: #fff;
+	background-color: #449d44;
+	border-color: #398439;
+}
+
+ul.errorlist{
+	color: #fff;
+	background-color: #d9534f;
+}

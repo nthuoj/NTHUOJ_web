@@ -1,4 +1,4 @@
-<!--
+/*
 The MIT License (MIT)
 
 Copyright (c) 2014 NTHUOJ team
@@ -20,15 +20,22 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
--->
-<!DOCTYPE html>
-{% extends "index/base.html" %}
-{% load static %}
+*/
+$(document).ready(function() {
+    $("#addTagButton").click(function() {
+        var new_tag = $('#id_tag_name').val().trim();
+        if (new_tag == '') return false;
+        $.ajax({
+            url: "/problem/"+pid+"/tag/",
+            data: $("#addTag").serialize(),
+            type: "POST",
+            success: function(msg) {
+              var new_tag_span = "<span class='label label-info'>"+new_tag+"</span>"
+              $("#tags").append(new_tag_span);
+            }
+        });    
+        $("#newTag").val("");
+        return false;
+    });
+});
 
-{% block title_name %}
-  <title>team_list</title>
-{% endblock title_name %}
-{% block import_source %}
-{% endblock import_source %}
-{% block body_block %}
-{% endblock body_block %}

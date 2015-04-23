@@ -18,21 +18,15 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-#contestArchive.container {
-  width: 90%;
-}
-a {
+a.black {
   color: black;
 }
-tr.past, tr.past>td>a {
-  color: #d8d8d8;
-  background-color: #f8f8f8;
+
+td.not-clickable-area {
+	background-color: #A0A0A0;
+	text-align:center;
 }
 
-.green {
-    color: green;
-}
-
-.red {
-    color: red;
+.separate-area{
+	height:10px;
 }

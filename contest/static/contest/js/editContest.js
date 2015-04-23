@@ -21,15 +21,17 @@ $(document).ready(function() {
     add_attribute('id_coowner', 'class', 'searchable');
     add_attribute('id_problem', 'class', 'searchable');
     enable_search();
-    bootstraptify();
+    modify_label();
 });
 
 function enable_search() {
     $('.searchable').multiSelect({
-        selectableHeader: "<input type='text' class='search-input form-control' autocomplete='off'>",
-        selectionHeader: "<input type='text' class='search-input form-control' autocomplete='off'>",
-        selectableFooter: "<div class='custom-header'>All</div>",
-        selectionFooter: "<div class='custom-header'>Selected</div>",
+        selectableHeader: 
+        "<input type='text' class='search-input form-control' autocomplete='off' placeholder='Search and Add...'>",
+        selectionHeader: 
+        "<input type='text' class='search-input form-control' autocomplete='off' placeholder='Search and Delete...'>",
+        selectableFooter: "<div class='all-header' style='text-align:center;'>All</div>",
+        selectionFooter: "<div class='selected-header' style='text-align:center;'>Selected</div>",
         afterInit: function(ms) {
             var that = this,
                 $selectableSearch = that.$selectableUl.prev(),
@@ -64,10 +66,9 @@ function enable_search() {
     });
 }
 
-function bootstraptify() {
-    add_form_control('id_cname');
-    hide('id_owner');
-    add_form_control('id_start_time');
-    add_form_control('id_end_time');
-    add_form_control('id_freeze_time');
+function modify_label(){
+    modify_html('[for=id_freeze_time]','Freeze Time(mins):');
+    modify_html('[for=id_start_time]','Start Time(YYYY-MM-DD hh:mm:ss):');
+    modify_html('[for=id_end_time]','End Time(YYYY-MM-DD hh:mm:ss):');
+    modify_html('.help-block','');
 }

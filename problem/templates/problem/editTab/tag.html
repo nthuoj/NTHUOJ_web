@@ -1,45 +1,51 @@
-<!--
-The MIT License (MIT)
-
-Copyright (c) 2014 NTHUOJ team
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
--->
 <br>
+{% if not is_new %}
 <strong>Current Tags</strong>
-<button id='merge_tag' class='btn btn-default'>Merge tags</button>
 <table>
   <tbody id="tagTable">
+    {% for t in tags %}
+      <tr data-target="{{t.pk}}">
+        <td>{{t.tag_name}}</td>
+        <td><button class="btn btn-primary del_tag_btn">Delete</button></td>
+      </tr>
+    {% endfor %}
   </tbody>
 </table>
 <br>
 <br>
-<table>
-  <tr>
-    <th>Add Tag</th>
-    <td>
-      <div class='input-group'>
-        <input type='text' id='newTag' class='form-control' width='25%'>
-        <span class='input-group-btn'>
-          <button id='add_tag_button' class='btn btn-default'>Add</button>
-        </span>
-      </div>
-    </td>
-  </tr>
-</table>
+<form id="addTag">
+  <div class='input-group'>
+    {% csrf_token %}
+    {{ tag_form }}
+    <button id='add_tag_button' class='btn btn-default'>Add</button>
+  </div>
+</form>
+<script>
+$(document).ready(function() {
+    $("#addTag").submit(function(e) {
+        e.preventDefault();
+        var ret = add_new_tag({{pid}});
+        refreshEventListener();
+        return ret;
+    });
+    refreshEventListener();
+});
+function refreshEventListener() {
+    $('body').on('click', '.del_tag_btn', function(e) {
+        var row = $(this).parents("tr");
+        var tid = $(this).parents("tr").attr('data-target');
+        $.ajax({
+            type: 'GET',
+            url: '/problem/'+{{pid}}+'/tag/'+tid+'/delete/',
+            success: function(data) {
+              row.remove();
+            }
+        });
+        return false;
+    });
+}
+</script>
+{% else %}
+<strong>Save your problem before editing the tags</strong>
+{% endif %}
+

@@ -11,8 +11,7 @@ https://docs.djangoproject.com/en/1.7/ref/settings/
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
-from emailInfo import EMAIL_HOST_USER
-from emailInfo import EMAIL_HOST_PASSWORD
+from utils.config_info import get_config
 
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."),)
@@ -33,6 +32,7 @@ ALLOWED_HOSTS = ['*']
 # Application definition
 
 INSTALLED_APPS = (
+    'autocomplete_light',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -48,7 +48,9 @@ INSTALLED_APPS = (
     'group',
     'status',
     'axes',
+    'bootstrapform',
     'djangobower',
+    'datetimewidget',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -58,7 +60,7 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'utils.render_helper.CustomHttpExceptionMiddleware',
     'axes.middleware.FailedLoginMiddleware',
 )
 
@@ -69,13 +71,13 @@ WSGI_APPLICATION = 'nthuoj.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/1.7/ref/settings/#databases
-INI_PATH = os.path.join(BASE_DIR, 'nthuoj.ini')
+CONFIG_PATH = os.path.join(BASE_DIR, 'nthuoj/config/nthuoj.cfg')
 
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'OPTIONS': {
-            'read_default_file': INI_PATH,
+            'read_default_file': CONFIG_PATH,
         },
     }
 }
@@ -100,7 +102,6 @@ USE_L10N = True
 
 USE_TZ = False
 
-
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.7/howto/static-files/
 STATIC_ROOT = os.path.join(PROJECT_ROOT, 'static')
@@ -110,12 +111,14 @@ STATIC_URL = '/static/'
 # https://pypi.python.org/pypi/django-axes/
 
 # redirect to broken page when exceed wrong-try limits
-AXES_LOCKOUT_TEMPLATE = 'index/404.html'
+AXES_LOCKOUT_URL = '/users/block_wrong_tries'
 # freeze login access for that ip for 0.1*60 = 6 minites
 AXES_COOLOFF_TIME = 0.1
 
 EMAIL_USE_TLS = True
 EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_HOST_USER = get_config('email', 'user')
+EMAIL_HOST_PASSWORD = get_config('email', 'password')
 EMAIL_PORT = 587
 
 # django-bower settings
@@ -129,6 +132,10 @@ BOWER_INSTALLED_APPS = (
     'https://github.com/dimsemenov/Magnific-Popup.git', # Magnific-Popup
     'https://github.com/codemirror/CodeMirror.git', # CodeMirror
     'http://gregpike.net/demos/bootstrap-file-input/bootstrap.file-input.js', # bootstrap fileinput
+    'https://github.com/zeroclipboard/zeroclipboard.git',
+    'https://github.com/lou/multi-select.git', # multiselect
+    'https://github.com/riklomas/quicksearch.git', # quicksearch
+    'ckeditor#full/stable', # ckeditor
 )
 
 STATICFILES_FINDERS = (
@@ -136,3 +143,11 @@ STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
     'djangobower.finders.BowerFinder',
 )
+
+#maximum of public users for a single contest
+MAX_PUBLIC_USER = 200
+#public user username prefix
+PUBLIC_USER_PREFIX = "TEAM"
+
+PUBLIC_USER_DEFAULT_PASSWORD = "000"
+
