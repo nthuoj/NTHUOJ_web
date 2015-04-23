@@ -56,8 +56,16 @@ if not config.has_section('client'):
 if not config.has_section('email'):
     # Setting email info
     email_host = raw_input('Email host(gmail): ')
-    email_host_pwd = getpass.getpass("Email host's password : ")
+    email_host_pwd = getpass.getpass("Email host's password: ")
     write_email_config(config, email_host, email_host_pwd)
+    print '========================================'
+
+if not config.has_section('vjudge'):
+    # Setting virtual judge info
+    print 'We use virtual judge(http://vjudge.net) for other judge source(UVA, ICPC, etc.)'
+    vjudge_username = raw_input('Virtual judge username: ')
+    vjudge_password = getpass.getpass("Virtual judge password: ")
+    write_vjudge_config(config, vjudge_username, vjudge_password)
     print '========================================'
 
 # Change defaut path
