@@ -121,16 +121,18 @@ SOFTWARE.
             <li class="nav-text"><a href="{% url 'users:submit' %}">Submit</a></li>
             <li class="nav-text"><a href="{% url 'status:status' %}">Status</a></li>
             <li class="nav-text"><a href="{% url 'group:list' %}">Group</a></li>
+            <!--
             <li class="dropdown nav-text">
               <a href="#" class="dropdown-toggle" data-toggle="dropdown"
                  role="button" aria-expanded="false">User
                  <span class="caret"></span>
                </a>
               <ul class="dropdown-menu" role="menu">
-                <li><a href="{% url 'users:list' %}">User List</a></li>
+                <li><a href="#">User List</a></li>
                 <li><a href="#">User Rank</a></li>
               </ul>
             </li>
+            -->
             {% if user.is_authenticated %}
             <li class="dropdown nav-text">
               <a href="#" class="dropdown-toggle" data-toggle="dropdown"
@@ -138,8 +140,8 @@ SOFTWARE.
                  <span class="caret"></span>
                </a>
               <ul class="dropdown-menu" role="menu">
-                <li><a href={% url "users:profile" user.username %}>Profile</a></li>
-                <li><a href={% url "status:status" user.username %}>Submissions</a></li>
+                <li><a href="{% url 'users:profile' user.username %}">Profile</a></li>
+                <li><a href="{% url 'status:status' %}?username={{ user }}">Submissions</a></li>
               </ul>
             </li>
             {% endif %}

@@ -33,4 +33,11 @@ $(document).ready(function() {
         e.preventDefault()
         $('#infoTab a').tab('show')
     });
+    var loading = '<h3 style="text-align:center;">Loading...</h3>'
+    $('#contestInfo').on('hidden.bs.modal', function(e) {
+        $('#contestInfoContent').html(loading);
+    });
+    $('#register').on('hidden.bs.modal', function(e) {
+        $('#registerContent').html(loading);
+    });
 });

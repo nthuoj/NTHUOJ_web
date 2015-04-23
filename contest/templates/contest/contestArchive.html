@@ -1,22 +1,3 @@
-<!--
-The MIT License (MIT)
-Copyright (c) 2014 NTHUOJ team
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
--->
 {% extends "index/base.html" %}
 {% load staticfiles %}
 
@@ -28,32 +9,19 @@ SOFTWARE.
 <link href="{% static 'contest/css/contestArchive.css' %}" rel="stylesheet">
 <script src="{% static 'contest/js/contestArchive.js' %}"></script>
 {% endblock import_source %}
-
 {% load contest_extras %}
-
 {% block body_block %}
-
-<div class="container" id="contestArchive">
+<div class="container" id="list">
+  <br>
   <!--title-->
   <div class="well">
     <h2>Contest Archive</h2>
   </div>
-  <!--contest filter-->
-  <div class="btn-group" role="group">
-    <button type="button" class="btn btn-default">All Contest</button>
-    <button type="button" class="btn btn-default">My Contest</button>
-  </div>
-  <!--search bar-->
-  <div style="width:20%;float:right" class="input-group"> <span class="input-group-addon">
-        <span class="glyphicon glyphicon-search"></span>
-    </span>
-    <input id="search" class="form-control">
-  </div>
   <!--contests overview-->
-  <table class="table table-hover">
+  <table class="table table-striped table-hover">
     <thead>
       <tr>
-        <th>
+        <th width="15%">
           {% if user|can_create_contest %}
           <a href="{% url 'contest:new' %}">
             <button type="button" class="btn btn-success btn-xs"
@@ -74,7 +42,7 @@ SOFTWARE.
       {% for contest in contests %}
       <tr>
         <td>
-          <a data-toggle="modal" data-target="#contestInfo" 
+          <a data-toggle="modal" data-target="#contestInfo"
            data-load-remote="{% url 'contest:contest_info' contest.id %}"
            data-remote-target="#contestInfoContent">
             <button type="button" class="btn btn-info btn-xs"
@@ -100,9 +68,9 @@ SOFTWARE.
           {% endif%}
 
           {% if user|show_register_btn:contest %}
-          <a data-toggle="modal" data-target="#register" 
+          <a data-toggle="modal" data-target="#register"
            data-load-remote="{% url 'contest:register_page' contest.id %}"
-           data-remote-target="#registerContestContent">
+           data-remote-target="#registerContent">
             <button type="button" class="btn btn-success btn-xs"
              data-toggle="tooltip" data-placement="top" title="Register">
               <span class="glyphicon glyphicon-plus"></span>
@@ -123,21 +91,24 @@ SOFTWARE.
 </div>
 <nav>
   <ul class="pager">
-    {% if contests.has_previous %}
-    <li><a href="?page={{ contests.previous_page_number }}">← Previous</a></li>
-    {% endif %}
-    <span class="current">
-      Page {{ contests.number }} of {{ contests.paginator.num_pages }}.
-    </span>
-    {% if contests.has_next %}
-    <li><a href="?page={{ contests.next_page_number }}">Next →</a></li>
-    {% endif %}
+    <span class="step-links">
+      {% if contests.has_previous %}
+      <li><a href="?page={{ contests.previous_page_number }}"><span>&larr;</span> Previous</a></li>
+      {% endif %}
+      <span class="current">
+        Page {{ contests.number }} of {{ contests.paginator.num_pages }}.
+      </span>
+      {% if contests.has_next %}
+      <li><a href="?page={{ contests.next_page_number }}">Next <span>&rarr;</span></a></li>
+      {% endif %}
+  </span>
   </ul>
 </nav>
 <!-- register contest -->
 <div class="modal fade" id="register" tabindex="-1" role="dialog">
   <div class="modal-dialog">
-    <div class="modal-content" id="registerContestContent">
+    <div class="modal-content" id="registerContent">
+      <h3 style="text-align:center;">Loading...</h3>
     </div> <!-- /.modal-content -->
   </div> <!-- /.modal-dialog -->
 </div> <!-- /.modal -->
@@ -145,6 +116,7 @@ SOFTWARE.
 <div class="modal fade" id="contestInfo" tabindex="-1" role="dialog">
   <div class="modal-dialog">
     <div class="modal-content" id="contestInfoContent">
+      <h3 style="text-align:center;">Loading...</h3>
     </div> <!-- /.modal-content -->
   </div> <!-- /.modal-dialog -->
 </div> <!-- /.modal -->
