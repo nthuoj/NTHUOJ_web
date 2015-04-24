@@ -118,7 +118,7 @@ def get_scoreboard(contest):
 
     for problem in scoreboard.problems:
         if len(scoreboard.users):
-            problem.pass_rate = float(problem.pass_user)/len(scoreboard.users) * 100
+            problem.pass_rate = float(problem.pass_user) / len(scoreboard.users) * 100
             problem.not_pass_rate = 100 - problem.pass_rate
         else:
             problem.pass_rate = 0
