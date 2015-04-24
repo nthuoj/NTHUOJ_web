@@ -33,6 +33,7 @@ SOFTWARE.
   margin-bottom: 50px;
   width: 100%;
   display: flex;
+  display: -webkit-flex;
 }
 
 .pname {
@@ -43,6 +44,7 @@ SOFTWARE.
 .pname_block .left {
   padding-left: 10px;
   flex: 1;
+  -webkit-flex: 1;
 }
 
 .pname_block .right {

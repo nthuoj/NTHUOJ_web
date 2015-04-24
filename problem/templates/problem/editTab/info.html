@@ -5,3 +5,8 @@
 <br>
 <br>
 <br>
+<script>
+{% if not user.has_admin_auth %}
+$("#id_owner").parent().parent().hide();
+{% endif %}
+</script>

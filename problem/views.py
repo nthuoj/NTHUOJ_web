@@ -70,9 +70,9 @@ def detail(request, pid):
     tag_form = TagForm()
     try:
         problem = Problem.objects.get(pk=pid)
-        user = validate_user(reuqest.user)
-        if not has_problem_auth(user, problem)
-            raise PermissionDeny()
+        user = validate_user(request.user)
+        if not has_problem_auth(user, problem):
+            raise PermissionDenied()
     except Problem.DoesNotExist:
         logger.warning('problem %s not found' % (pid))
         raise Http404('problem %s does not exist' % (pid))
