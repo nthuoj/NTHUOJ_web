@@ -22,9 +22,12 @@ a.black {
   color: black;
 }
 
-td.not-clickable-area {
-	background-color: #A0A0A0;
-	text-align:center;
+.green {
+  color: green;
+}
+
+.red {
+  color: red;
 }
 
 .separate-area{
