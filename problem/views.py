@@ -45,11 +45,8 @@ logger = log_info.get_logger()
 
 # Create your views here.
 def problem(request):
-    can_add_problem = False
-    if request.user.is_anonymous():
-        can_add_problem = False
-    else:
-        can_add_problem = request.user.has_subjudge_auth()
+    user = validate_user(request.user)
+    can_add_problem = request.user.has_subjudge_auth()
     all_problem_list = get_problem_list(request.user)
     all_problem = get_current_page(request, all_problem_list, 15)
     for p in all_problem:
