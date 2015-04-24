@@ -17,7 +17,7 @@
     OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
     SOFTWARE.
     '''
-
+from django.http import HttpResponseRedirect
 from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
 from datetime import datetime
@@ -217,7 +217,7 @@ def register(request, cid):
             message = 'Register Error!'
             messages.warning(request, message)
 
-    return redirect('contest:archive')
+    return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
 
 @login_required
