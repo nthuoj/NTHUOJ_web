@@ -89,8 +89,7 @@ def register_page(request, cid):
 
 #contest datail page
 def contest(request, cid):
-    user = request.user
-    user = user_info.validate_user(user)
+    user = user_info.validate_user(request.user)
     try:
         contest = Contest.objects.get(id = cid)
     except Contest.DoesNotExist:
@@ -99,7 +98,8 @@ def contest(request, cid):
 
     now = datetime.now()
     #if contest has not started and user is not the owner
-    if ((contest.start_time < now) or user_info.has_contest_ownership(request.user,contest) or\
+    if ((contest.start_time < now) or\
+        user_info.has_contest_ownership(request.user,contest) or\
         user.has_admin_auth()):
         for problem in contest.problem.all():
             problem.testcase = get_testcase(problem)
@@ -134,13 +134,14 @@ def new(request):
                 new_contest = form.save()
                 logger.info('Contest: User %s Create a new contest %s!' %
                     (request.user ,new_contest.id))
-                message = 'Contest %s-%s created!' % (new_contest.id, new_contest.cname)
+                message = 'Contest %s- "%s" created!' % (new_contest.id, new_contest.cname)
                 messages.success(request, message)
                 return redirect('contest:archive')
             else:
                 message = 'Some fields are invalid!'
                 messages.error(request, message)
-                return render_index(request,'contest/editContest.html',{'form':form,'title':title})
+                return render_index(request,'contest/editContest.html',
+                    {'form':form,'title':title})
     raise PermissionDenied
 
 @login_required
@@ -160,12 +161,13 @@ def edit(request, cid):
             return render_index(request, 'contest/editContest.html',
                     {'form':form, 'title':title})
         if request.method == 'POST':
-            form = ContestForm(request.POST, instance = contest, initial={'method':request.method})
+            form = ContestForm(request.POST, instance = contest, 
+                initial={'method':request.method})
             if form.is_valid():
                 modified_contest = form.save()
                 logger.info('Contest: User %s edited contest %s!' %
                     (request.user, modified_contest.id))
-                message = 'Contest %s-%s edited!' % \
+                message = 'Contest %s- "%s" edited!' % \
                     (modified_contest.id, modified_contest.cname)
                 messages.success(request, message)
                 return redirect('contest:archive')
@@ -186,8 +188,7 @@ def delete(request, cid):
     if can_delete_contest(request.user, contest):
         deleted_cid = contest.id
         contest.delete()
-        message = 'Contest %s deleted!' % \
-                    (deleted_cid)
+        message = 'Contest %s deleted!' % (deleted_cid)
         messages.warning(request, message)
         logger.info('Contest: User %s delete contest %s!' %
             (request.user, deleted_cid))
@@ -224,14 +225,14 @@ def register_group(request, group_id, contest):
     group = get_group_or_404(group_id)
     if user_info.has_group_ownership(request.user, group):
         if group_register_contest(group, contest):
-            message = 'Group %s-%s registered Contest %s-%s!' % \
+            message = 'Group %s- "%s" registered Contest %s- "%s"!' % \
                     (group.id, group.gname, contest.id, contest.cname)
             messages.success(request, message)
         else:
             message = 'Register Error!'
             messages.error(request, message)
     else:
-        message = 'Register Error! %s does not have Group %s-%s ownership' % \
+        message = 'Register Error! %s does not have Group %s- "%s" ownership' % \
                 (request.user.username, group.id, group.gname)
         messages.error(request, message)
         logger.warning('Contest: User %s can not register group %s. Does not have ownership!'
@@ -244,11 +245,11 @@ def register_public_user(request, public_user, contest):
     if (user_info.has_contest_ownership(user, contest) or
         user.has_admin_auth()):
         if public_user_register_contest(public_user, contest):
-            message = 'User %s registered %s public users to Contest %s-%s!' % \
+            message = 'User %s registered %s public users to Contest %s- "%s"!' % \
                     (user.username, public_user, contest.id, contest.cname)
             messages.success(request, message)
         else:
-            message = 'Cannot register public user to Contest %s-%s!' % \
+            message = 'Cannot register public user to Contest %s- "%s"!' % \
                     (contest.id, contest.cname)
             messages.error(request, message)
     return redirect('contest:archive')
@@ -273,10 +274,6 @@ def ask(request):
                 message = 'User %s successfully asked!' % \
                         (request.user.username)
                 messages.success(request, message)
-            else:
-                message = 'Can not clarify!'
-                messages.error(request, message)
-            return redirect('contest:contest', contest)
     message = 'User %s cannot ask!' % \
              (request.user.username)
     messages.error(request, message)
