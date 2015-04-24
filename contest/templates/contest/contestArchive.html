@@ -24,9 +24,9 @@
         <th width="15%">
           {% if user|can_create_contest %}
           <a href="{% url 'contest:new' %}">
-            <button type="button" class="btn btn-success btn-xs"
+            <button type="button" class="btn btn-warning"
                     data-toggle="tooltip" data-placement="top" title="New Contest">
-              <span class="glyphicon glyphicon-plus"></span>
+              Add Contest
             </button>
           </a>
           {% endif %}
