@@ -4,7 +4,7 @@
         <th></th>
         <th>#</th>
         <th>Problem</th>
-        <th>Passrate</th>
+        <th>Pass Rate</th>
         <th>Owner</th>
       </tr>
     </thead>
@@ -12,7 +12,7 @@
     {% for p in problem %}
       <tr>
         <td>
-          {% if user == p.owner or user.is_admin %}
+          {% if user == p.owner or user.has_admin_auth %}
             <!-- <button class="btn btn-info btn-xs" data-toggle="tooltip" -->
             <!--     data-pacement="top" title="Rejudge Problem"> -->
             <!--   <span id='rejudge' class='glyphicon glyphicon-refresh'></span> -->
@@ -57,7 +57,7 @@ $(document).ready(function () {
   $('[data-toggle="tooltip"]').tooltip();
   $('.progress').css('overflow', 'inherit');
   $('.del_btn').click(function () {
-      return confirm("Are You Sure?");
+      return confirm("Are you sure you want to delete?");
   });
 });
 </script>
