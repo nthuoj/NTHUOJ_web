@@ -17,7 +17,7 @@
                 data-pacement="top" title="Rejudge Problem">
               <span id='rejudge' class='glyphicon glyphicon-refresh'></span>
             </button>
-            <a id="del_btn" href="{% url 'problem:delete_problem' p.pk %}">
+            <a class="del_btn" href="{% url 'problem:delete_problem' p.pk %}">
               <button type="button" class="btn btn-danger btn-xs" data-toggle="tooltip"
                     data-placement="top" title="Delete Problem">
                 <span class="glyphicon glyphicon-remove"></span>
@@ -56,7 +56,7 @@
 $(document).ready(function () {
   $('[data-toggle="tooltip"]').tooltip();
   $('.progress').css('overflow', 'inherit');
-  $('#del_btn').click(function () {
+  $('.del_btn').click(function () {
       return confirm("Are You Sure?");
   });
 });

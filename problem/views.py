@@ -47,8 +47,8 @@ logger = log_info.get_logger()
 # Create your views here.
 def problem(request):
     user = validate_user(request.user)
-    can_add_problem = request.user.has_subjudge_auth()
-    all_problem_list = get_problem_list(request.user)
+    can_add_problem = user.has_subjudge_auth()
+    all_problem_list = get_problem_list(user)
     all_problem = get_current_page(request, all_problem_list, 15)
     for p in all_problem:
         if p.total_submission != 0:
@@ -83,13 +83,14 @@ def detail(request, pid):
 
 @login_required
 def new(request):
+    user = validate_user(request.user)
     if request.method == "GET":
         return render_index(request, "problem/new.html")
     elif request.method == "POST":
         if 'pname' in request.POST and request.POST['pname'].strip() != "":
-            p = Problem(pname=request.POST['pname'], owner=request.user)
+            p = Problem(pname=request.POST['pname'], owner=user)
             p.save()
-            logger.info("problem %s created by %s" % (p.pk, request.user))
+            logger.info("problem %s created by %s" % (p.pk, user))
             return redirect("/problem/%d/edit/" % p.pk)
         else:
             return render_index(request, "problem/new.html", {"error": "Problem name empty"})
@@ -101,7 +102,7 @@ def edit(request, pid=None):
     try:
         problem = Problem.objects.get(pk=pid)
         if not user.has_admin_auth() and user != problem.owner:
-            logger.warning("user %s has no permission to edit problem %s" % (request.user, pid))
+            logger.warning("user %s has no permission to edit problem %s" % (user, pid))
             raise PermissionDenied()
     except Problem.DoesNotExist:
         logger.warning("problem %s does not exist" % (pid))
@@ -110,11 +111,11 @@ def edit(request, pid=None):
     tags = problem.tags.all()
     if request.method == 'GET':
         form = ProblemForm(instance=problem,
-                           initial={'owner': request.user.username})
+                           initial={'owner': user.username})
     if request.method == 'POST':
         form = ProblemForm(request.POST,
                            instance=problem,
-                           initial={'owner': request.user.username})
+                           initial={'owner': user.username})
         if form.is_valid():
             problem = form.save()
             problem.description = request.POST['description']
@@ -132,7 +133,7 @@ def edit(request, pid=None):
                 with open('%s%s%s' % (PARTIAL_PATH, problem.pk, file_ex), 'w') as t_in:
                     for chunk in request.FILES['partial_judge_code'].chunks():
                         t_in.write(chunk)
-            logger.info('edit problem, pid = %d by %s' % (problem.pk, request.user))
+            logger.info('edit problem, pid = %d by %s' % (problem.pk, user))
             logger.info('edit problem, pid = %d' % (problem.pk))
             return redirect('/problem/%d' % (problem.pk))
     return render_index(request, 'problem/edit.html',
@@ -151,6 +152,7 @@ def edit(request, pid=None):
 
 @login_required
 def tag(request, pid):
+    user = validate_user(request.user)
     if request.method == "POST":
         tag = request.POST['tag_name']
         try:
@@ -162,7 +164,7 @@ def tag(request, pid):
             new_tag, created = Tag.objects.get_or_create(tag_name=tag)
             problem.tags.add(new_tag)
             problem.save()
-            logger.info("add new tag '%s' to problem %s by %s" % (tag, pid, request.user))
+            logger.info("add new tag '%s' to problem %s by %s" % (tag, pid, user))
             return HttpResponse(json.dumps({'tag_id': new_tag.pk}),
                                 content_type="application/json")
         return HttpRequestBadRequest()
@@ -182,12 +184,13 @@ def delete_tag(request, pid, tag_id):
         raise Http404("tag %s does not exist" % (tag_id))
     if not user.has_admin_auth() and user != problem.owner:
         raise PermissionDenied()
-    logger.info("tag %s deleted by %s" % (tag.tag_name, request.user))
+    logger.info("tag %s deleted by %s" % (tag.tag_name, user))
     problem.tags.remove(tag)
     return HttpResponse()
 
 @login_required
 def testcase(request, pid, tid=None):
+    user = validate_user(request.user)
     if request.method == 'POST':
         try:
             problem = Problem.objects.get(pk=pid)
@@ -210,18 +213,18 @@ def testcase(request, pid, tid=None):
             testcase.time_limit = request.POST['time_limit']
             testcase.memory_limit = request.POST['memory_limit']
             testcase.save()
-            logger.info("testcase saved, tid = %s by %s" % (testcase.pk, request.user))
+            logger.info("testcase saved, tid = %s by %s" % (testcase.pk, user))
         if 't_in' in request.FILES:
             TESTCASE_PATH = config_info.get_config('path', 'testcase_path')
             try:
                 with open('%s%s.in' % (TESTCASE_PATH, testcase.pk), 'w') as t_in:
                     for chunk in request.FILES['t_in'].chunks():
                         t_in.write(chunk)
-                    logger.info("testcase %s.in saved by %s" % (testcase.pk, request.user))
+                    logger.info("testcase %s.in saved by %s" % (testcase.pk, user))
                 with open('%s%s.out' % (TESTCASE_PATH, testcase.pk), 'w') as t_out:
                     for chunk in request.FILES['t_out'].chunks():
                         t_out.write(chunk)
-                    logger.info("testcase %s.out saved by %s" % (testcase.pk, request.user))
+                    logger.info("testcase %s.out saved by %s" % (testcase.pk, user))
             except IOError, OSError:
                 logger.error("saving testcase error")
             return HttpResponse(json.dumps({'tid': testcase.pk}),
@@ -248,7 +251,7 @@ def delete_testcase(request, pid, tid):
         os.remove('%s%d.out' % (TESTCASE_PATH, testcase.pk))
     except IOError, OSError:
         logger.error("remove testcase %s error" % (testcase.pk))
-    logger.info("testcase %d deleted by %s" % (testcase.pk, request.user))
+    logger.info("testcase %d deleted by %s" % (testcase.pk, user))
     testcase.delete()
     return HttpResponse()
 
@@ -261,7 +264,7 @@ def delete_problem(request, pid):
         raise Http404("problem %s does not exist" % (pid))
     if not user.has_admin_auth() and user != problem.owner:
         raise PermissionDenied
-    logger.info("problem %d deleted by %s" % (problem.pk, request.user))
+    logger.info("problem %d deleted by %s" % (problem.pk, user))
     problem.delete()
     return redirect('/problem/')
 
