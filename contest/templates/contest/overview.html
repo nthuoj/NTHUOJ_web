@@ -18,16 +18,16 @@
            tabindex="-1" role="tab" data-toggle="tab">{{ problem.pname }}</a>
       </td>
       <td>
-        <div class="progress" data-toggle="tooltip" data-placement="top" 
-               title="{{problem.pass_rate|floatformat:2}}%">
+        <div class="progress">
           <div name="pass" class="progress-bar progress-bar-success"
-               role="progressbar" style="width: {{ problem.pass_rate }}%;">
-            <span name="pass_ratio">
-              {{ problem.pass_user }}/{{ scoreboard|total_contestant }}
-              </span>
+               style="width: {{ problem.pass_rate }}%;"
+               data-toggle="tooltip" data-placement="top" 
+               title="{{problem.pass_rate|floatformat:2}}%">
           </div>
           <div name="not_pass" class="progress-bar progress-bar-danger"
-               role="progressbar" style="width: {{ problem.not_pass_rate }}%;">
+               style="width: {{ problem.not_pass_rate }}%;"
+               data-toggle="tooltip" data-placement="top" 
+               title="{{problem.not_pass_rate|floatformat:2}}%">
           </div>
         </div>
       </td>
