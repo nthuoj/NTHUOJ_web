@@ -50,7 +50,7 @@ class Problem(models.Model):
     ERROR_TOLERANT = 'ERR_TOLERANT'
     PARTIAL = 'PARTIAL'
     UVA_JUDGE = 'UVA'
-    ICPC_JUDGE = 'ICPC'
+    ICPC_JUDGE = 'UVALive'
     POJ_JUDGE = 'POJ'
     JUDGE_TYPE_CHOICE = (
         # Local Judge
@@ -95,7 +95,6 @@ class Problem(models.Model):
 
 
 class Testcase(models.Model):
-
     problem = models.ForeignKey(Problem)
     description = models.TextField(blank=True)
     time_limit = models.IntegerField(default=1)
@@ -137,7 +136,7 @@ class Submission(models.Model):
     team = models.ForeignKey(Team, blank=True, null=True)
     submit_time = models.DateTimeField(default=datetime.now)
     error_msg = models.TextField(blank=True)
-    status = models.CharField(max_length=7, choices=STATUS_CHOICE, default=WAIT)
+    status = models.CharField(max_length=25, choices=STATUS_CHOICE, default=WAIT)
     language = models.CharField(max_length=5, choices=LANGUAGE_CHOICE, default=C)
     other_judge_sid = models.IntegerField(blank=True, null=True)
     def __unicode__(self):
