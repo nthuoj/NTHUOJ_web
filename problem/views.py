@@ -69,7 +69,7 @@ def detail(request, pid):
     try:
         problem = Problem.objects.get(pk=pid)
         last_contest = problem.contest_set.all().order_by('-start_time')
-        if len(last_contest) != 0 and last_contest[0].start_time < timezone.now():
+        if len(last_contest) and last_contest[0].start_time < timezone.now():
             problem.visible = True
             problem.save()
         if not has_problem_auth(user, problem):
@@ -83,14 +83,13 @@ def detail(request, pid):
 
 @login_required
 def new(request):
-    user = validate_user(request.user)
     if request.method == "GET":
         return render_index(request, "problem/new.html")
     elif request.method == "POST":
         if 'pname' in request.POST and request.POST['pname'].strip() != "":
-            p = Problem(pname=request.POST['pname'], owner=user)
+            p = Problem(pname=request.POST['pname'], owner=request.user)
             p.save()
-            logger.info("problem %s created by %s" % (p.pk, user))
+            logger.info("problem %s created by %s" % (p.pk, request.user))
             return redirect("/problem/%d/edit/" % p.pk)
         else:
             return render_index(request, "problem/new.html", {"error": "Problem name empty"})
@@ -98,11 +97,10 @@ def new(request):
 @login_required
 def edit(request, pid=None):
     tag_form = TagForm()
-    user = validate_user(request.user)
     try:
         problem = Problem.objects.get(pk=pid)
-        if not user.has_admin_auth() and user != problem.owner:
-            logger.warning("user %s has no permission to edit problem %s" % (user, pid))
+        if not request.user.has_admin_auth() andrequest. user != problem.owner:
+            logger.warning("user %s has no permission to edit problem %s" % (request.user, pid))
             raise PermissionDenied()
     except Problem.DoesNotExist:
         logger.warning("problem %s does not exist" % (pid))
@@ -111,11 +109,11 @@ def edit(request, pid=None):
     tags = problem.tags.all()
     if request.method == 'GET':
         form = ProblemForm(instance=problem,
-                           initial={'owner': user.username})
+                           initial={'owner': request.user.username})
     if request.method == 'POST':
         form = ProblemForm(request.POST,
                            instance=problem,
-                           initial={'owner': user.username})
+                           initial={'owner': request.user.username})
         if form.is_valid():
             problem = form.save()
             problem.description = request.POST['description']
@@ -133,7 +131,7 @@ def edit(request, pid=None):
                 with open('%s%s%s' % (PARTIAL_PATH, problem.pk, file_ex), 'w') as t_in:
                     for chunk in request.FILES['partial_judge_code'].chunks():
                         t_in.write(chunk)
-            logger.info('edit problem, pid = %d by %s' % (problem.pk, user))
+            logger.info('edit problem, pid = %d by %s' % (problem.pk, request.user))
             logger.info('edit problem, pid = %d' % (problem.pk))
             return redirect('/problem/%d' % (problem.pk))
     return render_index(request, 'problem/edit.html',
@@ -152,7 +150,6 @@ def edit(request, pid=None):
 
 @login_required
 def tag(request, pid):
-    user = validate_user(request.user)
     if request.method == "POST":
         tag = request.POST['tag_name']
         try:
@@ -164,7 +161,7 @@ def tag(request, pid):
             new_tag, created = Tag.objects.get_or_create(tag_name=tag)
             problem.tags.add(new_tag)
             problem.save()
-            logger.info("add new tag '%s' to problem %s by %s" % (tag, pid, user))
+            logger.info("add new tag '%s' to problem %s by %s" % (tag, pid, request.user))
             return HttpResponse(json.dumps({'tag_id': new_tag.pk}),
                                 content_type="application/json")
         return HttpRequestBadRequest()
@@ -172,7 +169,6 @@ def tag(request, pid):
 
 @login_required
 def delete_tag(request, pid, tag_id):
-    user = validate_user(request.user)
     try:
         problem = Problem.objects.get(pk=pid)
         tag = Tag.objects.get(pk=tag_id)
@@ -182,15 +178,14 @@ def delete_tag(request, pid, tag_id):
     except Tag.DoesNotExist:
         logger.warning("tag %s does not exist" % (tag_id))
         raise Http404("tag %s does not exist" % (tag_id))
-    if not user.has_admin_auth() and user != problem.owner:
+    if not request.user.has_admin_auth() and request.user != problem.owner:
         raise PermissionDenied()
-    logger.info("tag %s deleted by %s" % (tag.tag_name, user))
+    logger.info("tag %s deleted by %s" % (tag.tag_name, request.user))
     problem.tags.remove(tag)
     return HttpResponse()
 
 @login_required
 def testcase(request, pid, tid=None):
-    user = validate_user(request.user)
     if request.method == 'POST':
         try:
             problem = Problem.objects.get(pk=pid)
@@ -213,18 +208,18 @@ def testcase(request, pid, tid=None):
             testcase.time_limit = request.POST['time_limit']
             testcase.memory_limit = request.POST['memory_limit']
             testcase.save()
-            logger.info("testcase saved, tid = %s by %s" % (testcase.pk, user))
+            logger.info("testcase saved, tid = %s by %s" % (testcase.pk, request.user))
         if 't_in' in request.FILES:
             TESTCASE_PATH = config_info.get_config('path', 'testcase_path')
             try:
                 with open('%s%s.in' % (TESTCASE_PATH, testcase.pk), 'w') as t_in:
                     for chunk in request.FILES['t_in'].chunks():
                         t_in.write(chunk)
-                    logger.info("testcase %s.in saved by %s" % (testcase.pk, user))
+                    logger.info("testcase %s.in saved by %s" % (testcase.pk, request.user))
                 with open('%s%s.out' % (TESTCASE_PATH, testcase.pk), 'w') as t_out:
                     for chunk in request.FILES['t_out'].chunks():
                         t_out.write(chunk)
-                    logger.info("testcase %s.out saved by %s" % (testcase.pk, user))
+                    logger.info("testcase %s.out saved by %s" % (testcase.pk, request.user))
             except IOError, OSError:
                 logger.error("saving testcase error")
             return HttpResponse(json.dumps({'tid': testcase.pk}),
@@ -233,7 +228,6 @@ def testcase(request, pid, tid=None):
 
 @login_required
 def delete_testcase(request, pid, tid):
-    user = validate_user(request.user)
     try:
         problem = Problem.objects.get(pk=pid)
         testcase = Testcase.objects.get(pk=tid)
@@ -243,7 +237,7 @@ def delete_testcase(request, pid, tid):
     except Testcase.DoesNotExist:
         logger.warning("testcase %s does not exist" % (tid))
         raise Http404("testcase %s does not exist" % (tid))
-    if not user.has_admin_auth() and user != problem.owner:
+    if not request.user.has_admin_auth() and request.user != problem.owner:
         raise PermissionDenied
     logger.info("testcase %d deleted" % (testcase.pk))
     try:
@@ -251,20 +245,20 @@ def delete_testcase(request, pid, tid):
         os.remove('%s%d.out' % (TESTCASE_PATH, testcase.pk))
     except IOError, OSError:
         logger.error("remove testcase %s error" % (testcase.pk))
-    logger.info("testcase %d deleted by %s" % (testcase.pk, user))
+    logger.info("testcase %d deleted by %s" % (testcase.pk, request.user))
     testcase.delete()
     return HttpResponse()
 
+@login_required
 def delete_problem(request, pid):
-    user = validate_user(request.user)
     try:
         problem = Problem.objects.get(pk=pid)
     except Problem.DoesNotExist:
         logger.warning("problem %s does not exist" % (pid))
         raise Http404("problem %s does not exist" % (pid))
-    if not user.has_admin_auth() and user != problem.owner:
+    if not request.user.has_admin_auth() and request.user != problem.owner:
         raise PermissionDenied
-    logger.info("problem %d deleted by %s" % (problem.pk, user))
+    logger.info("problem %d deleted by %s" % (problem.pk, request.user))
     problem.delete()
     return redirect('/problem/')
 
