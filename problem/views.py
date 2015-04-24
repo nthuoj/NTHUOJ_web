@@ -27,6 +27,7 @@ from django.core.exceptions import PermissionDenied
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.contrib.auth.decorators import login_required
 from django.core.servers.basehttp import FileWrapper
+from django.utils import timezone
 
 from utils.render_helper import render_index
 from utils.user_info import validate_user, has_problem_auth
@@ -63,12 +64,16 @@ def problem(request):
                    'can_add_problem': can_add_problem})
 
 def detail(request, pid):
-    user = request.user
+    user = validate_user(request.user)
     tag_form = TagForm()
     try:
         problem = Problem.objects.get(pk=pid)
-        user = validate_user(request.user)
+        last_contest = problem.contest_set.all().order_by('-start_time')
+        if len(last_contest) != 0 and last_contest[0].start_time < timezone.now():
+            problem.visible = True
+            problem.save()
         if not has_problem_auth(user, problem):
+            logger.warning("%s has no permission to see problem %d" % (user, problem.pk))
             raise PermissionDenied()
     except Problem.DoesNotExist:
         logger.warning('problem %s not found' % (pid))
