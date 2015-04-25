@@ -127,7 +127,10 @@ def new(request):
         if request.method == 'GET':
             form = ContestForm(initial=\
                 {'owner':request.user, 'user':request.user, 'method':request.method})
-            return render_index(request,'contest/editContest.html',{'form':form,'title':title})
+
+            return render_index(request,'contest/editContest.html',
+                {'form':form,'title':title})
+
         if request.method == 'POST':
             form = ContestForm(request.POST, initial={'method':request.method})
             if form.is_valid():
@@ -140,6 +143,7 @@ def new(request):
             else:
                 message = 'Some fields are invalid!'
                 messages.error(request, message)
+
                 return render_index(request,'contest/editContest.html',
                     {'form':form,'title':title})
     raise PermissionDenied
@@ -160,6 +164,7 @@ def edit(request, cid):
             form = ContestForm(initial = contest_dic)
             return render_index(request, 'contest/editContest.html',
                     {'form':form, 'title':title})
+
         if request.method == 'POST':
             form = ContestForm(request.POST, instance = contest, 
                 initial={'method':request.method})
@@ -176,6 +181,7 @@ def edit(request, cid):
                 messages.error(request, message)
                 return render_index(request,'contest/editContest.html',
                     {'form':form, 'title':title})
+    raise PermissionDenied
 
 @login_required
 def delete(request, cid):
@@ -206,16 +212,16 @@ def register(request, cid):
         register_group(request, group_id, contest)
 
     #get group id or register as single user
-    if(public_user is not None):
+    elif(public_user is not None):
         register_public_user(request, public_user, contest)
     else:
         if user_register_contest(request.user, contest):
-            message = 'User %s register Contest %s!' % \
-                    (request.user.username, contest.id)
+            message = 'User %s register Contest %s- "%s"!' % \
+                    (request.user.username, contest.id, contest.cname)
             messages.success(request, message)
         else:
             message = 'Register Error!'
-            messages.warning(request, message)
+            messages.error(request, message)
 
     return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
@@ -274,6 +280,8 @@ def ask(request):
                 message = 'User %s successfully asked!' % \
                         (request.user.username)
                 messages.success(request, message)
+                return redirect('contest:contest', contest)
+
     message = 'User %s cannot ask!' % \
              (request.user.username)
     messages.error(request, message)
