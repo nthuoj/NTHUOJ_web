@@ -30,7 +30,7 @@ logger = get_logger()
 def get_owned_group(user):
     request = Q(owner = user)|Q(coowner = user)
     owned_groups = Group.objects.filter(request)
-    return owned_groups
+    return owned_groups.distinct()
 
 def get_group_or_404(group_id):
     try:
