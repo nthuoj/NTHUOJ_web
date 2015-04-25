@@ -97,6 +97,8 @@ def get_scoreboard(contest):
                 new_submission = ScoreboardSubmission(submission.submit_time,passed_testcases)
                 new_problem.add_submission(new_submission)
                 if new_submission.is_solved(total_testcases):
+                    new_problem.AC_time = new_submission.submit_time - contest.start_time
+                    new_problem.AC_time = int(new_problem.AC_time.total_seconds()/60)
                     break
             if new_problem.is_solved():
                 scoreboard.get_problem(new_problem.id).add_pass_user()
