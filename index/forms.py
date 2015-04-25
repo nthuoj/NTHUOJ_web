@@ -38,5 +38,5 @@ class AnnouncementCreationForm(forms.ModelForm):
         start_time = self.cleaned_data.get("start_time")
         end_time = self.cleaned_data.get("end_time")
         if end_time <= start_time:
-            raise forms.ValidationError("End time cannot less than start time.")
+            raise forms.ValidationError("End time cannot be earlier than start time.")
         return end_time
