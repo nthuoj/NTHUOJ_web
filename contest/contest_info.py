@@ -189,7 +189,7 @@ def write_scoreboard_csv_testcases(writer, contest, scoreboard):
 
 def get_clarifications(user, contest):
 
-    if has_contest_ownership(user,contest):
+    if has_contest_ownership(user,contest) or user.has_admin_auth():
         return Clarification.objects.filter(contest = contest)
     reply_all = Clarification.objects.filter(contest = contest, reply_all = True)
     if user.is_authenticated():
