@@ -20,6 +20,7 @@ SOFTWARE.
 $(document).ready(function() {
     add_attribute('id_coowner', 'class', 'searchable');
     add_attribute('id_problem', 'class', 'searchable');
+    hide('id_owner');
     enable_search();
     modify_label();
 });

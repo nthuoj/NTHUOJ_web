@@ -18,7 +18,11 @@
     <form action="." method="POST">
     {% csrf_token %}
     {% for field in form %}
+    {% if field.label_tag == form.owner.label_tag %}
+    	{{ field.as_hidden }}
+    {% else %}
       {{ field|bootstrap }}
+    {% endif %}
     {% endfor %}
     <input class="btn btn-primary" type="submit" value="Submit">
     </form>
