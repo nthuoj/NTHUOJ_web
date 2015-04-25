@@ -99,7 +99,7 @@ def edit(request, pid=None):
     tag_form = TagForm()
     try:
         problem = Problem.objects.get(pk=pid)
-        if not request.user.has_admin_auth() andrequest. user != problem.owner:
+        if not request.user.has_admin_auth() and request.user != problem.owner:
             logger.warning("user %s has no permission to edit problem %s" % (request.user, pid))
             raise PermissionDenied()
     except Problem.DoesNotExist:
