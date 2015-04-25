@@ -88,7 +88,7 @@ def register_page(request, cid):
 
 #contest datail page
 def contest(request, cid):
-    user = request.user
+    user = user_info.validate_user(request.user)
     try:
         contest = Contest.objects.get(id = cid)
     except Contest.DoesNotExist:
@@ -97,8 +97,8 @@ def contest(request, cid):
 
     now = datetime.now()
     #if contest has not started and user is not the owner
-    if ((contest.start_time < now) or user_info.has_contest_ownership(request.user,contest) or\
-        request.user.has_admin_auth()):
+    if ((contest.start_time < now) or user_info.has_contest_ownership(user,contest) or\
+        user.has_admin_auth()):
         for problem in contest.problem.all():
             problem.testcase = get_testcase(problem)
         scoreboard = get_scoreboard(contest)
@@ -233,6 +233,8 @@ def ask(request):
             form = ClarificationForm(request.POST)
             if form.is_valid():
                 new_clarification = form.save()
+                new_clarification.reply = ''
+                new_clarification.save()
                 logger.info('Clarification: User %s create Clarification %s!'
                     % (request.user.username, new_clarification.id))
             return redirect('contest:contest',contest)
