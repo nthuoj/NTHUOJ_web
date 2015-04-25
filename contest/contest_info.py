@@ -151,8 +151,8 @@ def write_scoreboard_csv_penalty(writer, contest, scoreboard):
         user_row = [counter+1, user.username]
         for problem in user.problems:
             submit_times = problem.submit_times
-            penalty = get_penalty(problem, contest.start_time)
-            user_row.append(str(submit_times) + '/' + str(penalty))
+            AC_time = problem.AC_time
+            user_row.append(str(submit_times) + '/' + str(AC_time))
         total_penalty = user.get_penalty(contest.start_time)
         user_row.append(total_penalty)
         writer.writerow(user_row)
