@@ -33,3 +33,10 @@ class AnnouncementCreationForm(forms.ModelForm):
     class Meta:
         model = Announcement
         fields = ('content', 'start_time', 'end_time')
+
+    def clean_end_time(self):
+        start_time = self.cleaned_data.get("start_time")
+        end_time = self.cleaned_data.get("end_time")
+        if end_time <= start_time:
+            raise forms.ValidationError("End time cannot less than start time.")
+        return end_time
