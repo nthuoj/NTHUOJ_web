@@ -88,6 +88,11 @@ def write_path_config(config, paths):
         config.set('path', key, paths[key])
 
 
+def write_vjudge_config(config, user, pwd):
+    config.add_section('vjudge')
+    config.set('vjudge', 'username', user)
+    config.set('vjudge', 'password', pwd)
+
 def django_manage(args):
     cmd = 'python ./manage.py ' + args
     os.system(cmd)

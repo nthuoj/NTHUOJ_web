@@ -23,7 +23,7 @@ SOFTWARE.
 """
 from json import dumps
 
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, update_session_auth_hash
 from django.contrib.auth.decorators import login_required
 from django.core.context_processors import csrf
 from django.core.urlresolvers import reverse
@@ -72,6 +72,7 @@ def user_profile(request, username):
             if profile_form.is_valid() and request.user == profile_user:
                 logger.info('User %s update profile' % username)
                 profile_form.save()
+                update_session_auth_hash(request, profile_user)
                 request.user = profile_user
                 render_data['profile_message'] = 'Update successfully'
 
