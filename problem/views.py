@@ -108,12 +108,10 @@ def edit(request, pid=None):
     testcase = Testcase.objects.filter(problem=problem)
     tags = problem.tags.all()
     if request.method == 'GET':
-        form = ProblemForm(instance=problem,
-                           initial={'owner': request.user.username})
+        form = ProblemForm(instance=problem)
     if request.method == 'POST':
         form = ProblemForm(request.POST,
-                           instance=problem,
-                           initial={'owner': request.user.username})
+                           instance=problem)
         if form.is_valid():
             problem = form.save()
             problem.description = request.POST['description']
