@@ -18,6 +18,9 @@
            tabindex="-1" role="tab" data-toggle="tab">{{ problem.pname }}</a>
       </td>
       <td>
+        {% if problem.no_submission %}
+        No Submission
+        {% else %}
         <div class="progress">
           <div name="pass" class="progress-bar progress-bar-success"
                style="width: {{ problem.pass_rate }}%;"
@@ -30,6 +33,7 @@
                title="{{problem.not_pass_rate|floatformat:2}}%">
           </div>
         </div>
+        {% endif %}
       </td>
     </tr>
     {% endfor %}

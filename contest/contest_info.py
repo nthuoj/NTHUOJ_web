@@ -123,6 +123,7 @@ def get_scoreboard(contest):
         else:
             problem.pass_rate = 0
             problem.not_pass_rate = 100
+            problem.no_submission = True
 
     return scoreboard
 
