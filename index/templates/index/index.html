@@ -45,8 +45,8 @@
       </thead>
       <tbody>
         {% for announcement in announcements %}
-          <tr class="warning">
-            <td><h3>{{ announcement.content|linebreaksbr}}</h3></td>
+          <tr>
+            <td><h3>{{ announcement.content|urlize|linebreaksbr }}</h3></td>
             {% if user.has_admin_auth %}
             <td style="text-align: right;width: 5%">
               <a href="{% url 'index:announcement_update' announcement.id %}">
