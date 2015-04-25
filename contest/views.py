@@ -99,7 +99,7 @@ def contest(request, cid):
     now = datetime.now()
     #if contest has not started and user is not the owner
     if ((contest.start_time < now) or\
-        user_info.has_contest_ownership(request.user,contest) or\
+        user_info.has_contest_ownership(user,contest) or\
         user.has_admin_auth()):
         for problem in contest.problem.all():
             problem.testcase = get_testcase(problem)
