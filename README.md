@@ -25,6 +25,7 @@ git clone git@github.com:bruce3557/NTHUOJ_web.git
 * curl
 * django-datetime-widget
 * django-bootstrap-form
+* requests
 
 ###Installation:
 * Execute install.py for initial setting.
@@ -38,3 +39,7 @@ git clone git@github.com:bruce3557/NTHUOJ_web.git
 * The email host should be gmail.
 
 * Your google account seeting 'Access for less secure apps' should turn on.
+
+###Virtual judge account
+* We use [virtual judge](http://vjudge.net) for judging codes from other resources(UVA, ICPC, etc).
+
