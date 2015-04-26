@@ -102,6 +102,8 @@ def get_scoreboard(contest):
                     break
             if new_problem.is_solved():
                 scoreboard.get_problem(new_problem.id).add_pass_user()
+            else:
+                new_problem.AC_time = '--'
             #setup problem attribute
             new_problem.penalty = get_penalty(new_problem,scoreboard.start_time)
             new_problem.submit_times = get_submit_times(new_problem)
