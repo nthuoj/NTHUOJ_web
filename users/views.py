@@ -69,7 +69,7 @@ def user_profile(request, username):
                 profile_form.save()
                 update_session_auth_hash(request, profile_user)
                 request.user = profile_user
-                render_data['profile_message'] = 'Update successfully'
+                messages.success(request, 'Update profile successfully!')
 
         if request.method == 'POST' and 'userlevel_form' in request.POST:
             userlevel_form = UserLevelForm(request.POST)
@@ -80,11 +80,11 @@ def user_profile(request, username):
                                 (request.user, username, user_level))
                     profile_user.user_level = user_level
                     profile_user.save()
-                    render_data['userlevel_message'] = 'Update successfully'
+                    messages.success(request, 'Update profile successfully!')
                 else:
                     user_level = userlevel_form.cleaned_data['user_level']
-                    render_data['userlevel_message'] = 'You can\'t switch user %s to %s' % \
-                                                       (profile_user, user_level)
+                    messages.warning(request, 'You can\'t switch user %s to %s' % \
+                                    (profile_user, user_level))
 
         return render_index(request, 'users/profile.html', render_data)
 
@@ -144,17 +144,16 @@ def user_forget_password(request):
     if request.user.is_authenticated():
         return redirect(reverse('index:index'))
 
-    message = ''
     if request.method == 'POST':
         user_form = UserForgetPasswordForm(data=request.POST)
         if user_form.is_valid():
             user = User.objects.get(username=user_form.cleaned_data['username'])
             send_forget_password_email(request, user)
-            message = 'Conform email has sent to you.'
+            messages.success(request, 'Conform email has sent to you.')
         else:
             return render_index(request, 'users/auth.html', {'form': user_form, 'title': 'Forget Password'})
     return render_index(request, 'users/auth.html',
-                        {'form': UserForgetPasswordForm(), 'title': 'Forget Password', 'message': message})
+                        {'form': UserForgetPasswordForm(), 'title': 'Forget Password'})
 
 
 def forget_password_confirm(request, activation_key):

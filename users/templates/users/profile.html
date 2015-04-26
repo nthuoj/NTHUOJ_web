@@ -62,7 +62,6 @@ $(function() {
               {% csrf_token %}
               {{ profile_form|bootstrap_horizontal:'col-lg-4' }}
               <div class="modal-footer">
-                <div class='col-lg-8'>{{ profile_message }}</div>
                 <button type="submit" name="profile_form"
                   class="btn btn-primary">Submit</button>
               </div>
@@ -96,7 +95,6 @@ $(function() {
               {% csrf_token %}
               {{ userlevel_form|bootstrap_horizontal:'col-lg-4' }}
               <div class="modal-footer">
-                <div class='col-lg-8'>{{ userlevel_message }}</div>
                 <button type="submit" name="userlevel_form"
                   class="btn btn-primary">Submit</button>
               </div>
