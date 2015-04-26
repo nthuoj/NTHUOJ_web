@@ -15,26 +15,6 @@
     <h2>Status</h2>
   </div>
   {% include "status/statusTable.html" %}
-  <ul class="pager">
-    <span class="step-links">
-      {% if submissions.has_previous %}
-        <li>
-          <a href="?{% url_replace request 'page' submissions.previous_page_number %}">
-            <span>&larr;</span> Previous
-          </a>
-        </li>
-      {% endif %}
-      <span class="current">
-        Page {{ submissions.number }} of {{ submissions.paginator.num_pages }}.
-      </span>
-      {% if submissions.has_next %}
-        <li>
-          <a href="?{% url_replace request 'page' submissions.next_page_number %}">
-            Next <span>&rarr;</span>
-          </a>
-        </li>
-      {% endif %}
-    </span>
-  </ul>
+  {% include "utils/pager.html" with objects=submissions %}
 </div>
 {% endblock body_block %}
