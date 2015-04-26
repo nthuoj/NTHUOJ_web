@@ -29,7 +29,9 @@
     {% else %}
     <button type="submit" class="btn btn-primary">Update</button>
     {% endif %}
+    <a href="{%url 'index:index' %}" class="btn btn-primary">Cancel</a>
   </form>
 </div>
 <br>
+<script>$('input').removeAttr("readonly");</script>
 {% endblock body_block %}

@@ -51,6 +51,7 @@ INSTALLED_APPS = (
     'bootstrapform',
     'djangobower',
     'datetimewidget',
+    'vjudge',
 )
 
 MIDDLEWARE_CLASSES = (

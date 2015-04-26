@@ -50,18 +50,22 @@ def add_contestants_and_activate(users, contest):
 def user_register_contest(user, contest):
     if can_register(user, contest):
         add_contestant(user, contest)
+        return True
+    return False
 
 def group_register_contest(group, contest):
     if has_started(contest):
-        return
+        return False
     for user in group.member.all():
         if user_can_register_contest(user, contest):
             add_contestant(user, contest)
+    return True
 
+#tbd
 def public_user_register_contest(account_num, contest):
     # can not register started contest
     if has_started(contest):
-        return
+        return False
 
     account_num = public_user.check_account_num_valid(account_num)
     # if invalid
