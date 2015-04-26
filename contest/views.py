@@ -17,12 +17,13 @@
     OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
     SOFTWARE.
     '''
-
+from django.http import HttpResponseRedirect
 from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
 from datetime import datetime
 from django.shortcuts import redirect
 from django.forms.models import model_to_dict
+from django.contrib import messages
 
 from contest.contest_info import get_scoreboard
 from contest.contest_info import get_scoreboard_csv
@@ -97,7 +98,9 @@ def contest(request, cid):
 
     now = datetime.now()
     #if contest has not started and user is not the owner
-    if ((contest.start_time < now) or user_info.has_contest_ownership(user,contest) or\
+
+    if ((contest.start_time < now) or\
+        user_info.has_contest_ownership(user,contest) or\
         user.has_admin_auth()):
         for problem in contest.problem.all():
             problem.testcase = get_testcase(problem)
@@ -125,16 +128,24 @@ def new(request):
         if request.method == 'GET':
             form = ContestForm(initial=\
                 {'owner':request.user, 'user':request.user, 'method':request.method})
+
             return render_index(request,'contest/editContest.html',
                 {'form':form,'title':title})
+
         if request.method == 'POST':
             form = ContestForm(request.POST, initial={'method':request.method})
             if form.is_valid():
                 new_contest = form.save()
                 logger.info('Contest: User %s Create a new contest %s!' %
                     (request.user ,new_contest.id))
+                message = 'Contest %s- "%s" created!' % (new_contest.id, new_contest.cname)
+                messages.success(request, message)
                 return redirect('contest:contest', new_contest.id)
+
             else:
+                message = 'Some fields are invalid!'
+                messages.error(request, message)
+
                 return render_index(request,'contest/editContest.html',
                     {'form':form,'title':title})
     raise PermissionDenied
@@ -153,18 +164,30 @@ def edit(request, cid):
         contest_dic['method'] = request.method
         if request.method == 'GET':
             form = ContestForm(initial = contest_dic)
+
             return render_index(request,'contest/editContest.html',
                     {'form':form, 'title':title, 'cid':contest.id})
+
         if request.method == 'POST':
-            form = ContestForm(request.POST, instance = contest, initial={'method':request.method})
+            form = ContestForm(request.POST, instance = contest, 
+                initial={'method':request.method})
             if form.is_valid():
                 modified_contest = form.save()
                 logger.info('Contest: User %s edited contest %s!' %
                     (request.user, modified_contest.id))
+
+                message = 'Contest %s- "%s" edited!' % \
+                    (modified_contest.id, modified_contest.cname)
+                messages.success(request, message)
                 return redirect('contest:contest', modified_contest.id)
+
             else:
+                message = 'Some fields are invalid!'
+                messages.error(request, message)
                 return render_index(request,'contest/editContest.html',
                     {'form':form,'title':title, 'cid':contest.id})
+
+    raise PermissionDenied
 
 @login_required
 def delete(request, cid):
@@ -177,6 +200,8 @@ def delete(request, cid):
     if can_delete_contest(request.user, contest):
         deleted_cid = contest.id
         contest.delete()
+        message = 'Contest %s deleted!' % (deleted_cid)
+        messages.warning(request, message)
         logger.info('Contest: User %s delete contest %s!' %
             (request.user, deleted_cid))
         return redirect('contest:archive')
@@ -193,29 +218,52 @@ def register(request, cid):
         register_group(request, group_id, contest)
 
     #get group id or register as single user
-    if(public_user is not None):
+    elif(public_user is not None):
         register_public_user(request, public_user, contest)
     else:
-        user_register_contest(request.user, contest)
+        if user_register_contest(request.user, contest):
+            message = 'User %s register Contest %s- "%s"!' % \
+                    (request.user.username, contest.id, contest.cname)
+            messages.success(request, message)
+        else:
+            message = 'Register Error!'
+            messages.error(request, message)
 
-    return redirect('contest:archive')
+    return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
 
 @login_required
 def register_group(request, group_id, contest):
     group = get_group_or_404(group_id)
     if user_info.has_group_ownership(request.user, group):
-        group_register_contest(group, contest)
+        if group_register_contest(group, contest):
+            message = 'Group %s- "%s" registered Contest %s- "%s"!' % \
+                    (group.id, group.gname, contest.id, contest.cname)
+            messages.success(request, message)
+        else:
+            message = 'Register Error!'
+            messages.error(request, message)
     else:
+        message = 'Register Error! %s does not have Group %s- "%s" ownership' % \
+                (request.user.username, group.id, group.gname)
+        messages.error(request, message)
         logger.warning('Contest: User %s can not register group %s. Does not have ownership!'
             % (request.user.username, group_id))
     return redirect('contest:archive')
 
 @login_required
 def register_public_user(request, public_user, contest):
-    if (user_info.has_contest_ownership(request.user, contest) or
-        request.user.has_admin_auth()):
-        public_user_register_contest(public_user, contest)
+    user = user_info.validate_user(request.user)
+    if (user_info.has_contest_ownership(user, contest) or
+        user.has_admin_auth()):
+        if public_user_register_contest(public_user, contest):
+            message = 'User %s registered %s public users to Contest %s- "%s"!' % \
+                    (user.username, public_user, contest.id, contest.cname)
+            messages.success(request, message)
+        else:
+            message = 'Cannot register public user to Contest %s- "%s"!' % \
+                    (contest.id, contest.cname)
+            messages.error(request, message)
     return redirect('contest:archive')
 
 @login_required
@@ -237,8 +285,15 @@ def ask(request):
                 new_clarification.save()
                 logger.info('Clarification: User %s create Clarification %s!'
                     % (request.user.username, new_clarification.id))
-            return redirect('contest:contest',contest)
-    return redirect('contest:archive')
+                message = 'User %s successfully asked!' % \
+                        (request.user.username)
+                messages.success(request, message)
+                return redirect('contest:contest', contest)
+
+    message = 'User %s cannot ask!' % \
+             (request.user.username)
+    messages.error(request, message)
+    return redirect('contest:contest', contest)
 
 @login_required
 def reply(request):
@@ -261,10 +316,19 @@ def reply(request):
                 replied_clarification.save()
                 logger.info('Clarification: User %s reply Clarification %s!'
                     % (request.user.username, replied_clarification.id))
+                message = 'User %s successfully replied!' % \
+                    (request.user.username)
+                messages.success(request, message) 
             else:
                 logger.warning('Clarification: User %s can not reply Clarification %s!'
                     % (request.user.username, replied_clarification.id))
+                message = 'Some fields are wrong!'
+                messages.error(request, message) 
+
             return redirect('contest:contest',contest)
+    message = 'User %s cannot reply!' % \
+             (request.user.username)
+    messages.error(request, message)   
     return redirect('contest:archive')
 
 def download(request):

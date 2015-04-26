@@ -26,12 +26,6 @@ import ConfigParser
 
 from func import *
 
-# Database Migratinos
-django_manage('syncdb')
-
-django_manage('makemigrations')
-django_manage('migrate')
-
 
 CONFIG_PATH = 'nthuoj/config/nthuoj.cfg'
 
@@ -46,27 +40,36 @@ config.read(CONFIG_PATH)
 
 if not config.has_section('client'):
     # Setting mysql info
-    host = raw_input('Mysql host: ')
-    db = raw_input('Mysql database: ')
-    user = raw_input('Mysql user: ')
-    pwd = getpass.getpass()
-    write_mysql_client_config(config, host, db, user, pwd)
-    print '========================================'
+    write_config(config, 'client',
+        {'default-character-set': 'utf8'},
+        host=raw_input('Mysql host: '),
+        database=raw_input('Mysql database: '),
+        user=raw_input('Mysql user: '),
+        password=getpass.getpass('Mysql user password: ')
+    )
+
+if not config.has_section('system_version'):
+    # Getting system version info
+    write_config(config, 'system_version',
+        backend=raw_input('Host os version: '),
+        gcc=raw_input('gcc version: '),
+        gpp=raw_input('g++ version: ')
+    )
 
 if not config.has_section('email'):
     # Setting email info
-    email_host = raw_input('Email host(gmail): ')
-    email_host_pwd = getpass.getpass("Email host's password: ")
-    write_email_config(config, email_host, email_host_pwd)
-    print '========================================'
+    write_config(config, 'email',
+        user=raw_input('Email host(gmail): '),
+        password=getpass.getpass("Email host's password: ")
+    )
 
 if not config.has_section('vjudge'):
     # Setting virtual judge info
     print 'We use virtual judge(http://vjudge.net) for other judge source(UVA, ICPC, etc.)'
-    vjudge_username = raw_input('Virtual judge username: ')
-    vjudge_password = getpass.getpass("Virtual judge password: ")
-    write_vjudge_config(config, vjudge_username, vjudge_password)
-    print '========================================'
+    write_config(config, 'vjudge',
+        username=raw_input('Virtual judge username: '),
+        password=getpass.getpass("Virtual judge password: ")
+    )
 
 # Change defaut path
 paths = dict(config.items('path'))
@@ -80,17 +83,18 @@ if prompt('Customize source code, testcase path?'):
         paths[key] = path
         os.system('mkdir %s' % path)
 
-    write_path_config(config, paths)
-    print '========================================'
+    write_config(config, paths)
 
 # Writing our configuration file
 with open(CONFIG_PATH, 'wb') as configfile:
     config.write(configfile)
 
-# Create super user
-if prompt('Create super user?'):
-    django_manage('createsuperuser')
-
 # Bower
 if prompt('Install static file by `bower install`?'):
     django_manage('bower install')
+
+# Database Migratinos
+django_manage('syncdb')
+
+django_manage('makemigrations')
+django_manage('migrate')
