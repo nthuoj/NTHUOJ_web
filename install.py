@@ -47,7 +47,6 @@ if not config.has_section('client'):
         user=raw_input('Mysql user: '),
         password=getpass.getpass('Mysql user password: ')
     )
-    print '========================================'
 
 if not config.has_section('system_version'):
     # Getting system version info
@@ -56,7 +55,6 @@ if not config.has_section('system_version'):
         gcc=raw_input('gcc version: '),
         gpp=raw_input('g++ version: ')
     )
-    print '========================================'
 
 if not config.has_section('email'):
     # Setting email info
@@ -64,7 +62,6 @@ if not config.has_section('email'):
         user=raw_input('Email host(gmail): '),
         password=getpass.getpass("Email host's password: ")
     )
-    print '========================================'
 
 if not config.has_section('vjudge'):
     # Setting virtual judge info
@@ -73,7 +70,6 @@ if not config.has_section('vjudge'):
         username=raw_input('Virtual judge username: '),
         password=getpass.getpass("Virtual judge password: ")
     )
-    print '========================================'
 
 # Change defaut path
 paths = dict(config.items('path'))
@@ -88,7 +84,6 @@ if prompt('Customize source code, testcase path?'):
         os.system('mkdir %s' % path)
 
     write_config(config, paths)
-    print '========================================'
 
 # Writing our configuration file
 with open(CONFIG_PATH, 'wb') as configfile:

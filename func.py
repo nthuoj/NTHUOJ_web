@@ -78,6 +78,7 @@ def write_config(config, section, config_dict=None,**kwargs):
 
     for key in kwargs:
         config.set(section, key, kwargs[key])
+    print '========================================'
 
 
 def django_manage(args):
