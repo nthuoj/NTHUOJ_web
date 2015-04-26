@@ -31,6 +31,10 @@ testcase_path = /var/nthuoj/testdata/
 special_judge_path = /var/nthuoj/specialJudge/
 partial_judge_path = /var/nthuoj/partialJudge/
 
+[system_version]
+backend = Ubuntu 12.04 LTS
+compiler = GCC 4.7
+
 [compiler_option]
 C = C: -O2 -lm -std=c99
 CPP = C++:  -O2 -lm -std=c++

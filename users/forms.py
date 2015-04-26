@@ -36,10 +36,13 @@ logger = log_info.get_logger()
 class CodeSubmitForm(forms.Form):
     SUBMIT_PATH = config_info.get_config('path', 'submission_code_path')
     LANGUAGE_CHOICE = tuple(config_info.get_config_items('compiler_option'))
-
-    pid = forms.CharField()
+    BACKEND_VERSION = config_info.get_config('system_version', 'backend')
+    COMPILER_VERSION = config_info.get_config('system_version', 'compiler')
+    pid = forms.CharField(label='Problem ID')
     language = forms.ChoiceField(choices=LANGUAGE_CHOICE, initial=Submission.CPP,
-                                 widget=forms.RadioSelect())
+                                 widget=forms.RadioSelect(),
+                                 help_text="Backend: %s<br>Compiler: %s"
+                                 % (BACKEND_VERSION, COMPILER_VERSION))
     code = forms.CharField(max_length=10000,
                            widget=forms.Textarea(attrs={'id': 'code_editor'}))
 
