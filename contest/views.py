@@ -133,7 +133,7 @@ def new(request):
                 new_contest = form.save()
                 logger.info('Contest: User %s Create a new contest %s!' %
                     (request.user ,new_contest.id))
-                return redirect('contest:contest',new_contest.id)
+                return redirect('contest:contest', new_contest.id)
             else:
                 return render_index(request,'contest/editContest.html',
                     {'form':form,'title':title})
@@ -161,7 +161,7 @@ def edit(request, cid):
                 modified_contest = form.save()
                 logger.info('Contest: User %s edited contest %s!' %
                     (request.user, modified_contest.id))
-                return redirect('contest:contest',modified_contest.id)
+                return redirect('contest:contest', modified_contest.id)
             else:
                 return render_index(request,'contest/editContest.html',
                     {'form':form,'title':title, 'cid':contest.id})
