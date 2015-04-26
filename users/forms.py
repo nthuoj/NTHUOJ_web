@@ -133,7 +133,7 @@ class UserProfileForm(forms.ModelForm):
 
 class UserLevelForm(forms.ModelForm):
     """A form for updating user's userlevel."""
-    user_level = forms.ChoiceField(label='Userlevel', choices=User.USER_LEVEL_CHOICE)
+    user_level = forms.ChoiceField(label='User Level', choices=User.USER_LEVEL_CHOICE)
 
     class Meta:
         model = User
