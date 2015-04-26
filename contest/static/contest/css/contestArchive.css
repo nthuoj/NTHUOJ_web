@@ -18,9 +18,16 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-td.not-clickable-area {
-	background-color: #A0A0A0;
-	text-align:center;
+a.black {
+  color: black;
+}
+
+.green {
+  color: green;
+}
+
+.red {
+  color: red;
 }
 
 .separate-area{

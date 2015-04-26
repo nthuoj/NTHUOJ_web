@@ -120,6 +120,15 @@ def get_scoreboard(contest):
         new_contestant.testcases_solved = new_contestant.get_testcases_solved()
         scoreboard.add_user(new_contestant)
 
+    for problem in scoreboard.problems:
+        if len(scoreboard.users):
+            problem.pass_rate = float(problem.pass_user) / len(scoreboard.users) * 100
+            problem.not_pass_rate = 100 - problem.pass_rate
+        else:
+            problem.pass_rate = 0
+            problem.not_pass_rate = 100
+            problem.no_submission = True
+
     return scoreboard
 
 def get_scoreboard_csv(contest_id, scoreboard_type):
