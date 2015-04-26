@@ -247,7 +247,7 @@ def register_group(request, group_id, contest):
 
 @login_required
 def register_public_user(request, public_user, contest):
-    user = validate_user(request.user)
+    user = user_info.validate_user(request.user)
     if (user_info.has_contest_ownership(user, contest) or
         user.has_admin_auth()):
         if public_user_register_contest(public_user, contest):
