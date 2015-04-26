@@ -133,7 +133,7 @@ def new(request):
                 new_contest = form.save()
                 logger.info('Contest: User %s Create a new contest %s!' %
                     (request.user ,new_contest.id))
-                return redirect('contest:archive')
+                return redirect('contest:contest', new_contest.id)
             else:
                 return render_index(request,'contest/editContest.html',
                     {'form':form,'title':title})
@@ -154,17 +154,17 @@ def edit(request, cid):
         if request.method == 'GET':
             form = ContestForm(initial = contest_dic)
             return render_index(request,'contest/editContest.html',
-                    {'form':form,'title':title})
+                    {'form':form, 'title':title, 'cid':contest.id})
         if request.method == 'POST':
             form = ContestForm(request.POST, instance = contest, initial={'method':request.method})
             if form.is_valid():
                 modified_contest = form.save()
                 logger.info('Contest: User %s edited contest %s!' %
                     (request.user, modified_contest.id))
-                return redirect('contest:archive')
+                return redirect('contest:contest', modified_contest.id)
             else:
                 return render_index(request,'contest/editContest.html',
-                    {'form':form,'title':title})
+                    {'form':form,'title':title, 'cid':contest.id})
 
 @login_required
 def delete(request, cid):
