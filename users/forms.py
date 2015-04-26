@@ -41,7 +41,6 @@ class CodeSubmitForm(forms.Form):
 
     pid = forms.CharField(label='Problem ID')
     language = forms.ChoiceField(choices=LANGUAGE_CHOICE, initial=Submission.CPP,
-                                 widget=forms.RadioSelect(),
                                  help_text="Backend: %s<br>gcc: %s<br>g++: %s"
                                  % (BACKEND_VERSION, GCC_VERSION, GPP_VERSION))
     code = forms.CharField(max_length=10000,
