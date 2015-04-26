@@ -84,6 +84,7 @@ def get_scoreboard(contest):
     for problem in contest.problem.all():
         total_testcases = get_total_testcases(problem);
         new_problem = ScoreboardProblem(problem.id,problem.pname,total_testcases)
+        new_problem.no_submission = True
         scoreboard.add_problem(new_problem)
 
     for contestant in contestants:
@@ -104,6 +105,9 @@ def get_scoreboard(contest):
                 scoreboard.get_problem(new_problem.id).add_pass_user()
             else:
                 new_problem.AC_time = '--'
+            if len(submissions):
+                scoreboard.get_problem(new_problem.id).no_submission = False
+
             #setup problem attribute
             new_problem.penalty = get_penalty(new_problem,scoreboard.start_time)
             new_problem.submit_times = get_submit_times(new_problem)
