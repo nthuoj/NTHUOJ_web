@@ -45,6 +45,9 @@ C = c
 CPP = cpp
 CPP11 = cpp
 
+[theme_settings]
+default = yeti
+
 [web_theme]
 paper = Paper
 cosmo = Cosmo

@@ -32,7 +32,9 @@ from django.core.exceptions import SuspiciousOperation
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 from users.models import Notification
+from utils.config_info import get_config
 
+DEFAULT_THEME = get_config('theme_settings', 'default')
 
 class CustomHttpExceptionMiddleware(object):
     def process_exception(self, request, exception):
@@ -63,7 +65,8 @@ def custom_proc(request):
     tstr = datetime.fromtimestamp(t).strftime('%Y/%m/%d %H:%M:%S')
     return {
         'tstr': tstr,
-        'amount': amount
+        'amount': amount,
+        'default_theme': DEFAULT_THEME
     }
 
 
