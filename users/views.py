@@ -23,6 +23,7 @@ SOFTWARE.
 """
 from json import dumps
 
+from django.contrib import messages
 from django.contrib.auth import authenticate, login, update_session_auth_hash
 from django.contrib.auth.decorators import login_required
 from django.core.context_processors import csrf
@@ -45,12 +46,6 @@ from utils.render_helper import render_index, get_current_page
 # Create your views here.
 
 logger = get_logger()
-
-
-def user_list(request):
-    users = get_current_page(request, User.objects.all())
-
-    return render_index(request, 'users/userList.html', {'users': users})
 
 
 def user_profile(request, username):
