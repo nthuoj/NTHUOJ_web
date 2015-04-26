@@ -68,6 +68,7 @@ function enable_search() {
 }
 
 function modify_label(){
+    modify_html('[for=id_cname]','Contest name');
     modify_html('[for=id_freeze_time]','Freeze Time(mins):');
     modify_html('[for=id_start_time]','Start Time(YYYY-MM-DD hh:mm:ss):');
     modify_html('[for=id_end_time]','End Time(YYYY-MM-DD hh:mm:ss):');
