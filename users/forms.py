@@ -37,12 +37,14 @@ class CodeSubmitForm(forms.Form):
     SUBMIT_PATH = config_info.get_config('path', 'submission_code_path')
     LANGUAGE_CHOICE = tuple(config_info.get_config_items('compiler_option'))
     BACKEND_VERSION = config_info.get_config('system_version', 'backend')
-    COMPILER_VERSION = config_info.get_config('system_version', 'compiler')
+    GCC_VERSION = config_info.get_config('system_version', 'gcc')
+    GPP_VERSION = config_info.get_config('system_version', 'gpp')
+
     pid = forms.CharField(label='Problem ID')
     language = forms.ChoiceField(choices=LANGUAGE_CHOICE, initial=Submission.CPP,
                                  widget=forms.RadioSelect(),
-                                 help_text="Backend: %s<br>Compiler: %s"
-                                 % (BACKEND_VERSION, COMPILER_VERSION))
+                                 help_text="Backend: %s<br>Compiler: gcc: %s, g++: %s"
+                                 % (BACKEND_VERSION, GCC_VERSION, GPP_VERSION))
     code = forms.CharField(max_length=10000,
                            widget=forms.Textarea(attrs={'id': 'code_editor'}))
 

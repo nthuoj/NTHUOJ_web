@@ -31,10 +31,6 @@ testcase_path = /var/nthuoj/testdata/
 special_judge_path = /var/nthuoj/specialJudge/
 partial_judge_path = /var/nthuoj/partialJudge/
 
-[system_version]
-backend = Ubuntu 12.04 LTS
-compiler = GCC 4.7
-
 [compiler_option]
 C = C: -O2 -lm -std=c99
 CPP = C++:  -O2 -lm -std=c++
@@ -75,30 +71,15 @@ def write_default_config(path):
     print 'done\n'
 
 
-def write_mysql_client_config(config, host, db, user, pwd):
-    config.add_section('client')
-    config.set('client', 'host', host)
-    config.set('client', 'database', db)
-    config.set('client', 'user', user)
-    config.set('client', 'password', pwd)
-    config.set('client', 'default-character-set', 'utf8')
+def write_config(config, section, config_dict=None,**kwargs):
+    config.add_section(section)
+    if config_dict:
+        for key in config_dict:
+            config.set(section, key, config_dict[key])
 
+    for key in kwargs:
+        config.set(section, key, kwargs[key])
 
-def write_email_config(config, user, pwd):
-    config.add_section('email')
-    config.set('email', 'user', user)
-    config.set('email', 'password', pwd)
-
-
-def write_path_config(config, paths):
-    for key in paths:
-        config.set('path', key, paths[key])
-
-
-def write_vjudge_config(config, user, pwd):
-    config.add_section('vjudge')
-    config.set('vjudge', 'username', user)
-    config.set('vjudge', 'password', pwd)
 
 def django_manage(args):
     cmd = 'python ./manage.py ' + args
