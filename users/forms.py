@@ -24,7 +24,6 @@ SOFTWARE.
 from django import forms
 from threading import Thread
 
-
 from users.models import User
 from problem.models import Problem, Submission, SubmissionDetail, Testcase
 from vjudge.submit import submit_to_vjudge
