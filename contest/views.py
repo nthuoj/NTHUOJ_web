@@ -249,17 +249,20 @@ def reply(request):
         contest = contest_obj.id
     except:
         logger.warning('Clarification: User %s can not reply Clarification %s!'
-            % (request.user.username, clarification.id))
+            % (request.user.username, clarification))
         return redirect('contest:archive')
 
     if can_reply(request.user,contest_obj):
         if request.method == 'POST':
-            form = ReplyForm(request.POST or None, instance = instance)
+            form = ReplyForm(request.POST, instance = instance)
             if form.is_valid():
                 replied_clarification = form.save()
                 replied_clarification.reply_time = datetime.now()
                 replied_clarification.save()
                 logger.info('Clarification: User %s reply Clarification %s!'
+                    % (request.user.username, replied_clarification.id))
+            else:
+                logger.warning('Clarification: User %s can not reply Clarification %s!'
                     % (request.user.username, replied_clarification.id))
             return redirect('contest:contest',contest)
     return redirect('contest:archive')
