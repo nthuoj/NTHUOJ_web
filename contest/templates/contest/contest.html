@@ -74,16 +74,14 @@
               <td>
               <button name="reply" type="button" class="btn btn-warning btn-xs"
                       data-toggle="modal" data-target="#reply"
-                      onclick="select({{ clarification.id }},'{{ clarification.content }}',
-                      '{{ clarification.reply }}')">
-                      Reply</button>
+                      onclick="select({{ clarification.id }})">Reply</button>
               </td>
               {% endif %}
               <td>{{ forloop.counter }}</td>
               <td>{{ clarification.problem }}</td>
               <td>{{ clarification.asker }}</td>
-              <td>{{ clarification.content }}</td>
-              <td>{{ clarification.reply }}</td>
+              <td id="content{{ clarification.id }}">{{ clarification.content }}</td>
+              <td id="reply{{ clarification.id }}">{{ clarification.reply }}</td>
               <td>{{ clarification.replier }}</td>
               <td>{{ clarification.reply_time }}</td>
             </tr>

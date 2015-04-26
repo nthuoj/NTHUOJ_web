@@ -281,7 +281,7 @@ def ask(request):
             form = ClarificationForm(request.POST)
             if form.is_valid():
                 new_clarification = form.save()
-                new_clarification.reply = ''
+                new_clarification.reply = ' '
                 new_clarification.save()
                 logger.info('Clarification: User %s create Clarification %s!'
                     % (request.user.username, new_clarification.id))
