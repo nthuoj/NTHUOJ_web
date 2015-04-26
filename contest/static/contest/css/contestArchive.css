@@ -26,9 +26,8 @@ SOFTWARE.
   color: green;
 }
 
-td.not-clickable-area {
-	background-color: #A0A0A0;
-	text-align:center;
+.red {
+  color: red;
 }
 
 .separate-area{

@@ -139,7 +139,8 @@ def new(request):
                     (request.user ,new_contest.id))
                 message = 'Contest %s- "%s" created!' % (new_contest.id, new_contest.cname)
                 messages.success(request, message)
-                return redirect('contest:archive')
+                return redirect('contest:contest', new_contest.id)
+
             else:
                 message = 'Some fields are invalid!'
                 messages.error(request, message)
@@ -162,8 +163,9 @@ def edit(request, cid):
         contest_dic['method'] = request.method
         if request.method == 'GET':
             form = ContestForm(initial = contest_dic)
-            return render_index(request, 'contest/editContest.html',
-                    {'form':form, 'title':title})
+
+            return render_index(request,'contest/editContest.html',
+                    {'form':form, 'title':title, 'cid':contest.id})
 
         if request.method == 'POST':
             form = ContestForm(request.POST, instance = contest, 
@@ -172,15 +174,18 @@ def edit(request, cid):
                 modified_contest = form.save()
                 logger.info('Contest: User %s edited contest %s!' %
                     (request.user, modified_contest.id))
+
                 message = 'Contest %s- "%s" edited!' % \
                     (modified_contest.id, modified_contest.cname)
                 messages.success(request, message)
-                return redirect('contest:archive')
+                return redirect('contest:contest', modified_contest.id)
+
             else:
                 message = 'Some fields are invalid!'
                 messages.error(request, message)
                 return render_index(request,'contest/editContest.html',
-                    {'form':form, 'title':title})
+                    {'form':form,'title':title, 'cid':contest.id})
+
     raise PermissionDenied
 
 @login_required

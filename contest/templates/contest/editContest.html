@@ -14,8 +14,23 @@
 {% endblock import_source %} {% block body_block %}
 <div class="container" id="list">
   <div class="well">
-    <h2>{{ title }}</h2></div>
-    <form action="." method="POST">
+    <h2>
+    {{ title }}
+    {% if cid %}
+    <a href="{% url 'contest:contest' cid %}">
+      <button type="button" class="btn btn-primary">
+        See this contest
+      </button>
+    </a>
+    {% endif %}
+    <a href="{% url 'contest:archive' %}">
+      <button type="button" class="btn btn-info">
+        Go to Contest Archive
+      </button>
+    </a>
+    </h2>
+  </div>
+  <form action="." method="POST">
     {% csrf_token %}
     {% for field in form %}
     {% if field.label_tag == form.owner.label_tag %}
@@ -24,7 +39,7 @@
       {{ field|bootstrap }}
     {% endif %}
     {% endfor %}
-    <input class="btn btn-primary" type="submit" value="Submit">
-    </form>
+  <input class="btn btn-primary" type="submit" value="Submit">
+  </form>
 </div>
 {% endblock body_block %}
