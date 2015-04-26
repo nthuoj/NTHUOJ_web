@@ -82,25 +82,25 @@ $(function() {
               </div>
             {% endif %}
           </form>
-          {% if user|can_change_userlevel:profile_user %}
-            <form class="form-horizontal" action="" method="post" style="margin:10px;"
-                  onclick="return confirm_change_userlevel()">
+          <form class="form-horizontal" action="" method="post" style="margin:10px;"
+                onsubmit="return confirm_change_userlevel()">
+            {% if user|can_change_userlevel:profile_user %}
               {% csrf_token %}
               {{ userlevel_form|bootstrap_horizontal:'col-lg-4' }}
               <div class="modal-footer">
                 <button type="submit" name="userlevel_form"
                   class="btn btn-primary">Submit</button>
               </div>
-            </form>
-          {% else %}
-            <div class="form-group">
-              <label class="control-label col-lg-4">Email</label>
-              <div class="col-lg-8">
-                <input class="form-control" readonly="True" type="email"
-                value="{{ profile_user.email }}">
+            {% else %}
+              <div class="form-group">
+                <label class="control-label col-lg-4">Userlevel</label>
+                <div class="col-lg-8">
+                  <input class="form-control" readonly="True"
+                  value="{{ profile_user.get_user_level_display }}">
+                </div>
               </div>
-            </div>
-          {% endif %}
+            {% endif %}
+          </form>
         </div>
       </div>
       {% endblock profile_field_block %}

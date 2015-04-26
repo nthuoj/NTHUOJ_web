@@ -50,6 +50,7 @@ $(function() {
 
   confirm_change_userlevel = function() {
     return confirm('Are you sure you want to change ' +
-      $('#id_username').val() + ' to ' + $('#id_userlevel').val() + '?')
+      $('#id_username').val() + ' to ' +
+      $("#id_user_level option:selected" ).text() + '?')
   }
 })
