@@ -74,7 +74,6 @@ def user_profile(request, username):
 
         if request.method == 'POST' and 'userlevel_form' in request.POST:
             userlevel_form = UserLevelForm(request.POST)
-            render_data['userlevel_form'] = userlevel_form
             if can_change_userlevel(request.user, profile_user):
                 if userlevel_form.is_valid(request.user):
                     user_level = userlevel_form.cleaned_data['user_level']
@@ -82,6 +81,7 @@ def user_profile(request, username):
                                 (request.user, username, user_level))
                     profile_user.user_level = user_level
                     profile_user.save()
+                    render_data['userlevel_form'] = userlevel_form
                     messages.success(request, 'Update userlevel successfully!')
                 else:
                     user_level = userlevel_form.cleaned_data['user_level']
