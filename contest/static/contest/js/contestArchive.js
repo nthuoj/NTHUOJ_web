@@ -41,3 +41,8 @@ $(document).ready(function() {
         $('#registerContent').html(loading);
     });
 });
+
+function confirm_delete() {
+    return confirm("Are you sure you want to delete?");
+}
+
