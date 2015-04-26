@@ -27,9 +27,10 @@ function init(){
     tabInit();
 }
 
-function select(target, description){
+function select(target, description, reply){
     document.getElementById("id_clarification").value = target;
     $('#description').html(description);
+    $('#id_reply').val(reply);
 }
 
 function tabInit(){

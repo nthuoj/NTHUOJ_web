@@ -224,9 +224,9 @@ def ask(request):
         contest = request.POST['contest']
         contest_obj = Contest.objects.get(pk = contest)
     except:
-        logger.warning('Clarification: Can not create Clarification! Contest %s not found!'
-            % contest)
-        return redirect('contest:archive')
+        logger.warning('Clarification: User %s can not create Clarification!' % 
+            request.user.username)
+        raise Http404('Contest does not exist, can not ask.')
 
     if can_ask(request.user,contest_obj):
         if request.method == 'POST':
@@ -248,9 +248,9 @@ def reply(request):
         contest_obj = instance.contest
         contest = contest_obj.id
     except:
-        logger.warning('Clarification: User %s can not reply Clarification %s!'
-            % (request.user.username, clarification))
-        return redirect('contest:archive')
+        logger.warning('Clarification: User %s can not reply Clarification!'
+            % (request.user.username))
+        raise Http404('Contest does not exist, can not reply.')
 
     if can_reply(request.user,contest_obj):
         if request.method == 'POST':
