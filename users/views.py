@@ -59,7 +59,8 @@ def user_profile(request, username):
         if request.user == profile_user:
             render_data['profile_form'] = UserProfileForm(instance=profile_user)
         if can_change_userlevel(request.user, profile_user):
-            render_data['userlevel_form'] = UserLevelForm(instance=profile_user)
+            render_data['userlevel_form'] = UserLevelForm(instance=profile_user,
+                request_user=request.user)
 
         if request.user == profile_user and request.method == 'POST' \
             and 'profile_form' in request.POST:
@@ -73,7 +74,7 @@ def user_profile(request, username):
                 messages.success(request, 'Update profile successfully!')
 
         if request.method == 'POST' and 'userlevel_form' in request.POST:
-            userlevel_form = UserLevelForm(request.POST)
+            userlevel_form = UserLevelForm(request.POST, request_user=request.user)
             if can_change_userlevel(request.user, profile_user):
                 if userlevel_form.is_valid(request.user):
                     user_level = userlevel_form.cleaned_data['user_level']
@@ -83,10 +84,7 @@ def user_profile(request, username):
                     profile_user.save()
                     render_data['userlevel_form'] = userlevel_form
                     messages.success(request, 'Update user level successfully!')
-                else:
-                    user_level = userlevel_form.cleaned_data['user_level']
-                    messages.warning(request, 'You can\'t switch user %s to %s' % \
-                                    (profile_user, user_level))
+
         return render_index(request, 'users/profile.html', render_data)
 
     except User.DoesNotExist:
