@@ -24,7 +24,6 @@ SOFTWARE.
 from django import forms
 from threading import Thread
 
-
 from users.models import User
 from problem.models import Problem, Submission, SubmissionDetail, Testcase
 from vjudge.submit import submit_to_vjudge
@@ -36,10 +35,14 @@ logger = log_info.get_logger()
 class CodeSubmitForm(forms.Form):
     SUBMIT_PATH = config_info.get_config('path', 'submission_code_path')
     LANGUAGE_CHOICE = tuple(config_info.get_config_items('compiler_option'))
+    BACKEND_VERSION = config_info.get_config('system_version', 'backend')
+    GCC_VERSION = config_info.get_config('system_version', 'gcc')
+    GPP_VERSION = config_info.get_config('system_version', 'gpp')
 
-    pid = forms.CharField()
+    pid = forms.CharField(label='Problem ID')
     language = forms.ChoiceField(choices=LANGUAGE_CHOICE, initial=Submission.CPP,
-                                 widget=forms.RadioSelect())
+                                 help_text="Backend: %s<br>gcc: %s<br>g++: %s"
+                                 % (BACKEND_VERSION, GCC_VERSION, GPP_VERSION))
     code = forms.CharField(max_length=10000,
                            widget=forms.Textarea(attrs={'id': 'code_editor'}))
 
