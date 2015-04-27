@@ -95,16 +95,14 @@ $(function() {
                 <button type="submit" name="userlevel_form"
                   class="btn btn-primary">Submit</button>
               </div>
-            {% else %}
-              {% if user|reveal_private_info:profile_user %}
-                <div class="form-group">
-                  <label class="control-label col-lg-4">User Level</label>
-                  <div class="col-lg-8">
-                    <input class="form-control" readonly="True"
-                    value="{{ profile_user.get_user_level_display }}">
-                  </div>
+            {% elif user|reveal_private_info:profile_user %}
+              <div class="form-group">
+                <label class="control-label col-lg-4">User Level</label>
+                <div class="col-lg-8">
+                  <input class="form-control" readonly="True"
+                  value="{{ profile_user.get_user_level_display }}">
                 </div>
-              {% endif %}
+              </div>
             {% endif %}
           </form>
         </div>
