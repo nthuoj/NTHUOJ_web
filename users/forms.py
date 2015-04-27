@@ -134,7 +134,7 @@ class UserProfileForm(forms.ModelForm):
 class UserLevelForm(forms.ModelForm):
     """A form for updating user's userlevel."""
     def __init__(self, *args, **kwargs):
-        request_user = kwargs.pop('request_user')
+        request_user = kwargs.pop('request_user', User())
         super(UserLevelForm, self).__init__(*args, **kwargs)
         # Judge can only promote a user to these levels
         self.fields['user_level'].label = 'User Level'
