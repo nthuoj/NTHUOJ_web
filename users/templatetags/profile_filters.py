@@ -50,7 +50,7 @@ def reveal_private_info(request_user, profile_user):
     """Test if the request_user can view private information of profile_user"""
     request_user = validate_user(request_user)
     # admin is almighty
-    if request_user.has_admin_auth() or request_user == profile_user:
+    if request_user.has_admin_auth():
         return True
 
     return False
