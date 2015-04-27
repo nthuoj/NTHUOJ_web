@@ -29,8 +29,7 @@ $(function() {
   });
   for (q in queries) {
     if (q != 'page') {
-      $('#pagerForm').append('<input type="hidden" name="' + q + '" value="' + queries[q] + '">')
-      console.log(queries[q])
+      $('#pagerForm').append('<input type="hidden" name="' + q + '" value="' + queries[q] + '">');
     }
   }
 })

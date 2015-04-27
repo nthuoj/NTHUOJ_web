@@ -69,7 +69,7 @@ class StatusFilter(forms.Form):
         cid = self.cleaned_data['cid']
         if cid:
             try:
-                if not unicode(pid).isnumeric():
+                if not unicode(cid).isnumeric():
                     raise forms.ValidationError("Contest ID must be a number")
                 contest = Contest.objects.get(id=cid)
             except Contest.DoesNotExist:

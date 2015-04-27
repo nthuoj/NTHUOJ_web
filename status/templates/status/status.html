@@ -8,16 +8,23 @@
 {% block import_source %}
 {% endblock import_source %}
 {% block body_block %}
-<form class="form-horizontal col-lg-4" method="get">
-  {{ status_filter|bootstrap_horizontal }}
-  <button type="submit" class="btn btn-primary">Submit</button>
-</form>
+
 <div class="container" id="list">
   <br>
   <!--title-->
   <div class="well">
     <h2>Status</h2>
+    <form id="statusFilter" method="get">
+      <div class="col-lg-2"></div>
+    {% for field in status_filter %}
+      <div class="col-lg-2">{{ field|bootstrap }}</div>
+    {% endfor %}
+    <div class="modal-footer">
+      <button type="submit" class="btn btn-primary">Search</button>
+    </div>
+    </form>
   </div>
+
   {% if submissions %}
     {% include "status/statusTable.html" %}
     {% include "utils/pager.html" with objects=submissions %}
