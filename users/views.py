@@ -78,13 +78,16 @@ def user_profile(request, username):
             if can_change_userlevel(request.user, profile_user):
                 if userlevel_form.is_valid(request.user):
                     user_level = userlevel_form.cleaned_data['user_level']
-                    logger.info('User %s update %s\'s user level to %s' %
+                    logger.info("User %s update %s's user level to %s" %
                                 (request.user, username, user_level))
                     profile_user.user_level = user_level
                     profile_user.save()
                     render_data['userlevel_form'] = userlevel_form
                     messages.success(request, 'Update user level successfully!')
-
+                else:
+                    user_level = userlevel_form.cleaned_data['user_level']
+                    messages.warning(request, "You can't switch user %s to %s" % \
+                                    (profile_user, user_level))
         return render_index(request, 'users/profile.html', render_data)
 
     except User.DoesNotExist:
