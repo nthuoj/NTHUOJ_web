@@ -49,7 +49,7 @@ class CodeSubmitForm(forms.Form):
     def clean_pid(self):
         pid = self.cleaned_data['pid']
         if not unicode(pid).isnumeric():
-            raise forms.ValidationError("Pid must be a number")
+            raise forms.ValidationError("Problem ID must be a number")
         try:
             problem = Problem.objects.get(id=pid)
             if not user_info.has_problem_auth(self.user, problem):

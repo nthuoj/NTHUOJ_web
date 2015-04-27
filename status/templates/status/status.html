@@ -1,20 +1,26 @@
 {% extends "index/base.html" %}
 {% load status_filters %}
 {% load static %}
+{% load bootstrap %}
 {% block title_name %}
 <title>Status</title>
 {% endblock title_name %}
 {% block import_source %}
 {% endblock import_source %}
 {% block body_block %}
-
+<form class="form-horizontal col-lg-4" method="get">
+  {{ status_filter|bootstrap_horizontal }}
+  <button type="submit" class="btn btn-primary">Submit</button>
+</form>
 <div class="container" id="list">
   <br>
   <!--title-->
   <div class="well">
     <h2>Status</h2>
   </div>
-  {% include "status/statusTable.html" %}
-  {% include "utils/pager.html" with objects=submissions %}
+  {% if submissions %}
+    {% include "status/statusTable.html" %}
+    {% include "utils/pager.html" with objects=submissions %}
+  {% endif %}
 </div>
 {% endblock body_block %}
