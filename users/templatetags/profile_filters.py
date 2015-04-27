@@ -52,5 +52,7 @@ def reveal_private_info(request_user, profile_user):
     # admin is almighty
     if request_user.has_admin_auth():
         return True
-
+    # user won't know their user level
+    if request_user.has_subjudge_auth() and request_user == profile_user:
+        return True
     return False
