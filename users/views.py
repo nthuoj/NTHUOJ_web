@@ -116,14 +116,14 @@ def user_create(request):
 
 
 def user_logout(request):
-    next_page = get_next_page(request)
+    next_page = get_next_page(request.GET.get('next'))
     logger.info('user %s logged out' % str(request.user))
     logout(request)
     return redirect(next_page)
 
 
 def user_login(request):
-    next_page = get_next_page(request)
+    next_page = get_next_page(request.GET.get('next'))
     if request.user.is_authenticated():
         return redirect(next_page)
     if request.method == 'POST':
