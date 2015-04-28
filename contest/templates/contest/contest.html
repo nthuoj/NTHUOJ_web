@@ -52,20 +52,20 @@
         <h1 class="panel-title" style="text-align:center;">Clarification</h1>
       </div>
       <div id="contest_clarification">
-        <table class="table">
+        <table class="table" style="table-layout: fixed; width: 100%">
           <thead>
             <tr>
               {% if user|can_reply:contest %}
-                <th></th>
+                <th width="5%"></th>
               {% endif %}
-              <th>#</th>
-              <th>Problem</th>
-              <th>Asker</th>
-              <th>Description</th>
-              <th>Reply</th>
-              <th>Replier</th>
-              <th>Reply Time</th>
-              <th>For all team</th>
+              <th width="2%">#</th>
+              <th width="15%">Problem</th>
+              <th width="10%">Asker</th>
+              <th width="20%">Description</th>
+              <th width="20%">Reply</th>
+              <th width="10%">Replier</th>
+              <th width="10%">Reply Time</th>
+              <th width="5%">For all team</th>
             </tr>
           </thead>
           <tbody>
@@ -81,8 +81,8 @@
               <td>{{ forloop.counter }}</td>
               <td>{{ clarification.problem }}</td>
               <td>{{ clarification.asker }}</td>
-              <td id="content{{ clarification.id }}">{{ clarification.content }}</td>
-              <td id="reply{{ clarification.id }}">{{ clarification.reply }}</td>
+              <td class="word-block" id="content{{ clarification.id }}">{{ clarification.content }}</td>
+              <td class="word-block" id="reply{{ clarification.id }}">{{ clarification.reply }}</td>
               <td>{{ clarification.replier }}</td>
               <td>{{ clarification.reply_time|date:"Y/m/d H:i:s" }}</td>
               <td>
