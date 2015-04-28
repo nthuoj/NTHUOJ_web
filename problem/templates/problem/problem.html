@@ -5,7 +5,7 @@
       <h2>{{ problem.pname }} &nbsp;&nbsp;
         {% if problem.owner == user or user.user_level == 'ADMIN'%}
           {% if not preview %}
-            <a href="{% url 'problem:problem.views.edit' problem.pk %}">EDIT</a>
+            <a class="btn btn-primary" href="{% url 'problem:problem.views.edit' problem.pk %}">EDIT</a>
           {% endif %}
         {% endif %}
       </h2>
