@@ -35,6 +35,10 @@ function select(target){
     $('#id_reply').val(reply);
 }
 
+function noResponse(){
+    $('#id_reply').val("No Response. Please read the problem statement");
+}
+
 function tabInit(){
     //initialize
     $('#contest_tab a').click(function(e) {
