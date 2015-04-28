@@ -1,4 +1,4 @@
-<table class="table">
+<table class="table table-striped table-hover">
   <thead>
       <tr>
         <th></th>
@@ -62,23 +62,4 @@ $(document).ready(function () {
 });
 </script>
 
-<ul class="pager">
-  <span class="step-links">
-    {% if problem.has_previous %}
-      <li>
-        <a href="?page={{ problem.previous_page_number }}">← Previous</a>
-      </li>
-     {% endif %}
-
-    <span class="current">
-      Page {{ problem.number }} of {{ problem.paginator.num_pages }}.
-    </span>
-
-    {% if problem.has_next %}
-      <li>
-        <a href="?page={{ problem.next_page_number }}">Next →</a>
-      </li>
-    {% endif %}
-  </span>
-</ul>
-
+{% include "utils/pager.html" with objects=problem %}

@@ -11,28 +11,11 @@
 <hr>
 <div class="modal-body" id="register">
   <table width='100%'>
-    {% if user|can_register:contest %}
-    <tr>
-      <td>
-        <a class="btn btn-primary btn-lg btn-block" href="{% url 'contest:register' contest.id %}">
-          as {{ user.username }}</a>
-      </td>
-    </tr>
-    {% else %}
-    <tr>
-      <td class="not-clickable-area">
-        <div>
-          <h5>owner or coowner can not register</h5>
-        </div>
-      </td>
-    </tr>
-    {% endif %}
-    <tr class="separate-area"></tr>
     {% if groups %}
     <tr>
       <td>
         <a class="btn btn-success btn-lg btn-block" data-toggle="collapse"
-         data-target="#group_select">a Group</a>
+           data-target="#group_select">Group</a>
       </td>
     </tr>
     {% endif %}
@@ -41,12 +24,37 @@
   {% if groups %}
   <div class="collapse" id="group_select">
     <div class="well">
-      <form class="form-inline" method="GET" action="{% url 'contest:register' contest.id %}">
+      <form class="form-inline" method="POST" action="{% url 'contest:register' contest.id %}">
+        {% csrf_token %}
         <select name="group" class="form-control" style="width:70%;">
           {% for group in groups %}
           <option value="{{ group.id }}">{{ group.gname }}</option>
           {% endfor %}
         </select>
+        <input class="btn btn-primary" type="submit" value="Confirm">
+      </form>
+    </div>
+  </div>
+  {% endif %} 
+  {% if user|has_auth:contest.id %}
+  <table width='100%'>
+    <tr class="separate-area"></tr>
+    <tr>
+      <td>
+        <a class="btn btn-success btn-lg btn-block" data-toggle="collapse" 
+           data-target="#public-user">Public User</a>
+      </td>
+    </tr>
+  </table>
+  <div class="collapse" id="public-user">
+    <div class="well">
+      <form class="form-inline" method="POST" 
+            action="{% url 'contest:register' contest.id %}">
+        {% csrf_token %}
+        <label>How many Public User do you need?</label>
+        <br>
+        <input class="form-control" type="text" name="public_user" 
+               placeholder="0~{{ max_public_user }}">
         <input class="btn btn-primary" type="submit" value="Confirm">
       </form>
     </div>

@@ -159,11 +159,3 @@ def submission_filter(submission_list, user):
             valid_submission_list.append(submission_group)
 
     return valid_submission_list
-
-
-@register.simple_tag()
-def url_replace(request, field, value):
-    dict_ = request.GET.copy()
-    dict_[field] = value
-
-    return dict_.urlencode()

@@ -116,6 +116,15 @@ def get_scoreboard(contest):
         new_contestant.testcases_solved = new_contestant.get_testcases_solved()
         scoreboard.add_user(new_contestant)
 
+    for problem in scoreboard.problems:
+        if len(scoreboard.users):
+            problem.pass_rate = float(problem.pass_user) / len(scoreboard.users) * 100
+            problem.not_pass_rate = 100 - problem.pass_rate
+        else:
+            problem.pass_rate = 0
+            problem.not_pass_rate = 100
+            problem.no_submission = True
+
     return scoreboard
 
 def get_scoreboard_csv(contest_id, scoreboard_type):
@@ -243,79 +252,32 @@ def can_delete_contest(user, contest):
     user = validate_user(user)
     return user.has_admin_auth() or (user == contest.owner)
 
-'''
-1. contest is not ended
-2. contest is open_register
-3. user is not owner or coowner
-4. user has not attended
-5. user is logined
-6. user is not admin
-'''
-NOT_LOGGED_IN = "not_logged_in"
-ENDED = "ended"
-NOT_OPEN_REGISTER = "not_open_register"
-OWN_CONTEST = "own_contest"
-HAS_ATTENDED = "has_attended"
-IS_ADMIN = "is_admin"
-OK = "OK"
-
-'''
-return error or success message
-'''
-def can_register_return_status(user, contest):
-    if not user.is_authenticated():
-        return NOT_LOGGED_IN
-
-    ended = is_ended(contest)
-    if ended:
-        return ENDED
-
+def contest_registrable(contest):
+    if has_started(contest):
+        return False    
     open_register = contest.open_register
     if not open_register:
-        return NOT_OPEN_REGISTER
+        return False
+    return True
 
+def user_can_register_contest(user, contest):
+    if not user.is_authenticated():
+        return False
+    if user.has_admin_auth():
+        return False
     has_ownership = has_contest_ownership(user,contest)
     if has_ownership:
-        return OWN_CONTEST
-
-    has_attended = Contestant.objects.filter(contest = contest, user = user).exists()
-    if has_attended:
-        return HAS_ATTENDED
-    
-    if user.has_admin_auth():
-        return IS_ADMIN
-
-    return OK
+        return False
+    is_contestant = Contestant.objects.filter(contest = contest, user = user).exists()
+    if is_contestant:
+        return False
+    return True
 
 '''
 return boolean
 '''
 def can_register(user, contest):
-    if can_register_return_status(user, contest) is OK:
-        return True
-    return False
-
-'''
-depend on error msg and write to log
-'''
-def can_register_log(user, contest):
-    status = can_register_return_status(user, contest)
-    if status is OK:
-        return True
-    elif status is NOT_LOGGED_IN:
-        logger.info('Contest: User does not logged in. Can not register.')
-    elif status is ENDED:
-        logger.info('Contest: Contest %s has ended! Can not register.' % (contest.id))
-    elif status is NOT_OPEN_REGISTER:
-        logger.info('Contest: Registration for Contest %s is closed. Can not register.' % contest.id)
-    elif status is OWN_CONTEST:
-        logger.info('Contest: User %s has Contest %s ownership. Can not register.' % (user.username, contest.id))
-    elif status is HAS_ATTENDED:
-        logger.info('Contest: User %s has already attended Contest %s!' % (user.username, contest.id))
-    elif status is IS_ADMIN:
-        logger.info('Contest: User %s is admin. Can not register contest %s!' % (user.username, contest.id))
-
-    return False
+    return (contest_registrable(contest) and user_can_register_contest(user, contest))
 
 def get_contest_or_404(contest_id):
     try:
@@ -325,5 +287,5 @@ def get_contest_or_404(contest_id):
         logger.warning('Contest: Can not register contest %s! Contest not found!' % contest_id)
         raise Http404('Can not register contest %s! Contest not found!' % contest_id)
 
-def is_ended(contest):
-    return (datetime.now() > contest.end_time)
+def has_started(contest):
+    return (datetime.now() > contest.start_time)

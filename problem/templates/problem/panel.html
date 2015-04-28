@@ -1,12 +1,20 @@
 {% extends 'problem/base.html' %}
+{% load static %}
+{% block title_name %}
+<title>Problem Panel</title>
+{% endblock title_name %}
 {% block body_block %}
-<div class="container" id="Body">
-  <h2>Problem Panel</h2>
+<div class="container" id="list">
+  <br>
+  <!--title-->
+  <div class="well">
+    <h2>Problem Panel</h2>
+  </div>
   <div>
     {% if can_add_problem %}
-    <button id="add_problem_btn" style='display:inline-block' class="btn btn-warning" href="{% url 'problem:new' %}"
-      data-toggle="tooltip" data-placement="top" title="add problem">Add Problem</button>
-    <div id="add_problem_form" style="display:inline-block;margin-left:10px">
+    <button id="add_problem_btn" class="btn btn-warning" href="{% url 'problem:new' %}"
+      data-toggle="tooltip" data-placement="top" title="add problem">Add problem</button>
+    <div id="add_problem_form">
       <form action="{% url 'problem:new' %}" method="POST" class="form-inline">
         {% csrf_token %}
         <div class="form-group">
@@ -18,7 +26,7 @@
     </div>
     {% endif %}
   </div>
-  <div style='padding-top: 50px;'>
+  <div>
     <div>
       {% include 'problem/problem_list.html' with problem=all_problem %}
     </div>
@@ -31,5 +39,4 @@ $("#add_problem_btn").click(function (e) {
     $("#add_problem_form").show();
 });
 </script>
-
 {% endblock %}
