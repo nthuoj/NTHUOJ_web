@@ -17,6 +17,8 @@
     OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
     SOFTWARE.
     '''
+import string
+import random
 from datetime import datetime
 from contest.models import Contest
 from contest.models import Contestant
@@ -219,11 +221,16 @@ def write_public_user_password_csv(writer, contest, public_contestants):
         user = contestant.user
         user.password = make_password(random_password)
         user.save()
-        user_row = [counter, user.username,random_password]
+        logger.info('Public user %s changed password' % (user.username))
+        user_row = [counter+1, user.username,random_password]
         writer.writerow(user_row)
 
 def get_random_password():
-    return "ABCD12"
+    #generate random password 
+    #range: A-Z , 0-9 
+    random_password = ''.join(random.SystemRandom().choice(string.ascii_uppercase +\
+        string.digits) for _ in range(7))
+    return random_password
 
 def get_clarifications(user, contest):
     if has_contest_ownership(user,contest):

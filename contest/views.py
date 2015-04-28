@@ -19,7 +19,9 @@
     '''
 from django.http import HttpResponseRedirect
 from django.http import HttpResponse
+from django.utils.http import urlencode
 from django.contrib.auth.decorators import login_required
+from django.core.urlresolvers import reverse
 from datetime import datetime
 from django.shortcuts import redirect
 from django.forms.models import model_to_dict
@@ -215,11 +217,11 @@ def register(request, cid):
     public_user = request.POST.get('public_user')
     #get group id or register as single user
     if(group_id is not None):
-        register_group(request, group_id, contest)
+        return register_group(request, group_id, contest)
 
     #get group id or register as single user
     elif(public_user is not None):
-        register_public_user(request, public_user, contest)
+        return register_public_user(request, public_user, contest)
     else:
         if user_register_contest(request.user, contest):
             message = 'User %s register Contest %s- "%s"!' % \
@@ -260,11 +262,14 @@ def register_public_user(request, public_user, contest):
             message = 'User %s registered %s public users to Contest %s- "%s"!' % \
                     (user.username, public_user, contest.id, contest.cname)
             messages.success(request, message)
+            download_url = reverse('contest:download') + '?cid=' + str(contest.id)
+            return HttpResponseRedirect(download_url)
         else:
             message = 'Cannot register public user to Contest %s- "%s"!' % \
                     (contest.id, contest.cname)
             messages.error(request, message)
-    return redirect('contest:archive')
+            return redirect('contest:archive')
+    raise PermissionDenied
 
 @login_required
 def ask(request):
@@ -336,6 +341,8 @@ def download(request):
             cid = request.POST.get('contest')
             contest = get_contest_or_404(cid)
             if user_info.has_contest_ownership(user, contest) or user.has_admin_auth():
+                logger.info('Contest:User %s download Contest %s - %s public user password!' %
+                    (request.user, contest.id, contest.cname))
                 return get_public_user_password_csv(contest)
             else:
                 raise PermissionDenied
