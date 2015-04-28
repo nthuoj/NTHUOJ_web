@@ -33,7 +33,7 @@ from django.core.serializers import serialize
 
 from contest.models import Contest
 from problem.models import Submission, SubmissionDetail, Problem
-from status.templatetags.status_filters import show_detail, submission_filter
+from status.templatetags.status_filters import show_detail
 from status.forms import StatusFilter
 from users.forms import CodeSubmitForm
 from users.models import User
@@ -89,8 +89,6 @@ def status(request):
         submissions = get_current_page(request, submissions)
         # Regroup submission details
         submissions.object_list = regroup_submission(submissions.object_list)
-        # Filter what that user can see
-        submissions.object_list = submission_filter(submissions.object_list, request.user)
 
          # Serialize to json
         if 'type' in request.GET and request.GET['type'] == 'json':

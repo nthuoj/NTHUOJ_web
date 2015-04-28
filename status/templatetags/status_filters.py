@@ -33,6 +33,7 @@ from utils.user_info import validate_user
 register = template.Library()
 
 
+@register.filter()
 def show_submission(submission, user):
     """Test if the user can see that submission
 
@@ -133,29 +134,3 @@ def show_detail(submission, user):
             return True
     # no condition is satisfied
     return False
-
-
-@register.filter()
-def submission_filter(submission_list, user):
-    """Return a list of submissions that the given user can see
-
-    Args:
-        submission_list: a list of submissions
-        user: an User object
-    Returns:
-        a list of submissions
-    """
-    user = validate_user(user)
-
-    # an admin can see all submissions because he/she is god
-    if user.user_level == user.ADMIN:
-        return submission_list
-
-    # filter for user level less than admin
-    valid_submission_list = []
-    for submission_group in submission_list:
-        submission = submission_group['grouper']
-        if show_submission(submission, user):
-            valid_submission_list.append(submission_group)
-
-    return valid_submission_list

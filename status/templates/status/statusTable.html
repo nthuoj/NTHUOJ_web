@@ -14,54 +14,62 @@
   </thead>
   <tbody>
     {% for submission in submissions %}
-      <tr
-        {% if submission.list %}
-          title="
-            <ol style='margin:15px'>
-              {% for detail in submission.list %}
-                <li class='row'>{{ detail.get_verdict_display }} CPU: {{ detail.cpu|floatformat }} ms</li>
-              {% endfor %}
-            </ol>"
+      {% if submission.grouper|show_submission:user %}
+        <tr
+          {% if submission.list %}
+            title="
+              <ol style='margin:15px'>
+                {% for detail in submission.list %}
+                  <li class='row'>{{ detail.get_verdict_display }} CPU: {{ detail.cpu|floatformat }} ms</li>
+                {% endfor %}
+              </ol>"
           {% endif %}
-        class={% if submission.grouper.status == "AC" %}
-        "success" {% else %} "danger" {% endif %}>
-        <td>
-          {% if submission.grouper|show_detail:user %}
-            <a target="_blank" href={% url "status:view_code" submission.grouper.id %}>
-              {{submission.grouper.id}}
-            </a>
-          {% else %}
-            {{submission.grouper.id}}
-          {% endif %}
-        </td>
-        <td>{{ submission.grouper.submit_time }}</td>
-        <td>
-          <a href={% url "users:profile" submission.grouper.user %}>
-          {{ submission.grouper.user }}
-          {% if submission.grouper.team %}
-            ({{ submission.grouper.team }})
-          {% endif %}
-          </a>
-        </td>
-        <td>
-          <a href={% url "problem:detail" submission.grouper.problem.id %}>
-            {{ submission.grouper.problem }}
-          </a></td>
-        <td>
-          {% if submission.grouper.status == "CE" or submission.grouper.status == "RF" %}
+          class={% if submission.grouper.status == "AC" %}
+          "success" {% else %} "danger" {% endif %}>
+          <td>
             {% if submission.grouper|show_detail:user %}
-              <a class="ajax-popup-link" href={% url "status:error_message" submission.grouper.id %}>
-                {{ submission.grouper.get_status_display }}
+              <a target="_blank" href={% url "status:view_code" submission.grouper.id %}>
+                {{ submission.grouper.id }}
               </a>
+            {% else %}
+              {{ submission.grouper.id }}
+            {% endif %}
+          </td>
+          <td>{{ submission.grouper.submit_time }}</td>
+          <td>
+            <a href={% url "users:profile" submission.grouper.user %}>
+            {{ submission.grouper.user }}
+            {% if submission.grouper.team %}
+              ({{ submission.grouper.team }})
+            {% endif %}
+            </a>
+          </td>
+          <td>
+            <a href={% url "problem:detail" submission.grouper.problem.id %}>
+              {{ submission.grouper.problem }}
+            </a>
+          </td>
+          <td>
+            {% if submission.grouper.status == "CE" or submission.grouper.status == "RF" %}
+              {% if submission.grouper|show_detail:user %}
+                <a class="ajax-popup-link" href={% url "status:error_message" submission.grouper.id %}>
+                  {{ submission.grouper.get_status_display }}
+                </a>
+              {% else %}
+                {{ submission.grouper.get_status_display }}
+              {% endif %}
             {% else %}
               {{ submission.grouper.get_status_display }}
             {% endif %}
-          {% else %}
-            {{ submission.grouper.get_status_display }}
-          {% endif %}
-        </td>
-        <td>{{ submission.grouper.get_language_display }}</td>
-      </tr>
+          </td>
+          <td>{{ submission.grouper.get_language_display }}</td>
+        </tr>
+      {% else %}
+        <tr class="warning">
+          <td>{{submission.grouper.id}}</td>
+          <td colspan="5">You don't have premission to see this submission.</td>
+        </tr>
+      {% endif %}
     {% endfor %}
   </tbody>
 </table>
