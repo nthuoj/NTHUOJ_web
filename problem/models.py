@@ -85,7 +85,7 @@ class Problem(models.Model):
     other_judge_id = models.IntegerField(blank=True, null=True)
     tags = models.ManyToManyField(Tag, blank=True, null=True)
     judge_source = models.CharField(max_length=11, choices=JUDGE_SOURCE_CHOICE, default=LOCAL)
-    judge_type = models.CharField(max_length=11, choices=JUDGE_TYPE_CHOICE, default=NORMAL)
+    judge_type = models.CharField(max_length=20, choices=JUDGE_TYPE_CHOICE, default=NORMAL)
     judge_language = models.CharField(max_length=11, choices=LANGUAGE_CHOICE, default=CPP)
     ac_count = models.IntegerField(default=0)
     total_submission = models.IntegerField(default=0)
