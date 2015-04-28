@@ -34,6 +34,9 @@ function switchTab(t) {
 $(document).ready(function() {
     $(".tab-pane").hide();
     $("#info").show();
+    var judge_type = $("#id_judge_type").val();
+    choose_judge_source($("#id_judge_source").val());
+    $("#id_judge_type").val(judge_type);
     hide_field();
     if (window.location.href.indexOf('?') != -1) {
         var param = window.location.href.slice(window.location.href.indexOf('?')+1).split('&');
@@ -200,18 +203,14 @@ function choose_judge_type(option) {
 function choose_judge_source(option) {
     if (option == "OTHER") {
         $("#id_other_judge_id").parent().parent().show();
-	$("#id_judge_type option").hide();
-	$("option[value='UVA']").show();
-	$("option[value='POJ']").show();
-	$("option[value='ICPC']").show();
-	$("#id_judge_type").val("UVA");
+    	$("option[value^='OTHER_']").show();
+        $("option[value^='LOCAL_']").hide();
+        $("#id_judge_type").val("");
     } else if (option == "LOCAL") {
 	    console.log("local");
-	$("#id_judge_type option").show();
-	$("option[value='UVA']").hide();
-	$("option[value='POJ']").hide();
-	$("option[value='ICPC']").hide();
-	$("#id_judge_type").val("NORMAL");
+    	$("option[value^='OTHER_']").hide();
+        $("option[value^='LOCAL_']").show();
+        $("#id_judge_type").val("");
     }
 }
 

@@ -45,13 +45,13 @@ class Problem(models.Model):
         (OTHER, 'Use Other Judge'),
     )
 
-    NORMAL = 'NORMAL'
-    SPECIAL = 'SPECIAL'
-    ERROR_TOLERANT = 'ERR_TOLERANT'
-    PARTIAL = 'PARTIAL'
-    UVA_JUDGE = 'UVA'
-    ICPC_JUDGE = 'UVALive'
-    POJ_JUDGE = 'POJ'
+    NORMAL = 'LOCAL_NORMAL'
+    SPECIAL = 'LOCAL_SPECIAL'
+    ERROR_TOLERANT = 'LOCAL_ERR_TOLERANT'
+    PARTIAL = 'LOCAL_PARTIAL'
+    UVA_JUDGE = 'OTHER_UVA'
+    ICPC_JUDGE = 'OTHER_UVALive'
+    POJ_JUDGE = 'OTHER_POJ'
     JUDGE_TYPE_CHOICE = (
         # Local Judge
         (NORMAL, 'Normal Judge'),
