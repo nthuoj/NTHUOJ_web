@@ -62,7 +62,6 @@ def status(request):
     status_filter = StatusFilter(request.GET)
     submissions = Submission.objects.all().order_by('-id')
     render_data = {}
-    render_data['request'] = request
     render_data['status_filter'] = status_filter
     render_data['running_contests'] = get_running_contests().order_by('id')
 
