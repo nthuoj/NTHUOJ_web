@@ -66,7 +66,8 @@ def custom_proc(request):
     return {
         'tstr': tstr,
         'amount': amount,
-        'default_theme': DEFAULT_THEME
+        'default_theme': DEFAULT_THEME,
+        'request': request
     }
 
 
