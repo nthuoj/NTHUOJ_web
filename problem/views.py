@@ -69,12 +69,13 @@ def detail(request, pid):
     try:
         problem = Problem.objects.get(pk=pid)
         last_contest = problem.contest_set.all().order_by('-start_time')
-        if len(last_contest) and last_contest[0].start_time < timezone.now():
-            problem.visible = True
-            problem.save()
         if not has_problem_auth(user, problem):
-            logger.warning("%s has no permission to see problem %d" % (user, problem.pk))
-            raise PermissionDenied()
+            if len(last_contest) and last_contest[0].start_time < timezone.now():
+                problem.visible = True
+                problem.save()
+            else:
+                logger.warning("%s has no permission to see problem %d" % (user, problem.pk))
+                raise PermissionDenied()
     except Problem.DoesNotExist:
         logger.warning('problem %s not found' % (pid))
         raise Http404('problem %s does not exist' % (pid))
@@ -110,8 +111,7 @@ def edit(request, pid=None):
     if request.method == 'GET':
         form = ProblemForm(instance=problem)
     if request.method == 'POST':
-        form = ProblemForm(request.POST,
-                           instance=problem)
+        form = ProblemForm(request.POST, instance=problem)
         if form.is_valid():
             problem = form.save()
             problem.description = request.POST['description']
