@@ -121,8 +121,7 @@ def navigation_autocomplete(request):
     )[:5]
 
     queries['problems'] = Problem.objects.filter(
-        Q(pname__icontains=q) |
-        Q(id__contains=q)
+        Q(visible=True) & (Q(pname__icontains=q) | Q(id__contains=q))
     )[:10]
 
     queries['contests'] = Contest.objects.filter(

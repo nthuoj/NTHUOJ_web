@@ -109,10 +109,11 @@ def show_detail(submission, user):
     if submission.user.user_level == user.ADMIN:
         return False
 
+    now = datetime.now()
     contests = Contest.objects.filter(
         is_homework=False,
-        start_time__lte=datetime.now(),
-        end_time__gte=datetime.now())
+        start_time__lte=now,
+        end_time__gte=now)
     # during the contest, only owner/coowner with user level sub-judge/judge
     # can view the detail
     if contests:
@@ -133,4 +134,16 @@ def show_detail(submission, user):
         if team_member or submission.team.leader == user:
             return True
     # no condition is satisfied
+    return False
+
+@register.simple_tag()
+def is_contest_mode():
+    now = datetime.now()
+    contests = Contest.objects.filter(
+        is_homework=False,
+        start_time__lte=now,
+        end_time__gte=now)
+
+    if contests:
+        return True
     return False
