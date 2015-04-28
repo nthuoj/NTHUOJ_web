@@ -166,7 +166,7 @@ def edit(request, cid):
             form = ContestForm(initial = contest_dic)
 
             return render_index(request,'contest/editContest.html',
-                    {'form':form, 'title':title, 'cid':contest.id})
+                    {'form':form, 'title':title, 'contest':contest})
 
         if request.method == 'POST':
             form = ContestForm(request.POST, instance = contest, 
@@ -185,7 +185,7 @@ def edit(request, cid):
                 message = 'Some fields are invalid!'
                 messages.error(request, message)
                 return render_index(request,'contest/editContest.html',
-                    {'form':form,'title':title, 'cid':contest.id})
+                    {'form':form,'title':title, 'contest':contest})
 
     raise PermissionDenied
 

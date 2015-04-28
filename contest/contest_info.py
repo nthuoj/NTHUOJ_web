@@ -217,6 +217,14 @@ def is_contestant(user, contest):
     contestant = Contestant.objects.filter(contest = contest, user = user)
     return (len(contestant)>=1)
 
+def is_coowner(user, contest):
+    user = validate_user(user)
+    coowners = contest.coowner.all()
+    for coowner in coowners:
+        if user == coowner:
+            return True
+    return False
+
 #check if user can create new clarification in contest
 '''
 admin and owner and coowner and contestant can create clarification
