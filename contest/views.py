@@ -351,4 +351,7 @@ def download(request):
         if request.GET.get('cid'):
             cid = request.GET.get('cid')
             contest = get_contest_or_404(cid)
-        return render_index(request,'contest/download.html',{'contest':contest})
+        if user_info.has_contest_ownership(user, contest) or user.has_admin_auth():
+            return render_index(request,'contest/download.html',{'contest':contest})
+        else:
+            raise PermissionDenied
