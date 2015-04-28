@@ -1,5 +1,6 @@
-<h3>Scoreboard</h3>
-<h4>{{ contest.cname }}</h4> {% load staticfiles %}
+{% load staticfiles %}
+<h3>{{ contest.cname }}</h3>
+<h5>Freeze time: {{ contest.freeze_time }} minutes</h5>
 <script src="{% static 'contest/js/scoreboard.js' %}"></script>
 <link href="{% static 'contest/css/scoreboard.css' %}" rel="stylesheet">
 {% load contest_extras %}

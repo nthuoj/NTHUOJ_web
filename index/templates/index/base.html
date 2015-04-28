@@ -35,7 +35,7 @@ SOFTWARE.
     {% if user.is_authenticated %}
     <link rel="stylesheet" href="{% static '' %}bootswatch/{{user.theme}}/bootstrap.css">
     {% else %}
-    <link rel="stylesheet" href={% static "bootswatch/paper/bootstrap.css" %}>
+    <link rel="stylesheet" href="{% static '' %}bootswatch/{{default_theme}}/bootstrap.css">
     {% endif %}
     <script src={% static "bootstrap/dist/js/bootstrap.min.js" %}></script>
     <script src={% static './js/function.js'%}></script>
@@ -198,6 +198,7 @@ SOFTWARE.
 
     <!-- wrap all page elements to div -->
     <div class="wrap-body container-fluid">
+      {% include "index/message.html" %}
       {% block body_block %}
       {% endblock body_block %}
     </div>
@@ -209,7 +210,7 @@ SOFTWARE.
         </button>
         <script src={% static "js/clipboard.js"%}></script>
         <p id="footer_text">
-        © NTHU Online Judge 2014, Templates are from Bootstrap Project</p>
+        © NTHU Online Judge 2015, Templates are from Bootstrap Project</p>
         <p id='time'>
         {{ tstr }}
         </p>
