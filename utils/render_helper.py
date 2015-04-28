@@ -30,6 +30,7 @@ from django.http import Http404
 from django.core.exceptions import PermissionDenied
 from django.core.exceptions import SuspiciousOperation
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.core.urlresolvers import resolve, reverse
 
 from users.models import Notification
 from utils.config_info import get_config
@@ -90,3 +91,14 @@ def get_current_page(request, objects, slice=25):
         objects = paginator.page(paginator.num_pages)
 
     return objects
+
+
+def get_next_page(request):
+    next_page = request.GET.get('next')
+    try:
+        resolve(next_page)
+    except:
+        # Redirect to index if the given location can not be resolved.
+        next_page = reverse('index:index')
+
+    return next_page

@@ -39,7 +39,7 @@ from users.models import UserProfile, Notification
 from users.templatetags.profile_filters import can_change_userlevel
 from utils.log_info import get_logger
 from utils.user_info import get_user_statistics, send_activation_email, send_forget_password_email
-from utils.render_helper import render_index, get_current_page
+from utils.render_helper import render_index, get_current_page, get_next_page
 
 
 # Create your views here.
@@ -116,14 +116,14 @@ def user_create(request):
 
 
 def user_logout(request):
-    next_page = request.GET.get('next')
+    next_page = get_next_page(request)
     logger.info('user %s logged out' % str(request.user))
     logout(request)
     return redirect(next_page)
 
 
 def user_login(request):
-    next_page = request.GET.get('next')
+    next_page = get_next_page(request)
     if request.user.is_authenticated():
         return redirect(next_page)
     if request.method == 'POST':
