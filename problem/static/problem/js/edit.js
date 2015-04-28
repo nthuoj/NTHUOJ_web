@@ -34,10 +34,10 @@ function switchTab(t) {
 $(document).ready(function() {
     $(".tab-pane").hide();
     $("#info").show();
+    hide_field();
     var judge_type = $("#id_judge_type").val();
     choose_judge_source($("#id_judge_source").val());
     $("#id_judge_type").val(judge_type);
-    hide_field();
     if (window.location.href.indexOf('?') != -1) {
         var param = window.location.href.slice(window.location.href.indexOf('?')+1).split('&');
 	for (var i = 0; i < param.length; i++) {
@@ -205,12 +205,12 @@ function choose_judge_source(option) {
         $("#id_other_judge_id").parent().parent().show();
     	$("option[value^='OTHER_']").show();
         $("option[value^='LOCAL_']").hide();
-        $("#id_judge_type").val("");
+        $("#id_judge_type").val($("option[value^='OTHER_']")[0].value);
     } else if (option == "LOCAL") {
 	    console.log("local");
     	$("option[value^='OTHER_']").hide();
         $("option[value^='LOCAL_']").show();
-        $("#id_judge_type").val("");
+        $("#id_judge_type").val($("option[value^='LOCAL_']")[0].value);
     }
 }
 
