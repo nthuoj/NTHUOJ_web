@@ -110,8 +110,7 @@ def edit(request, pid=None):
     if request.method == 'GET':
         form = ProblemForm(instance=problem)
     if request.method == 'POST':
-        form = ProblemForm(request.POST,
-                           instance=problem)
+        form = ProblemForm(request.POST, instance=problem)
         if form.is_valid():
             problem = form.save()
             problem.description = request.POST['description']
