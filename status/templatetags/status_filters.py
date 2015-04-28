@@ -43,6 +43,9 @@ def show_submission(submission, user):
     Returns:
         a boolean of the judgement
     """
+    user = validate_user(user)
+
+
     # admin can see all submissions
     if user.user_level == user.ADMIN:
         return True

@@ -125,11 +125,11 @@ def navigation_autocomplete(request):
     )[:10]
 
     queries['contests'] = Contest.objects.filter(
-        cname__icontains=q
+        Q(cname__icontains=q) | Q(id__contains=q)
     )[:5]
 
     queries['groups'] = Group.objects.filter(
-        gname__icontains=q
+        Q(gname__icontains=q) | Q(id__contains=q)
     )[:5]
 
     return render(request, 'index/navigation_autocomplete.html', queries)
