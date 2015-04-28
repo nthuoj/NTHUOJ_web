@@ -84,6 +84,7 @@ class TagForm(forms.ModelForm):
         fields = ['tag_name']
         labels = {'tag_name': 'Add Tag'}
         widgets = {
-            'tag_name': autocomplete_light.TextWidget('TagAutocomplete')
+            'tag_name': autocomplete_light.TextWidget('TagAutocomplete',
+                                        attrs={'class': 'form-control'})
         }
 

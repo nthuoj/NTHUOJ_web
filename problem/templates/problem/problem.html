@@ -94,8 +94,10 @@
     <form id='addTag'>
       {% csrf_token %}
       <div class='input-group'>
-        {{ tag_form }}
-        <button id='addTagButton' class='btn btn-default'>Add Tag</button>
+        {{ tag_form.tag_name }}
+        <span class="input-group-btn">
+          <button id='addTagButton' class="btn btn-default" type="button">Add Tag</button>
+      </span>
       </div>
     </form>
   {% endif %}
