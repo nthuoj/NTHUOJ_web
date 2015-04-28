@@ -65,6 +65,7 @@
               <th>Reply</th>
               <th>Replier</th>
               <th>Reply Time</th>
+              <th>For all team</th>
             </tr>
           </thead>
           <tbody>
@@ -83,7 +84,12 @@
               <td id="content{{ clarification.id }}">{{ clarification.content }}</td>
               <td id="reply{{ clarification.id }}">{{ clarification.reply }}</td>
               <td>{{ clarification.replier }}</td>
-              <td>{{ clarification.reply_time }}</td>
+              <td>{{ clarification.reply_time|date:"Y/m/d H:i:s" }}</td>
+              <td>
+              {% if clarification.reply_all%}
+              <span class="glyphicon glyphicon-ok green" aria-hidden="true"></span>
+              {% endif %}
+              </td>
             </tr>
             {% endfor %}
           </tbody>
