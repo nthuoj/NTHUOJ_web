@@ -2,10 +2,12 @@
 <div class="pname_block panel">
   <div class="left">
     <div class="pname">
-      <h2>problem #{{ problem.pk }}:<br>{{ problem.pname }} &nbsp;&nbsp;
+      <h2>{{ problem.pk }} - {{ problem.pname }} &nbsp;&nbsp;
         {% if problem.owner == user or user.user_level == 'ADMIN'%}
           {% if not preview %}
-            <a class="btn btn-primary" href="{% url 'problem:problem.views.edit' problem.pk %}">EDIT</a>
+            <a class="btn btn-warning" href="{% url 'problem:problem.views.edit' problem.pk %}">
+              <span class="glyphicon glyphicon-pencil"></span>
+            </a>
           {% endif %}
         {% endif %}
       </h2>
