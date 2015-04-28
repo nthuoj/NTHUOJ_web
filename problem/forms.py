@@ -81,7 +81,7 @@ class ProblemForm(forms.ModelForm):
 class TagForm(forms.ModelForm):
     class Meta:
         model = Tag
-        field = ['tag_name']
+        fields = ['tag_name']
         labels = {'tag_name': 'Add Tag'}
         widgets = {
             'tag_name': autocomplete_light.TextWidget('TagAutocomplete')
