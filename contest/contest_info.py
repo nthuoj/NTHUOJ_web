@@ -28,6 +28,8 @@ from contest.scoreboard import ScoreboardProblem
 from contest.scoreboard import UserProblem
 from contest.scoreboard import Submission as ScoreboardSubmission
 
+from contest import public_user
+
 from problem.models import Problem
 from problem.models import Testcase
 from problem.models import Submission
@@ -41,6 +43,7 @@ from utils.log_info import get_logger
 from utils import user_info
 
 from django.http import Http404
+from django.contrib.auth.hashers import make_password
 
 import csv
 from django.http import HttpResponse
@@ -194,8 +197,35 @@ def write_scoreboard_csv_testcases(writer, contest, scoreboard):
         footer.append(problem.total_solved)
     writer.writerow(footer)
 
-def get_clarifications(user, contest):
+def get_public_user_password_csv(contest):
+    public_contestants = public_user.get_public_contestant(contest)
+    response = HttpResponse(content_type='text/csv')
+    filename = str(contest.cname) + '-password'
+    response['Content-Disposition'] = 'attachment; filename=' + filename
 
+    #init
+    writer = csv.writer(response)
+    write_public_user_password_csv(writer, contest, public_contestants)
+
+    return response
+
+def write_public_user_password_csv(writer, contest, public_contestants):
+    header = [contest.cname,str(len(public_contestants))+' users']
+    writer.writerow(header)
+    title = ['#','Username','Password']
+    writer.writerow(title)
+    for counter, contestant in enumerate(public_contestants):
+        random_password = get_random_password()
+        user = contestant.user
+        user.password = make_password(random_password)
+        user.save()
+        user_row = [counter, user.username,random_password]
+        writer.writerow(user_row)
+
+def get_random_password():
+    return "ABCD12"
+
+def get_clarifications(user, contest):
     if has_contest_ownership(user,contest):
         return Clarification.objects.filter(contest = contest)
     reply_all = Clarification.objects.filter(contest = contest, reply_all = True)
@@ -284,8 +314,8 @@ def get_contest_or_404(contest_id):
         contest = Contest.objects.get(id = contest_id)
         return contest
     except Contest.DoesNotExist:
-        logger.warning('Contest: Can not register contest %s! Contest not found!' % contest_id)
-        raise Http404('Can not register contest %s! Contest not found!' % contest_id)
+        logger.warning('Contest:Contest not found!' % contest_id)
+        raise Http404('Contest not found!' % contest_id)
 
 def has_started(contest):
     return (datetime.now() > contest.start_time)

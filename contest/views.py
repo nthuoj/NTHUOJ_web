@@ -27,6 +27,7 @@ from django.contrib import messages
 
 from contest.contest_info import get_scoreboard
 from contest.contest_info import get_scoreboard_csv
+from contest.contest_info import get_public_user_password_csv
 from contest.contest_info import get_clarifications
 from contest.contest_info import can_ask
 from contest.contest_info import can_reply
@@ -323,10 +324,24 @@ def reply(request):
     return redirect('contest:archive')
 
 def download(request):
-    what = request.POST.get('type')
-    if what == 'scoreboard':
-        scoreboard_type = request.POST.get('scoreboard_type')
-        cid = request.POST.get('contest')
-        scoreboard_file = get_scoreboard_csv(cid, scoreboard_type)
-        return scoreboard_file
-    raise Http404('file not found')
+    user = user_info.validate_user(request.user)
+    if request.method == 'POST':
+        what = request.POST.get('type')
+        if what == 'scoreboard':
+            scoreboard_type = request.POST.get('scoreboard_type')
+            cid = request.POST.get('contest')
+            scoreboard_file = get_scoreboard_csv(cid, scoreboard_type)
+            return scoreboard_file
+        elif what == 'public_user_password':
+            cid = request.POST.get('contest')
+            contest = get_contest_or_404(cid)
+            if user_info.has_contest_ownership(user, contest) or user.has_admin_auth():
+                return get_public_user_password_csv(contest)
+            else:
+                raise PermissionDenied
+        raise Http404('file not found')
+    elif request.method == 'GET':
+        if request.GET.get('cid'):
+            cid = request.GET.get('cid')
+            contest = get_contest_or_404(cid)
+        return render_index(request,'contest/download.html',{'contest':contest})
