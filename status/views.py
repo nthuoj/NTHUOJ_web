@@ -32,6 +32,7 @@ from django.core.exceptions import PermissionDenied
 from django.core.serializers import serialize
 
 from contest.models import Contest
+from contest.contest_info import get_running_contests
 from problem.models import Submission, SubmissionDetail, Problem
 from status.templatetags.status_filters import show_detail
 from status.forms import StatusFilter
@@ -60,6 +61,11 @@ def regroup_submission(submissions):
 def status(request):
     status_filter = StatusFilter(request.GET)
     submissions = Submission.objects.all().order_by('-id')
+    render_data = {}
+    render_data['request'] = request
+    render_data['status_filter'] = status_filter
+    render_data['running_contests'] = get_running_contests().order_by('id')
+
     if status_filter.is_valid():
         username = status_filter.cleaned_data['username']
         cid = status_filter.cleaned_data['cid']
@@ -101,14 +107,14 @@ def status(request):
                 default=lambda obj: obj.isoformat() if hasattr(obj, 'isoformat') else obj))
     else:
         messages.warning(request, 'Please check filter constraints again!')
-        return render_index(request, 'status/status.html',
-            {'request': request, 'status_filter': status_filter})
+        return render_index(request, 'status/status.html', render_data)
 
     if not submissions:
         messages.warning(request, 'No submissions found for the given query!')
 
-    return render_index(request, 'status/status.html',
-        {'request': request, 'submissions': submissions, 'status_filter': status_filter})
+    render_data['submissions'] = submissions
+
+    return render_index(request, 'status/status.html', render_data)
 
 def contest_status(request, contest):
     """Return a status table of given contest"""

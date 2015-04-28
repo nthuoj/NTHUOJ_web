@@ -48,6 +48,14 @@ from datetime import datetime
 
 logger = get_logger()
 
+def get_running_contests():
+    now = datetime.now()
+    contests = Contest.objects.filter(
+        is_homework=False,
+        start_time__lte=now,
+        end_time__gte=now)
+    return contests
+
 def get_contestant_list(contest):
     return Contestant.objects.filter(contest = contest)
 
@@ -79,7 +87,7 @@ def get_submit_times(problem):
 
 def get_scoreboard(contest):
     contestants = get_contestant_list(contest)
-    
+
     scoreboard = Scoreboard(contest.start_time)
     for problem in contest.problem.all():
         total_testcases = get_total_testcases(problem);
@@ -89,7 +97,7 @@ def get_scoreboard(contest):
     for contestant in contestants:
         new_contestant = ScoreboardUser(contestant.user.username)
         for problem in contest.problem.all():
-            submissions = get_contestant_problem_submission_list(contest,contestant,problem)    
+            submissions = get_contestant_problem_submission_list(contest,contestant,problem)
             total_testcases = get_total_testcases(problem)
             new_problem = UserProblem(problem.id,total_testcases)
             for submission in submissions:
@@ -130,7 +138,7 @@ def get_scoreboard(contest):
 def get_scoreboard_csv(contest_id, scoreboard_type):
     contest = get_contest_or_404(contest_id)
     scoreboard = get_scoreboard(contest)
-    
+
     response = HttpResponse(content_type='text/csv')
     filename = str(contest.cname) + '-scoreboard-' + str(scoreboard_type)
     response['Content-Disposition'] = 'attachment; filename=' + filename
@@ -164,7 +172,7 @@ def write_scoreboard_csv_penalty(writer, contest, scoreboard):
         user_row.append(total_penalty)
         writer.writerow(user_row)
 
-    footer = ['Passed', '']  
+    footer = ['Passed', '']
     for problem in scoreboard.problems:
         footer.append(problem.pass_user)
     writer.writerow(footer)
@@ -189,7 +197,7 @@ def write_scoreboard_csv_testcases(writer, contest, scoreboard):
         user_row.append(user_total_testcases)
         writer.writerow(user_row)
 
-    footer = ['Passed Testcases', '']  
+    footer = ['Passed Testcases', '']
     for problem in scoreboard.problems:
         footer.append(problem.total_solved)
     writer.writerow(footer)
@@ -254,7 +262,7 @@ def can_delete_contest(user, contest):
 
 def contest_registrable(contest):
     if has_started(contest):
-        return False    
+        return False
     open_register = contest.open_register
     if not open_register:
         return False

@@ -26,6 +26,7 @@ from datetime import datetime
 from django import template
 
 from contest.models import Contest
+from contest.contest_info import get_running_contests
 from team.models import TeamMember
 from utils.user_info import validate_user
 
@@ -113,10 +114,7 @@ def show_detail(submission, user):
         return False
 
     now = datetime.now()
-    contests = Contest.objects.filter(
-        is_homework=False,
-        start_time__lte=now,
-        end_time__gte=now)
+    contests = get_running_contests()
     # during the contest, only owner/coowner with user level sub-judge/judge
     # can view the detail
     if contests:
@@ -137,16 +135,4 @@ def show_detail(submission, user):
         if team_member or submission.team.leader == user:
             return True
     # no condition is satisfied
-    return False
-
-@register.simple_tag()
-def is_contest_mode():
-    now = datetime.now()
-    contests = Contest.objects.filter(
-        is_homework=False,
-        start_time__lte=now,
-        end_time__gte=now)
-
-    if contests:
-        return True
     return False
