@@ -48,6 +48,7 @@ from contest.forms import ReplyForm
 from contest.register_contest import user_register_contest
 from contest.register_contest import group_register_contest
 from contest.register_contest import public_user_register_contest
+from contest.public_user import is_integer
 
 from contest.contest_info import can_create_contest
 from contest.contest_info import can_edit_contest
@@ -263,26 +264,31 @@ def register_public_user(request, public_user, contest):
     user = user_info.validate_user(request.user)
     if (user_info.has_contest_ownership(user, contest) or
         user.has_admin_auth()):
+        if not is_integer(public_user):
+            message = 'invalid input!'
+            messages.warning(request, message)
+            return redirect('contest:archive')
         user_registered = public_user_register_contest(public_user, contest)
         if user_registered:
             message = 'User %s registered %s public users to Contest %s- "%s"!' % \
                     (user.username, user_registered, contest.id, contest.cname)
             messages.success(request, message)
+            if int(public_user) > settings.MAX_PUBLIC_USER:
+                message = 'Requested more than max! Set public users to %s' % \
+                    (settings.MAX_PUBLIC_USER)
+                messages.warning(request, message)
             download_url = reverse('contest:download') + '?cid=' + str(contest.id)
             return HttpResponseRedirect(download_url)
         else:
-            try:
-                if int(public_user) == 0:
-                    message = 'Remove all public users!'
-                    messages.warning(request, message)
-                    return redirect('contest:archive')
-            except:
-                pass
-            
-            message = 'Cannot register public user to Contest %s- "%s"!' % \
-                    (contest.id, contest.cname)
-            messages.error(request, message)
-            return redirect('contest:archive')
+            if int(public_user) == 0:
+                message = 'Remove all public users!'
+                messages.warning(request, message)
+                return redirect('contest:archive')
+            else:
+                message = 'Cannot register public user to Contest %s- "%s"!' % \
+                        (contest.id, contest.cname)
+                messages.error(request, message)
+                return redirect('contest:archive')
     raise PermissionDenied
 
 @login_required
