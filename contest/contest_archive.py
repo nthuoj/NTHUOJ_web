@@ -33,7 +33,7 @@ def get_contests(user):
     else:
         contests_info = get_started_contests()
 
-    return contests_info
+    return contests_info.distinct()
 
 def get_owned_or_started_contests(user):
     owned_contests = get_owned_contests(user)

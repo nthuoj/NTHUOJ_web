@@ -16,7 +16,7 @@
 <script src={% static "codemirror/keymap/sublime.js" %}></script>
 <script src={% static "codemirror/mode/clike/clike.js" %}></script>
 <!-- custom settings -->
-<script src={% static "js/editorsettings.js" %}></script>
+<script src={% static "js/editorSettings.js" %}></script>
 <!-- file input -->
 <script src={% static "bootstrap.file-input/index.js" %}></script>
 <style>
@@ -27,15 +27,15 @@
 </style>
 
 <div class="container">
-  <h3>Submit Code</h3>
+  <h2>Submit Code</h2>
   <form class="form-horizontal" action="/users/submit/" method="post">
     {% csrf_token %}
     <div class="row">
       <div class="col-lg-2">
-        {{ form.pid|bootstrap_horizontal }}
+        {{ form.pid|bootstrap }}
       </div>
-      <div class="col-lg-offset-1 col-lg-6">
-        {{ form.language|bootstrap_horizontal }}
+      <div class="col-lg-offset-1 col-lg-2">
+        {{ form.language|bootstrap }}
       </div>
     </div>
     {{ form.code|bootstrap }}

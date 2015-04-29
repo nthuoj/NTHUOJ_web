@@ -1,4 +1,4 @@
-<!--
+/*
 The MIT License (MIT)
 
 Copyright (c) 2014 NTHUOJ team
@@ -20,38 +20,17 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
--->
-<!DOCTYPE html>
-{% load static %}
-
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>403</title>
-  <!-- bootstrap, bootwatch JS & CSS -->
-  {% if user.is_authenticated %}
-    <link rel="stylesheet" href="{% static '' %}bootswatch/{{user.theme}}/bootstrap.css">
-    {% else %}
-    <link rel="stylesheet" href="{% static '' %}bootswatch/{{default_theme}}/bootstrap.css">
-  {% endif %}
-  <script src={% static "jquery/dist/jquery.min.js" %}></script>
-  <script src={% static "bootstrap/dist/js/bootstrap.min.js" %}></script>
-  <link rel="stylesheet" href={% static "./css/index.css"%} media="screen">
-</head>
-<body>
-  <div style="background-color:#fcfcfc;border-radius:10px;">
-    <div style="position:relative;bottom:0px;">
-      <p class="status" >4&nbsp0&nbsp3</p>
-    </div>
-    <br>
-    <p class="status-title">Forbidden</p>
-    <br>
-    <p class="status-message">{{ error_message }}</p>
-    <br>
-    <p class="status-condition">
-      No Permission to Access.<br>
-      <a href="javascript:history.go(-1)">Go Back</a>
-    </p>
-  </div>
-</body>
-</html>
+*/
+$(function() {
+  var queries = {};
+  $.each(document.location.search.substr(1).split('&'), function(c, q) {
+    var i = q.split('=');
+    queries[i[0].toString()] = i[1].toString();
+  });
+  for (q in queries) {
+    if (q != 'page') {
+      $('#pagerForm').append('<input type="hidden" name="' + q + '" value="' + queries[q] + '">')
+      console.log(queries[q])
+    }
+  }
+})

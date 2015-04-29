@@ -1,4 +1,4 @@
-"""
+'''
 The MIT License (MIT)
 
 Copyright (c) 2014 NTHUOJ team
@@ -20,39 +20,18 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
-"""
+'''
 from django import template
-
-from users.models import User
-from utils.user_info import validate_user
+from django.http import QueryDict
 
 register = template.Library()
 
 
-@register.filter()
-def can_change_userlevel(request_user, profile_user):
-    """Test if the request_user can change user_level of profile_user"""
-    request_user = validate_user(request_user)
-    # admin can change user to all levels
-    if request_user.has_admin_auth():
-        return True
-    # judge can change user to sub-judge, user
-    user_level = profile_user.user_level
-    if request_user.has_judge_auth() and \
-            (user_level == User.SUB_JUDGE or user_level == User.USER):
-        return True
-
-    return False
-
-
-@register.filter()
-def reveal_private_info(request_user, profile_user):
-    """Test if the request_user can view private information of profile_user"""
-    request_user = validate_user(request_user)
-    # admin is almighty
-    if request_user.has_admin_auth():
-        return True
-    # user won't know their user level
-    if request_user.has_subjudge_auth() and request_user == profile_user:
-        return True
-    return False
+@register.simple_tag()
+def url_replace(request, field, value):
+    try:
+        dict_ = request.GET.copy()
+    except:
+        dict_ = QueryDict('', mutable=True)
+    dict_[field] = value
+    return dict_.urlencode()

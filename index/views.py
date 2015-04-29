@@ -56,7 +56,7 @@ def index(request, alert_info='none'):
     c_runnings = Contest.objects.filter \
         (start_time__lt=present, end_time__gt=present, is_homework=False)
     c_upcomings = Contest.objects.filter \
-        (start_time__gt=present, start_time__lt=time_threshold, is_homework=False)
+        (start_time__gt=present, start_time__lt=time_threshold, is_homework=False).order_by('start_time')
     announcements = Announcement.objects.filter \
         (start_time__lt=present, end_time__gt=present)
     return render_index(request, 'index/index.html',
