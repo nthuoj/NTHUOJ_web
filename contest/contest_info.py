@@ -221,7 +221,7 @@ def write_public_user_password_csv(writer, contest, public_contestants):
         user = contestant.user
         user.password = make_password(random_password)
         user.save()
-        logger.info('Public user %s changed password' % (user.username))
+        logger.info('Public user %s changed password' % user.username)
         user_row = [user.username, random_password]
         writer.writerow(user_row)
 
@@ -229,7 +229,7 @@ def get_random_password():
     #generate random password 
     #range: A-Z , 0-9 , a-z
     random_password = ''.join(random.SystemRandom().choice(string.ascii_uppercase +\
-        + string.ascii_lowercase + string.digits) for _ in range(7))
+         string.ascii_lowercase + string.digits) for _ in range(7))
     return random_password
 
 def get_clarifications(user, contest):

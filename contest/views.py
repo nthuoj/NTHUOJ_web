@@ -258,9 +258,10 @@ def register_public_user(request, public_user, contest):
     user = user_info.validate_user(request.user)
     if (user_info.has_contest_ownership(user, contest) or
         user.has_admin_auth()):
-        if public_user_register_contest(public_user, contest):
+        user_registered = public_user_register_contest(public_user, contest)
+        if user_registered:
             message = 'User %s registered %s public users to Contest %s- "%s"!' % \
-                    (user.username, public_user, contest.id, contest.cname)
+                    (user.username, user_registered, contest.id, contest.cname)
             messages.success(request, message)
             download_url = reverse('contest:download') + '?cid=' + str(contest.id)
             return HttpResponseRedirect(download_url)

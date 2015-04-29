@@ -77,7 +77,7 @@ def public_user_register_contest(account_num, contest):
     if need < 0:
         public_user.delete_public_contestants(\
             public_contestants[account_num:len(public_contestants)])
-        return True
+        return account_num
     #public contestant is not enough
     available_users = public_user.get_available_public_users()
     lack = need - len(available_users)
@@ -89,4 +89,4 @@ def public_user_register_contest(account_num, contest):
         new_users = public_user.create_public_users(lack)
         add_contestants_and_activate(new_users, contest)
         add_contestants_and_activate(available_users, contest)
-    return True
+    return account_num
