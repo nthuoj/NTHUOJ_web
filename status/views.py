@@ -32,11 +32,8 @@ from django.core.exceptions import PermissionDenied
 from django.core.serializers import serialize
 
 from contest.models import Contest
-<<<<<<< HEAD
 from contest.contest_info import get_running_contests
-=======
 from contest.models import Contestant
->>>>>>> upstream/dev
 from problem.models import Submission, SubmissionDetail, Problem
 from status.templatetags.status_filters import show_detail
 from status.forms import StatusFilter

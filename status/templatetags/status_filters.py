@@ -107,12 +107,14 @@ def show_detail(submission, user):
 
     # basic requirement: submission must be shown
     # admin can see everyone's detail
-    if user.user_level == user.ADMIN:
+    if user.has_admin_auth():
         return True
     # no one can see admin's detail
-    if submission.user.user_level == user.ADMIN:
+    if submission.user.has_admin_auth():
         return False
-
+    # a problem owner can view his problem's detail
+    if submission.problem.owner_id == user.username:
+        return True
     now = datetime.now()
     contests = get_running_contests()
     # during the contest, only owner/coowner with user level sub-judge/judge
@@ -125,9 +127,6 @@ def show_detail(submission, user):
         return False
     # a user can view his own detail
     if submission.user == user:
-        return True
-    # a problem owner can view his problem's detail
-    if submission.problem.owner_id == user.username:
         return True
     # a user can view his team member's detail
     if submission.team:
