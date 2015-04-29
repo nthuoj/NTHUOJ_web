@@ -22,18 +22,14 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 $(function() {
-  var queries = {};
-  $.each(document.location.search.substr(1).split('&'), function(c, q) {
-    var i = q.split('=');
-    try {
-      queries[i[0].toString()] = i[1].toString();
-    } catch (e) {
-      console.log(e);
-    }
-  });
+  var queries = $.url.paramAll();
   for (q in queries) {
     if (q != 'page') {
-      $('#pagerForm').append('<input type="hidden" name="' + q + '" value="' + queries[q] + '">');
+      $('<input>').attr({
+        type: 'hidden',
+        name: q,
+        value: queries[q]
+      }).appendTo('#pagerForm');
     }
   }
 })
