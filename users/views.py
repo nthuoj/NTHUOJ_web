@@ -199,7 +199,7 @@ def submit(request, pid=None):
         codesubmitform = CodeSubmitForm(request.POST, user=request.user)
         if codesubmitform.is_valid():
             codesubmitform.submit()
-            return redirect(reverse('status:status'))
+            return redirect('%s?username=%s' % (reverse('status:status'), request.user.username))
         else:
             return render_index(request, 'users/submit.html', {'form': codesubmitform})
     return render_index(request, 'users/submit.html', {'form': CodeSubmitForm(initial={'pid': pid})})
