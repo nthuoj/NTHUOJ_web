@@ -54,7 +54,7 @@ class ContestForm(forms.ModelForm):
                     contest_problems = contest.problem.all().distinct()
                     self.fields['problem'].queryset = Problem.objects.filter(
                             Q(visible = True)|Q(owner = user)).distinct() | contest_problems
-                # create contest   
+                # create contest
                 else:
                     self.fields['problem'].queryset = Problem.objects.filter(
                             Q(visible = True)|Q(owner = user))
@@ -75,8 +75,15 @@ class ContestForm(forms.ModelForm):
             'open_register',
         )
 
+    def clean_end_time(self):
+        start_time = self.cleaned_data.get("start_time")
+        end_time = self.cleaned_data.get("end_time")
+        if end_time <= start_time:
+            raise forms.ValidationError("End time cannot be earlier than start time.")
+        return end_time
+
 class ClarificationForm(forms.ModelForm):
-    
+
     def __init__(self, *args, **kwargs):
         super(ClarificationForm, self).__init__(*args, **kwargs)
         #only problems contest contains will be shown in list
@@ -85,7 +92,7 @@ class ClarificationForm(forms.ModelForm):
         if type(contest) is Contest:
             contest_id = contest.id
             the_contest = Contest.objects.get(id=contest_id)
-            self.fields['problem'] = forms.ChoiceField(choices=[(problem.id,problem.pname) 
+            self.fields['problem'] = forms.ChoiceField(choices=[(problem.id,problem.pname)
                 for problem in the_contest.problem.all()])
 
     class Meta:
@@ -109,7 +116,7 @@ class ReplyForm(forms.ModelForm):
         if type(contest) is Contest:
             clarifications = Clarification.objects.filter(contest = contest)
             self.fields['clarification'] = forms.ChoiceField(
-                choices=[(clarification.id,clarification.content) 
+                choices=[(clarification.id,clarification.content)
                 for clarification in clarifications.all()])
 
     class Meta:
