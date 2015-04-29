@@ -51,7 +51,7 @@
       <form class="form-inline" method="POST" 
             action="{% url 'contest:register' contest.id %}">
         {% csrf_token %}
-        <label>How many Public User do you need?</label>
+        <label>How many Public Users do you need?</label>
         <br>
         <input class="form-control" type="text" name="public_user" 
                placeholder="0~{{ max_public_user }}">

@@ -210,17 +210,17 @@ def write_scoreboard_csv_testcases(writer, contest, scoreboard):
 def get_public_user_password_csv(contest):
     public_contestants = public_user.get_public_contestant(contest)
     response = HttpResponse(content_type='text/csv')
-    filename = str(contest.cname) + '-password'
+    filename = contest.cname.encode('utf-8') + '-password'
     response['Content-Disposition'] = 'attachment; filename=' + filename
-
+    
     #init
     writer = csv.writer(response)
     write_public_user_password_csv(writer, contest, public_contestants)
-
+    
     return response
 
 def write_public_user_password_csv(writer, contest, public_contestants):
-    header = [contest.cname,str(len(public_contestants))+' users']
+    header = [contest.cname.encode('utf-8'),str(len(public_contestants))+' users']
     writer.writerow(header)
     title = ['Username','Password']
     writer.writerow(title)
