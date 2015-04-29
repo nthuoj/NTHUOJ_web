@@ -20,7 +20,9 @@
             title="
               <ol style='margin:15px'>
                 {% for detail in submission.list %}
-                  <li class='row'>{{ detail.get_verdict_display }} CPU: {{ detail.cpu|floatformat }} ms</li>
+                  <li class='row'>
+                    {{ detail.get_verdict_display }} CPU: {{ detail.cpu|floatformat }} ms
+                  </li>
                 {% endfor %}
               </ol>"
           {% endif %}
@@ -28,7 +30,8 @@
           "success" {% else %} "danger" {% endif %}>
           <td>
             {% if submission.grouper|show_detail:user %}
-              <a target="_blank" href={% url "status:view_code" submission.grouper.id %}>
+              <a target="_blank"
+                 href={% url "status:view_code" submission.grouper.id %}>
                 {{ submission.grouper.id }}
               </a>
             {% else %}
@@ -52,7 +55,8 @@
           <td>
             {% if submission.grouper.status == "CE" or submission.grouper.status == "RF" %}
               {% if submission.grouper|show_detail:user %}
-                <a class="ajax-popup-link" href={% url "status:error_message" submission.grouper.id %}>
+                <a class="ajax-popup-link"
+                   href={% url "status:error_message" submission.grouper.id %}>
                   {{ submission.grouper.get_status_display }}
                 </a>
               {% else %}

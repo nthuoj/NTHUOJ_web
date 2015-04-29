@@ -17,7 +17,7 @@
   <div class="well">
     <h2
       {% if running_contests %}
-        title='<ol>{% for contest in running_contests %} <li>{{contest}}</li> {% endfor %}</ol>'
+        title='<ol>{% for contest in running_contests %}<li>{{contest}}</li> {% endfor %}</ol>'
       {% endif %}>
       Status
       {% if running_contests %}
