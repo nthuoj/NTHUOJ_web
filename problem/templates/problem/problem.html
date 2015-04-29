@@ -2,10 +2,12 @@
 <div class="pname_block panel">
   <div class="left">
     <div class="pname">
-      <h2>{{ problem.pname }} &nbsp;&nbsp;
+      <h2>{{ problem.pk }} - {{ problem.pname }} &nbsp;&nbsp;
         {% if problem.owner == user or user.user_level == 'ADMIN'%}
           {% if not preview %}
-            <a href="{% url 'problem:problem.views.edit' problem.pk %}">EDIT</a>
+            <a class="btn btn-warning" href="{% url 'problem:problem.views.edit' problem.pk %}">
+              <span class="glyphicon glyphicon-pencil"></span>
+            </a>
           {% endif %}
         {% endif %}
       </h2>
@@ -94,8 +96,10 @@
     <form id='addTag'>
       {% csrf_token %}
       <div class='input-group'>
-        {{ tag_form }}
-        <button id='addTagButton' class='btn btn-default'>Add Tag</button>
+        {{ tag_form.tag_name }}
+        <span class="input-group-btn">
+          <button id='addTagButton' class="btn btn-default" type="button">Add Tag</button>
+      </span>
       </div>
     </form>
   {% endif %}

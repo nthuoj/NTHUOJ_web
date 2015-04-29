@@ -77,6 +77,23 @@ class ProblemForm(forms.ModelForm):
             'owner': autocomplete_light.TextWidget('UserAutocomplete')
         }
 
+    def clean_judge_type(self):
+        judge_source = self.cleaned_data['judge_source']
+        judge_type = self.cleaned_data['judge_type']
+
+        if judge_source != judge_type.split('_')[0]:
+            raise forms.ValidationError("Invalid judge type")
+
+        return judge_type
+
+    def clean_other_judge_id(self):
+        judge_source = self.cleaned_data['judge_source']
+        judge_id = self.cleaned_data['other_judge_id']
+        if judge_source == 'OTHER' and not judge_id:
+            raise forms.ValidationError("Invalid Other Judge Id")
+
+        return judge_id
+
 
 class TagForm(forms.ModelForm):
     class Meta:
@@ -84,6 +101,7 @@ class TagForm(forms.ModelForm):
         fields = ['tag_name']
         labels = {'tag_name': 'Add Tag'}
         widgets = {
-            'tag_name': autocomplete_light.TextWidget('TagAutocomplete')
+            'tag_name': autocomplete_light.TextWidget('TagAutocomplete',
+                                        attrs={'class': 'form-control'})
         }
 
