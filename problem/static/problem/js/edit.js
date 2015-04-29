@@ -203,12 +203,11 @@ function choose_judge_type(option) {
 function choose_judge_source(option) {
     if (option == "OTHER") {
         $("#id_other_judge_id").parent().parent().show();
-    	$("option[value^='OTHER_']").show();
+        $("option[value^='OTHER_']").show();
         $("option[value^='LOCAL_']").hide();
         $("#id_judge_type").val($("option[value^='OTHER_']")[0].value);
     } else if (option == "LOCAL") {
-	    console.log("local");
-    	$("option[value^='OTHER_']").hide();
+        $("option[value^='OTHER_']").hide();
         $("option[value^='LOCAL_']").show();
         $("#id_judge_type").val($("option[value^='LOCAL_']")[0].value);
     }
