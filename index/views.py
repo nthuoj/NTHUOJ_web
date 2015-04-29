@@ -112,6 +112,7 @@ def announcement_delete(request, aid):
     return redirect(reverse('index:index'))
 
 def navigation_autocomplete(request):
+    now = datetime.now()
     q = request.GET.get('q', '')
 
     queries = {}
@@ -121,16 +122,15 @@ def navigation_autocomplete(request):
     )[:5]
 
     queries['problems'] = Problem.objects.filter(
-        Q(pname__icontains=q) |
-        Q(id__contains=q)
+        Q(visible=True) & (Q(pname__icontains=q) | Q(id__contains=q))
     )[:10]
 
     queries['contests'] = Contest.objects.filter(
-        cname__icontains=q
+        Q(start_time__lt=now) & (Q(cname__icontains=q) | Q(id__contains=q))
     )[:5]
 
     queries['groups'] = Group.objects.filter(
-        gname__icontains=q
+        Q(gname__icontains=q) | Q(id__contains=q)
     )[:5]
 
     return render(request, 'index/navigation_autocomplete.html', queries)
