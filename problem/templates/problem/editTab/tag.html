@@ -16,8 +16,10 @@
 <form id="addTag">
   <div class='input-group'>
     {% csrf_token %}
-    {{ tag_form }}
-    <button id='add_tag_button' class='btn btn-default'>Add</button>
+    {{ tag_form.tag_name }}
+    <span class="input-group-btn">
+      <button id='add_tag_button' class='btn btn-default'>Add Tag</button>
+    </span>
   </div>
 </form>
 <script>
