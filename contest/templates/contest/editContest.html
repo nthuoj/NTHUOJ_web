@@ -1,4 +1,4 @@
-{% extends "index/base.html" %} 
+{% extends "index/base.html" %}
 {% load staticfiles %}
 {% block title_name %}
 {% load bootstrap %}
@@ -9,7 +9,7 @@
 <script src="{% static 'quicksearch/jquery.quicksearch.js' %}" type="text/javascript"></script>
 <script src="{% static 'contest/js/search.js' %}" type="text/javascript"></script>
 <link href="{% static 'contest/css/editContest.css'%}" rel="stylesheet" type="text/css">
-<link href="{% static 'multiselect/css/multi-select.css'%}" media="screen" rel="stylesheet" type="text/css"> 
+<link href="{% static 'multiselect/css/multi-select.css'%}" media="screen" rel="stylesheet" type="text/css">
 {{ form.media }}
 {% endblock import_source %} {% block body_block %}
 <div class="container" id="list">
@@ -42,4 +42,5 @@
   <input class="btn btn-primary" type="submit" value="Submit">
   </form>
 </div>
+<script>$('input').removeAttr("readonly");</script>
 {% endblock body_block %}
