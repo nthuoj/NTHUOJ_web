@@ -112,7 +112,7 @@ def announcement_delete(request, aid):
     return redirect(reverse('index:index'))
 
 def navigation_autocomplete(request):
-    now = datatime.datetime.now()
+    now = datetime.now()
     q = request.GET.get('q', '')
 
     queries = {}
