@@ -30,7 +30,7 @@ from contest.scoreboard import User
 from contest.public_user import is_public_user
 
 from users.models import User
-from utils import user_info 
+from utils import user_info
 
 register = template.Library()
 

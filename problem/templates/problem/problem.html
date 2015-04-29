@@ -90,14 +90,14 @@
       {% endfor %}
     {% endif %}
   </div>
-  {% if tag_form %}
-  <form id='addTag'>
-    {% csrf_token %}
-    <div class='input-group'>
-      {{ tag_form }}
-      <button id='addTagButton' class='btn btn-default'>Add Tag</button>
-    </div>
-  </form>
+  {% if tag_form and user.is_authenticated %}
+    <form id='addTag'>
+      {% csrf_token %}
+      <div class='input-group'>
+        {{ tag_form }}
+        <button id='addTagButton' class='btn btn-default'>Add Tag</button>
+      </div>
+    </form>
   {% endif %}
 
   <br>
