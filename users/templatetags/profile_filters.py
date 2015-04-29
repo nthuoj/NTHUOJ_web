@@ -30,24 +30,29 @@ register = template.Library()
 
 
 @register.filter()
-def can_change_userlevel(user, profile_user):
-    """Test if the user can change user_level
-    of profile_user
-    Args:
-        submission: a Submission object
-        user: an User object
-    Returns:
-        a boolean of the judgement
-    """
-    user = validate_user(user)
+def can_change_userlevel(request_user, profile_user):
+    """Test if the request_user can change user_level of profile_user"""
+    request_user = validate_user(request_user)
     # admin can change user to all levels
-    if user.has_admin_auth():
+    if request_user.has_admin_auth():
         return True
     # judge can change user to sub-judge, user
     user_level = profile_user.user_level
-    if user.has_judge_auth() and \
+    if request_user.has_judge_auth() and \
             (user_level == User.SUB_JUDGE or user_level == User.USER):
         return True
 
     return False
 
+
+@register.filter()
+def reveal_private_info(request_user, profile_user):
+    """Test if the request_user can view private information of profile_user"""
+    request_user = validate_user(request_user)
+    # admin is almighty
+    if request_user.has_admin_auth():
+        return True
+    # user won't know their user level
+    if request_user.has_subjudge_auth() and request_user == profile_user:
+        return True
+    return False

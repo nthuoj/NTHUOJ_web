@@ -133,7 +133,13 @@ class UserProfileForm(forms.ModelForm):
 
 class UserLevelForm(forms.ModelForm):
     """A form for updating user's userlevel."""
-    user_level = forms.ChoiceField(label='Userlevel', choices=User.USER_LEVEL_CHOICE)
+    def __init__(self, *args, **kwargs):
+        request_user = kwargs.pop('request_user', User())
+        super(UserLevelForm, self).__init__(*args, **kwargs)
+        # Judge can only promote a user to these levels
+        self.fields['user_level'].label = 'User Level'
+        if request_user.user_level == User.JUDGE:
+            self.fields['user_level'].choices = ((User.SUB_JUDGE, 'Sub-judge'), (User.USER, 'User'))
 
     class Meta:
         model = User
