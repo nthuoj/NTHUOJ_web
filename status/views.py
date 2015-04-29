@@ -31,6 +31,7 @@ from django.core.exceptions import PermissionDenied
 from django.core.serializers import serialize
 
 from contest.models import Contest
+from contest.models import Contestant
 from problem.models import Submission, SubmissionDetail, Problem
 from status.templatetags.status_filters import show_detail, submission_filter
 from users.forms import CodeSubmitForm
@@ -108,8 +109,13 @@ def status(request):
 def contest_status(request, contest):
     """Return a status table of given contest"""
     problems = contest.problem.all()
+    contestants = Contestant.objects.filter(contest = contest)
+    users = []
+    for contestant in contestants:
+        users.append(contestant.user)
     submissions = Submission.objects.filter(
         problem__in=problems,
+        user__in=users,
         submit_time__gte=contest.start_time,
         submit_time__lte=contest.end_time).order_by('-id')[0:25]
 

@@ -27,8 +27,10 @@ from django.core.exceptions import PermissionDenied
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.contrib.auth.decorators import login_required
 from django.core.servers.basehttp import FileWrapper
+from django.utils import timezone
 
 from utils.render_helper import render_index
+from utils.user_info import validate_user, has_problem_auth
 from users.models import User
 from problem.models import Problem, Tag, Testcase
 from problem.forms import ProblemForm, TagForm
@@ -44,12 +46,9 @@ logger = log_info.get_logger()
 
 # Create your views here.
 def problem(request):
-    can_add_problem = False
-    if request.user.is_anonymous():
-        can_add_problem = False
-    else:
-        can_add_problem = request.user.has_subjudge_auth()
-    all_problem_list = get_problem_list(request.user)
+    user = validate_user(request.user)
+    can_add_problem = user.has_subjudge_auth()
+    all_problem_list = get_problem_list(user)
     all_problem = get_current_page(request, all_problem_list, 15)
     for p in all_problem:
         if p.total_submission != 0:
@@ -65,10 +64,18 @@ def problem(request):
                    'can_add_problem': can_add_problem})
 
 def detail(request, pid):
-    user = request.user
+    user = validate_user(request.user)
     tag_form = TagForm()
     try:
         problem = Problem.objects.get(pk=pid)
+        last_contest = problem.contest_set.all().order_by('-start_time')
+        if not has_problem_auth(user, problem):
+            if len(last_contest) and last_contest[0].start_time < timezone.now():
+                problem.visible = True
+                problem.save()
+            else:
+                logger.warning("%s has no permission to see problem %d" % (user, problem.pk))
+                raise PermissionDenied()
     except Problem.DoesNotExist:
         logger.warning('problem %s not found' % (pid))
         raise Http404('problem %s does not exist' % (pid))
@@ -93,7 +100,7 @@ def edit(request, pid=None):
     tag_form = TagForm()
     try:
         problem = Problem.objects.get(pk=pid)
-        if not request.user.is_admin and request.user != problem.owner:
+        if not request.user.has_admin_auth() and request.user != problem.owner:
             logger.warning("user %s has no permission to edit problem %s" % (request.user, pid))
             raise PermissionDenied()
     except Problem.DoesNotExist:
@@ -102,12 +109,9 @@ def edit(request, pid=None):
     testcase = Testcase.objects.filter(problem=problem)
     tags = problem.tags.all()
     if request.method == 'GET':
-        form = ProblemForm(instance=problem,
-                           initial={'owner': request.user.username})
+        form = ProblemForm(instance=problem)
     if request.method == 'POST':
-        form = ProblemForm(request.POST,
-                           instance=problem,
-                           initial={'owner': request.user.username})
+        form = ProblemForm(request.POST, instance=problem)
         if form.is_valid():
             problem = form.save()
             problem.description = request.POST['description']
@@ -128,22 +132,19 @@ def edit(request, pid=None):
             logger.info('edit problem, pid = %d by %s' % (problem.pk, request.user))
             logger.info('edit problem, pid = %d' % (problem.pk))
             return redirect('/problem/%d' % (problem.pk))
-    if not request.user.is_admin:
-        del form.fields['owner']
-    else:
-        return render_index(request, 'problem/edit.html',
-                            {'form': form, 'pid': pid, 'pname': problem.pname,
-                             'tags': tags, 'tag_form': tag_form, 'description': problem.description,
-                             'input': problem.input, 'output': problem.output,
-                             'sample_in': problem.sample_in, 'sample_out': problem.sample_out,
-                             'testcase': testcase,
-                             'path': {
-                                 'TESTCASE_PATH': TESTCASE_PATH,
-                                 'SPECIAL_PATH': SPECIAL_PATH,
-                                 'PARTIAL_PATH': PARTIAL_PATH, },
-                             'has_special_judge_code': has_special_judge_code(problem),
-                             'has_partial_judge_code': has_partial_judge_code(problem),
-                             'file_ex': get_problem_file_extension(problem)})
+    return render_index(request, 'problem/edit.html',
+                        {'form': form, 'pid': pid, 'pname': problem.pname,
+                         'tags': tags, 'tag_form': tag_form, 'description': problem.description,
+                         'input': problem.input, 'output': problem.output,
+                         'sample_in': problem.sample_in, 'sample_out': problem.sample_out,
+                         'testcase': testcase,
+                         'path': {
+                             'TESTCASE_PATH': TESTCASE_PATH,
+                             'SPECIAL_PATH': SPECIAL_PATH,
+                             'PARTIAL_PATH': PARTIAL_PATH, },
+                         'has_special_judge_code': has_special_judge_code(problem),
+                         'has_partial_judge_code': has_partial_judge_code(problem),
+                         'file_ex': get_problem_file_extension(problem)})
 
 @login_required
 def tag(request, pid):
@@ -175,7 +176,7 @@ def delete_tag(request, pid, tag_id):
     except Tag.DoesNotExist:
         logger.warning("tag %s does not exist" % (tag_id))
         raise Http404("tag %s does not exist" % (tag_id))
-    if not request.user.is_admin and request.user != problem.owner:
+    if not request.user.has_admin_auth() and request.user != problem.owner:
         raise PermissionDenied()
     logger.info("tag %s deleted by %s" % (tag.tag_name, request.user))
     problem.tags.remove(tag)
@@ -234,7 +235,7 @@ def delete_testcase(request, pid, tid):
     except Testcase.DoesNotExist:
         logger.warning("testcase %s does not exist" % (tid))
         raise Http404("testcase %s does not exist" % (tid))
-    if not request.user.is_admin and request.user != problem.owner:
+    if not request.user.has_admin_auth() and request.user != problem.owner:
         raise PermissionDenied
     logger.info("testcase %d deleted" % (testcase.pk))
     try:
@@ -246,13 +247,14 @@ def delete_testcase(request, pid, tid):
     testcase.delete()
     return HttpResponse()
 
+@login_required
 def delete_problem(request, pid):
     try:
         problem = Problem.objects.get(pk=pid)
     except Problem.DoesNotExist:
         logger.warning("problem %s does not exist" % (pid))
         raise Http404("problem %s does not exist" % (pid))
-    if not request.user.is_admin and request.user != problem.owner:
+    if not request.user.has_admin_auth() and request.user != problem.owner:
         raise PermissionDenied
     logger.info("problem %d deleted by %s" % (problem.pk, request.user))
     problem.delete()
