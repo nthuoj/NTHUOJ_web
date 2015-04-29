@@ -145,7 +145,7 @@ def get_scoreboard_csv(contest_id, scoreboard_type):
     scoreboard = get_scoreboard(contest)
     
     response = HttpResponse(content_type='text/csv')
-    filename = str(contest.cname) + '-scoreboard-' + str(scoreboard_type)
+    filename = contest.cname.encode('utf-8') + '-scoreboard-' + str(scoreboard_type)
     response['Content-Disposition'] = 'attachment; filename=' + filename
 
     #init
