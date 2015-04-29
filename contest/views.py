@@ -54,6 +54,8 @@ from contest.contest_info import can_edit_contest
 from contest.contest_info import can_delete_contest
 from contest.contest_info import get_contest_or_404
 
+from contest.public_user import get_public_contestant
+
 from problem.problem_info import get_testcase
 
 from group.models import Group
@@ -86,9 +88,11 @@ def contest_info(request, cid):
 def register_page(request, cid):
     contest = get_contest_or_404(cid)
     groups = get_owned_group(request.user)
+    public_user = len(get_public_contestant(contest))
     return render_index(request,
         'contest/register.html',
-        {'contest':contest, 'groups':groups,'max_public_user':settings.MAX_PUBLIC_USER})
+        {'contest':contest, 'groups':groups,'max_public_user':settings.MAX_PUBLIC_USER,
+         'public_user':public_user})
 
 #contest datail page
 def contest(request, cid):
