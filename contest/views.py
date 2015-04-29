@@ -340,7 +340,8 @@ def download(request):
         elif what == 'public_user_password':
             cid = request.POST.get('contest')
             contest = get_contest_or_404(cid)
-            if user_info.has_contest_ownership(user, contest) or user.has_admin_auth():
+            if user_info.has_contest_ownership(user, contest) or\
+                user.has_admin_auth():
                 logger.info('Contest:User %s download Contest %s - %s public user password!' %
                     (request.user, contest.id, contest.cname))
                 return get_public_user_password_csv(contest)
