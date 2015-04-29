@@ -23,6 +23,7 @@ $(document).ready(function() {
     hide('id_owner');
     enable_search();
     modify_label();
+    widen_multiselect();
 });
 
 function enable_search() {
@@ -65,6 +66,11 @@ function enable_search() {
             this.qs2.cache();
         }
     });
+}
+
+function widen_multiselect(){
+    add_attribute('ms-id_coowner','style','width:100%;');
+    add_attribute('ms-id_problem','style','width:100%;');
 }
 
 function modify_label(){
