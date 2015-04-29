@@ -136,9 +136,12 @@ class UserLevelForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         request_user = kwargs.pop('request_user', User())
         super(UserLevelForm, self).__init__(*args, **kwargs)
-        # Judge can only promote a user to these levels
         self.fields['user_level'].label = 'User Level'
-        if request_user.user_level == User.JUDGE:
+        # Admin can have all choices, which is the default
+        if request_user.has_admin_auth():
+            return
+        # Judge can only promote a user to these levels
+        if request_user.has_judge_auth():
             self.fields['user_level'].choices = ((User.SUB_JUDGE, 'Sub-judge'), (User.USER, 'User'))
 
     class Meta:
