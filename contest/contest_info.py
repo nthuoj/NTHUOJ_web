@@ -89,6 +89,7 @@ def get_scoreboard(contest):
     for problem in contest.problem.all():
         total_testcases = get_total_testcases(problem);
         new_problem = ScoreboardProblem(problem.id,problem.pname,total_testcases)
+        new_problem.no_submission = True
         scoreboard.add_problem(new_problem)
 
     for contestant in contestants:
@@ -102,9 +103,16 @@ def get_scoreboard(contest):
                 new_submission = ScoreboardSubmission(submission.submit_time,passed_testcases)
                 new_problem.add_submission(new_submission)
                 if new_submission.is_solved(total_testcases):
+                    new_problem.AC_time = new_submission.submit_time - contest.start_time
+                    new_problem.AC_time = int(new_problem.AC_time.total_seconds()/60)
                     break
             if new_problem.is_solved():
                 scoreboard.get_problem(new_problem.id).add_pass_user()
+            else:
+                new_problem.AC_time = '--'
+            if len(submissions):
+                scoreboard.get_problem(new_problem.id).no_submission = False
+
             #setup problem attribute
             new_problem.penalty = get_penalty(new_problem,scoreboard.start_time)
             new_problem.submit_times = get_submit_times(new_problem)
@@ -163,8 +171,8 @@ def write_scoreboard_csv_penalty(writer, contest, scoreboard):
         user_row = [counter+1, user.username]
         for problem in user.problems:
             submit_times = problem.submit_times
-            penalty = get_penalty(problem, contest.start_time)
-            user_row.append(str(submit_times) + '/' + str(penalty))
+            AC_time = problem.AC_time
+            user_row.append(str(submit_times) + '/' + str(AC_time))
         total_penalty = user.get_penalty(contest.start_time)
         user_row.append(total_penalty)
         writer.writerow(user_row)
@@ -233,7 +241,7 @@ def get_random_password():
     return random_password
 
 def get_clarifications(user, contest):
-    if has_contest_ownership(user,contest):
+    if has_contest_ownership(user,contest) or user.has_admin_auth():
         return Clarification.objects.filter(contest = contest)
     reply_all = Clarification.objects.filter(contest = contest, reply_all = True)
     if user.is_authenticated():
@@ -245,6 +253,14 @@ def is_contestant(user, contest):
     user = validate_user(user)
     contestant = Contestant.objects.filter(contest = contest, user = user)
     return (len(contestant)>=1)
+
+def is_coowner(user, contest):
+    user = validate_user(user)
+    coowners = contest.coowner.all()
+    for coowner in coowners:
+        if user == coowner:
+            return True
+    return False
 
 #check if user can create new clarification in contest
 '''

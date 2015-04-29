@@ -101,6 +101,7 @@ def contest(request, cid):
 
     now = datetime.now()
     #if contest has not started and user is not the owner
+
     if ((contest.start_time < now) or\
         user_info.has_contest_ownership(user,contest) or\
         user.has_admin_auth()):
@@ -168,7 +169,7 @@ def edit(request, cid):
             form = ContestForm(initial = contest_dic)
 
             return render_index(request,'contest/editContest.html',
-                    {'form':form, 'title':title, 'cid':contest.id})
+                    {'form':form, 'title':title, 'contest':contest})
 
         if request.method == 'POST':
             form = ContestForm(request.POST, instance = contest, 
@@ -187,7 +188,7 @@ def edit(request, cid):
                 message = 'Some fields are invalid!'
                 messages.error(request, message)
                 return render_index(request,'contest/editContest.html',
-                    {'form':form,'title':title, 'cid':contest.id})
+                    {'form':form,'title':title, 'contest':contest})
 
     raise PermissionDenied
 
@@ -278,15 +279,17 @@ def ask(request):
         contest = request.POST['contest']
         contest_obj = Contest.objects.get(pk = contest)
     except:
-        logger.warning('Clarification: Can not create Clarification! Contest %s not found!'
-            % contest)
-        return redirect('contest:archive')
+        logger.warning('Clarification: User %s can not create Clarification!' % 
+            request.user.username)
+        raise Http404('Contest does not exist, can not ask.')
 
     if can_ask(request.user,contest_obj):
         if request.method == 'POST':
             form = ClarificationForm(request.POST)
             if form.is_valid():
                 new_clarification = form.save()
+                new_clarification.reply = ' '
+                new_clarification.save()
                 logger.info('Clarification: User %s create Clarification %s!'
                     % (request.user.username, new_clarification.id))
                 message = 'User %s successfully asked!' % \
@@ -307,13 +310,13 @@ def reply(request):
         contest_obj = instance.contest
         contest = contest_obj.id
     except:
-        logger.warning('Clarification: User %s can not reply Clarification %s!'
-            % (request.user.username, clarification.id))
-        return redirect('contest:archive')
+        logger.warning('Clarification: User %s can not reply Clarification!'
+            % (request.user.username))
+        raise Http404('Contest does not exist, can not reply.')
 
     if can_reply(request.user,contest_obj):
         if request.method == 'POST':
-            form = ReplyForm(request.POST or None, instance = instance)
+            form = ReplyForm(request.POST, instance = instance)
             if form.is_valid():
                 replied_clarification = form.save()
                 replied_clarification.reply_time = datetime.now()
@@ -323,10 +326,16 @@ def reply(request):
                 message = 'User %s successfully replied!' % \
                     (request.user.username)
                 messages.success(request, message) 
+            else:
+                logger.warning('Clarification: User %s can not reply Clarification %s!'
+                    % (request.user.username, replied_clarification.id))
+                message = 'Some fields are wrong!'
+                messages.error(request, message) 
+
             return redirect('contest:contest',contest)
     message = 'User %s cannot reply!' % \
              (request.user.username)
-    messages.error(request, message)    
+    messages.error(request, message)   
     return redirect('contest:archive')
 
 def download(request):
