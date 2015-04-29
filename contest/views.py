@@ -271,6 +271,14 @@ def register_public_user(request, public_user, contest):
             download_url = reverse('contest:download') + '?cid=' + str(contest.id)
             return HttpResponseRedirect(download_url)
         else:
+            try:
+                if int(public_user) == 0:
+                    message = 'Remove all public users!'
+                    messages.warning(request, message)
+                    return redirect('contest:archive')
+            except:
+                pass
+            
             message = 'Cannot register public user to Contest %s- "%s"!' % \
                     (contest.id, contest.cname)
             messages.error(request, message)
