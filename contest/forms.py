@@ -39,9 +39,10 @@ class ContestForm(forms.ModelForm):
         # access object through self.instance...
         initial = kwargs.get('initial',{})
         user = initial.get('user',User())
+        owner = initial.get('owner',User())
         method = initial.get('method','')
         self.fields['coowner'].queryset = User.objects.exclude(
-            Q(user_level=User.USER)|Q(pk = user.pk))
+            Q(user_level=User.USER)|Q(pk = owner))
         if method == 'GET':
             contest_id = initial.get('id',0)
             # if user not is admin
