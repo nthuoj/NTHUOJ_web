@@ -129,6 +129,10 @@ def edit(request, pid=None):
                 with open('%s%s%s' % (PARTIAL_PATH, problem.pk, file_ex), 'w') as t_in:
                     for chunk in request.FILES['partial_judge_code'].chunks():
                         t_in.write(chunk)
+            if "partial_judge_header" in request.FILES:
+                with open('%s%s.h' % (PARTIAL_PATH, problem.pk), 'w') as t_in:
+                    for chunk in request.FILES['partial_judge_header'].chunks():
+                        t_in.write(chunk)
             logger.info('edit problem, pid = %d by %s' % (problem.pk, request.user))
             logger.info('edit problem, pid = %d' % (problem.pk))
             return redirect('/problem/%d' % (problem.pk))

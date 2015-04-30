@@ -54,6 +54,7 @@ autocomplete_light.register(TagAutocomplete)
 class ProblemForm(forms.ModelForm):
     other_judge_id = forms.IntegerField(required=False, min_value=0)
     partial_judge_code = forms.FileField(required=False)
+    partial_judge_header = forms.FileField(required=False)
     special_judge_code = forms.FileField(required=False)
     class Meta:
         model = Problem
@@ -68,6 +69,7 @@ class ProblemForm(forms.ModelForm):
             # 'error_tolerance',
             'other_judge_id',
             'partial_judge_code',
+            'partial_judge_header',
             'special_judge_code',
         ]
         labels = {
