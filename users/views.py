@@ -113,10 +113,9 @@ def user_create(request):
 
 
 def user_logout(request):
-    next_page = get_next_page(request.GET.get('next'))
     logger.info('user %s logged out' % str(request.user))
     logout(request)
-    return redirect(next_page)
+    return redirect(reverse('index:index'))
 
 
 def user_login(request):
