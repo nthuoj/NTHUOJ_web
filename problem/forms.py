@@ -96,6 +96,19 @@ class ProblemForm(forms.ModelForm):
 
         return judge_id
 
+    def clean_partial_judge_code(self):
+        judge_type = self.cleaned_data['judge_type']
+        code = self.cleaned_data['partial_judge_code']
+        if judge_type == 'LOCAL_PARTIAL' and code == None:
+            raise forms.ValidationError("Partial judge code empty")
+        return code
+
+    def clean_partial_judge_header(self):
+        judge_type = self.cleaned_data['judge_type']
+        header = self.cleaned_data['partial_judge_header']
+        if judge_type == 'LOCAL_PARTIAL' and header == None:
+            raise forms.ValidationError("Partial judge header empty")
+        return header
 
 class TagForm(forms.ModelForm):
     class Meta:
