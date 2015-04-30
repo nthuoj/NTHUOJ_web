@@ -56,7 +56,7 @@ class Problem(models.Model):
         # Local Judge
         (NORMAL, 'Normal Judge'),
         (SPECIAL, 'Special Judge'),
-        (ERROR_TOLERANT, 'Error TOLERANT'),
+        # (ERROR_TOLERANT, 'Error TOLERANT'),
         (PARTIAL, 'Partial Judge'),
         # Other Judge
         (UVA_JUDGE, 'Uva'),

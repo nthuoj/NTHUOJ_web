@@ -65,7 +65,7 @@ class ProblemForm(forms.ModelForm):
             'judge_source',
             'judge_type',
             'judge_language',
-            'error_tolerance',
+            # 'error_tolerance',
             'other_judge_id',
             'partial_judge_code',
             'special_judge_code',
