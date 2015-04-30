@@ -15,9 +15,9 @@
   </div>
   <div class="right">
     <div class="problem-option">
-      <a>Status</a> &nbsp;|&nbsp;
-      <a>Printable </a> &nbsp;|&nbsp;
-      <a>Rank</a> &nbsp;|&nbsp;
+	    <a href="/status/?pid={{ problem.pk }}">Status</a> &nbsp;|&nbsp;
+      <!-- <a>Printable </a> &nbsp;|&nbsp; -->
+      <!-- <a>Rank</a> &nbsp;|&nbsp; -->
       <a data-toggle='modal' data-target='#limit_{{ problem.pk }}'>Limits</a>
       {% if not preview %}
         <a class="btn btn-primary" href="{% url 'users:submit' problem.pk %}">Submit</a>
