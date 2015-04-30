@@ -174,7 +174,7 @@ SOFTWARE.
                 <i id="name-text">{{ user.username }}</i>
               </a>
             </li>
-            <li class="nav-text-auth"><a href="{% url 'users:logout' %}?next={{ request.path }}">Logout</a></li>
+            <li class="nav-text-auth"><a href="{% url 'users:logout' %}">Logout</a></li>
             {% else %}
             <li class="nav-text-auth"><a href="{% url 'users:login' %}?next={{ request.path }}">Login</a></li>
             <li class="nav-text-auth"><a href="{% url 'users:create' %}">Register</a></li>
