@@ -38,6 +38,7 @@ apt-get install python-mysqldb
 apt-get install nodejs
 apt-get install npm
 npm install -g bower
+ln -s /usr/bin/nodejs /usr/bin/node
 pip install django-bower
 pip install django
 pip install django-bower
@@ -45,6 +46,7 @@ pip install django-axes
 pip install django-autocomplete-light
 pip install django-datetime-widget
 pip install django-bootstrap
+pip install django-bootstrap-form
 pip install requests
 ```
 * Execute install.py for initial setting.
