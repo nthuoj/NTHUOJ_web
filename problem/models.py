@@ -91,7 +91,7 @@ class Problem(models.Model):
     total_submission = models.IntegerField(default=0)
 
     def __unicode__(self):
-        return str(self.id) + ' - ' + self.pname
+        return '%d - %s' % (self.id, self.pname)
 
 
 class Testcase(models.Model):
