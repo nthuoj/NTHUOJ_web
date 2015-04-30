@@ -1,0 +1,36 @@
+{% extends "index/base.html" %} {% block body_block %}
+<br>
+<div class="container" id="list">
+  <div class="well" style="text-align:center;">
+    <h2>
+      {{ contest.id }} - {{ contest.cname }}
+      <a href="{% url 'contest:contest' contest.id %}">
+        <button type="button" class="btn btn-primary">
+          See this contest
+        </button>
+      </a>
+      <a href="{% url 'contest:archive' %}">
+        <button type="button" class="btn btn-info">
+          Go to Contest Archive
+        </button>
+      </a>
+    </h2>
+  </div>
+  <form method="POST" action="{% url 'contest:download' %}">
+    {% csrf_token %}
+    <input type="hidden" name="type" value="public_user_password">
+    <input type="hidden" name="contest" value="{{ contest.id }}">
+    <button type="sybmit" class="btn btn-success btn-lg btn-block">
+      Download Public Users' Password
+    </button>
+  </form>
+  <script>
+  $(document).ready(function() {
+    $('[data-toggle="tooltip"]').tooltip({
+      'placement': 'top'
+    });
+  });
+
+  </script>
+</div>
+{% endblock body_block %}

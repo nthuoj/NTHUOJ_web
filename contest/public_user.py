@@ -21,7 +21,7 @@ from contest.models import Contest
 from contest.models import Contestant
 from users.models import User
 from django.conf import settings
-from utils.log_info import get_logger 
+from utils.log_info import get_logger
 from datetime import datetime
 
 logger = get_logger()
@@ -100,7 +100,7 @@ def check_account_num_valid(account_num):
         logger.warning(too_many_public_user_warning)
         account_num = settings.MAX_PUBLIC_USER
     return account_num
-    
+
 def is_integer(obj):
     try:
         int(obj)
