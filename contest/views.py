@@ -19,7 +19,9 @@
     '''
 from django.http import HttpResponseRedirect
 from django.http import HttpResponse
+from django.utils.http import urlencode
 from django.contrib.auth.decorators import login_required
+from django.core.urlresolvers import reverse
 from datetime import datetime
 from django.shortcuts import redirect
 from django.forms.models import model_to_dict
@@ -27,6 +29,7 @@ from django.contrib import messages
 
 from contest.contest_info import get_scoreboard
 from contest.contest_info import get_scoreboard_csv
+from contest.contest_info import get_public_user_password_csv
 from contest.contest_info import get_clarifications
 from contest.contest_info import can_ask
 from contest.contest_info import can_reply
@@ -45,11 +48,14 @@ from contest.forms import ReplyForm
 from contest.register_contest import user_register_contest
 from contest.register_contest import group_register_contest
 from contest.register_contest import public_user_register_contest
+from contest.public_user import is_integer
 
 from contest.contest_info import can_create_contest
 from contest.contest_info import can_edit_contest
 from contest.contest_info import can_delete_contest
 from contest.contest_info import get_contest_or_404
+
+from contest.public_user import get_public_contestant
 
 from problem.problem_info import get_testcase
 
@@ -83,9 +89,11 @@ def contest_info(request, cid):
 def register_page(request, cid):
     contest = get_contest_or_404(cid)
     groups = get_owned_group(request.user)
+    public_user = len(get_public_contestant(contest))
     return render_index(request,
         'contest/register.html',
-        {'contest':contest, 'groups':groups,'max_public_user':settings.MAX_PUBLIC_USER})
+        {'contest':contest, 'groups':groups,'max_public_user':settings.MAX_PUBLIC_USER,
+         'public_user':public_user})
 
 #contest datail page
 def contest(request, cid):
@@ -215,11 +223,11 @@ def register(request, cid):
     public_user = request.POST.get('public_user')
     #get group id or register as single user
     if(group_id is not None):
-        register_group(request, group_id, contest)
+        return register_group(request, group_id, contest)
 
     #get group id or register as single user
     elif(public_user is not None):
-        register_public_user(request, public_user, contest)
+        return register_public_user(request, public_user, contest)
     else:
         if user_register_contest(request.user, contest):
             message = 'User %s register Contest %s- "%s"!' % \
@@ -256,15 +264,32 @@ def register_public_user(request, public_user, contest):
     user = user_info.validate_user(request.user)
     if (user_info.has_contest_ownership(user, contest) or
         user.has_admin_auth()):
-        if public_user_register_contest(public_user, contest):
+        if not is_integer(public_user):
+            message = 'invalid input!'
+            messages.warning(request, message)
+            return redirect('contest:archive')
+        user_registered = public_user_register_contest(public_user, contest)
+        if user_registered:
             message = 'User %s registered %s public users to Contest %s- "%s"!' % \
-                    (user.username, public_user, contest.id, contest.cname)
+                    (user.username, user_registered, contest.id, contest.cname)
             messages.success(request, message)
+            if int(public_user) > settings.MAX_PUBLIC_USER:
+                message = 'Requested more than max! Set public users to %s' % \
+                    (settings.MAX_PUBLIC_USER)
+                messages.warning(request, message)
+            download_url = reverse('contest:download') + '?cid=' + str(contest.id)
+            return HttpResponseRedirect(download_url)
         else:
-            message = 'Cannot register public user to Contest %s- "%s"!' % \
-                    (contest.id, contest.cname)
-            messages.error(request, message)
-    return redirect('contest:archive')
+            if int(public_user) == 0:
+                message = 'Remove all public users!'
+                messages.warning(request, message)
+                return redirect('contest:archive')
+            else:
+                message = 'Cannot register public user to Contest %s- "%s"!' % \
+                        (contest.id, contest.cname)
+                messages.error(request, message)
+                return redirect('contest:archive')
+    raise PermissionDenied
 
 @login_required
 def ask(request):
@@ -332,10 +357,30 @@ def reply(request):
     return redirect('contest:archive')
 
 def download(request):
-    what = request.POST.get('type')
-    if what == 'scoreboard':
-        scoreboard_type = request.POST.get('scoreboard_type')
-        cid = request.POST.get('contest')
-        scoreboard_file = get_scoreboard_csv(cid, scoreboard_type)
-        return scoreboard_file
-    raise Http404('file not found')
+    user = user_info.validate_user(request.user)
+    if request.method == 'POST':
+        what = request.POST.get('type')
+        if what == 'scoreboard':
+            scoreboard_type = request.POST.get('scoreboard_type')
+            cid = request.POST.get('contest')
+            scoreboard_file = get_scoreboard_csv(cid, scoreboard_type)
+            return scoreboard_file
+        elif what == 'public_user_password':
+            cid = request.POST.get('contest')
+            contest = get_contest_or_404(cid)
+            if user_info.has_contest_ownership(user, contest) or\
+                user.has_admin_auth():
+                logger.info('Contest:User %s download Contest %s - %s public user password!' %
+                    (request.user, contest.id, contest.cname))
+                return get_public_user_password_csv(contest)
+            else:
+                raise PermissionDenied
+        raise Http404('file not found')
+    elif request.method == 'GET':
+        if request.GET.get('cid'):
+            cid = request.GET.get('cid')
+            contest = get_contest_or_404(cid)
+        if user_info.has_contest_ownership(user, contest) or user.has_admin_auth():
+            return render_index(request,'contest/download.html',{'contest':contest})
+        else:
+            raise PermissionDenied

@@ -101,7 +101,7 @@ class Testcase(models.Model):
     memory_limit = models.IntegerField(default=32)
 
     def __unicode__(self):
-        return self.problem.pname + ': ' + self.description
+        return '%s: %s' % (self.problem.pname, self.description)
 
 
 class Submission(models.Model):
@@ -169,5 +169,5 @@ class SubmissionDetail(models.Model):
         unique_together = (('tid', 'sid'),)
 
     def __unicode__(self):
-        return 'sid ' + str(self.sid.id) + ', tid ' + str(self.tid.id)
+        return 'sid %d, tid %d' % (self.sid.id, self.tid.id)
 

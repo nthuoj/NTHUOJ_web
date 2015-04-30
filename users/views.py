@@ -113,10 +113,9 @@ def user_create(request):
 
 
 def user_logout(request):
-    next_page = get_next_page(request.GET.get('next'))
     logger.info('user %s logged out' % str(request.user))
     logout(request)
-    return redirect(next_page)
+    return redirect(reverse('index:index'))
 
 
 def user_login(request):
@@ -176,6 +175,8 @@ def forget_password_confirm(request, activation_key):
     user_profile = get_object_or_404(UserProfile, activation_key=activation_key)
     user = user_profile.user
     user.backend = 'django.contrib.auth.backends.ModelBackend'
+    user.is_active = True
+    user.save()
     # Let user login, so as to modify password
     login(request, user)
     logger.info('User %s is ready to reset his/her password' % user.username)
