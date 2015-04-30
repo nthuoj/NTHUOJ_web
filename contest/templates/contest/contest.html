@@ -145,7 +145,14 @@
         <div class="tab-pane" id="scoreboard">
           {% include "contest/scoreboard.html" %}
         </div>
-        <div class="tab-pane" id="status">{{ status|safe }}</div>
+        <div class="tab-pane" id="status">
+          {{ status|safe }}
+          <a href="{% url 'status:status' %}?cid={{ contest.id }}">
+            <button type="button" class="btn btn-info btn-block">
+              See More Status
+            </button>
+          </a>
+        </div>
       </div>
     </div>
     {% if user|can_ask:contest %}

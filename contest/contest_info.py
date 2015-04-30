@@ -20,7 +20,6 @@
 import datetime
 import string
 import random
-from datetime import datetime
 from contest.models import Contest
 from contest.models import Contestant
 from contest.models import Clarification
