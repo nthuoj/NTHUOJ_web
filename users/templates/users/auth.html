@@ -5,14 +5,13 @@
 <title>{{ title }}</title>
 {% endblock title_name %}
 {% block body_block %}
-<div class="container" style="width:40%">
+<div class="container col-lg-offset-4 col-lg-4">
   <h3>{{ title }}</h3>
 
-  <form class="form-horizontal" action="" method="post">
+  <form class="form-horizontal" method="post">
     {% csrf_token %}
-    {{ form|bootstrap_horizontal }}
+    {{ form|bootstrap_horizontal:"col-lg-2" }}
     <div class="modal-footer">
-      <div id='msg' class='col-md-6'>{{ message }}</div>
       <button type="submit" class="btn btn-primary">Submit</button>
     </div>
     <hr>

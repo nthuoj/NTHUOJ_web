@@ -30,10 +30,11 @@ SOFTWARE.
   <title>400</title>
   <!-- bootstrap, bootwatch JS & CSS -->
   {% if user.is_authenticated %}
-  <link rel="stylesheet" href="{% static '' %}bootswatch/{{user.theme}}/bootstrap.css">
-  {% else %}
-  <link rel="stylesheet" href={% static "bootswatch/paper/bootstrap.css" %}>
+    <link rel="stylesheet" href="{% static '' %}bootswatch/{{user.theme}}/bootstrap.css">
+    {% else %}
+    <link rel="stylesheet" href="{% static '' %}bootswatch/{{default_theme}}/bootstrap.css">
   {% endif %}
+  <script src={% static "jquery/dist/jquery.min.js" %}></script>
   <script src={% static "bootstrap/dist/js/bootstrap.min.js" %}></script>
   <link rel="stylesheet" href={% static "./css/index.css"%} media="screen">
 </head>
@@ -48,7 +49,8 @@ SOFTWARE.
     <p class="status-message">{{ error_message }}</p>
     <br>
     <p class="status-condition">
-      Your browser (or proxy) sent a request that this server could not understand.
+      Your browser (or proxy) sent a request that this server could not understan.<br>
+      <a href="javascript:history.go(-1)">Go Back</a>
     </p>
   </div>
 </body>

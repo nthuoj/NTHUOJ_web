@@ -26,7 +26,9 @@
           <thead>
             <tr>
               {% if user|has_auth:contest.id %}
+              <!--
               <th style="text-align:center;width:20%;">Rejudge</th>
+              -->
               {% endif %}
               <th style="text-align:center;width:20%;">#</th>
               <th style="text-align:center;width:60%;">Problem</th>
@@ -36,11 +38,13 @@
             {% for problem in contest.problem.all %}
             <tr>
               {% if user|has_auth:contest.id %}
+              <!--
               <td>
                 <button type="button" class="btn btn-warning btn-xs">
                   <span class="glyphicon glyphicon-refresh"></span>
                 </button>
               </td>
+              -->
               {% endif %}
               <td>{{ forloop.counter }}</td>
               <td>{{ problem }}</td>
@@ -54,7 +58,9 @@
           <thead>
             <tr>
               {% if user|has_auth:contest.id %}
+              <!--
               <th style="width:20%;"></th>
+              -->
               {% endif %}
               <th style="text-align:center;width:20%;">#</th>
               <th style="text-align:center;width:60%;">Contestant</th>
@@ -64,11 +70,13 @@
             {% for contestant in contest.contestants %}
             <tr>
               {% if user|has_auth:contest.id %}
+              <!--
               <td>
                 <button type="button" class="btn btn-danger btn-xs">
                   <span class="glyphicon glyphicon-minus"></span>
                 </button>
               </td>
+            -->
               {% endif %}
               <td>{{ forloop.counter }}</td>
               <td>{{ contestant }}</td>

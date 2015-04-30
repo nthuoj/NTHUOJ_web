@@ -53,7 +53,7 @@ class Contest(models.Model):
         return str(deltatime)
 
     def __unicode__(self):
-        return self.cname
+        return '%d - %s' % (self.id, self.cname)
 
 
 class Contestant(models.Model):
