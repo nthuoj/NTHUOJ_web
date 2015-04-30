@@ -110,6 +110,14 @@ class ProblemForm(forms.ModelForm):
             raise forms.ValidationError("Partial judge header empty")
         return header
 
+    def clean_special_judge_code(self):
+        judge_type = self.cleaned_data['judge_type']
+        code = self.cleaned_data['special_judge_code']
+        if judge_type == 'LOCAL_SPECIAL' and code == None:
+            raise forms.ValidationError("Special judge code empty")
+        return code
+
+
 class TagForm(forms.ModelForm):
     class Meta:
         model = Tag

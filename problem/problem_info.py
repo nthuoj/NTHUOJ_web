@@ -33,3 +33,6 @@ def has_partial_judge_code(problem):
     file_ex = get_problem_file_extension(problem)
     return os.path.isfile("%s%d%s" % (PARTIAL_PATH, problem.pk, file_ex))
 
+def has_partial_judge_header(problem):
+    return os.path.isfile("%s%d.h" % (PARTIAL_PATH, problem.pk))
+

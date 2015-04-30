@@ -133,6 +133,7 @@ def edit(request, pid=None):
             logger.info('edit problem, pid = %d by %s' % (problem.pk, request.user))
             logger.info('edit problem, pid = %d' % (problem.pk))
             return redirect('/problem/%d' % (problem.pk))
+    file_ex = get_problem_file_extension(problem)
     return render_index(request, 'problem/edit.html',
                         {'form': form, 'problem': problem,
                          'tags': tags, 'tag_form': tag_form,
@@ -144,7 +145,7 @@ def edit(request, pid=None):
                          'has_special_judge_code': has_special_judge_code(problem),
                          'has_partial_judge_code': has_partial_judge_code(problem),
                          'has_partial_judge_header': has_partial_judge_header(problem),
-                         'file_ex': get_problem_file_extension(problem)})
+                         'filename': "%s%s" % (problem.pk, file_ex), 'file_ex': file_ex})
 
 @login_required
 def tag(request, pid):

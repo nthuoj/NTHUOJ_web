@@ -26,7 +26,7 @@
   {% endfor %}
   <tr>
     <form id="add_testcase" method="POST"
-      enctype="multipart/form-data" action="{% url 'problem:problem.views.testcase' pid %}">
+      enctype="multipart/form-data" action="{% url 'problem:problem.views.testcase' problem.pk %}">
       {% csrf_token %}
       <td><input type="file" name="t_in" required></td>
       <td><input type="file" name="t_out" required></td>
@@ -49,7 +49,7 @@
         <h4 class='modal-title'>Edit Testcase</h4>
       </div>
       <form id="update_testcase" method="POST"
-        enctype="multipart/form-data" action="{% url 'problem:problem.views.testcase' pid %}">
+        enctype="multipart/form-data" action="{% url 'problem:problem.views.testcase' problem.pk %}">
         {% csrf_token %}
         <div class='modal-body'>
           <p>Input</p>
@@ -67,7 +67,7 @@
 
 <script>
 var update_tid = 0;
-var pid = {{pid}};
+var pid = {{ problem.pk }};
 var csrf = $("{% csrf_token %}").serialize();
 </script>
 {% else %}
