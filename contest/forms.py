@@ -17,10 +17,12 @@
     OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
     SOFTWARE.
     '''
+import datetime
 from django import forms
 from django.views.generic.edit import UpdateView
 from contest.models import Contest
 from contest.models import Clarification
+from contest.contest_info import get_freeze_time_datetime
 from users.models import User
 from datetimewidget.widgets import DateTimeWidget, DateWidget, TimeWidget
 from problem.models import Problem
@@ -74,6 +76,15 @@ class ContestForm(forms.ModelForm):
             'is_homework',
             'open_register',
         )
+    def clean_freeze_time(self):
+        start_time = self.cleaned_data.get("start_time")
+        freeze_time = self.cleaned_data.get("freeze_time")
+        end_time = self.cleaned_data.get("end_time")
+
+        if type(end_time) is datetime.datetime:
+            if end_time - datetime.timedelta(minutes = freeze_time) <= start_time:
+                raise forms.ValidationError("Freeze time cannot longer than Contest duration.")
+        return freeze_time
 
     def clean_end_time(self):
         start_time = self.cleaned_data.get("start_time")
