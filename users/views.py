@@ -33,7 +33,6 @@ from axes.decorators import *
 from django.http import Http404
 from django.shortcuts import redirect
 
-from contest.public_user import deactivate_non_constant_public_users
 from users.admin import UserCreationForm, AuthenticationForm
 from users.forms import CodeSubmitForm
 from users.forms import UserProfileForm, UserLevelForm, UserForgetPasswordForm
@@ -125,7 +124,6 @@ def user_login(request):
     if request.user.is_authenticated():
         return redirect(next_page)
     if request.method == 'POST':
-        deactivate_non_constant_public_users()
         user_form = AuthenticationForm(data=request.POST)
         if user_form.is_valid():
             user = authenticate(

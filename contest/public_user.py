@@ -101,10 +101,6 @@ def check_account_num_valid(account_num):
         account_num = settings.MAX_PUBLIC_USER
     return account_num
 
-def deactivate_non_constant_public_users():
-    public_users = get_public_users()
-    deactivate_public_users([user for user in public_users if not attends_not_ended_contest(user)])
-
 def is_integer(obj):
     try:
         int(obj)

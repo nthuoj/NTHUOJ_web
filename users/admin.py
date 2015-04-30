@@ -28,6 +28,7 @@ from django.contrib.auth.forms import ReadOnlyPasswordHashField, AuthenticationF
 from django.contrib.auth.models import Group
 from django.core.validators  import RegexValidator
 
+from contest.public_user import is_public_user, attends_not_ended_contest
 from utils.config_info import get_config
 from users.models import User, Notification
 from users.models import UserProfile
@@ -87,6 +88,13 @@ class AuthenticationForm(AuthenticationForm):
     def __init__(self, *args, **kwargs):
         super(AuthenticationForm, self).__init__(*args, **kwargs)
         self.error_messages['inactive'] = 'This account is inactive. Check your email to activate the account!'
+
+    def confirm_login_allowed(self, user):
+        if is_public_user(user) and not attends_not_ended_contest(user):
+            user.is_active = False
+            user.save()
+
+        super(AuthenticationForm, self).confirm_login_allowed(user)
 
 
 class UserChangeForm(forms.ModelForm):
