@@ -41,9 +41,11 @@
       {{ field.as_hidden }}
       {% else %}
       {{ field|bootstrap }}
+      {{ field.errors }}
       {% endif %}
     {% else %}
       {{ field|bootstrap }}
+      {{ field.errors }}
     {% endif %}
     {% endfor %}
   <input class="btn btn-primary" type="submit" value="Submit">
