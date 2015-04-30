@@ -1,13 +1,13 @@
 {% load bootstrap %}
 {{ form|bootstrap }}
-{% if problem.judge_type == "LOCAL_SPECIAL" and has_special_judge_code %}
-  special judge code: <a href="{% url 'problem:download_special' filename %}">{{ filename }}</a>
+{% if problem.judge_type == "LOCAL_SPECIAL" and problem.has_special_judge_code %}
+  <br>special judge code: <a href="{% url 'problem:download_special' problem.filename %}">{{ problem.filename }}</a>
 {% endif %}
-{% if problem.judge_type == "LOCAL_PARTIAL" and has_partial_judge_code %}
-  partial judge code: <a href="{% url 'problem:download_partial' filename %}">{{ filename }}</a>
+{% if problem.judge_type == "LOCAL_PARTIAL" and problem.has_partial_judge_code %}
+  <br>partial judge code: <a href="{% url 'problem:download_partial' problem.filename %}">{{ problem.filename }}</a>
 {% endif %}
-{% if problem.judge_type == "LOCAL_PARTIAL" and has_partial_judge_header %}
-  partial judge header: <a href="{% url 'problem:download_partial' headername %}">{{ headername }}</a>
+{% if problem.judge_type == "LOCAL_PARTIAL" and problem.has_partial_judge_header %}
+  <br>partial judge header: <a href="{% url 'problem:download_partial' problem.headername %}">{{ problem.headername }}</a>
 {% endif %}
 <br>
 <br>

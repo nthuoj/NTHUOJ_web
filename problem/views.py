@@ -80,6 +80,7 @@ def detail(request, pid):
         logger.warning('problem %s not found' % (pid))
         raise Http404('problem %s does not exist' % (pid))
     problem.testcase = get_testcase(problem)
+    problem = verify_problem_code(problem)
     return render_index(request, 'problem/detail.html', {'problem': problem, 'tag_form': tag_form})
 
 @login_required
@@ -134,6 +135,7 @@ def edit(request, pid=None):
             logger.info('edit problem, pid = %d' % (problem.pk))
             return redirect('/problem/%d' % (problem.pk))
     file_ex = get_problem_file_extension(problem)
+    problem = verify_problem_code(problem)
     return render_index(request, 'problem/edit.html',
                         {'form': form, 'problem': problem,
                          'tags': tags, 'tag_form': tag_form,
@@ -141,11 +143,8 @@ def edit(request, pid=None):
                          'path': {
                              'TESTCASE_PATH': TESTCASE_PATH,
                              'SPECIAL_PATH': SPECIAL_PATH,
-                             'PARTIAL_PATH': PARTIAL_PATH, },
-                         'has_special_judge_code': has_special_judge_code(problem),
-                         'has_partial_judge_code': has_partial_judge_code(problem),
-                         'has_partial_judge_header': has_partial_judge_header(problem),
-                         'filename': "%s%s" % (problem.pk, file_ex), 'file_ex': file_ex})
+                             'PARTIAL_PATH': PARTIAL_PATH, }
+                         })
 
 @login_required
 def tag(request, pid):
