@@ -17,13 +17,10 @@
     OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
     SOFTWARE.
     '''
-<<<<<<< HEAD
 import datetime
-=======
 import string
 import random
 from datetime import datetime
->>>>>>> dev
 from contest.models import Contest
 from contest.models import Contestant
 from contest.models import Clarification
