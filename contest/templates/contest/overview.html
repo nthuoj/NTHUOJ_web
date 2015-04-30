@@ -22,13 +22,13 @@
         No Submission
         {% else %}
         <div class="progress">
-          <div name="pass" class="progress-bar progress-bar-success"
-               style="width: {{ problem.pass_rate }}%;"
+          <div class="progress-bar progress-bar-success" 
+               style="width: {{problem.pass_rate}}%;"
                data-toggle="tooltip" data-placement="top" 
                title="{{problem.pass_rate|floatformat:2}}%">
           </div>
-          <div name="not_pass" class="progress-bar progress-bar-danger"
-               style="width: {{ problem.not_pass_rate }}%;"
+          <div class="progress-bar progress-bar-danger" 
+               style="width: {{problem.not_pass_rate}}%;"
                data-toggle="tooltip" data-placement="top" 
                title="{{problem.not_pass_rate|floatformat:2}}%">
           </div>

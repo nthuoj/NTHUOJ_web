@@ -23,6 +23,11 @@
         </button>
       </a>
       {% endif %}
+      {% if contest|is_freezed %}
+      <h4>
+      <span class="label label-danger">Freezed</span>
+      </h4>
+      {% endif %}
       </h2>
     </div>
     <div class="panel panel-info">

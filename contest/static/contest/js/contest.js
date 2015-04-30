@@ -20,6 +20,8 @@ SOFTWARE.
 $(document).ready(function() {
     bootstraptify();
     init();
+    $('[data-toggle="tooltip"]').tooltip();
+    $('.progress').css('overflow', 'inherit');
 });
 
 
