@@ -72,7 +72,7 @@
     <table align="center" class="table table-striped table-hover">
       <thead class="line">
         <tr>
-          <th style="width: 5%">Register</th>
+          <!--<th style="width: 5%">Register</th>-->
           <th>Contest name</th>
           <th>Remaining time</th>
           <th style="text-align: center">Upcoming</th>
@@ -81,7 +81,7 @@
       <tbody id="contest_content">
         {% for c_running in c_runnings %}
           <tr id="contest_{{ c_running.id }}">
-            <td></td>
+            <!--<td></td>-->
             <td>
               <a href="{% url 'contest:contest' c_running.id %}">
                 {{ c_running.id }} - {{ c_running.cname }}
@@ -96,6 +96,7 @@
         {% endfor %}
         {% for c_upcoming in c_upcomings %}
           <tr>
+            <!--
             <td style="text-align:center;">
               {% if user|can_register:c_upcoming %}
               <a href="{% url 'contest:register' c_upcoming.id %}">
@@ -105,6 +106,7 @@
               </a>
               {% endif %}
             </td>
+            -->
             <td>
               {% if user|has_auth:c_upcoming.id or user.has_admin_auth %}
               <a href="{% url 'contest:contest' c_upcoming.id %}">
