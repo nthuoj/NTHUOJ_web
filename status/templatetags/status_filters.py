@@ -26,6 +26,7 @@ from datetime import datetime
 from django import template
 
 from contest.models import Contest
+from contest.contest_info import get_running_contests
 from team.models import TeamMember
 from utils.user_info import validate_user
 
@@ -33,6 +34,7 @@ from utils.user_info import validate_user
 register = template.Library()
 
 
+@register.filter()
 def show_submission(submission, user):
     """Test if the user can see that submission
 
@@ -42,6 +44,9 @@ def show_submission(submission, user):
     Returns:
         a boolean of the judgement
     """
+    user = validate_user(user)
+
+
     # admin can see all submissions
     if user.user_level == user.ADMIN:
         return True
@@ -102,16 +107,16 @@ def show_detail(submission, user):
 
     # basic requirement: submission must be shown
     # admin can see everyone's detail
-    if user.user_level == user.ADMIN:
+    if user.has_admin_auth():
         return True
     # no one can see admin's detail
-    if submission.user.user_level == user.ADMIN:
+    if submission.user.has_admin_auth():
         return False
-
-    contests = Contest.objects.filter(
-        is_homework=False,
-        start_time__lte=datetime.now(),
-        end_time__gte=datetime.now())
+    # a problem owner can view his problem's detail
+    if submission.problem.owner_id == user.username:
+        return True
+    now = datetime.now()
+    contests = get_running_contests()
     # during the contest, only owner/coowner with user level sub-judge/judge
     # can view the detail
     if contests:
@@ -123,9 +128,6 @@ def show_detail(submission, user):
     # a user can view his own detail
     if submission.user == user:
         return True
-    # a problem owner can view his problem's detail
-    if submission.problem.owner_id == user.username:
-        return True
     # a user can view his team member's detail
     if submission.team:
         team_member = TeamMember.objects.filter(team=submission.team, member=user)
@@ -133,29 +135,3 @@ def show_detail(submission, user):
             return True
     # no condition is satisfied
     return False
-
-
-@register.filter()
-def submission_filter(submission_list, user):
-    """Return a list of submissions that the given user can see
-
-    Args:
-        submission_list: a list of submissions
-        user: an User object
-    Returns:
-        a list of submissions
-    """
-    user = validate_user(user)
-
-    # an admin can see all submissions because he/she is god
-    if user.user_level == user.ADMIN:
-        return submission_list
-
-    # filter for user level less than admin
-    valid_submission_list = []
-    for submission_group in submission_list:
-        submission = submission_group['grouper']
-        if show_submission(submission, user):
-            valid_submission_list.append(submission_group)
-
-    return valid_submission_list

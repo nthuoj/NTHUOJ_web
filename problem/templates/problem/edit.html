@@ -1,7 +1,7 @@
 {% extends "problem/base.html" %}
 {% load staticfiles %}
 {% block title_name %}
-<title>Problem Edit</title>
+<title>Edit Problem {{ pid }}</title>
 {% endblock title_name %}
 {% block import_source %}
   {{block.super}}
@@ -9,7 +9,15 @@
 {% endblock %}
 {% block body_block %}
 <div class="container" id="Body">
-  <h4>You are editing problem {{pid}}: {{pname}}</h4>
+  <h2>
+    {{pid}} - {{pname}}
+    <a href="{% url 'problem:detail' pid %}" class="btn btn-primary">
+      See this problem
+    </a>
+    <a href="{% url 'problem:problem' %}" class="btn btn-info">
+      Back to problem panel
+    </a>
+  </h2>
   <div style="width:80%; float:left;">
     <ul class="nav nav-tabs" role="tablist">
       <li class="active">
