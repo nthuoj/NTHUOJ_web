@@ -84,16 +84,13 @@ def detail(request, pid):
 
 @login_required
 def new(request):
-    if request.method == "GET":
-        return render_index(request, "problem/new.html")
-    elif request.method == "POST":
+    if request.method == "POST":
         if 'pname' in request.POST and request.POST['pname'].strip() != "":
             p = Problem(pname=request.POST['pname'], owner=request.user)
             p.save()
             logger.info("problem %s created by %s" % (p.pk, request.user))
             return redirect("/problem/%d/edit/" % p.pk)
-        else:
-            return render_index(request, "problem/new.html", {"error": "Problem name empty"})
+    return redirect("/problem/")
 
 @login_required
 def edit(request, pid=None):
@@ -111,7 +108,7 @@ def edit(request, pid=None):
     if request.method == 'GET':
         form = ProblemForm(instance=problem)
     if request.method == 'POST':
-        form = ProblemForm(request.POST, instance=problem)
+        form = ProblemForm(request.POST, request.FILES, instance=problem)
         if form.is_valid():
             problem = form.save()
             problem.description = request.POST['description']
@@ -137,10 +134,8 @@ def edit(request, pid=None):
             logger.info('edit problem, pid = %d' % (problem.pk))
             return redirect('/problem/%d' % (problem.pk))
     return render_index(request, 'problem/edit.html',
-                        {'form': form, 'pid': pid, 'pname': problem.pname,
-                         'tags': tags, 'tag_form': tag_form, 'description': problem.description,
-                         'input': problem.input, 'output': problem.output,
-                         'sample_in': problem.sample_in, 'sample_out': problem.sample_out,
+                        {'form': form, 'problem': problem,
+                         'tags': tags, 'tag_form': tag_form,
                          'testcase': testcase,
                          'path': {
                              'TESTCASE_PATH': TESTCASE_PATH,
@@ -148,6 +143,7 @@ def edit(request, pid=None):
                              'PARTIAL_PATH': PARTIAL_PATH, },
                          'has_special_judge_code': has_special_judge_code(problem),
                          'has_partial_judge_code': has_partial_judge_code(problem),
+                         'has_partial_judge_header': has_partial_judge_header(problem),
                          'file_ex': get_problem_file_extension(problem)})
 
 @login_required
@@ -278,6 +274,24 @@ def preview(request):
 def download_testcase(request, filename):
     try:
         f = open(TESTCASE_PATH+filename, "r")
+    except IOError:
+        raise Http404()
+    response = HttpResponse(FileWrapper(f), content_type="text/plain")
+    response['Content-Disposition'] = 'attachment; filename=' + filename
+    return response
+
+def download_partial(request, filename):
+    try:
+        f = open(PARTIAL_PATH+filename, "r")
+    except IOError:
+        raise Http404()
+    response = HttpResponse(FileWrapper(f), content_type="text/plain")
+    response['Content-Disposition'] = 'attachment; filename=' + filename
+    return response
+
+def download_special(request, filename):
+    try:
+        f = open(SPECIAL_PATH+filename, "r")
     except IOError:
         raise Http404()
     response = HttpResponse(FileWrapper(f), content_type="text/plain")
