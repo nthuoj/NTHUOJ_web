@@ -1,0 +1,135 @@
+{% load contest_extras %}
+<div class="modal-header">
+  <button type="button" class="close" data-dismiss="modal">
+    <span aria-hidden="true">&times;</span>
+    <span class="sr-only">Close</span>
+  </button>
+  <h3 class="modal-title">{{ contest.cname }}</h3>
+</div>
+<div class="modal-body">
+  <div role="tabpanel">
+    <ul class="nav nav-tabs" role="tablist" name="infoTab">
+      <li role="presentation" class="active"><a href="#problem" data-toggle="tab">Problem</a>
+      </li>
+      <li role="presentation"><a href="#contestant" data-toggle="tab">Contestant</a>
+      </li>
+      <li role="presentation"><a href="#contest_time" data-toggle="tab">Time</a>
+      </li>
+      <li role="presentation"><a href="#contest_coowner" data-toggle="tab">Coowner</a>
+      </li>
+      <li role="presentation"><a href="#contest_others" data-toggle="tab">Others</a>
+      </li>
+    </ul>
+    <div class="tab-content">
+      <div class="tab-pane active" id="problem">
+        <table class="table" style="text-align:center">
+          <thead>
+            <tr>
+              {% if user|has_auth:contest.id %}
+              <!--
+              <th style="text-align:center;width:20%;">Rejudge</th>
+              -->
+              {% endif %}
+              <th style="text-align:center;width:20%;">#</th>
+              <th style="text-align:center;width:60%;">Problem</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for problem in contest.problem.all %}
+            <tr>
+              {% if user|has_auth:contest.id %}
+              <!--
+              <td>
+                <button type="button" class="btn btn-warning btn-xs">
+                  <span class="glyphicon glyphicon-refresh"></span>
+                </button>
+              </td>
+              -->
+              {% endif %}
+              <td>{{ forloop.counter }}</td>
+              <td>{{ problem }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      <div class="tab-pane" id="contestant">
+        <table class="table" style="text-align:center">
+          <thead>
+            <tr>
+              {% if user|has_auth:contest.id %}
+              <!--
+              <th style="width:20%;"></th>
+              -->
+              {% endif %}
+              <th style="text-align:center;width:20%;">#</th>
+              <th style="text-align:center;width:60%;">Contestant</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for contestant in contest.contestants %}
+            <tr>
+              {% if user|has_auth:contest.id %}
+              <!--
+              <td>
+                <button type="button" class="btn btn-danger btn-xs">
+                  <span class="glyphicon glyphicon-minus"></span>
+                </button>
+              </td>
+            -->
+              {% endif %}
+              <td>{{ forloop.counter }}</td>
+              <td>{{ contestant }}</td>
+            </tr>
+            {% endfor %}
+            <tr>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="tab-pane" id="contest_time">
+        <table class="table">
+          <tr>
+            <td>Start Time</td>
+            <td>
+              <h4>{{ contest.start_time|date:"Y/m/d H:i:s" }}</h4>
+            </td>
+          </tr>
+          <tr>
+            <td>End Time</td>
+            <td>
+              <h4>{{ contest.end_time|date:"Y/m/d H:i:s" }}</h4>
+            </td>
+          </tr>
+        </table>
+      </div>
+      <div class="tab-pane" id="contest_coowner">
+        <table class="table" style="text-align:center">
+          <thead>
+            <tr>
+              <th style="text-align:center;width:20%;">#</th>
+              <th style="text-align:center;width:60%;">Coowner</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for coowner in contest.coowner.all %}
+            <tr>
+              <td>{{ forloop.counter }}</td>
+              <td>{{ coowner }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      <div class="tab-pane" id="contest_others">
+        <label>Freeze Time：</label>
+        <h4>{{ contest.freeze_time }} minutes</h4> {% if contest.is_homework %}
+        <span class="glyphicon glyphicon-ok green" aria-hidden="true"></span>Is Homework {% else %}
+        <span class="glyphicon glyphicon-remove red" aria-hidden="true"></span>Not Homework {% endif %}
+        <br> {% if contest.open_register %}
+        <span class="glyphicon glyphicon-ok green" aria-hidden="true"></span>Can Register {% else %}
+        <span class="glyphicon glyphicon-remove red" aria-hidden="true"></span>Can Not Register {% endif %}
+      </div>
+    </div>
+  </div>
+</div>

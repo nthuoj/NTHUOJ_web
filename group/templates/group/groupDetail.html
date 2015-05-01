@@ -1,0 +1,259 @@
+{% extends "index/base.html" %}
+{% load static %}
+{% block body_block %}
+<br>
+<div class="container-fluid">
+  <div class="row-fluid">
+    <a href="{% url 'group:list' %}" class="btn btn-sm btn-default"
+       data-toggle="modal" style="float:left, margin-right:5px">
+      return
+    </a>
+    {% if user_is_owner %}
+    <a href="{% url 'group:edit' group_id %}">
+      <button type="button" class="btn btn-sm btn-default">
+        Edit
+      </button>
+    </a>
+    {% endif %}
+    <br>
+    <br>
+    <div class="container-fluid">
+      <div class="span12">
+        <div class="container-fluid">
+          <div class="hero-unit">
+            <div class="container-fluid" style="width:50%;float:left">
+              <h4 style="color:gray">Group name</h4>
+              <h2>{{ group_name }}</h2>
+            </div>
+            <div class="container-fluid" style="width:50%;float:right">
+              <div style="float:left; margin-right:70px">
+                <h4 style="color:gray;margin-bottom:30px">Owner</h4>
+                <h3 title="{{owner.email}}">{{ owner }}</h3>
+              </div>
+              <div style="float:left">
+                <h4 style="color:gray;margin-bottom:30px">Coowner</h4>
+                {% for coowner in coowner_list %}
+                  <h3 title="{{coowner.email}}" style="display:inline">
+                    {{ coowner.username }}
+                  </h3>
+                  {%if forloop.last %}
+                    {% else %}
+                    <h3 style="display:inline">,&nbsp</h3>
+                  {% endif %}
+                {% endfor %}
+              </div>
+            </div>
+          </div>
+        </div>
+        <hr>
+        <div class="container-fluid">
+          <div class="Description" style="float:left">
+            <p style="font-size:16px; color:gray; word-wrap:break-word">
+              {{ group_description }}
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <hr>
+  <div class="contest">
+    <div class="panel-group" id="accordion">
+      <div class="panel panel-success">
+        <div class="panel-heading">
+          <h4 class="panel-title">
+            <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne">Running-Contest</a>
+          </h4>
+        </div>
+        <div id="collapseOne" class="panel-collapse collapse in">
+          <div class="panel-body">
+            <table class="table table-hover table-striped">
+              <thead>
+                <tr>
+                  <th>Title</th>
+                  <th>Start Time</th>
+                  <th>End Time</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for running_contest in rc_list %}
+                  {% if running_contest.is_homework %}
+                    <tr style="background-color:#F1F7EA">
+                      <td>{{ running_contest.cname }}</td>
+                      <td>{{ running_contest.start_time }}</td>
+                      <td>{{ running_contest.end_time }}</td>
+                    </tr>
+                  {% else %}
+                    <tr style="background-color:#E3E8E3">
+                      <td>{{ running_contest.cname }}</td>
+                      <td>{{ running_contest.start_time }}</td>
+                      <td>{{ running_contest.end_time }}</td>
+                    </tr>
+                  {% endif %}
+                {% endfor %}
+              </tbody>
+            </table>
+            <a class="btn btn-sm btn-default" style="float:right"
+               onclick="window.open('{% url 'group:viewall_contest' group_id %}', '', config='height=500,width=800');">view all</a>
+          </div>
+        </div>
+      </div>
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h4 class="panel-title">
+            <a data-toggle="collapse" data-parent="#accordion" href="#collapseTwo">Ended Contest</a>
+          </h4>
+        </div>
+        <div id="collapseTwo" class="panel-collapse collapse">
+          <div class="panel-body">
+            <table class="table table-hover">
+              <thead>
+                <tr>
+                  <th>Title</th>
+                  <th>Start Time</th>
+                  <th>End Time</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for ended_contest in ec_list %}
+                  {% if ended_contest.is_homework %}
+                  <tr style="background-color:#D6DBD0">
+                    <td>{{ ended_contest.cname }}</td>
+                    <td>{{ ended_contest.start_time }}</td>
+                    <td>{{ ended_contest.end_time }}</td>
+                  </tr>
+                  {% else %}
+                  <tr style="background-color:#C5C9C5">
+                    <td>{{ ended_contest.cname }}</td>
+                    <td>{{ ended_contest.start_time }}</td>
+                    <td>{{ ended_contest.end_time }}</td>
+                  </tr>
+                  {% endif %}
+                {% endfor %}
+              </tbody>
+            </table>
+            <a class="btn btn-sm btn-default" style="float:right"
+               onclick="window.open('{% url 'group:viewall_archive' group_id %}', '', config='height=500,width=800');">view all</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <hr>
+  <div class="announce">
+    <table class="table table-hover">
+      <thead>
+        <tr>
+          <th>Title</th>
+          <th>Content</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for annowence in an_list %}
+        <tr>
+          <td>{{ annowence.title|truncatechars:25 }}</td>
+          <td>{{ annowence.content|truncatechars:70 }}</td>
+          <td>
+            <a href="" class="btn btn-sm btn-default" data-toggle="modal"
+               data-target="#annowenceContentModal{{annowence.id}}"
+               style="float:right">Detail</a>
+            <!--1. Modal for Annowence Detail button-->
+            <div class="modal fade" id="annowenceContentModal{{annowence.id}}"
+                 role="dialog" aria-hidden="true">
+              <div class="modal-dialog">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <button type="btn-default" class="close" data-dismiss="modal"
+                            aria-hidden="true">&times;</button>
+                    <h5 class="modal-title">{{annowence.title|truncatechars:42}}</h4>
+                  <div class="modal-body">
+                    <p style="word-wrap:break-word">{{ annowence.content }}</p>
+                  </div>
+                  <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">
+                      Close</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    <a class="btn btn-sm btn-default" style="float:right"
+       onclick="window.open('{% url 'group:viewall_announce' group_id %}', '', config='height=500,width=800');">view all</a>
+    <br>
+  </div>
+  <hr>
+  <div class="member">
+    <form action="#" class="navbar-search pull-left" method="get">
+      <input type="text" name="q" class="search-query span10" value=""
+             placeholder="Search..."style="float:left">
+    </form>
+    <div class="btn-group" style="float:right">
+      <a href="#" class="btn btn-default btn-sm">+</a>
+      <a href="#" class="btn btn-defalut dropdown-toggle btn-sm" data-toggle="dropdown">
+        <span class="caret"></span>
+      </a>
+      <ul class="dropdown-menu">
+        <li><a href="#">Add single student</a>
+        </li>
+        <li><a href="#">Add with list</a>
+        </li>
+        <li class="divider"></li>
+        <li><a href="#">Something else</a>
+        </li>
+      </ul>
+      <a href="" class="btn btn-sm btn-default" data-toggle="modal"
+         data-target="#studentDataDownloadModal" style="float:right">Download</a>
+    </div>
+    <table class="table table-hover">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Email</th>
+          <th>Level</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for student in s_list %}
+        <tr>
+          <td>{{ student.username }}</td>
+          {% if student.email == "" %}
+            <td>---</td>
+          {% else %}
+            <td>{{ student.email }}</td>
+          {% endif %}
+          <td>{{ student.user_level }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  <hr>
+  <!--Modal Section-->
+  <!--1. Modal for Downloading student data-->
+  <div class="modal fade" id="studentDataDownloadModal" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="btn-default" class="close" data-dismiss="modal"
+                  aria-hidden="true">&times;</button>
+          <h4 class="modal-title">Download data</h4>
+        </div>
+        <div class="modal-body">
+          <p>do something</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">
+            Cancel</button>
+          <button type="button" class="btn btn-primary">Confirm</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!--Modal Section End-->
+</div>
+{% endblock body_block %}

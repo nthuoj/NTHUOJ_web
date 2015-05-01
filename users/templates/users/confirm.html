@@ -1,0 +1,17 @@
+{% extends "index/base.html" %}
+{% load static %}
+{% load profile_filters %}
+{% block title_name %}
+<title>Registration Completed</title>
+{% endblock title_name %}
+{% block body_block %}
+  <div class="container"
+       style="margin-top:50px;margin-bottom:50px;min-height:500px;">
+    <p style="text-align: center;font-size: 75px;">Confirmation Success!</p>
+    <p style="text-align: center;font-size: 30px;margin-top: 50px;">
+      Thank you, {{ username }}. Your registration is now complete.<br>
+      You can go back to <a href={% url "index:index" %}>NTHUOJ index</a>
+      and start coding or something else.
+    </p>
+  </div>
+{% endblock body_block %}

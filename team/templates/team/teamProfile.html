@@ -1,0 +1,91 @@
+{% extends "users/profile.html" %}
+
+{% block statistic_block %}
+<div class="form-group">
+  <label class="col-lg-2 control-label">Contests</label>
+  <div class="col-lg-10">
+    {% for name in team_stat.contest %}
+      <p class="form-control-static"><a>{{ name }}</a></p>
+    {% endfor %}
+  </div>
+</div>
+{% endblock statistic_block %}
+
+{% block profile_field_block %}
+<div class="panel panel-default">
+  <div class="panel-heading">Team Profile</div>
+  <div class="panel-body">
+    <form>
+      <div class="form-group">
+        <label class="col-lg-2 control-label">Leader</label>
+        <div class="col-lg-10">
+          <p class="form-control-static"><a>{{ team_profile.leader }}</a></p>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="col-lg-2 control-label">Members</label>
+        <div class="col-lg-10">
+          {% for name in team_profile.member %}
+            <p class="form-control-static"><a>{{ name }}</a></p>
+          {% endfor %}
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="col-lg-2 control-label">Description</label>
+        <div class="col-lg-10">
+          <textarea class="form-control" rows="3">
+            {{ team_profile.description }}
+          </textarea>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="col-lg-2 control-label">Create Time</label>
+        <div class="col-lg-10">
+          <p class="form-control-static">{{ team_profile.create_time }}</p>
+        </div>
+      </div>
+      <div class="col-lg-offset-10">
+        <button type="submit" class="btn btn-primary">Update</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="panel panel-danger">
+  <div class="panel-heading">
+    <h3 class="panel-title">Danger Zone</h3>
+  </div>
+  <div class="panel-body">
+    <form>
+      <div class="form-group">
+        <label class="col-lg-3 control-label">Change Leader</label>
+        <div class="col-lg-7 input-group">
+          <select class="form-control" id="select">
+            {% for name in team_profile.member %}
+              <option>{{ name }}</option>
+            {% endfor %}
+          </select>
+          <span class="input-group-btn">
+            <button class="btn btn-default" type="button">Change</button>
+          </span>
+        </div>
+      </div>
+    </form>
+    <form>
+      <div class="form-group">
+        <label class="col-lg-3 control-label">Kick Member</label>
+        <div class="col-lg-7 input-group">
+          <select class="form-control" id="select">
+            {% for name in team_profile.member %}
+              <option>{{ name }}</option>
+            {% endfor %}
+          </select>
+          <span class="input-group-btn">
+            <button class="btn btn-default" type="button">Kick</button>
+          </span>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock profile_field_block %}

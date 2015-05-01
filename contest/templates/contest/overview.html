@@ -1,0 +1,42 @@
+{% load contest_extras %} {% load staticfiles %} {% block import_source %}
+<link href="{% static 'contest/css/overview.css' %}" rel="stylesheet">
+{% endblock import_source %}
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th>#</th>
+      <th>Problem</th>
+      <th>Pass Rate (passed user / total user)</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for problem in scoreboard.problems %}
+    <tr>
+      <td>{{ problem.id }}</td>
+      <td>
+        <a href="#problem{{ problem.id }}" class="overview_problem"
+           tabindex="-1" role="tab" data-toggle="tab">{{ problem.pname }}</a>
+      </td>
+      <td>
+        {% if problem.no_submission %}
+        No Submission
+        {% else %}
+        <div class="progress">
+          <div class="progress-bar progress-bar-success" 
+               style="width: {{problem.pass_rate}}%;"
+               data-toggle="tooltip" data-placement="top" 
+               title="{{problem.pass_rate|floatformat:2}}%">
+          </div>
+          <div class="progress-bar progress-bar-danger" 
+               style="width: {{problem.not_pass_rate}}%;"
+               data-toggle="tooltip" data-placement="top" 
+               title="{{problem.not_pass_rate|floatformat:2}}%">
+          </div>
+        </div>
+        {% endif %}
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% load staticfiles %}

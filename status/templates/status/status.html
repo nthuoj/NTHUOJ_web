@@ -1,0 +1,51 @@
+{% extends "index/base.html" %}
+{% load status_filters %}
+{% load static %}
+{% load bootstrap %}
+{% block title_name %}
+<title>Status</title>
+{% endblock title_name %}
+{% block import_source %}
+<link rel="stylesheet" href={% static "jquery-ui/themes/dark-hive/jquery-ui.css" %}>
+<script src={% static "jquery-ui/ui/jquery-ui.js" %}></script>
+{% endblock import_source %}
+{% block body_block %}
+
+<div class="container" id="list">
+  <br>
+  <!--title-->
+  <div class="well">
+    <h2
+      {% if running_contests %}
+        title='<ol>{% for contest in running_contests %}<li>{{contest}}</li> {% endfor %}</ol>'
+      {% endif %}>
+      Status
+      {% if running_contests %}
+        ({{ running_contests.count }} running contest{{ running_contests.count|pluralize:"s" }}.)
+      {% endif %}
+    </h2>
+    <form method="get">
+      <div class="col-lg-2"></div>
+    {% for field in status_filter %}
+      <div class="col-lg-2">{{ field|bootstrap }}</div>
+    {% endfor %}
+    <div class="modal-footer">
+      <button type="submit" class="btn btn-primary">Search</button>
+    </div>
+    </form>
+  </div>
+
+  {% if submissions %}
+    {% include "status/statusTable.html" %}
+    {% include "utils/pager.html" with objects=submissions %}
+  {% endif %}
+</div>
+<script type="text/javascript">
+  $(function () {
+    $(document).tooltip({
+      track: true
+    });
+  })
+</script>
+
+{% endblock body_block %}

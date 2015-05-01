@@ -1,0 +1,101 @@
+{% extends "index/base.html" %}
+{% load static %}
+{% block body_block %}
+<br>
+<div class="span12">
+      <div class="hero-unit">
+        <div class="hero-unit">
+          <span>
+            <h3 style="margin-left:15px">All {{ title }}</h3>
+          </span>
+        </div>
+      </div>
+    </div>
+<div class="modal-body">
+  <div class="input-group" style="">
+    <span class="input-group-addon">search {{ title }} by id</span>
+    <input type="text" class="form-control" style="width:30%">
+    <button class="btn btn-default btn-sm" type="button" style="float:left">search</button>
+  </div>
+  <br>
+  <table class="table table-hover">
+    <thead>
+      <th>{{ title }} title</th>
+      {% if list_type == "announce" %}
+      <th>announce content</th>
+      {% else %}
+      <th>start time</th>
+      <th>end time</th>
+      {% endif %}
+    </thead>
+    <tbody>
+      {% for archive in data_list %}
+      <tr>
+        {% if list_type == 'runContest'%}
+          {% if archive.is_homework %}
+            <tr style="background-color:#F1F7EA">
+              <td>{{ archive.cname }}</td>
+              <td>{{ archive.start_time }}</td>
+              <td>{{ archive.end_time }}</td>
+            </tr>
+          {% else %}
+            <tr style="background-color:#E3E8E3">
+              <td>{{ archive.cname }}</td>
+              <td>{{ archive.start_time }}</td>
+              <td>{{ archive.end_time }}</td>
+            </tr>
+          {% endif %}
+        {% elif list_type == 'endContest'%}
+          {% if archive.is_homework %}
+            <tr style="background-color:#D6DBD0">
+              <td>{{ archive.cname }}</td>
+              <td>{{ archive.start_time }}</td>
+              <td>{{ archive.end_time }}</td>
+            </tr>
+          {% else %}
+            <tr style="background-color:#C5C9C5">
+              <td>{{ archive.cname }}</td>
+              <td>{{ archive.start_time }}</td>
+              <td>{{ archive.end_time }}</td>
+            </tr>
+          {% endif %}
+        {% elif list_type == "announce" %}
+        <td>{{ archive.title }}</td>
+        <td>{{ archive.content }}</td>
+        <td>
+          <a href="" class="btn btn-sm btn-default" data-toggle="modal"
+             data-target="#annowenceContentModal{{archive.id}}" style="float:right">
+            Detail</a>
+          <!--1. Modal for Edit Annowence button-->
+          <div class="modal fade" id="annowenceContentModal{{archive.id}}"
+               role="dialog" aria-hidden="true">
+            <div class="modal-dialog">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <button type="btn-default" class="close" data-dismiss="modal"
+                          aria-hidden="true">&times;</button>
+                  <h4 class="modal-title">Edit Annowence</h4>
+                </div>
+                <div class="modal-body">
+                  <div class="input-group">
+                    <span class="input-group-addon">Title</span>
+                    <input type="text" class="form-control" value="{{ archive.name }}">
+                  </div>
+                  <textarea class="form-control input-sm" type="text" style="height:200px;">
+                    {{ archive.content }}</textarea>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                  <button type="button" class="btn btn-primary"> Confirm </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </td>
+        {% endif %}
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock body_block %}

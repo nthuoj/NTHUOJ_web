@@ -1,0 +1,26 @@
+{% extends "index/base.html" %}
+{% load static %}
+{% load bootstrap %}
+{% block title_name %}
+<title>{{ title }}</title>
+{% endblock title_name %}
+{% block body_block %}
+<div class="container col-lg-offset-3 col-lg-6">
+  <h3>{{ title }}</h3>
+
+  <form class="form-horizontal" method="post">
+    {% csrf_token %}
+    {{ form|bootstrap_horizontal:"col-lg-2" }}
+    <div class="modal-footer">
+      <button type="submit" class="btn btn-primary">Submit</button>
+    </div>
+    <hr>
+    <div>
+      Don't have an account? You can
+      <a href={% url "users:create" %}>register here</a>.<br>
+      Forget your password? You can change your password
+      <a href={% url "users:forget_password" %}>here</a>.
+    </div>
+  </form>
+</div>
+{% endblock body_block %}

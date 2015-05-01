@@ -1,0 +1,67 @@
+{% load contest_extras %}
+<div class="modal-header">
+  <button type="button" class="close" data-dismiss="modal">
+    <span aria-hidden="true">&times;</span>
+    <span class="sr-only">Close</span>
+  </button>
+  <h3 class="modal-title">
+    Register {{ contest.cname }}
+  </h3>
+</div>
+<hr>
+<div class="modal-body" id="register">
+  <table width='100%'>
+    <!--
+    {% if groups %}
+    <tr>
+      <td>
+        <a class="btn btn-success btn-lg btn-block" data-toggle="collapse"
+           data-target="#group_select">Group</a>
+      </td>
+    </tr>
+    {% endif %}
+    </tr>
+  </table>
+  {% if groups %}
+  <div class="collapse" id="group_select">
+    <div class="well">
+      <form class="form-inline" method="POST" action="{% url 'contest:register' contest.id %}">
+        {% csrf_token %}
+        <select name="group" class="form-control" style="width:70%;">
+          {% for group in groups %}
+          <option value="{{ group.id }}">{{ group.gname }}</option>
+          {% endfor %}
+        </select>
+        <input class="btn btn-primary" type="submit" value="Confirm">
+      </form>
+    </div>
+  </div>
+  {% endif %} 
+  -->
+  {% if user|has_auth:contest.id %}
+  <table width='100%'>
+    <tr class="separate-area"></tr>
+    <tr>
+      <td>
+        <a class="btn btn-success btn-lg btn-block" data-toggle="collapse" 
+           data-target="#public-user">Public User</a>
+      </td>
+    </tr>
+  </table>
+  <div class="collapse" id="public-user">
+    <div class="well">
+      <form class="form-inline" method="POST" 
+            action="{% url 'contest:register' contest.id %}">
+        {% csrf_token %}
+        <label>How many Public Users do you need? You have {{ public_user }} now</label>
+        <br>
+        <a id="public_user_now" hidden>{{ public_user }}</a>
+        <input id="public_user_need" class="form-control" type="text" name="public_user" 
+               placeholder="0~{{ max_public_user }}">
+        <input id="register_public" class="btn btn-primary" type="submit" value="Confirm"
+               onclick="return confirm_register()">
+      </form>
+    </div>
+  </div>
+  {% endif %}
+</div>

@@ -1,0 +1,53 @@
+<br>
+{% if not is_new %}
+<strong>Current Tags</strong>
+<table>
+  <tbody id="tagTable">
+    {% for t in tags %}
+      <tr data-target="{{t.pk}}">
+        <td>{{t.tag_name}}</td>
+        <td><button class="btn btn-primary del_tag_btn">Delete</button></td>
+      </tr>
+    {% endfor %}
+  </tbody>
+</table>
+<br>
+<br>
+<form id="addTag">
+  <div class='input-group'>
+    {% csrf_token %}
+    {{ tag_form.tag_name }}
+    <span class="input-group-btn">
+      <button id='add_tag_button' class='btn btn-default'>Add Tag</button>
+    </span>
+  </div>
+</form>
+<script>
+$(document).ready(function() {
+    $("#addTag").submit(function(e) {
+        e.preventDefault();
+        var ret = add_new_tag({{ problem.pk }});
+        refreshEventListener();
+        return ret;
+    });
+    refreshEventListener();
+});
+function refreshEventListener() {
+    $('body').on('click', '.del_tag_btn', function(e) {
+        var row = $(this).parents("tr");
+        var tid = $(this).parents("tr").attr('data-target');
+        $.ajax({
+            type: 'GET',
+            url: '/problem/'+{{ problem.pk }}+'/tag/'+tid+'/delete/',
+            success: function(data) {
+              row.remove();
+            }
+        });
+        return false;
+    });
+}
+</script>
+{% else %}
+<strong>Save your problem before editing the tags</strong>
+{% endif %}
+

@@ -1,0 +1,134 @@
+{% load static %}
+<div class="pname_block panel">
+  <div class="left">
+    <div class="pname">
+      <h2>{{ problem.pk }} - {{ problem.pname }} &nbsp;&nbsp;
+        {% if problem.owner == user or user.user_level == 'ADMIN'%}
+          {% if not preview %}
+            <a class="btn btn-warning" href="{% url 'problem:problem.views.edit' problem.pk %}">
+              <span class="glyphicon glyphicon-pencil"></span>
+            </a>
+          {% endif %}
+        {% endif %}
+      </h2>
+    </div>
+  </div>
+  <div class="right">
+    <div class="problem-option">
+      <a href="/status/?pid={{ problem.pk }}">Status</a> &nbsp;|&nbsp;
+      <!-- <a>Printable </a> &nbsp;|&nbsp; -->
+      <!-- <a>Rank</a> &nbsp;|&nbsp; -->
+      <a data-toggle='modal' data-target='#limit_{{ problem.pk }}'>Limits</a>
+      {% if not preview %}
+        <a class="btn btn-primary" href="{% url 'users:submit' problem.pk %}">Submit</a>
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+<div class='modal fade' id='limit_{{ problem.pk }}'>
+  <div class='modal-dialog modal-sm'>
+    <div class='modal-content'>
+      <div class='modal-header'>
+        <button type='button' class='close' data-dismiss='modal'>
+          <span aria-hidden='true'>&times;</span>
+          <span class='sr-only'>Close</span>
+        </button>
+        <h4 class='modal-title'>Limits</h4>
+      </div>
+      <div class='modal-body'>
+        <table class='table'>
+          <tbody>
+            <tr>
+              <td></td>
+              <th>Time</th>
+              <th>Memory</th>
+              {% for t in problem.testcase %}
+              <tr>
+                <th>Case {{forloop.counter}}</th>
+                <td>{{t.time_limit}} sec</td>
+                <td>{{t.memory_limit}} MB</td>
+              </tr>
+              {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div style="width:75%; float:left">
+  <h3>Description</h3>
+  {{ problem.description | safe }}
+  <h3>Input</h3>
+  {{ problem.input | safe }}
+  <h3>Output</h3>
+  {{ problem.output | safe }}
+  <h3>Sample Input</h3>
+  <div class='panel panel-default'>
+    <div class='panel-body'>
+      <samp id='sampinText'>{{ problem.sample_in|linebreaksbr }}</samp>
+      <br>
+      <span class='label label-danger'>EOF</span>
+    </div>
+  </div>
+  <h3>Sample Output</h3>
+  <div class='panel panel-default'>
+    <div class='panel-body'>
+      <samp id='sampoutText' name='sampoutText'>{{ problem.sample_out|linebreaksbr }}</samp>
+      <br>
+      <span class='label label-danger'>EOF</span>
+    </div>
+  </div>
+  {% if problem.judge_type == "LOCAL_SPECIAL" and problem.has_special_judge_code %}
+    <h3>Special Judge Code</h3>
+    <a href="{% url 'problem:download_special' problem.filename %}">{{ problem.filename }}</a>
+  {% endif %}
+  {% if problem.judge_type == "LOCAL_PARTIAL" and problem.has_partial_judge_code %}
+    <h3>Partial Judge Code</h3>
+    <a href="{% url 'problem:download_partial' problem.filename %}">{{ problem.filename }}</a>
+  {% endif %}
+  {% if problem.judge_type == "LOCAL_PARTIAL" and problem.has_partial_judge_header %}
+    <h3>Partial Judge Header</h3>
+    <a href="{% url 'problem:download_partial' problem.headername %}">{{ problem.headername }}</a>
+  {% endif %}
+  <h3>Tags</h3>
+  <div id='tags' style='float:left;width:60%'>
+    {% if preview %}
+      {% for tag in problem.tag %}
+        <span class='label label-info'>{{tag}}</span>
+      {% endfor %}
+    {% else %}
+      {% for tag in problem.tags.all %}
+        <span class='label label-info'>{{tag.tag_name}}</span>
+      {% endfor %}
+    {% endif %}
+  </div>
+  {% if tag_form and user.is_authenticated %}
+    <form id='addTag'>
+      {% csrf_token %}
+      <div class='input-group'>
+        {{ tag_form.tag_name }}
+        <span class="input-group-btn">
+          <button id='addTagButton' class="btn btn-default" type="button">Add Tag</button>
+      </span>
+      </div>
+    </form>
+  {% endif %}
+
+  <br>
+  <br>
+  <br>
+  <h4>
+    <a onclick="alert('Discuss not open yet')">Discuss</a>
+  </h4>
+  <br>
+  <br>
+  <br>
+</div>
+</body>
+<script>
+var pid = {{problem.pk}};
+</script>
+<script src="{% static 'problem/js/problem.js' %}"></script>
+

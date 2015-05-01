@@ -1,0 +1,168 @@
+{% extends "index/base.html" %} {% load staticfiles %} {% load contest_extras %}
+
+{% block title_name %}
+<title>Contest</title>
+{% endblock title_name %}
+
+{% block import_source %}
+<link href="{% static 'contest/css/contest.css' %}" rel="stylesheet">
+<script src="{%static 'contest/js/contest.js'%}"></script>
+{% endblock import_source %}
+
+{% block body_block %}
+<body onload="getRestTime()">
+  <div class="container">
+    <!--Title-->
+    <div class="well">
+      <h2>{{ contest.id }} - {{ contest.cname }}
+      {% if user|can_edit_contest:contest %}
+       <a href="{% url 'contest:edit' contest.id %}">
+        <button type="button" class="btn btn-warning btn-sm" data-toggle="tooltip"
+                data-placement="top" title="Edit Contest">
+          <span class="glyphicon glyphicon-pencil"></span>
+        </button>
+      </a>
+      {% endif %}
+      {% if contest|is_freezed %}
+      <h4>
+      <span class="label label-danger">Freezed</span>
+      </h4>
+      {% endif %}
+      </h2>
+    </div>
+    <div class="panel panel-info">
+      <div class="panel-heading">
+        <h1 class="panel-title" style="text-align:center;">Time</h1>
+      </div>
+      <div class="panel-body inline">
+        <a id="server_time" hidden>{{ tstr }}</a>
+        <table style="width:100%;text-align:center;">
+          <tr>
+            <td id="start" style="text-align:left;">{{ contest.start_time|date:"Y/m/d H:i:s" }}</td>
+            <td id="clock"></td>
+            <td id="end" style="text-align:right;">{{ contest.end_time|date:"Y/m/d H:i:s" }}</td>
+          </tr>
+        </table>
+      </div>
+      <div class="progress" style="margin-left:5%;width:90%;">
+        <div id="timeline" class="progress-bar progress-bar-info" role="progressbar"
+        aria-valuenow="20" aria-valuemin="0" aria-valuemax="100" style="width:20%">
+          <span class="sr-only"></span>
+        </div>
+      </div>
+    </div>
+    <!-- Clarification -->
+    <div class="panel panel-primary">
+      <div class="panel-heading">
+        <h1 class="panel-title" style="text-align:center;">Clarification</h1>
+      </div>
+      <div id="contest_clarification">
+        <table class="table" style="table-layout: fixed; width: 100%">
+          <thead>
+            <tr>
+              {% if user|can_reply:contest %}
+                <th width="5%"></th>
+              {% endif %}
+              <th width="2%">#</th>
+              <th width="15%">Problem</th>
+              <th width="10%">Asker</th>
+              <th width="20%">Description</th>
+              <th width="20%">Reply</th>
+              <th width="10%">Replier</th>
+              <th width="10%">Reply Time</th>
+              <th width="5%">For all team</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for clarification in clarifications %}
+            <tr>
+              {% if user|can_reply:contest %}
+              <td>
+              <button name="reply" type="button" class="btn btn-warning btn-xs"
+                      data-toggle="modal" data-target="#reply"
+                      onclick="select({{ clarification.id }})">Reply</button>
+              </td>
+              {% endif %}
+              <td>{{ forloop.counter }}</td>
+              <td>{{ clarification.problem }}</td>
+              <td>{{ clarification.asker }}</td>
+              <td class="word-block" id="content{{ clarification.id }}">{{ clarification.content }}</td>
+              <td class="word-block" id="reply{{ clarification.id }}">{{ clarification.reply }}</td>
+              <td>{{ clarification.replier }}</td>
+              <td>{{ clarification.reply_time|date:"Y/m/d H:i:s" }}</td>
+              <td>
+              {% if clarification.reply_all%}
+              <span class="glyphicon glyphicon-ok green" aria-hidden="true"></span>
+              {% endif %}
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+
+        <div align="center">
+          {% if user|can_ask:contest %}
+          <button type="button" class="btn btn-primary btn-lg" data-toggle="modal"
+                  data-target="#clarification">Clarify</button>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+    <hr>
+    <!--Contest detail-->
+    <div id="detail">
+      <ul class="nav nav-tabs" role="tablist" id="contest_tab">
+        <li class="active" role="presentation">
+          <a href="#overview" role="tab" data-toggle="tab">Overview</a>
+        </li>
+        <li class="dropdown" role="presentation">
+          <a href="#problem" class="dropdown-toggle" data-toggle="dropdown">
+            Problem<span class="caret"></span>
+          </a>
+          <ul class="dropdown-menu" role="menu">
+            {% for problem in contest.problem.all %}
+            <li role="presentation">
+              <a href="#problem{{ problem.id }}" tabindex="-1" role="tab"
+               data-toggle="tab">{{ problem.pname }}</a>
+            </li>
+            {% endfor %}
+          </ul>
+        </li>
+        <li role="presentation"><a href="#scoreboard" role="tab" data-toggle="tab">Scoreboard</a>
+        </li>
+        <li role="presentation"><a href="#status" role="tab" data-toggle="tab">Status</a>
+        </li>
+      </ul>
+      <div class="tab-content" id="content">
+        <div class="tab-pane active" id="overview">
+          {% include "contest/overview.html" %}
+        </div>
+        {% for problem in contest.problem.all %}
+        <div class="tab-pane" id="problem{{ problem.id }}">
+          {% include "problem/problem.html" %}
+        </div>
+        {% endfor %}
+        <div class="tab-pane" id="scoreboard">
+          {% include "contest/scoreboard.html" %}
+        </div>
+        <div class="tab-pane" id="status">
+          {{ status|safe }}
+          <a href="{% url 'status:status' %}?cid={{ contest.id }}">
+            <button type="button" class="btn btn-info btn-block">
+              See More Status
+            </button>
+          </a>
+        </div>
+      </div>
+    </div>
+    {% if user|can_ask:contest %}
+    <!--Clarification Modal-->
+    {% include "contest/clarification.html" %}
+    {% endif %}
+    {% if user|can_reply:contest %}
+    <!--Reply Modal-->
+    {% include "contest/reply.html" %}
+    {% endif %}
+  </div>
+</body>
+{% endblock body_block %}

@@ -1,0 +1,153 @@
+{% extends 'index/base.html' %}
+{% load static %}
+{% block title_name %}
+<title>Notifications</title>
+{% endblock title_name %}
+{% block import_source %}
+<link rel="stylesheet" href={% static "./css/notification.css"%} media="screen">
+<script src={% static "./js/notification.js"%}></script>
+{% endblock import_source %}
+
+{% block body_block %}
+<input type="text" id="current-tab" value="{{current_tab}}" />
+<div class="container notification-container">
+  <h2>User Notification</h2>
+  <div style="padding-top:25px;"></div>
+
+  <div role="tabpanel">
+    <!-- Nav tabs -->
+    <ul class="nav nav-tabs" role="tablist" id="notification-tab-type">
+      <li role="presentation" class="active" data-toggle="tab">
+        <a href="#unread" aria-controls="unread" role="tab"
+           data-toggle="tab">Unread Notifications</a>
+      </li>
+      <li role="presentation" data-toggle="tab">
+        <a href="#all" aria-controls="all" role="tab"
+           data-toggle="tab">All Notifications</a>
+      </li>
+    </ul>
+
+    <!-- Tab panes -->
+    <div class="tab-content">
+      <div role="tabpanel" class="tab-pane fade in active" id="unread">
+        <table class="table table-striped table-hover tab_content">
+          <thead>
+            <tr>
+              <th></th>
+              <th style="text-align: right;width: 20%;">Delete the messeage</th>
+            </tr>
+          </thead>
+          <tbody>
+            <form name="urform" method="post">
+              {% for unread_notification in unread_notifications %}
+              <tr class="success">
+                <td href="#Notification-popup" class="open-popup-link"
+                    onclick="write_content('{{ unread_notification.id }}','{{ unread_notification.read }}');">
+                  <p id="{{ unread_notification.id }}_content"
+                     class="ellipsis">{{ unread_notification.message}}</p>
+                </td>
+                <td style="text-align: right;">
+                  <input type="checkbox" style="margin-left:0px;"
+                         name="del" value={{ unread_notification.id }}>
+                </td>
+              </tr>
+              {% endfor %}
+              {% if unread_notifications.count < 2 %}
+              <tr style="display:none;">
+              {% else %}
+              <tr>
+              {% endif %}
+
+                <td colspan=2 style="text-align: right;">
+                  <i>Select All</i>
+                  <input type="checkbox"
+                         onclick="check_all(this, 'del');"
+                         style="margin-left:0px;margin-top: 0px;" >
+                </td>
+
+              </tr>
+              {% if unread_notifications.count < 1 %}
+              <tr style="display:none;">
+              {% else %}
+              <tr>
+              {% endif %}
+                <td colspan=2 style="text-align: right;">
+                  <input type="button" value="delete" class="btn btn-primary"
+                         onclick="delete_notification(document.urform.del);"
+                         style="margin-left:0px;margin-top: 30px;" >
+                </td>
+              </tr>
+            </form>
+          </tbody>
+        </table>
+      </div>
+      <div role="tabpanel" class="tab-pane fade" id="all">
+        <table class="table table-striped table-hover tab_content">
+          <thead>
+            <tr>
+              <th></th>
+              <th style="text-align: right;width: 20%;">Delete the messeage</th>
+            </tr>
+          </thead>
+          <tbody>
+            <form name="allform" method="post">
+              {% for notification in all_notifications %}
+              {% if notification.read == False %}
+              <tr class="success">
+              {% else %}
+              <tr class="active">
+              {% endif %}
+                <td href="#Notification-popup" class="open-popup-link"
+                    onclick="write_content('{{ notification.id }}','{{ notification.read }}');">
+                  <p id="{{ notification.id }}_content"
+                     class="ellipsis">{{ notification.message}}</p>
+                </td>
+                <td style="text-align: right;">
+                  <input type="checkbox" style="margin-left:0px;"
+                         name="del" value={{ notification.id }}>
+                </td>
+              </tr>
+              {% endfor %}
+              {% if all_notifications.count < 2 %}
+              <tr style="display:none;">
+              {% else %}
+              <tr>
+              {% endif %}
+                <td colspan=2 style="text-align: right;">
+                  <i>Select All</i>
+                  <input type="checkbox"
+                         onclick="check_all(this, 'del');"
+                         style="margin-left:0px;margin-top: 0px;" >
+                </td>
+              </tr>
+              {% if all_notifications.count < 1 %}
+              <tr style="display:none;">
+              {% else %}
+              <tr>
+              {% endif %}
+                <td colspan=2 style="text-align: right;">
+                  <input type="button" value="delete" class="btn btn-primary"
+                         onclick="delete_notification(document.allform.del);"
+                         style="margin-left:0px;margin-top: 30px;" >
+                </td>
+              </tr>
+            </form>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- feedback-popup -->
+    <div class="mfp-hide">
+      <div class="jumbotron popdiv"  id="Notification-popup">
+        <h2><p class="poptitle"><b>Notification</b></p></h2>
+        <div class="form-group">
+          <textarea class="form-control input-sm" type="text"
+                    id="area" readonly="true">
+          </textarea>
+        </div>
+      </div>
+    </div>
+</div>
+{% endblock %}

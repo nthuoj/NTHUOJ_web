@@ -1,0 +1,125 @@
+{% load staticfiles %}
+<h3>{{ contest.cname }}</h3>
+<h5>Freeze time: {{ contest.freeze_time }} minutes</h5>
+<script src="{% static 'contest/js/scoreboard.js' %}"></script>
+<link href="{% static 'contest/css/scoreboard.css' %}" rel="stylesheet">
+{% load contest_extras %}
+<div role="tabpanel">
+  <!-- Nav tabs -->
+  <ul class="nav nav-tabs" role="tablist" id="scoreboardTab">
+    <li role="presentation" class="active"><a href="#testcase" aria-controls="testcase"
+        role="tab" data-toggle="tab">Testcase</a>
+    </li>
+    <li role="presentation"><a href="#penalty" aria-controls="penalty"
+        role="tab" data-toggle="tab">Penalty</a>
+    </li>
+  </ul>
+  <!-- Tab panes -->
+  <div class="tab-content">
+    <!-- testcase -->
+    <div role="tabpanel" class="tab-pane active" id="testcase">
+      <div style="float:right">
+        <form method="POST" action="{% url 'contest:download' %}">
+          {% csrf_token %}
+          <input type="hidden" name="type" value="scoreboard">
+          <input type="hidden" name="scoreboard_type" value="testcases">
+          <input type="hidden" name="contest" value="{{ contest.id }}">
+          <button type="sybmit" class="btn btn-default" data-toggle="tooltip" data-placement="top"
+                  title="Download Testcase Scoreboard">
+            <span class="glyphicon glyphicon-download"></span>
+          </button>
+        </form>
+      </div>
+      <table class="table" style="table-layout:fixed">
+        <thead>
+          <tr>
+            <th>Rank</th>
+            <th>User</th>
+            {% for problem in scoreboard.problems %}
+            <th><b data-toggle="tooltip" title="{{ problem.pname }}">{{ problem.id }}</b>
+            </th>
+            {% endfor %}
+            <th>Total</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for user in scoreboard|users_sorted_by_solved_testcases %}
+          <tr>
+            <td>{{ forloop.counter }}</td>
+            <td>{{ user.username }}</td>
+            {% for problem in user.problems %}
+            <td>
+              {{ problem.testcases_solved }}/{{ problem.total_testcases }}
+            </td>
+            {% endfor %}
+            <td>{{ user.testcases_solved }}</td>
+          </tr>
+          {% endfor %}
+          <tr>
+            <td>Total</td>
+            <td></td>
+            {% for problem in scoreboard.problems %}
+              <td>
+                {{ problem.total_solved }}
+              </td>
+            {% endfor %}
+            <td></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <!-- penalty  -->
+    <div role="tabpanel" class="tab-pane" id="penalty">
+      <div style="float:right">
+        <form method="POST" action="{% url 'contest:download' %}">
+          {% csrf_token %}
+          <input type="hidden" name="type" value="scoreboard">
+          <input type="hidden" name="scoreboard_type" value="penalty">
+          <input type="hidden" name="contest" value="{{ contest.id }}">
+          <button type="sybmit" class="btn btn-default" data-toggle="tooltip" data-placement="top"
+                  title="Download Penalty Scoreboard">
+            <span class="glyphicon glyphicon-download"></span>
+          </button>
+        </form>
+      </div>
+      <table class="table" style="table-layout:fixed">
+        <thead>
+          <tr>
+            <th>Rank</th>
+            <th>User</th>
+            {% for problem in scoreboard.problems %}
+            <th><b data-toggle="tooltip" title="{{ problem.pname }}">{{ problem.id }}</b>
+            </th>
+            {% endfor %}
+            <th>Solved</th>
+            <th>Penalty</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for user in scoreboard|users_sorted_by_penalty %}
+          <tr>
+            <td>{{ forloop.counter }}</td>
+            <td>{{ user.username }}</td>
+            {% for problem in user.problems %}
+            <td>{{ problem.submit_times }}/{{ problem.AC_time }}</td>
+            {% endfor %}
+            <td>{{ user.solved }}</td>
+            <td>{{ user.penalty }}</td>
+          </tr>
+          {% endfor %}
+          <tr>
+            <td>Total</td>
+            <td></td>
+            {% for problem in scoreboard.problems %}
+              <td>
+                {{ problem.pass_user }}
+              </td>
+            {% endfor %}
+            <td></td>
+            <td></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,110 @@
+{% extends "index/base.html" %}
+{% load staticfiles %}
+
+{% block title_name %}
+<title>Contest Archive</title>
+{% endblock title_name %}
+
+{% block import_source %}
+<link href="{% static 'contest/css/contestArchive.css' %}" rel="stylesheet">
+<script src="{% static 'contest/js/contestArchive.js' %}"></script>
+{% endblock import_source %}
+{% load contest_extras %}
+{% block body_block %}
+<div class="container" id="list">
+  <br>
+  <!--title-->
+  <div class="well">
+    <h2>Contest Archive</h2>
+  </div>
+  <!--contests overview-->
+  <table class="table table-striped table-hover">
+    <thead>
+      <tr>
+        <th width="15%">
+          {% if user|can_create_contest %}
+          <a href="{% url 'contest:new' %}">
+            <button type="button" class="btn btn-warning"
+                    data-toggle="tooltip" data-placement="top" title="New Contest">
+              Add Contest
+            </button>
+          </a>
+          {% endif %}
+        </th>
+        <th>#</th>
+        <th>Contest</th>
+        <th>Start time</th>
+        <th>End time</th>
+        <th>Owner</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for contest in contests %}
+      <tr>
+        <td>
+          <a data-toggle="modal" data-target="#contestInfo"
+           data-load-remote="{% url 'contest:contest_info' contest.id %}"
+           data-remote-target="#contestInfoContent">
+            <button type="button" class="btn btn-info btn-xs"
+             data-toggle="tooltip" data-placement="top" title="Contest Info">
+              <span class="glyphicon glyphicon-info-sign"></span>
+            </button>
+          </a>
+          {% if user|can_delete_contest:contest %}
+          <a href="{% url 'contest:delete' contest.id %}" onclick="return confirm_delete()">
+            <button type="button" class="btn btn-danger btn-xs" data-toggle="tooltip"
+                  data-placement="top" title="Delete Contest">
+              <span class="glyphicon glyphicon-remove"></span>
+            </button>
+          </a>
+          {% endif %}
+          {% if user|can_edit_contest:contest %}
+          <a href="{% url 'contest:edit' contest.id %}">
+            <button type="button" class="btn btn-warning btn-xs" data-toggle="tooltip"
+                  data-placement="top" title="Edit Contest">
+              <span class="glyphicon glyphicon-pencil"></span>
+            </button>
+          </a>
+          {% endif%}
+          {% if user|show_register_btn:contest %}
+          <a data-toggle="modal" data-target="#register"
+           data-load-remote="{% url 'contest:register_page' contest.id %}"
+           data-remote-target="#registerContent">
+            <button type="button" class="btn btn-success btn-xs"
+             data-toggle="tooltip" data-placement="top" title="Register">
+              <span class="glyphicon glyphicon-plus"></span>
+            </button>
+          </a>
+          {% endif %}
+        </td>
+        <td>{{ contest.id }}</td>
+        <td><a href="{% url 'contest:contest' contest.id %}">{{ contest.cname }}</a>
+        </td>
+        <td>{{ contest.start_time|date:"Y/m/d H:i:s" }}</td>
+        <td>{{ contest.end_time|date:"Y/m/d H:i:s" }}</td>
+        <td>{{ contest.owner }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+<nav>
+  {% include "utils/pager.html" with objects=contests %}
+</nav>
+<!-- register contest -->
+<div class="modal fade" id="register" tabindex="-1" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content" id="registerContent">
+      <h3 style="text-align:center;">Loading...</h3>
+    </div> <!-- /.modal-content -->
+  </div> <!-- /.modal-dialog -->
+</div> <!-- /.modal -->
+<!-- contest info -->
+<div class="modal fade" id="contestInfo" tabindex="-1" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content" id="contestInfoContent">
+      <h3 style="text-align:center;">Loading...</h3>
+    </div> <!-- /.modal-content -->
+  </div> <!-- /.modal-dialog -->
+</div> <!-- /.modal -->
+{% endblock body_block %}

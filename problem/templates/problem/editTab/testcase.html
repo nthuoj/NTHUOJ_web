@@ -1,0 +1,75 @@
+<br>
+{% if not is_new %}
+<table id="testcase_table">
+  <tr>
+    <th>Input</th>
+    <th>Output</th>
+    <th>Time Limit</th>
+    <th>Memory Limit</th>
+    <th></th>
+  </tr>
+  {% for t in testcase %}
+  <tr data-target="{{t.pk}}">
+    <td>
+      <a href="/problem/testcase/{{t.pk}}.in">{{t.pk}}.in</a>
+    </td>
+    <td>
+      <a href="/problem/testcase/{{t.pk}}.out">{{t.pk}}.out</a>
+    </td>
+    <td><input type="number" id="{{t.pk}}_time" name="time_limit" value="{{t.time_limit}}" min="0"></td>
+    <td><input type="number" id="{{t.pk}}_memory" name="memory_limit" value="{{t.memory_limit}}" min="0"></td>
+    <td><button class="btn btn-primary reupload_btn" onclick="return false"
+        data-toggle="modal" data-target="#edit_testcase">ReUpload</button></td>
+    <td><button class="btn btn-primary update_btn">Update</button></td>
+    <td><button class="btn btn-danger del_testcase_btn">Delete</button></td>
+  </tr>
+  {% endfor %}
+  <tr>
+    <form id="add_testcase" method="POST"
+      enctype="multipart/form-data" action="{% url 'problem:problem.views.testcase' problem.pk %}">
+      {% csrf_token %}
+      <td><input type="file" name="t_in" required></td>
+      <td><input type="file" name="t_out" required></td>
+      <td><input type="number" id="new_time_limit" name="time_limit" min="0" required></td>
+      <td><input type="number" id="new_memory_limit" name="memory_limit" min="0" required></td>
+      <td><button class="btn btn-primary" id="add_testcase_btn">Add</button></td>
+    </form>
+  </tr>
+
+</table>
+
+<div class='modal fade' id='edit_testcase'>
+  <div class='modal-dialog modal-sm'>
+    <div class='modal-content'>
+      <div class='modal-header'>
+        <button type='button' class='close' data-dismiss='modal'>
+          <span aria-hidden='true'>&times;</span>
+          <span class='sr-only'>Close</span>
+        </button>
+        <h4 class='modal-title'>Edit Testcase</h4>
+      </div>
+      <form id="update_testcase" method="POST"
+        enctype="multipart/form-data" action="{% url 'problem:problem.views.testcase' problem.pk %}">
+        {% csrf_token %}
+        <div class='modal-body'>
+          <p>Input</p>
+          <input type='file' name='t_in' required><br>
+          <p>Output</p>
+          <input type='file' name='t_out' required>
+        </div>
+        <div class='modal-footer'>
+          <button class='btn btn-info'>Save changes</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script>
+var update_tid = 0;
+var pid = {{ problem.pk }};
+var csrf = $("{% csrf_token %}").serialize();
+</script>
+{% else %}
+<strong>Save your problem before uploading testcases</strong>
+{% endif %}
