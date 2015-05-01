@@ -17,9 +17,9 @@
     OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
     SOFTWARE.
     '''
+import datetime
 import string
 import random
-from datetime import datetime
 from contest.models import Contest
 from contest.models import Contestant
 from contest.models import Clarification
@@ -49,12 +49,11 @@ from django.contrib.auth.hashers import make_password
 
 import csv
 from django.http import HttpResponse
-from datetime import datetime
 
 logger = get_logger()
 
 def get_running_contests():
-    now = datetime.now()
+    now = datetime.datetime.now()
     contests = Contest.objects.filter(
         is_homework=False,
         start_time__lte=now,
@@ -70,6 +69,11 @@ def get_total_testcases(problem):
 
 def get_contestant_problem_submission_list(contest, contestant, problem):
     return Submission.objects.filter(problem = problem, submit_time__lte = contest.end_time,
+        submit_time__gte = contest.start_time, user = contestant.user).order_by('submit_time')
+
+def get_contestant_problem_submission_list_before_freeze_time(contest, contestant, problem):
+    freeze_time = get_freeze_time_datetime(contest)
+    return Submission.objects.filter(problem = problem, submit_time__lte = freeze_time,
         submit_time__gte = contest.start_time, user = contestant.user).order_by('submit_time')
 
 def get_passed_testcases(submission):
@@ -94,16 +98,22 @@ def get_scoreboard(contest):
     contestants = get_contestant_list(contest)
 
     scoreboard = Scoreboard(contest.start_time)
+    # Store contest's problem data
     for problem in contest.problem.all():
         total_testcases = get_total_testcases(problem);
         new_problem = ScoreboardProblem(problem.id,problem.pname,total_testcases)
         new_problem.no_submission = True
         scoreboard.add_problem(new_problem)
 
+    # For Contestants' data
     for contestant in contestants:
         new_contestant = ScoreboardUser(contestant.user.username)
         for problem in contest.problem.all():
-            submissions = get_contestant_problem_submission_list(contest,contestant,problem)
+            if is_ended(contest):
+                submissions = get_contestant_problem_submission_list(contest,contestant,problem)
+            else:
+                submissions = get_contestant_problem_submission_list_before_freeze_time\
+                    (contest,contestant,problem)
             total_testcases = get_total_testcases(problem)
             new_problem = UserProblem(problem.id,total_testcases)
             for submission in submissions:
@@ -349,4 +359,16 @@ def get_contest_or_404(contest_id):
         raise Http404('Contest not found!' % contest_id)
 
 def has_started(contest):
-    return (datetime.now() > contest.start_time)
+    return (datetime.datetime.now() > contest.start_time)
+
+def is_ended(contest):
+    return (datetime.datetime.now() > contest.end_time)
+
+# True if contest is not ended and during freeze time
+def is_freezed(contest):
+    freeze_time = get_freeze_time_datetime(contest)
+    return (datetime.datetime.now() > freeze_time) and not is_ended(contest)
+
+def get_freeze_time_datetime(contest):
+    freeze_time = contest.freeze_time
+    return contest.end_time - datetime.timedelta(minutes = freeze_time)
