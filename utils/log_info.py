@@ -49,6 +49,7 @@ def get_logger(name='NTHU OJ'):
 
         # create logger
         logger = logging.getLogger(name)
+        logger.setLevel(logging.INFO)
 
         # create formatter for console use
         formatter = logging.Formatter(logging_format)
