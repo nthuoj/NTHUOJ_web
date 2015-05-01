@@ -27,7 +27,7 @@ import os
 logger = None
 
 
-def get_logger(name='NTHU OJ'):
+def get_logger(name='NTHU OJ', log_dir='log'):
     """Return a logger with specified settings
 
     Args:
@@ -40,12 +40,11 @@ def get_logger(name='NTHU OJ'):
     if not logger:
         logging_format = '[%(asctime)s] %(levelname)s: %(message)s'
 
-        if not os.path.exists('./log'):
-            os.makedirs('./log', 0755)
+        if not os.path.exists(log_dir):
+            os.makedirs(log_dir, 0755)
+        file_path = os.path.join(log_dir, 'nthuoj.log')
 
-        logging.basicConfig(
-            filename='log/nthuoj.log',\
-            filemode='w')
+        logging.basicConfig(filename=file_path, filemode='w')
 
         # create logger
         logger = logging.getLogger(name)
