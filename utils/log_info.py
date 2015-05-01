@@ -22,6 +22,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
 import logging
+import os
 
 logger = None
 
@@ -37,16 +38,24 @@ def get_logger(name='NTHU OJ'):
 
     global logger
     if not logger:
+        logging_format = '[%(asctime)s] %(levelname)s: %(message)s'
+
+        if not os.path.exists('./log'):
+            os.makedirs('./log', 0755)
+
+        logging.basicConfig(
+            filename='log/nthuoj.log',\
+            filemode='w')
+
         # create logger
         logger = logging.getLogger(name)
-        logger.setLevel(logging.DEBUG)
+
+        # create formatter for console use
+        formatter = logging.Formatter(logging_format)
 
         # create console handler and set level to debug
         ch = logging.StreamHandler()
-        ch.setLevel(logging.DEBUG)
-
-        # create formatter
-        formatter = logging.Formatter('[%(asctime)s] %(levelname)s: %(message)s')
+        ch.setLevel(logging.INFO)
 
         # add formatter to ch
         ch.setFormatter(formatter)
