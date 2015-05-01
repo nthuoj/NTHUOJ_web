@@ -129,7 +129,10 @@ def show_detail(submission, user):
     if submission.user == user:
         return True
     # contest owner/coowner can still view code after the contest.
-    contests = Contest.objects.filter(problem=submission.problem, end_time__lte=now)
+    contests = Contest.objects.filter(
+        problem=submission.problem,
+        end_time__gte=submission.submit_time,
+        start_time__lte=submission.submit_time)
     for contest in contests:
         if user == contest.owner or user in contest.coowner.all():
             return True
