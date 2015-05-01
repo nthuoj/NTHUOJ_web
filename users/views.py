@@ -152,7 +152,7 @@ def user_forget_password(request):
         if user_form.is_valid():
             user = User.objects.get(username=user_form.cleaned_data['username'])
             send_forget_password_email(request, user)
-            messages.success(request, 'Conform email has sent to you.')
+            messages.success(request, 'Confirm email has sent to you.')
         else:
             return render_index(request, 'users/auth.html', {'form': user_form, 'title': 'Forget Password'})
     return render_index(request, 'users/auth.html',
