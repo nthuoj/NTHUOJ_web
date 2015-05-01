@@ -137,8 +137,6 @@ def user_login(request):
             login(request, user)
             return redirect(next_page)
         else:
-            user_form.add_error(None,
-                                "You will be blocked for 6 minutes if you have over 3 wrong tries.")
             return render_index(request, 'users/auth.html', {'form': user_form, 'title': 'Login'})
     return render_index(request, 'users/auth.html', {'form': AuthenticationForm(), 'title': 'Login'})
 
