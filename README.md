@@ -1,4 +1,5 @@
 #NTHUOJ_WEB
+#######Version 1.0
 =======
 
 ##License
@@ -30,7 +31,7 @@ git clone git@github.com:bruce3557/NTHUOJ_web.git
 * requests
 
 ###Installation:
-* Install dependencies
+* Install dependencies (for ubuntu)
 ```
 apt-get install mysql-server
 apt-get install python-pip
