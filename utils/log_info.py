@@ -24,7 +24,7 @@ SOFTWARE.
 import logging
 import os
 
-logger = None
+loggers = dict()
 
 
 def get_logger(name='NTHU OJ', log_dir='log'):
@@ -36,7 +36,11 @@ def get_logger(name='NTHU OJ', log_dir='log'):
         the logger with specified format.
     """
 
-    global logger
+    global loggers
+    logger = None
+    if loggers.has_key(name):
+        logger = loggers[name]
+
     if not logger:
         logging_format = '[%(asctime)s] %(levelname)s: %(message)s'
 
@@ -62,5 +66,8 @@ def get_logger(name='NTHU OJ', log_dir='log'):
 
         # add ch to logger
         logger.addHandler(ch)
+
+        # put back into loggers
+        loggers[name] = logger
 
     return logger
