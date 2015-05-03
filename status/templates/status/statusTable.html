@@ -65,6 +65,7 @@
             {% else %}
               {{ submission.grouper.get_status_display }}
             {% endif %}
+            {% show_passed_testcase submission %}
           </td>
           <td>{{ submission.grouper.get_language_display }}</td>
         </tr>

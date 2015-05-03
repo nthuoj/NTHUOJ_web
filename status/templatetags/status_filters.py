@@ -27,6 +27,7 @@ from django import template
 
 from contest.models import Contest
 from contest.contest_info import get_running_contests
+from problem.models import SubmissionDetail
 from team.models import TeamMember
 from utils.user_info import validate_user
 
@@ -143,3 +144,12 @@ def show_detail(submission, user):
             return True
     # no condition is satisfied
     return False
+
+
+@register.simple_tag()
+def show_passed_testcase(submission):
+    details = submission['list']
+    if details:
+        return '(%d/%d)' % \
+            (details.filter(verdict=SubmissionDetail.AC).count(), details.count())
+    return ''
