@@ -81,16 +81,16 @@ def get_contest_submissions(contest, submissions):
     problems = contest.problem.all()
     contestants = get_contestant(contest)
 
+    filter_end_time = get_freeze_time_datetime(contest)
     if is_ended(contest):
         filter_end_time = contest.end_time
-    else:
-        filter_end_time = get_freeze_time_datetime(contest)
+
 
     submissions = submissions.filter(
         problem__in=problems,
         user__in=contestants,
         submit_time__gte=contest.start_time,
-        submit_time__lte=contest.filter_end_time).order_by('-id')
+        submit_time__lte=filter_end_time).order_by('-id')
 
     return submissions
 
