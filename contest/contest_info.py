@@ -341,9 +341,6 @@ def user_can_register_contest(user, contest):
         return False
     return True
 
-def user_has_attended_contest(user, contest):
-    return Contestant.objects.filter(contest=contest, user=user).exists()
-
 '''
 return boolean
 '''
@@ -351,7 +348,7 @@ def can_register(user, contest):
     return (contest_registrable(contest) and user_can_register_contest(user, contest))
 
 def has_attended(user, contest):
-    return user_has_attended_contest(user, contest)
+    return Contestant.objects.filter(contest=contest, user=user).exists()
 
 def get_contest_or_404(contest_id):
     try:
