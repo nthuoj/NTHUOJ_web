@@ -67,6 +67,32 @@ def get_total_testcases(problem):
     testcases = Testcase.objects.filter(problem = problem)
     return testcases.count()
 
+
+def get_contest_submissions(contest, submissions):
+    """From a querySet of submissions filter out submissions that is
+    belong to the given contest."""
+
+    problems = contest.problem.all()
+    contestants = Contestant.objects.filter(contest=contest)
+    users = [contestant.user for contestant in contestants]
+
+    if is_ended(contest):
+        submissions = submissions.filter(
+            problem__in=problems,
+            user__in=users,
+            submit_time__gte=contest.start_time,
+            submit_time__lte=contest.end_time).order_by('-id')
+    else:
+        freeze_time = get_freeze_time_datetime(contest)
+        submissions = submissions.filter(
+            problem__in=problems,
+            user__in=users,
+            submit_time__gte=contest.start_time,
+            submit_time__lte=freeze_time).order_by('-id')
+
+    return submissions
+
+
 def get_contestant_problem_submission_list(contest, contestant, problem):
     return Submission.objects.filter(problem = problem, submit_time__lte = contest.end_time,
         submit_time__gte = contest.start_time, user = contestant.user).order_by('submit_time')
@@ -230,11 +256,11 @@ def get_public_user_password_csv(contest):
     response = HttpResponse(content_type='text/csv')
     filename = contest.cname.encode('utf-8') + '-password'
     response['Content-Disposition'] = 'attachment; filename=' + filename
-    
+
     #init
     writer = csv.writer(response)
     write_public_user_password_csv(writer, contest, public_contestants)
-    
+
     return response
 
 def write_public_user_password_csv(writer, contest, public_contestants):
@@ -252,7 +278,7 @@ def write_public_user_password_csv(writer, contest, public_contestants):
         writer.writerow(user_row)
 
 def get_random_password():
-    #generate random password 
+    #generate random password
     #range: A-Z , 0-9 , a-z
     random_password = ''.join(random.SystemRandom().choice(string.ascii_uppercase +\
          string.ascii_lowercase + string.digits) for _ in range(7))
