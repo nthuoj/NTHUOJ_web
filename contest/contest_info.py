@@ -342,11 +342,7 @@ def user_can_register_contest(user, contest):
     return True
 
 def user_has_attended_contest(user, contest):
-    is_contestant = Contestant.objects.filter(contest=contest, user=user).exists()
-    if is_contestant:
-        return True
-    else:
-        return False
+    return Contestant.objects.filter(contest=contest, user=user).exists()
 
 '''
 return boolean
