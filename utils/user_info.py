@@ -82,6 +82,12 @@ def has_problem_auth(user, problem):
 
     if problem.visible:
         return True
+
+    last_contest = problem.contest_set.all().order_by('-start_time')
+    if last_contest and last_contest[0].start_time < datetime.now():
+        problem.visible = True
+        problem.save()
+        return True
     # check the invisible problem
     # To see/submit an invisible problem, user must
     # 1. has admin auth

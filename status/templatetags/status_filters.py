@@ -115,10 +115,10 @@ def show_detail(submission, user):
     # a problem owner can view his problem's detail
     if submission.problem.owner_id == user.username:
         return True
-    now = datetime.now()
-    contests = get_running_contests()
     # during the contest, only owner/coowner with user level sub-judge/judge
     # can view the detail
+    now = datetime.now()
+    contests = get_running_contests()
     if contests:
         contests = contests.filter(problem=submission.problem)
         for contest in contests:
@@ -128,6 +128,14 @@ def show_detail(submission, user):
     # a user can view his own detail
     if submission.user == user:
         return True
+    # contest owner/coowner can still view code after the contest.
+    contests = Contest.objects.filter(
+        problem=submission.problem,
+        end_time__gte=submission.submit_time,
+        start_time__lte=submission.submit_time)
+    for contest in contests:
+        if user == contest.owner or user in contest.coowner.all():
+            return True
     # a user can view his team member's detail
     if submission.team:
         team_member = TeamMember.objects.filter(team=submission.team, member=user)

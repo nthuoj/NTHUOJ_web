@@ -33,6 +33,8 @@ from django.core.serializers import serialize
 
 from contest.models import Contest
 from contest.contest_info import get_running_contests
+from contest.contest_info import is_ended as contest_is_ended
+from contest.contest_info import get_freeze_time_datetime
 from contest.models import Contestant
 from problem.models import Submission, SubmissionDetail, Problem
 from status.templatetags.status_filters import show_detail
@@ -123,11 +125,19 @@ def contest_status(request, contest):
     users = []
     for contestant in contestants:
         users.append(contestant.user)
-    submissions = Submission.objects.filter(
-        problem__in=problems,
-        user__in=users,
-        submit_time__gte=contest.start_time,
-        submit_time__lte=contest.end_time).order_by('-id')[0:25]
+    if contest_is_ended(contest):
+        submissions = Submission.objects.filter(
+            problem__in=problems,
+            user__in=users,
+            submit_time__gte=contest.start_time,
+            submit_time__lte=contest.end_time).order_by('-id')[0:25]
+    else:
+        freeze_time = get_freeze_time_datetime(contest)
+        submissions = Submission.objects.filter(
+            problem__in=problems,
+            user__in=users,
+            submit_time__gte=contest.start_time,
+            submit_time__lte=freeze_time).order_by('-id')[0:25]
 
     submissions = regroup_submission(submissions)
     table_content = str(render(request, 'status/statusTable.html', {'submissions': submissions}))

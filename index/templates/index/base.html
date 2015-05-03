@@ -124,7 +124,7 @@ SOFTWARE.
             <li class="nav-text"><a href="{% url 'problem:problem' %}">Problem</a></li>
             <li class="nav-text"><a href="{% url 'users:submit' %}">Submit</a></li>
             <li class="nav-text"><a href="{% url 'status:status' %}?username={{ user.username }}">Status</a></li>
-            <li class="nav-text"><a href="{% url 'group:list' %}">Group</a></li>
+            <!--<li class="nav-text"><a href="">Group</a></li>-->
             <!--
             <li class="dropdown nav-text">
               <a href="#" class="dropdown-toggle" data-toggle="dropdown"
@@ -174,7 +174,7 @@ SOFTWARE.
                 <i id="name-text">{{ user.username }}</i>
               </a>
             </li>
-            <li class="nav-text-auth"><a href="{% url 'users:logout' %}?next={{ request.path }}">Logout</a></li>
+            <li class="nav-text-auth"><a href="{% url 'users:logout' %}">Logout</a></li>
             {% else %}
             <li class="nav-text-auth"><a href="{% url 'users:login' %}?next={{ request.path }}">Login</a></li>
             <li class="nav-text-auth"><a href="{% url 'users:create' %}">Register</a></li>
@@ -198,7 +198,7 @@ SOFTWARE.
         </button>
         <script src={% static "js/clipboard.js"%}></script>
         <p id="footer_text">
-        © NTHU Online Judge 2015, Templates are from Bootstrap Project</p>
+        © NTHU Online Judge 2015, Templates are from Bootswatch Project</p>
         <p id='time'>
         {{ tstr }}
         </p>

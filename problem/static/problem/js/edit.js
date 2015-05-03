@@ -34,10 +34,10 @@ function switchTab(t) {
 $(document).ready(function() {
     $(".tab-pane").hide();
     $("#info").show();
-    hide_field();
     var judge_type = $("#id_judge_type").val();
     choose_judge_source($("#id_judge_source").val());
     $("#id_judge_type").val(judge_type);
+    choose_judge_type($("#id_judge_type").val());
     if (window.location.href.indexOf('?') != -1) {
         var param = window.location.href.slice(window.location.href.indexOf('?')+1).split('&');
 	for (var i = 0; i < param.length; i++) {
@@ -179,24 +179,23 @@ $("#save_button").click(function() {
 
 function hide_field() {
   $("#id_error_tolerance").parent().parent().hide();
-  $("#id_other_judge_id").parent().parent().hide();
   $("#id_partial_judge_code").parent().parent().hide();
+  $("#id_partial_judge_header").parent().parent().hide();
   $("#id_special_judge_code").parent().parent().hide();
   $("#id_judge_language").parent().parent().hide();
 }
 
 function choose_judge_type(option) {
     hide_field();
-    if (option == "ERR_TOLERANT")
+    if (option == "LOCAL_ERR_TOLERANT")
         $("#id_error_tolerance").parent().parent().show();
-    else if (option == "PARTIAL") {
+    else if (option == "LOCAL_PARTIAL") {
         $("#id_partial_judge_code").parent().parent().show();
+        $("#id_partial_judge_header").parent().parent().show();
 	$("#id_judge_language").parent().parent().show();
-    } else if (option == "SPECIAL") {
+    } else if (option == "LOCAL_SPECIAL") {
         $("#id_special_judge_code").parent().parent().show();
 	$("#id_judge_language").parent().parent().show();
-    } else if (option != "NORMAL") {
-        $("#id_other_judge_id").parent().parent().show();
     }
 }
 
@@ -206,10 +205,12 @@ function choose_judge_source(option) {
         $("option[value^='OTHER_']").show();
         $("option[value^='LOCAL_']").hide();
         $("#id_judge_type").val($("option[value^='OTHER_']")[0].value);
+        $("#id_other_judge_id").parent().parent().show();
     } else if (option == "LOCAL") {
         $("option[value^='OTHER_']").hide();
         $("option[value^='LOCAL_']").show();
         $("#id_judge_type").val($("option[value^='LOCAL_']")[0].value);
+        $("#id_other_judge_id").parent().parent().hide();
     }
 }
 
