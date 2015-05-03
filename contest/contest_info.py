@@ -63,6 +63,12 @@ def get_running_contests():
 def get_contestant_list(contest):
     return Contestant.objects.filter(contest = contest)
 
+
+def get_contestant(contest):
+    contestants = Contestant.objects.filter(contest=contest)
+    return [contestant.user for contestant in contestants]
+
+
 def get_total_testcases(problem):
     testcases = Testcase.objects.filter(problem = problem)
     return testcases.count()
@@ -73,22 +79,18 @@ def get_contest_submissions(contest, submissions):
     belong to the given contest."""
 
     problems = contest.problem.all()
-    contestants = Contestant.objects.filter(contest=contest)
-    contestants = [contestant.user for contestant in contestants]
+    contestants = get_contestant(contest)
 
     if is_ended(contest):
-        submissions = submissions.filter(
-            problem__in=problems,
-            user__in=contestants,
-            submit_time__gte=contest.start_time,
-            submit_time__lte=contest.end_time).order_by('-id')
+        filter_end_time = contest.end_time
     else:
-        freeze_time = get_freeze_time_datetime(contest)
-        submissions = submissions.filter(
-            problem__in=problems,
-            user__in=contestants,
-            submit_time__gte=contest.start_time,
-            submit_time__lte=freeze_time).order_by('-id')
+        filter_end_time = get_freeze_time_datetime(contest)
+
+    submissions = submissions.filter(
+        problem__in=problems,
+        user__in=contestants,
+        submit_time__gte=contest.start_time,
+        submit_time__lte=contest.filter_end_time).order_by('-id')
 
     return submissions
 

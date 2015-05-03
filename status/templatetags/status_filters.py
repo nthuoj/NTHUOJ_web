@@ -26,7 +26,7 @@ from datetime import datetime
 from django import template
 
 from contest.models import Contest, Contestant
-from contest.contest_info import get_running_contests
+from contest.contest_info import get_running_contests, get_contestant
 from problem.models import SubmissionDetail
 from team.models import TeamMember
 from utils.user_info import validate_user
@@ -93,6 +93,16 @@ def show_submission(submission, user):
     return True
 
 
+def show_contest_submission(submission, user, contests):
+    for contest in contests:
+        if not (user == contest.owner or user in contest.coowner.all()):
+            continue
+        contestants = get_contestant(contest)
+        if submission.user in contestants:
+            return True
+    return False
+
+
 @register.filter()
 def show_detail(submission, user):
     """Test if the user can see that submission's
@@ -122,13 +132,7 @@ def show_detail(submission, user):
     contests = get_running_contests()
     if contests:
         contests = contests.filter(problem=submission.problem)
-        for contest in contests:
-            contestants = Contestant.objects.filter(contest=contest)
-            contestants = [contestant.user for contestant in contestants]
-            if (user == contest.owner or user in contest.coowner.all()) \
-                and submission.user in contestants:
-                return True
-        return False
+        return show_contest_submission(submission, user, contests)
     # a user can view his own detail
     if submission.user == user:
         return True
@@ -137,12 +141,8 @@ def show_detail(submission, user):
         problem=submission.problem,
         end_time__gte=submission.submit_time,
         start_time__lte=submission.submit_time)
-    for contest in contests:
-        contestants = Contestant.objects.filter(contest=contest)
-        contestants = [contestant.user for contestant in contestants]
-        if (user == contest.owner or user in contest.coowner.all()) \
-            and submission.user in contestants:
-            return True
+    if show_contest_submission(submission, user, contests):
+        return True
     # a user can view his team member's detail
     if submission.team:
         team_member = TeamMember.objects.filter(team=submission.team, member=user)
