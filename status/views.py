@@ -35,7 +35,6 @@ from contest.models import Contest
 from contest.contest_info import get_running_contests
 from contest.contest_info import get_freeze_time_datetime
 from contest.contest_info import get_contest_submissions
-from contest.models import Contestant
 from problem.models import Submission, SubmissionDetail, Problem
 from status.templatetags.status_filters import show_detail
 from status.forms import StatusFilter

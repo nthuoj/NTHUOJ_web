@@ -25,7 +25,7 @@ from datetime import datetime
 
 from django import template
 
-from contest.models import Contest
+from contest.models import Contest, Contestant
 from contest.contest_info import get_running_contests
 from problem.models import SubmissionDetail
 from team.models import TeamMember
@@ -123,7 +123,10 @@ def show_detail(submission, user):
     if contests:
         contests = contests.filter(problem=submission.problem)
         for contest in contests:
-            if user == contest.owner or user in contest.coowner.all():
+            contestants = Contestant.objects.filter(contest=contest)
+            contestants = [contestant.user for contestant in contestants]
+            if (user == contest.owner or user in contest.coowner.all()) \
+                and submission.user in contestants:
                 return True
         return False
     # a user can view his own detail
@@ -135,7 +138,10 @@ def show_detail(submission, user):
         end_time__gte=submission.submit_time,
         start_time__lte=submission.submit_time)
     for contest in contests:
-        if user == contest.owner or user in contest.coowner.all():
+        contestants = Contestant.objects.filter(contest=contest)
+        contestants = [contestant.user for contestant in contestants]
+        if (user == contest.owner or user in contest.coowner.all()) \
+            and submission.user in contestants:
             return True
     # a user can view his team member's detail
     if submission.team:
