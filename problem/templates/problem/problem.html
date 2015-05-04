@@ -2,10 +2,12 @@
 <div class="pname_block panel">
   <div class="left">
     <div class="pname">
-      <h2>{{ problem.pname }} &nbsp;&nbsp;
+      <h2>{{ problem.pk }} - {{ problem.pname }} &nbsp;&nbsp;
         {% if problem.owner == user or user.user_level == 'ADMIN'%}
           {% if not preview %}
-            <a href="{% url 'problem:problem.views.edit' problem.pk %}">EDIT</a>
+            <a class="btn btn-warning" href="{% url 'problem:problem.views.edit' problem.pk %}">
+              <span class="glyphicon glyphicon-pencil"></span>
+            </a>
           {% endif %}
         {% endif %}
       </h2>
@@ -13,10 +15,10 @@
   </div>
   <div class="right">
     <div class="problem-option">
-      <a>Status</a> &nbsp;|&nbsp;
-      <a>Printable </a> &nbsp;|&nbsp;
-      <a>Rank</a> &nbsp;|&nbsp;
-      <a data-toggle='modal' data-target='#myModal'>Limits</a>
+      <a href="/status/?pid={{ problem.pk }}">Status</a> &nbsp;|&nbsp;
+      <!-- <a>Printable </a> &nbsp;|&nbsp; -->
+      <!-- <a>Rank</a> &nbsp;|&nbsp; -->
+      <a data-toggle='modal' data-target='#limit_{{ problem.pk }}'>Limits</a>
       {% if not preview %}
         <a class="btn btn-primary" href="{% url 'users:submit' problem.pk %}">Submit</a>
       {% endif %}
@@ -24,7 +26,7 @@
   </div>
 </div>
 
-<div class='modal fade' id='myModal'>
+<div class='modal fade' id='limit_{{ problem.pk }}'>
   <div class='modal-dialog modal-sm'>
     <div class='modal-content'>
       <div class='modal-header'>
@@ -78,6 +80,18 @@
       <span class='label label-danger'>EOF</span>
     </div>
   </div>
+  {% if problem.judge_type == "LOCAL_SPECIAL" and problem.has_special_judge_code %}
+    <h3>Special Judge Code</h3>
+    <a href="{% url 'problem:download_special' problem.filename %}">{{ problem.filename }}</a>
+  {% endif %}
+  {% if problem.judge_type == "LOCAL_PARTIAL" and problem.has_partial_judge_code %}
+    <h3>Partial Judge Code</h3>
+    <a href="{% url 'problem:download_partial' problem.filename %}">{{ problem.filename }}</a>
+  {% endif %}
+  {% if problem.judge_type == "LOCAL_PARTIAL" and problem.has_partial_judge_header %}
+    <h3>Partial Judge Header</h3>
+    <a href="{% url 'problem:download_partial' problem.headername %}">{{ problem.headername }}</a>
+  {% endif %}
   <h3>Tags</h3>
   <div id='tags' style='float:left;width:60%'>
     {% if preview %}
@@ -90,14 +104,16 @@
       {% endfor %}
     {% endif %}
   </div>
-  {% if tag_form %}
-  <form id='addTag'>
-    {% csrf_token %}
-    <div class='input-group'>
-      {{ tag_form }}
-      <button id='addTagButton' class='btn btn-default'>Add Tag</button>
-    </div>
-  </form>
+  {% if tag_form and user.is_authenticated %}
+    <form id='addTag'>
+      {% csrf_token %}
+      <div class='input-group'>
+        {{ tag_form.tag_name }}
+        <span class="input-group-btn">
+          <button id='addTagButton' class="btn btn-default" type="button">Add Tag</button>
+      </span>
+      </div>
+    </form>
   {% endif %}
 
   <br>

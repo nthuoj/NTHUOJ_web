@@ -30,21 +30,24 @@ from django.http import Http404
 from django.core.exceptions import PermissionDenied
 from django.core.exceptions import SuspiciousOperation
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.core.urlresolvers import resolve, reverse
 
 from users.models import Notification
+from utils.config_info import get_config
 
+DEFAULT_THEME = get_config('theme_settings', 'default')
 
 class CustomHttpExceptionMiddleware(object):
     def process_exception(self, request, exception):
         message = unicode(exception)
         if isinstance(exception, Http404):
-            return render(request, 'index/404.html', {'error_message': message}, status=404)
+            return render_index(request, 'index/404.html', {'error_message': message}, status=404)
         elif isinstance(exception, SuspiciousOperation):
-            return render(request, 'index/400.html', {'error_message': message}, status=400)
+            return render_index(request, 'index/400.html', {'error_message': message}, status=400)
         elif isinstance(exception, PermissionDenied):
-            return render(request, 'index/403.html', {'error_message': message}, status=403)
+            return render_index(request, 'index/403.html', {'error_message': message}, status=403)
         elif isinstance(exception, Exception):
-            return render(request, 'index/500.html', {'error_message': message}, status=500)
+            return render_index(request, 'index/500.html', {'error_message': message}, status=500)
 
 
 def render_index(request, *args, **kwargs):
@@ -63,7 +66,9 @@ def custom_proc(request):
     tstr = datetime.fromtimestamp(t).strftime('%Y/%m/%d %H:%M:%S')
     return {
         'tstr': tstr,
-        'amount': amount
+        'amount': amount,
+        'default_theme': DEFAULT_THEME,
+        'request': request
     }
 
 
@@ -86,3 +91,13 @@ def get_current_page(request, objects, slice=25):
         objects = paginator.page(paginator.num_pages)
 
     return objects
+
+
+def get_next_page(next_page):
+    try:
+        resolve(next_page)
+    except:
+        # Redirect to index if the given location can not be resolved.
+        next_page = reverse('index:index')
+
+    return next_page

@@ -1,13 +1,12 @@
 {% load contest_extras %} {% load staticfiles %} {% block import_source %}
 <link href="{% static 'contest/css/overview.css' %}" rel="stylesheet">
-<script src="{%static 'contest/js/overview.js'%}"></script>
 {% endblock import_source %}
 <table class="table table-striped">
   <thead>
     <tr>
       <th>#</th>
       <th>Problem</th>
-      <th>Pass Rate</th>
+      <th>Pass Rate (passed user / total user)</th>
     </tr>
   </thead>
   <tbody>
@@ -19,17 +18,22 @@
            tabindex="-1" role="tab" data-toggle="tab">{{ problem.pname }}</a>
       </td>
       <td>
+        {% if problem.no_submission %}
+        No Submission
+        {% else %}
         <div class="progress">
-          <div name="pass" class="progress-bar progress-bar-success"
-               role="progressbar" aria-valuenow="30" aria-valuemin="0" aria-valuemax="100" style="width: 0%;">
-            <span name="pass_ratio">
-              {{ problem.pass_user }}/{{ scoreboard|total_contestant }}
-              </span>
+          <div class="progress-bar progress-bar-success" 
+               style="width: {{problem.pass_rate}}%;"
+               data-toggle="tooltip" data-placement="top" 
+               title="{{problem.pass_rate|floatformat:2}}%">
           </div>
-          <div name="not_pass" class="progress-bar progress-bar-danger"
-           role="progressbar" aria-valuenow="30" aria-valuemin="0" aria-valuemax="100" style="width: 0%;">
+          <div class="progress-bar progress-bar-danger" 
+               style="width: {{problem.not_pass_rate}}%;"
+               data-toggle="tooltip" data-placement="top" 
+               title="{{problem.not_pass_rate|floatformat:2}}%">
           </div>
         </div>
+        {% endif %}
       </td>
     </tr>
     {% endfor %}

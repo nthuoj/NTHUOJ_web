@@ -2,11 +2,13 @@
 {% load static %}
 {% load bootstrap %}
 {% load profile_filters %}
-
+{% block title_name %}
+<title>Profile</title>
+{% endblock title_name %}
 {% block body_block %}
 <br>
 <script src={% static "Chart.js/Chart.js" %}></script>
-<script src={% static "js/piechartsettings.js"%}></script>
+<script src={% static "js/profile.js"%}></script>
 <script type="text/javascript">
 $(function() {
   plot_piechart({{ piechart_data|safe }});
@@ -30,7 +32,9 @@ $(function() {
 </style>
 
 <div class="container">
-  <h1>{{ profile_user }}'s Profile</h1>
+  <div class="well">
+    <h2><b>{{ profile_user }}</b>'s Profile</h2>
+  </div>
   <div class="row">
     <div class="col-lg-7">
       {% block statistic_block %}
@@ -55,51 +59,52 @@ $(function() {
       <div class="panel panel-default">
         <div class="panel-heading">Profile</div>
         <div class="panel-body">
-          {% if user == profile_user %}
-            <form class="form-horizontal" action="" method="post" style="margin:10px;">
+          <form class="form-horizontal" action="" method="post" style="margin:10px;">
+            {% if user == profile_user %}
               {% csrf_token %}
               {{ profile_form|bootstrap_horizontal:'col-lg-4' }}
               <div class="modal-footer">
-                <div class='col-lg-8'>{{ profile_message }}</div>
                 <button type="submit" name="profile_form"
                   class="btn btn-primary">Submit</button>
               </div>
-            </form>
-          {% else %}
-            <div class="form-group">
-              <div class='row'>
-                <div class='col-lg-2 col-lg-offset-1'>
-                  <label class="control-label">Username</label>
-                </div>
-                <div class='col-lg-6'>
+            {% else %}
+              <div class="form-group">
+                <label class="control-label col-lg-4">Username</label>
+                <div class="col-lg-8">
                   <input class="form-control" readonly="True" type="text"
-                    value="{{ profile_user.username }}">
+                    id="id_username" value="{{ profile_user.username }}">
                 </div>
               </div>
-            </div>
-            <div class="form-group">
-              <div class='row'>
-                <div class='col-lg-2 col-lg-offset-1'>
-                  <label class="control-label">Email</label>
+              {% if user|reveal_private_info:profile_user %}
+                <div class="form-group">
+                  <label class="control-label col-lg-4">Email</label>
+                  <div class="col-lg-8">
+                    <input class="form-control" readonly="True" type="email"
+                    value="{{ profile_user.email }}">
+                  </div>
                 </div>
-                <div class='col-lg-6'>
-                  <input class="form-control" readonly="True" type="email" value="{{ profile_user.email }}">
-                </div>
-              </div>
-            </div>
-          {% endif %}
-
-          {% if user|can_change_userlevel:profile_user %}
-            <form class="form-horizontal" action="" method="post" style="margin:10px;">
+              {% endif %}
+            {% endif %}
+          </form>
+          <form class="form-horizontal" action="" method="post" style="margin:10px;"
+                onsubmit="return confirm_change_userlevel()">
+            {% if user|can_change_userlevel:profile_user %}
               {% csrf_token %}
               {{ userlevel_form|bootstrap_horizontal:'col-lg-4' }}
               <div class="modal-footer">
-                <div class='col-lg-8'>{{ userlevel_message }}</div>
                 <button type="submit" name="userlevel_form"
                   class="btn btn-primary">Submit</button>
               </div>
-            </form>
-          {% endif %}
+            {% elif user|reveal_private_info:profile_user %}
+              <div class="form-group">
+                <label class="control-label col-lg-4">User Level</label>
+                <div class="col-lg-8">
+                  <input class="form-control" readonly="True"
+                  value="{{ profile_user.get_user_level_display }}">
+                </div>
+              </div>
+            {% endif %}
+          </form>
         </div>
       </div>
       {% endblock profile_field_block %}

@@ -53,13 +53,13 @@ class Contest(models.Model):
         return str(deltatime)
 
     def __unicode__(self):
-        return self.cname
+        return '%d - %s' % (self.id, self.cname)
 
 
 class Contestant(models.Model):
 
     contest = models.ForeignKey(Contest)
-    user = models.ForeignKey(User)
+    user = models.ForeignKey(User, related_name='user')
     team = models.ForeignKey(Team, blank=True, null=True)
 
     class Meta:

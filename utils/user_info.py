@@ -31,14 +31,16 @@ from django.core.mail import EmailMultiAlternatives
 from django.template.loader import render_to_string
 
 from contest.models import Contest
+from contest.models import Contestant
 from problem.models import Submission, SubmissionDetail
 from users.models import User, UserProfile
 from utils.log_info import get_logger
 from utils.config_info import get_config
+from django.conf import settings
 
 EMAIL_HOST_USER = get_config('email', 'user')
-logger = get_logger()
 
+logger = get_logger()
 
 def has_contest_ownership(curr_user, curr_contest):
     curr_user = validate_user(curr_user)
@@ -79,6 +81,12 @@ def has_problem_auth(user, problem):
     user = validate_user(user)
 
     if problem.visible:
+        return True
+
+    last_contest = problem.contest_set.all().order_by('-start_time')
+    if last_contest and last_contest[0].start_time < datetime.now():
+        problem.visible = True
+        problem.save()
         return True
     # check the invisible problem
     # To see/submit an invisible problem, user must
@@ -157,7 +165,9 @@ def send_activation_email(request, user):
         reverse('users:confirm', kwargs={'activation_key': activation_key})
     email_subject = 'Account confirmation'
     email_body = render_to_string('index/activation_email.html',
-                    {'username': username, 'activation_link': activation_link})
+                    {'username': username, 'activation_link': activation_link,
+                    'active_time': new_profile.active_time})
+
     msg = EmailMultiAlternatives(email_subject, email_body, EMAIL_HOST_USER, [email])
     msg.attach_alternative(email_body, "text/html")
 
@@ -165,7 +175,6 @@ def send_activation_email(request, user):
         Thread(target=msg.send, args=()).start()
     except:
         logger.warning("There is an error when sending email to %s's mailbox" % username)
-
 
 def send_forget_password_email(request, user):
     username = user.username

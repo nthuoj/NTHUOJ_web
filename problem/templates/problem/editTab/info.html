@@ -1,7 +1,20 @@
-{% csrf_token %}
 {% load bootstrap %}
 {{ form|bootstrap }}
+{% if problem.judge_type == "LOCAL_SPECIAL" and problem.has_special_judge_code %}
+  <br>special judge code: <a href="{% url 'problem:download_special' problem.filename %}">{{ problem.filename }}</a>
+{% endif %}
+{% if problem.judge_type == "LOCAL_PARTIAL" and problem.has_partial_judge_code %}
+  <br>partial judge code: <a href="{% url 'problem:download_partial' problem.filename %}">{{ problem.filename }}</a>
+{% endif %}
+{% if problem.judge_type == "LOCAL_PARTIAL" and problem.has_partial_judge_header %}
+  <br>partial judge header: <a href="{% url 'problem:download_partial' problem.headername %}">{{ problem.headername }}</a>
+{% endif %}
 <br>
 <br>
 <br>
 <br>
+<script>
+{% if not user.has_admin_auth %}
+$("#id_owner").parent().parent().hide();
+{% endif %}
+</script>

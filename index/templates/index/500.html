@@ -27,12 +27,14 @@ SOFTWARE.
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <title>500</title>
   <!-- bootstrap, bootwatch JS & CSS -->
   {% if user.is_authenticated %}
-  <link rel="stylesheet" href="{% static '' %}bootswatch/{{user.theme}}/bootstrap.css">
-  {% else %}
-  <link rel="stylesheet" href={% static "bootswatch/paper/bootstrap.css" %}>
+    <link rel="stylesheet" href="{% static '' %}bootswatch/{{user.theme}}/bootstrap.css">
+    {% else %}
+    <link rel="stylesheet" href="{% static '' %}bootswatch/{{default_theme}}/bootstrap.css">
   {% endif %}
+  <script src={% static "jquery/dist/jquery.min.js" %}></script>
   <script src={% static "bootstrap/dist/js/bootstrap.min.js" %}></script>
   <link rel="stylesheet" href={% static "./css/index.css"%} media="screen">
 </head>
@@ -47,7 +49,8 @@ SOFTWARE.
     <p class="status-message">{{ error_message }}</p>
     <br>
     <p class="status-condition">
-      Oops , there was an error.
+      Oops , there was an error.<br>
+      <a href="javascript:history.go(-1)">Go Back</a>
     </p>
   </div>
 </body>

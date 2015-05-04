@@ -48,5 +48,7 @@ urlpatterns = patterns('',
     # /problem/10/testcase/123/delete/: delete testcase 123 of problem 10
     url(r'^preview/$', views.preview, name='preview'),
     # /problem/preview  :  preview problem when editting
-    url(r'^testcase/(?P<filename>.+)/$', views.download_testcase, name="download_testcase")
+    url(r'^testcase/(?P<filename>.+)/$', views.download_testcase, name="download_testcase"),
+    url(r'^partial/(?P<filename>.+)/$', views.download_partial, name="download_partial"),
+    url(r'^special/(?P<filename>.+)/$', views.download_special, name="download_special"),
 )

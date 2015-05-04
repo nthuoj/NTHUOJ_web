@@ -14,7 +14,21 @@
   <div class="container">
     <!--Title-->
     <div class="well">
-      <h2>{{ contest.cname }}</h2>
+      <h2>{{ contest.id }} - {{ contest.cname }}
+      {% if user|can_edit_contest:contest %}
+       <a href="{% url 'contest:edit' contest.id %}">
+        <button type="button" class="btn btn-warning btn-sm" data-toggle="tooltip"
+                data-placement="top" title="Edit Contest">
+          <span class="glyphicon glyphicon-pencil"></span>
+        </button>
+      </a>
+      {% endif %}
+      {% if contest|is_freezed %}
+      <h4>
+      <span class="label label-danger">Freezed</span>
+      </h4>
+      {% endif %}
+      </h2>
     </div>
     <div class="panel panel-info">
       <div class="panel-heading">
@@ -43,19 +57,20 @@
         <h1 class="panel-title" style="text-align:center;">Clarification</h1>
       </div>
       <div id="contest_clarification">
-        <table class="table">
+        <table class="table" style="table-layout: fixed; width: 100%">
           <thead>
             <tr>
               {% if user|can_reply:contest %}
-                <th></th>
+                <th width="5%"></th>
               {% endif %}
-              <th>#</th>
-              <th>Problem</th>
-              <th>Asker</th>
-              <th>Description</th>
-              <th>Reply</th>
-              <th>Replier</th>
-              <th>Reply Time</th>
+              <th width="2%">#</th>
+              <th width="15%">Problem</th>
+              <th width="10%">Asker</th>
+              <th width="20%">Description</th>
+              <th width="20%">Reply</th>
+              <th width="10%">Replier</th>
+              <th width="10%">Reply Time</th>
+              <th width="5%">For all team</th>
             </tr>
           </thead>
           <tbody>
@@ -65,16 +80,21 @@
               <td>
               <button name="reply" type="button" class="btn btn-warning btn-xs"
                       data-toggle="modal" data-target="#reply"
-                      onclick="select({{ clarification.id }},'{{ clarification.content }}')">Reply</button>
+                      onclick="select({{ clarification.id }})">Reply</button>
               </td>
               {% endif %}
               <td>{{ forloop.counter }}</td>
               <td>{{ clarification.problem }}</td>
               <td>{{ clarification.asker }}</td>
-              <td>{{ clarification.content }}</td>
-              <td>{{ clarification.reply }}</td>
+              <td class="word-block" id="content{{ clarification.id }}">{{ clarification.content }}</td>
+              <td class="word-block" id="reply{{ clarification.id }}">{{ clarification.reply }}</td>
               <td>{{ clarification.replier }}</td>
-              <td>{{ clarification.reply_time }}</td>
+              <td>{{ clarification.reply_time|date:"Y/m/d H:i:s" }}</td>
+              <td>
+              {% if clarification.reply_all%}
+              <span class="glyphicon glyphicon-ok green" aria-hidden="true"></span>
+              {% endif %}
+              </td>
             </tr>
             {% endfor %}
           </tbody>
@@ -125,7 +145,14 @@
         <div class="tab-pane" id="scoreboard">
           {% include "contest/scoreboard.html" %}
         </div>
-        <div class="tab-pane" id="status">{{ status|safe }}</div>
+        <div class="tab-pane" id="status">
+          {{ status|safe }}
+          <a href="{% url 'status:status' %}?cid={{ contest.id }}">
+            <button type="button" class="btn btn-info btn-block">
+              See More Status
+            </button>
+          </a>
+        </div>
       </div>
     </div>
     {% if user|can_ask:contest %}

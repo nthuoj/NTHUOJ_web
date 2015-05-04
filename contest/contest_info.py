@@ -17,7 +17,9 @@
     OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
     SOFTWARE.
     '''
-from datetime import datetime
+import datetime
+import string
+import random
 from contest.models import Contest
 from contest.models import Contestant
 from contest.models import Clarification
@@ -27,6 +29,8 @@ from contest.scoreboard import User as ScoreboardUser
 from contest.scoreboard import ScoreboardProblem
 from contest.scoreboard import UserProblem
 from contest.scoreboard import Submission as ScoreboardSubmission
+
+from contest import public_user
 
 from problem.models import Problem
 from problem.models import Testcase
@@ -41,12 +45,20 @@ from utils.log_info import get_logger
 from utils import user_info
 
 from django.http import Http404
+from django.contrib.auth.hashers import make_password
 
 import csv
 from django.http import HttpResponse
-from datetime import datetime
 
 logger = get_logger()
+
+def get_running_contests():
+    now = datetime.datetime.now()
+    contests = Contest.objects.filter(
+        is_homework=False,
+        start_time__lte=now,
+        end_time__gte=now)
+    return contests
 
 def get_contestant_list(contest):
     return Contestant.objects.filter(contest = contest)
@@ -57,6 +69,11 @@ def get_total_testcases(problem):
 
 def get_contestant_problem_submission_list(contest, contestant, problem):
     return Submission.objects.filter(problem = problem, submit_time__lte = contest.end_time,
+        submit_time__gte = contest.start_time, user = contestant.user).order_by('submit_time')
+
+def get_contestant_problem_submission_list_before_freeze_time(contest, contestant, problem):
+    freeze_time = get_freeze_time_datetime(contest)
+    return Submission.objects.filter(problem = problem, submit_time__lte = freeze_time,
         submit_time__gte = contest.start_time, user = contestant.user).order_by('submit_time')
 
 def get_passed_testcases(submission):
@@ -79,17 +96,24 @@ def get_submit_times(problem):
 
 def get_scoreboard(contest):
     contestants = get_contestant_list(contest)
-    
+
     scoreboard = Scoreboard(contest.start_time)
+    # Store contest's problem data
     for problem in contest.problem.all():
         total_testcases = get_total_testcases(problem);
         new_problem = ScoreboardProblem(problem.id,problem.pname,total_testcases)
+        new_problem.no_submission = True
         scoreboard.add_problem(new_problem)
 
+    # For Contestants' data
     for contestant in contestants:
         new_contestant = ScoreboardUser(contestant.user.username)
         for problem in contest.problem.all():
-            submissions = get_contestant_problem_submission_list(contest,contestant,problem)    
+            if is_ended(contest):
+                submissions = get_contestant_problem_submission_list(contest,contestant,problem)
+            else:
+                submissions = get_contestant_problem_submission_list_before_freeze_time\
+                    (contest,contestant,problem)
             total_testcases = get_total_testcases(problem)
             new_problem = UserProblem(problem.id,total_testcases)
             for submission in submissions:
@@ -97,9 +121,16 @@ def get_scoreboard(contest):
                 new_submission = ScoreboardSubmission(submission.submit_time,passed_testcases)
                 new_problem.add_submission(new_submission)
                 if new_submission.is_solved(total_testcases):
+                    new_problem.AC_time = new_submission.submit_time - contest.start_time
+                    new_problem.AC_time = int(new_problem.AC_time.total_seconds()/60)
                     break
             if new_problem.is_solved():
                 scoreboard.get_problem(new_problem.id).add_pass_user()
+            else:
+                new_problem.AC_time = '--'
+            if len(submissions):
+                scoreboard.get_problem(new_problem.id).no_submission = False
+
             #setup problem attribute
             new_problem.penalty = get_penalty(new_problem,scoreboard.start_time)
             new_problem.submit_times = get_submit_times(new_problem)
@@ -116,14 +147,23 @@ def get_scoreboard(contest):
         new_contestant.testcases_solved = new_contestant.get_testcases_solved()
         scoreboard.add_user(new_contestant)
 
+    for problem in scoreboard.problems:
+        if len(scoreboard.users):
+            problem.pass_rate = float(problem.pass_user) / len(scoreboard.users) * 100
+            problem.not_pass_rate = 100 - problem.pass_rate
+        else:
+            problem.pass_rate = 0
+            problem.not_pass_rate = 100
+            problem.no_submission = True
+
     return scoreboard
 
 def get_scoreboard_csv(contest_id, scoreboard_type):
     contest = get_contest_or_404(contest_id)
     scoreboard = get_scoreboard(contest)
-    
+
     response = HttpResponse(content_type='text/csv')
-    filename = str(contest.cname) + '-scoreboard-' + str(scoreboard_type)
+    filename = contest.cname.encode('utf-8') + '-scoreboard-' + str(scoreboard_type)
     response['Content-Disposition'] = 'attachment; filename=' + filename
 
     #init
@@ -149,13 +189,13 @@ def write_scoreboard_csv_penalty(writer, contest, scoreboard):
         user_row = [counter+1, user.username]
         for problem in user.problems:
             submit_times = problem.submit_times
-            penalty = get_penalty(problem, contest.start_time)
-            user_row.append(str(submit_times) + '/' + str(penalty))
+            AC_time = problem.AC_time
+            user_row.append(str(submit_times) + '/' + str(AC_time))
         total_penalty = user.get_penalty(contest.start_time)
         user_row.append(total_penalty)
         writer.writerow(user_row)
 
-    footer = ['Passed', '']  
+    footer = ['Passed', '']
     for problem in scoreboard.problems:
         footer.append(problem.pass_user)
     writer.writerow(footer)
@@ -180,14 +220,46 @@ def write_scoreboard_csv_testcases(writer, contest, scoreboard):
         user_row.append(user_total_testcases)
         writer.writerow(user_row)
 
-    footer = ['Passed Testcases', '']  
+    footer = ['Passed Testcases', '']
     for problem in scoreboard.problems:
         footer.append(problem.total_solved)
     writer.writerow(footer)
 
-def get_clarifications(user, contest):
+def get_public_user_password_csv(contest):
+    public_contestants = public_user.get_public_contestant(contest)
+    response = HttpResponse(content_type='text/csv')
+    filename = contest.cname.encode('utf-8') + '-password'
+    response['Content-Disposition'] = 'attachment; filename=' + filename
+    
+    #init
+    writer = csv.writer(response)
+    write_public_user_password_csv(writer, contest, public_contestants)
+    
+    return response
 
-    if has_contest_ownership(user,contest):
+def write_public_user_password_csv(writer, contest, public_contestants):
+    header = [contest.cname.encode('utf-8'),str(len(public_contestants))+' users']
+    writer.writerow(header)
+    title = ['Username','Password']
+    writer.writerow(title)
+    for contestant in public_contestants:
+        random_password = get_random_password()
+        user = contestant.user
+        user.password = make_password(random_password)
+        user.save()
+        logger.info('Public user %s changed password' % user.username)
+        user_row = [user.username, random_password]
+        writer.writerow(user_row)
+
+def get_random_password():
+    #generate random password 
+    #range: A-Z , 0-9 , a-z
+    random_password = ''.join(random.SystemRandom().choice(string.ascii_uppercase +\
+         string.ascii_lowercase + string.digits) for _ in range(7))
+    return random_password
+
+def get_clarifications(user, contest):
+    if has_contest_ownership(user,contest) or user.has_admin_auth():
         return Clarification.objects.filter(contest = contest)
     reply_all = Clarification.objects.filter(contest = contest, reply_all = True)
     if user.is_authenticated():
@@ -199,6 +271,14 @@ def is_contestant(user, contest):
     user = validate_user(user)
     contestant = Contestant.objects.filter(contest = contest, user = user)
     return (len(contestant)>=1)
+
+def is_coowner(user, contest):
+    user = validate_user(user)
+    coowners = contest.coowner.all()
+    for coowner in coowners:
+        if user == coowner:
+            return True
+    return False
 
 #check if user can create new clarification in contest
 '''
@@ -243,87 +323,52 @@ def can_delete_contest(user, contest):
     user = validate_user(user)
     return user.has_admin_auth() or (user == contest.owner)
 
-'''
-1. contest is not ended
-2. contest is open_register
-3. user is not owner or coowner
-4. user has not attended
-5. user is logined
-6. user is not admin
-'''
-NOT_LOGGED_IN = "not_logged_in"
-ENDED = "ended"
-NOT_OPEN_REGISTER = "not_open_register"
-OWN_CONTEST = "own_contest"
-HAS_ATTENDED = "has_attended"
-IS_ADMIN = "is_admin"
-OK = "OK"
-
-'''
-return error or success message
-'''
-def can_register_return_status(user, contest):
-    if not user.is_authenticated():
-        return NOT_LOGGED_IN
-
-    ended = is_ended(contest)
-    if ended:
-        return ENDED
-
+def contest_registrable(contest):
+    if has_started(contest):
+        return False
     open_register = contest.open_register
     if not open_register:
-        return NOT_OPEN_REGISTER
+        return False
+    return True
 
+def user_can_register_contest(user, contest):
+    if not user.is_authenticated():
+        return False
+    if user.has_admin_auth():
+        return False
     has_ownership = has_contest_ownership(user,contest)
     if has_ownership:
-        return OWN_CONTEST
-
-    has_attended = Contestant.objects.filter(contest = contest, user = user).exists()
-    if has_attended:
-        return HAS_ATTENDED
-    
-    if user.has_admin_auth():
-        return IS_ADMIN
-
-    return OK
+        return False
+    is_contestant = Contestant.objects.filter(contest = contest, user = user).exists()
+    if is_contestant:
+        return False
+    return True
 
 '''
 return boolean
 '''
 def can_register(user, contest):
-    if can_register_return_status(user, contest) is OK:
-        return True
-    return False
-
-'''
-depend on error msg and write to log
-'''
-def can_register_log(user, contest):
-    status = can_register_return_status(user, contest)
-    if status is OK:
-        return True
-    elif status is NOT_LOGGED_IN:
-        logger.info('Contest: User does not logged in. Can not register.')
-    elif status is ENDED:
-        logger.info('Contest: Contest %s has ended! Can not register.' % (contest.id))
-    elif status is NOT_OPEN_REGISTER:
-        logger.info('Contest: Registration for Contest %s is closed. Can not register.' % contest.id)
-    elif status is OWN_CONTEST:
-        logger.info('Contest: User %s has Contest %s ownership. Can not register.' % (user.username, contest.id))
-    elif status is HAS_ATTENDED:
-        logger.info('Contest: User %s has already attended Contest %s!' % (user.username, contest.id))
-    elif status is IS_ADMIN:
-        logger.info('Contest: User %s is admin. Can not register contest %s!' % (user.username, contest.id))
-
-    return False
+    return (contest_registrable(contest) and user_can_register_contest(user, contest))
 
 def get_contest_or_404(contest_id):
     try:
         contest = Contest.objects.get(id = contest_id)
         return contest
     except Contest.DoesNotExist:
-        logger.warning('Contest: Can not register contest %s! Contest not found!' % contest_id)
-        raise Http404('Can not register contest %s! Contest not found!' % contest_id)
+        logger.warning('Contest:Contest not found!' % contest_id)
+        raise Http404('Contest not found!' % contest_id)
+
+def has_started(contest):
+    return (datetime.datetime.now() > contest.start_time)
 
 def is_ended(contest):
-    return (datetime.now() > contest.end_time)
+    return (datetime.datetime.now() > contest.end_time)
+
+# True if contest is not ended and during freeze time
+def is_freezed(contest):
+    freeze_time = get_freeze_time_datetime(contest)
+    return (datetime.datetime.now() > freeze_time) and not is_ended(contest)
+
+def get_freeze_time_datetime(contest):
+    freeze_time = contest.freeze_time
+    return contest.end_time - datetime.timedelta(minutes = freeze_time)

@@ -16,15 +16,17 @@
 <form id="addTag">
   <div class='input-group'>
     {% csrf_token %}
-    {{ tag_form }}
-    <button id='add_tag_button' class='btn btn-default'>Add</button>
+    {{ tag_form.tag_name }}
+    <span class="input-group-btn">
+      <button id='add_tag_button' class='btn btn-default'>Add Tag</button>
+    </span>
   </div>
 </form>
 <script>
 $(document).ready(function() {
     $("#addTag").submit(function(e) {
         e.preventDefault();
-        var ret = add_new_tag({{pid}});
+        var ret = add_new_tag({{ problem.pk }});
         refreshEventListener();
         return ret;
     });
@@ -36,7 +38,7 @@ function refreshEventListener() {
         var tid = $(this).parents("tr").attr('data-target');
         $.ajax({
             type: 'GET',
-            url: '/problem/'+{{pid}}+'/tag/'+tid+'/delete/',
+            url: '/problem/'+{{ problem.pk }}+'/tag/'+tid+'/delete/',
             success: function(data) {
               row.remove();
             }

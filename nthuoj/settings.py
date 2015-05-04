@@ -51,6 +51,7 @@ INSTALLED_APPS = (
     'bootstrapform',
     'djangobower',
     'datetimewidget',
+    'vjudge',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -136,6 +137,7 @@ BOWER_INSTALLED_APPS = (
     'https://github.com/lou/multi-select.git', # multiselect
     'https://github.com/riklomas/quicksearch.git', # quicksearch
     'ckeditor#full/stable', # ckeditor
+    'https://gantry.googlecode.com/svn/trunk/root/js/jquery.url.min.js', # jquery url plugin
 )
 
 STATICFILES_FINDERS = (
@@ -143,3 +145,11 @@ STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
     'djangobower.finders.BowerFinder',
 )
+
+#maximum of public users for a single contest
+MAX_PUBLIC_USER = 200
+#public user username prefix
+PUBLIC_USER_PREFIX = "TEAM"
+
+PUBLIC_USER_DEFAULT_PASSWORD = "000"
+

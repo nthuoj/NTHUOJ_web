@@ -18,6 +18,7 @@
     SOFTWARE.
     '''
 from django import template
+from datetime import datetime
 from utils import user_info
 from contest.models import Contest
 
@@ -26,10 +27,10 @@ from contest.scoreboard import Scoreboard
 from contest.scoreboard import ScoreboardProblem
 from contest.scoreboard import UserProblem
 from contest.scoreboard import User
+from contest.public_user import is_public_user
 
 from users.models import User
-from utils import user_info 
-
+from utils import user_info
 
 register = template.Library()
 
@@ -37,10 +38,12 @@ register = template.Library()
 @register.filter
 def has_auth(user, contest_id):
     contest = Contest.objects.get(id = contest_id)
-    return user_info.has_contest_ownership(user,contest)
+    user = user_info.validate_user(user)
+    return user_info.has_contest_ownership(user, contest) | user.has_admin_auth()
 
 register.filter("has_auth", has_auth)
 
+#clarification
 @register.filter
 def can_create_contest(user):
     return contest_info.can_create_contest(user)
@@ -65,6 +68,18 @@ register.filter("can_ask", can_ask)
 def can_reply(user, contest):
     return contest_info.can_reply(user,contest)
 register.filter("can_reply", can_reply)
+
+#check if user is coowner
+@register.filter
+def is_coowner(user, contest):
+    return contest_info.is_coowner(user, contest)
+register.filter("is_coowner", is_coowner)
+
+#check if contest is freezed
+@register.filter
+def is_freezed(contest):
+    return contest_info.is_freezed(contest)
+register.filter("is_freezed", is_freezed)
 
 #check if user is judge or admin
 @register.filter
@@ -98,7 +113,6 @@ def can_register(user, contest):
     return contest_info.can_register(user, contest)
 register.filter("can_register", can_register)
 
-
 '''
 Contest should not be end. 
 And user should own contest(to register group)
@@ -108,9 +122,9 @@ or user can register
 def show_register_btn(user, contest):
     if not user.is_authenticated():
         return False
-    is_not_ended = not contest_info.is_ended(contest)
+    has_not_started = not contest_info.has_started(contest)
     own_contest = user_info.has_contest_ownership(user, contest)
-    user_can_register = contest_info.can_register(user, contest)
+    is_not_public_user = not is_public_user(user)
     user_is_admin = user.has_admin_auth()
-    return is_not_ended and (own_contest or user_can_register or user_is_admin)
+    return has_not_started and (own_contest or is_not_public_user or user_is_admin)
 register.filter("show_register_btn", show_register_btn)
