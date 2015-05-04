@@ -29,7 +29,7 @@ from contest.scoreboard import User as ScoreboardUser
 from contest.scoreboard import ScoreboardProblem
 from contest.scoreboard import UserProblem
 from contest.scoreboard import Submission as ScoreboardSubmission
-
+from contest.public_user import is_public_user
 from contest import public_user
 
 from problem.models import Problem
@@ -61,23 +61,23 @@ def get_running_contests():
     return contests
 
 def get_contestant_list(contest):
-    return Contestant.objects.filter(contest = contest)
+    return Contestant.objects.filter(contest=contest)
 
 def get_total_testcases(problem):
-    testcases = Testcase.objects.filter(problem = problem)
+    testcases = Testcase.objects.filter(problem=problem)
     return testcases.count()
 
 def get_contestant_problem_submission_list(contest, contestant, problem):
-    return Submission.objects.filter(problem = problem, submit_time__lte = contest.end_time,
-        submit_time__gte = contest.start_time, user = contestant.user).order_by('submit_time')
+    return Submission.objects.filter(problem=problem, submit_time__lte=contest.end_time,
+        submit_time__gte=contest.start_time, user=contestant.user).order_by('submit_time')
 
 def get_contestant_problem_submission_list_before_freeze_time(contest, contestant, problem):
     freeze_time = get_freeze_time_datetime(contest)
-    return Submission.objects.filter(problem = problem, submit_time__lte = freeze_time,
-        submit_time__gte = contest.start_time, user = contestant.user).order_by('submit_time')
+    return Submission.objects.filter(problem=problem, submit_time__lte=freeze_time,
+        submit_time__gte=contest.start_time, user=contestant.user).order_by('submit_time')
 
 def get_passed_testcases(submission):
-    passed_testcases = SubmissionDetail.objects.filter(sid = submission, verdict = SubmissionDetail.AC)
+    passed_testcases = SubmissionDetail.objects.filter(sid=submission, verdict=SubmissionDetail.AC)
     return passed_testcases.count()
 
 def get_penalty(obj, start_time):
@@ -230,11 +230,11 @@ def get_public_user_password_csv(contest):
     response = HttpResponse(content_type='text/csv')
     filename = contest.cname.encode('utf-8') + '-password'
     response['Content-Disposition'] = 'attachment; filename=' + filename
-    
+
     #init
     writer = csv.writer(response)
     write_public_user_password_csv(writer, contest, public_contestants)
-    
+
     return response
 
 def write_public_user_password_csv(writer, contest, public_contestants):
@@ -252,7 +252,7 @@ def write_public_user_password_csv(writer, contest, public_contestants):
         writer.writerow(user_row)
 
 def get_random_password():
-    #generate random password 
+    #generate random password
     #range: A-Z , 0-9 , a-z
     random_password = ''.join(random.SystemRandom().choice(string.ascii_uppercase +\
          string.ascii_lowercase + string.digits) for _ in range(7))
@@ -260,16 +260,16 @@ def get_random_password():
 
 def get_clarifications(user, contest):
     if has_contest_ownership(user,contest) or user.has_admin_auth():
-        return Clarification.objects.filter(contest = contest)
-    reply_all = Clarification.objects.filter(contest = contest, reply_all = True)
+        return Clarification.objects.filter(contest=contest)
+    reply_all = Clarification.objects.filter(contest=contest, reply_all=True)
     if user.is_authenticated():
-        user_ask = Clarification.objects.filter(contest = contest, asker = user)
+        user_ask = Clarification.objects.filter(contest=contest, asker=user)
         return reply_all | user_ask
     return reply_all
 
 def is_contestant(user, contest):
     user = validate_user(user)
-    contestant = Contestant.objects.filter(contest = contest, user = user)
+    contestant = Contestant.objects.filter(contest=contest, user=user)
     return (len(contestant)>=1)
 
 def is_coowner(user, contest):
@@ -336,11 +336,10 @@ def user_can_register_contest(user, contest):
         return False
     if user.has_admin_auth():
         return False
+    if is_public_user(user):
+        return False
     has_ownership = has_contest_ownership(user,contest)
     if has_ownership:
-        return False
-    is_contestant = Contestant.objects.filter(contest = contest, user = user).exists()
-    if is_contestant:
         return False
     return True
 
@@ -350,9 +349,12 @@ return boolean
 def can_register(user, contest):
     return (contest_registrable(contest) and user_can_register_contest(user, contest))
 
+def has_attended(user, contest):
+    return Contestant.objects.filter(contest=contest, user=user).exists()
+
 def get_contest_or_404(contest_id):
     try:
-        contest = Contest.objects.get(id = contest_id)
+        contest = Contest.objects.get(id=contest_id)
         return contest
     except Contest.DoesNotExist:
         logger.warning('Contest:Contest not found!' % contest_id)
@@ -371,4 +373,4 @@ def is_freezed(contest):
 
 def get_freeze_time_datetime(contest):
     freeze_time = contest.freeze_time
-    return contest.end_time - datetime.timedelta(minutes = freeze_time)
+    return contest.end_time - datetime.timedelta(minutes=freeze_time)
