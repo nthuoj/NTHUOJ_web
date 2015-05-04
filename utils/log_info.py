@@ -22,11 +22,12 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
 import logging
+import os
 
-logger = None
+loggers = dict()
 
 
-def get_logger(name='NTHU OJ'):
+def get_logger(name='NTHU OJ', log_dir='log'):
     """Return a logger with specified settings
 
     Args:
@@ -35,23 +36,38 @@ def get_logger(name='NTHU OJ'):
         the logger with specified format.
     """
 
-    global logger
+    global loggers
+    logger = None
+    if loggers.has_key(name):
+        logger = loggers[name]
+
     if not logger:
+        logging_format = '[%(asctime)s] %(levelname)s: %(message)s'
+
+        if not os.path.exists(log_dir):
+            os.makedirs(log_dir, 0755)
+        file_path = os.path.join(log_dir, 'nthuoj.log')
+
+        logging.basicConfig(filename=file_path, filemode='w')
+
         # create logger
         logger = logging.getLogger(name)
-        logger.setLevel(logging.DEBUG)
+        logger.setLevel(logging.INFO)
 
-        # create console handler and set level to debug
+        # create formatter for console use
+        formatter = logging.Formatter(logging_format)
+
+        # create console handler and set level to info
         ch = logging.StreamHandler()
-        ch.setLevel(logging.DEBUG)
-
-        # create formatter
-        formatter = logging.Formatter('[%(asctime)s] %(levelname)s: %(message)s')
+        ch.setLevel(logging.INFO)
 
         # add formatter to ch
         ch.setFormatter(formatter)
 
         # add ch to logger
         logger.addHandler(ch)
+
+        # put back into loggers
+        loggers[name] = logger
 
     return logger
