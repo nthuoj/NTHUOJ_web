@@ -336,6 +336,8 @@ def user_can_register_contest(user, contest):
         return False
     if user.has_admin_auth():
         return False
+    if is_public_user(user):
+        return False
     has_ownership = has_contest_ownership(user,contest)
     if has_ownership:
         return False
