@@ -29,7 +29,7 @@ from contest.scoreboard import User as ScoreboardUser
 from contest.scoreboard import ScoreboardProblem
 from contest.scoreboard import UserProblem
 from contest.scoreboard import Submission as ScoreboardSubmission
-
+from contest.public_user import is_public_user
 from contest import public_user
 
 from problem.models import Problem
