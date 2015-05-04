@@ -54,7 +54,7 @@ def regroup_submission(submissions):
     for submission in submissions:
         submission_groups.append({
             'grouper': submission,
-            'list': SubmissionDetail.objects.filter(sid=submission.id).order_by('-id')
+            'list': SubmissionDetail.objects.filter(sid=submission.id).order_by('id')
         })
 
     return submission_groups
