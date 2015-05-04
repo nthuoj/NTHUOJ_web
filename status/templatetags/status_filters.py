@@ -138,7 +138,7 @@ def show_detail(submission, user):
     contests = Contest.objects.filter(
         problem=submission.problem,
         end_time__gte=submission.submit_time,
-        start_time__lte=submission.submit_time)
+        creation_time__lte=submission.submit_time)
     if show_contest_submission(submission, user, contests):
         return True
     # a user can view his team member's detail
