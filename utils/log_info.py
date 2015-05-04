@@ -57,7 +57,7 @@ def get_logger(name='NTHU OJ', log_dir='log'):
         # create formatter for console use
         formatter = logging.Formatter(logging_format)
 
-        # create console handler and set level to debug
+        # create console handler and set level to info
         ch = logging.StreamHandler()
         ch.setLevel(logging.INFO)
 
