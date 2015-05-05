@@ -65,8 +65,7 @@ def get_contestant_list(contest):
 
 
 def get_contestant(contest):
-    contestants = Contestant.objects.filter(contest=contest)
-    return [contestant.user for contestant in contestants]
+    return Contestant.objects.filter(contest=contest).values('user')
 
 
 def get_total_testcases(problem):
@@ -84,7 +83,6 @@ def get_contest_submissions(contest, submissions):
     filter_end_time = get_freeze_time_datetime(contest)
     if is_ended(contest):
         filter_end_time = contest.end_time
-
 
     submissions = submissions.filter(
         problem__in=problems,
