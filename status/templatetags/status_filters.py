@@ -123,9 +123,6 @@ def show_detail(submission, user):
     # no one can see admin's detail
     if submission.user.has_admin_auth():
         return False
-    # a problem owner can view his problem's detail
-    if submission.problem.owner_id == user.username:
-        return True
     # during the contest, only owner/coowner can view contestants' detail
     contests = get_running_contests()
     if contests:
@@ -134,7 +131,10 @@ def show_detail(submission, user):
     # a user can view his own detail
     if submission.user == user:
         return True
-    # contest owner/coowner can still view code after the contest in normal mode.
+    # a problem owner can view his problem's detail in normal mode
+    if submission.problem.owner_id == user.username:
+        return True
+    # contest owner/coowner can still view code after the contest in normal mode
     contests = Contest.objects.filter(
         problem=submission.problem,
         end_time__gte=submission.submit_time,
