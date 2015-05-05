@@ -207,11 +207,11 @@ def testcase(request, pid, tid=None):
             try:
                 with open('%s%s.in' % (TESTCASE_PATH, testcase.pk), 'w') as t_in:
                     for chunk in request.FILES['t_in'].chunks():
-                        t_in.write(chunk)
+                        t_in.write(chunk.replace('\r\n', '\n'))
                     logger.info("testcase %s.in saved by %s" % (testcase.pk, request.user))
                 with open('%s%s.out' % (TESTCASE_PATH, testcase.pk), 'w') as t_out:
                     for chunk in request.FILES['t_out'].chunks():
-                        t_out.write(chunk)
+                        t_out.write(chunk.replace('\r\n', '\n'))
                     logger.info("testcase %s.out saved by %s" % (testcase.pk, request.user))
             except IOError, OSError:
                 logger.error("saving testcase error")
