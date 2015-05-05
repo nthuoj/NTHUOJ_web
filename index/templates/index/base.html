@@ -33,9 +33,9 @@ SOFTWARE.
     <script src={% static "jquery/dist/jquery.min.js" %}></script>
     <!-- bootstrap, bootwatch JS & CSS -->
     {% if user.is_authenticated %}
-    <link rel="stylesheet" href="{% static '' %}bootswatch/{{user.theme}}/bootstrap.css">
+    <link rel="stylesheet" href="{% static '' %}bootswatch/{{user.theme}}/bootstrap.min.css">
     {% else %}
-    <link rel="stylesheet" href="{% static '' %}bootswatch/{{default_theme}}/bootstrap.css">
+    <link rel="stylesheet" href="{% static '' %}bootswatch/{{default_theme}}/bootstrap.min.css">
     {% endif %}
     <script src={% static "bootstrap/dist/js/bootstrap.min.js" %}></script>
     <script src={% static './js/function.js'%}></script>
@@ -48,7 +48,7 @@ SOFTWARE.
     <link rel="stylesheet" href={% static "css/index.css" %} media="screen">
     <link rel="stylesheet" href={% static "css/mfp-fade.css" %} media="screen">
     <script src={% static "js/clock.js" %}></script>
-    <script src={% static "zeroclipboard/dist/ZeroClipboard.js"%}></script>
+    <script src={% static "zeroclipboard/dist/ZeroClipboard.min.js"%}></script>
     {% block import_source %}
     {% endblock import_source %}
   </head>
