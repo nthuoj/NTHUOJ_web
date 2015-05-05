@@ -192,16 +192,19 @@ SOFTWARE.
     </div>
 
     <!-- footer -->
-    <div class="panel-primary sticky-footer ">
-      <div class="panel-heading footer">
-        <button id="contact_us" data-clipboard-text="nthucsoj@gmail.com" title="Click to copy me.">Contact us
-        </button>
-        <script src={% static "js/clipboard.js"%}></script>
-        <p id="footer_text">
-        © NTHU Online Judge 2015, Templates are from Bootswatch Project</p>
-        <p id='time'>
-        {{ tstr }}
-        </p>
-    </div>
+    <footer>
+      <div class="navbar navbar-inverse navbar-fixed-bottom sticky-footer">
+        <div class="container-fluid">
+          <div class="navbar-collapse collapse">
+            <button id="contact_us" data-clipboard-text="nthucsoj@gmail.com" title="Click to copy me.">
+              Contact us
+            </button>
+            <script src={% static "js/clipboard.js"%}></script>
+            <p id="footer_text">© NTHU Online Judge 2015, Templates are from Bootswatch Project</p>
+            <p id="time">{{ tstr }}</p>
+          </div>
+        </div>
+      </div>
+    </footer>
   </body>
 </html>

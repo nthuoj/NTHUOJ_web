@@ -68,6 +68,37 @@ body {
   border-bottom-right-radius: 0px;
   border-bottom-left-radius: 0px;
 }
+/*#contact_us {
+  left: 30px;
+  position: relative;
+}*/
+#time {
+  margin-bottom: 0px;
+  margin: 5px;
+  display: inline;
+  font-size: 1vw;
+  position: relative;
+  float: right;
+  right: 30px;
+  top: 2px;
+}
+#footer_text {
+  font-size: 1vw;
+  margin: 5px;
+  padding: 0px;
+  display: inline;
+  position: relative;
+  left: 25%;
+}
+#contact_us {
+  font-size: 1vw;
+  margin: 5px;
+  padding: 0px;
+  position: relative;
+  left: 30px;
+  background-color: transparent;
+  border: 0;
+}
 .line {
   border: 3px none black;
   border-top-style: solid;
@@ -206,35 +237,6 @@ textarea#inputSmall {
   font-size: 30px;
   text-align: center;
 }
-#time {
-  margin-bottom: 0px;
-  display: inline;
-  font-size: 1vw;
-  color: white;
-  position: relative;
-  float: right;
-  right: 30px;
-  top: 2px;
-}
-#footer_text {
-  font-size: 1vw;
-  color: white;
-  margin: 0px;
-  padding: 0px;
-  display: inline;
-  position: relative;
-  left: 25%;
-}
-#contact_us {
-  font-size: 1vw;
-  color: white;
-  margin: 0px;
-  padding: 0px;
-  position: relative;
-  left: 30px;
-  background-color: transparent;
-  border: 0;
-}
 #alert_info{
   display:none;
 }
@@ -254,13 +256,6 @@ textarea#inputSmall {
   font-size: 25px;
   position: relative;
   left: -12px;
-}
-.footer{
-  width: 100%;
-  border-top-left-radius: 250px;
-  border-top-right-radius: 250px;
-  padding-top: 2px;
-  padding-bottom: 2px;
 }
 #contest {
   margin-right: 220px;
