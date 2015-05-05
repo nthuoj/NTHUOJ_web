@@ -30,8 +30,7 @@
           "success" {% else %} "danger" {% endif %}>
           <td>
             {% if submission.grouper|show_detail:user %}
-              <a target="_blank"
-                 href={% url "status:view_code" submission.grouper.id %}>
+              <a href={% url "status:view_code" submission.grouper.id %}>
                 {{ submission.grouper.id }}
               </a>
             {% else %}
