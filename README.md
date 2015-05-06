@@ -1,5 +1,5 @@
 #NTHUOJ_WEB
-#######Version 1.0
+#######Version 1.0.1
 =======
 
 ##License
@@ -28,6 +28,7 @@ git clone git@github.com:bruce3557/NTHUOJ_web.git
 * django-autocomplete-light
 * django-datetime-widget
 * django-bootstrap
+* django-bootstrap-form
 * requests
 
 ###Installation:
@@ -40,7 +41,6 @@ apt-get install nodejs
 apt-get install npm
 npm install -g bower
 ln -s /usr/bin/nodejs /usr/bin/node
-pip install django-bower
 pip install django
 pip install django-bower
 pip install django-axes
