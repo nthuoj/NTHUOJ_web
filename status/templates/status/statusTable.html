@@ -20,8 +20,7 @@
             title="
               <ol style='margin:15px'>
                 {% for detail in submission.list %}
-                  <li class='row'>
-                    {{ detail.get_verdict_display }} CPU: {{ detail.cpu|floatformat }} ms
+                  <li class='row'>{{ detail.get_verdict_display }} CPU: {{ detail.cpu|floatformat }} ms
                   </li>
                 {% endfor %}
               </ol>"
@@ -65,6 +64,7 @@
             {% else %}
               {{ submission.grouper.get_status_display }}
             {% endif %}
+            {% show_passed_testcase submission %}
           </td>
           <td>{{ submission.grouper.get_language_display }}</td>
         </tr>
