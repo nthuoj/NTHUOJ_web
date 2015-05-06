@@ -45,18 +45,18 @@ class Problem(models.Model):
         (OTHER, 'Use Other Judge'),
     )
 
-    NORMAL = 'NORMAL'
-    SPECIAL = 'SPECIAL'
-    ERROR_TOLERANT = 'ERR_TOLERANT'
-    PARTIAL = 'PARTIAL'
-    UVA_JUDGE = 'UVA'
-    ICPC_JUDGE = 'UVALive'
-    POJ_JUDGE = 'POJ'
+    NORMAL = 'LOCAL_NORMAL'
+    SPECIAL = 'LOCAL_SPECIAL'
+    ERROR_TOLERANT = 'LOCAL_ERR_TOLERANT'
+    PARTIAL = 'LOCAL_PARTIAL'
+    UVA_JUDGE = 'OTHER_UVA'
+    ICPC_JUDGE = 'OTHER_UVALive'
+    POJ_JUDGE = 'OTHER_POJ'
     JUDGE_TYPE_CHOICE = (
         # Local Judge
         (NORMAL, 'Normal Judge'),
         (SPECIAL, 'Special Judge'),
-        (ERROR_TOLERANT, 'Error TOLERANT'),
+        # (ERROR_TOLERANT, 'Error TOLERANT'),
         (PARTIAL, 'Partial Judge'),
         # Other Judge
         (UVA_JUDGE, 'Uva'),
@@ -85,13 +85,13 @@ class Problem(models.Model):
     other_judge_id = models.IntegerField(blank=True, null=True)
     tags = models.ManyToManyField(Tag, blank=True, null=True)
     judge_source = models.CharField(max_length=11, choices=JUDGE_SOURCE_CHOICE, default=LOCAL)
-    judge_type = models.CharField(max_length=11, choices=JUDGE_TYPE_CHOICE, default=NORMAL)
+    judge_type = models.CharField(max_length=20, choices=JUDGE_TYPE_CHOICE, default=NORMAL)
     judge_language = models.CharField(max_length=11, choices=LANGUAGE_CHOICE, default=CPP)
     ac_count = models.IntegerField(default=0)
     total_submission = models.IntegerField(default=0)
 
     def __unicode__(self):
-        return str(self.id) + ' - ' + self.pname
+        return '%d - %s' % (self.id, self.pname)
 
 
 class Testcase(models.Model):
@@ -101,7 +101,7 @@ class Testcase(models.Model):
     memory_limit = models.IntegerField(default=32)
 
     def __unicode__(self):
-        return self.problem.pname + ': ' + self.description
+        return '%s: %s' % (self.problem.pname, self.description)
 
 
 class Submission(models.Model):
@@ -169,5 +169,5 @@ class SubmissionDetail(models.Model):
         unique_together = (('tid', 'sid'),)
 
     def __unicode__(self):
-        return 'sid ' + str(self.sid.id) + ', tid ' + str(self.tid.id)
+        return 'sid %d, tid %d' % (self.sid.id, self.tid.id)
 

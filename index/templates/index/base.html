@@ -119,8 +119,8 @@ SOFTWARE.
             <li class="nav-text"><a href="{% url 'contest:archive' %}">Contest</a></li>
             <li class="nav-text"><a href="{% url 'problem:problem' %}">Problem</a></li>
             <li class="nav-text"><a href="{% url 'users:submit' %}">Submit</a></li>
-            <li class="nav-text"><a href="{% url 'status:status' %}">Status</a></li>
-            <li class="nav-text"><a href="{% url 'group:list' %}">Group</a></li>
+            <li class="nav-text"><a href="{% url 'status:status' %}?username={{ user.username }}">Status</a></li>
+            <!--<li class="nav-text"><a href="">Group</a></li>-->
             <!--
             <li class="dropdown nav-text">
               <a href="#" class="dropdown-toggle" data-toggle="dropdown"
@@ -133,18 +133,6 @@ SOFTWARE.
               </ul>
             </li>
             -->
-            {% if user.is_authenticated %}
-            <li class="dropdown nav-text">
-              <a href="#" class="dropdown-toggle" data-toggle="dropdown"
-                 role="button" aria-expanded="false">Personal
-                 <span class="caret"></span>
-               </a>
-              <ul class="dropdown-menu" role="menu">
-                <li><a href="{% url 'users:profile' user.username %}">Profile</a></li>
-                <li><a href="{% url 'status:status' %}?username={{ user }}">Submissions</a></li>
-              </ul>
-            </li>
-            {% endif %}
             <li class="nav-text">
               <form class="navbar-form">
                 <div class="form-group">
@@ -182,7 +170,7 @@ SOFTWARE.
                 <i id="name-text">{{ user.username }}</i>
               </a>
             </li>
-            <li class="nav-text-auth"><a href="{% url 'users:logout' %}?next={{ request.path }}">Logout</a></li>
+            <li class="nav-text-auth"><a href="{% url 'users:logout' %}">Logout</a></li>
             {% else %}
             <li class="nav-text-auth"><a href="{% url 'users:login' %}?next={{ request.path }}">Login</a></li>
             <li class="nav-text-auth"><a href="{% url 'users:create' %}">Register</a></li>
@@ -206,7 +194,7 @@ SOFTWARE.
         </button>
         <script src={% static "js/clipboard.js"%}></script>
         <p id="footer_text">
-        © NTHU Online Judge 2015, Templates are from Bootstrap Project</p>
+        © NTHU Online Judge 2015, Templates are from Bootswatch Project</p>
         <p id='time'>
         {{ tstr }}
         </p>

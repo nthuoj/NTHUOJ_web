@@ -25,7 +25,9 @@ from datetime import datetime
 
 from django import template
 
-from contest.models import Contest
+from contest.models import Contest, Contestant
+from contest.contest_info import get_running_contests, get_contestant
+from problem.models import SubmissionDetail
 from team.models import TeamMember
 from utils.user_info import validate_user
 
@@ -33,6 +35,7 @@ from utils.user_info import validate_user
 register = template.Library()
 
 
+@register.filter()
 def show_submission(submission, user):
     """Test if the user can see that submission
 
@@ -42,6 +45,9 @@ def show_submission(submission, user):
     Returns:
         a boolean of the judgement
     """
+    user = validate_user(user)
+
+
     # admin can see all submissions
     if user.user_level == user.ADMIN:
         return True
@@ -87,6 +93,16 @@ def show_submission(submission, user):
     return True
 
 
+def show_contest_submission(submission, user, contests):
+    for contest in contests:
+        if not (user == contest.owner or user in contest.coowner.all()):
+            continue
+        contestants = get_contestant(contest)
+        if submission.user in contestants:
+            return True
+    return False
+
+
 @register.filter()
 def show_detail(submission, user):
     """Test if the user can see that submission's
@@ -102,29 +118,28 @@ def show_detail(submission, user):
 
     # basic requirement: submission must be shown
     # admin can see everyone's detail
-    if user.user_level == user.ADMIN:
+    if user.has_admin_auth():
         return True
     # no one can see admin's detail
-    if submission.user.user_level == user.ADMIN:
+    if submission.user.has_admin_auth():
         return False
-
-    contests = Contest.objects.filter(
-        is_homework=False,
-        start_time__lte=datetime.now(),
-        end_time__gte=datetime.now())
-    # during the contest, only owner/coowner with user level sub-judge/judge
-    # can view the detail
+    # during the contest, only owner/coowner can view contestants' detail
+    contests = get_running_contests()
     if contests:
         contests = contests.filter(problem=submission.problem)
-        for contest in contests:
-            if user == contest.owner or user in contest.coowner.all():
-                return True
-        return False
+        return show_contest_submission(submission, user, contests)
     # a user can view his own detail
     if submission.user == user:
         return True
-    # a problem owner can view his problem's detail
+    # a problem owner can view his problem's detail in normal mode
     if submission.problem.owner_id == user.username:
+        return True
+    # contest owner/coowner can still view code after the contest in normal mode
+    contests = Contest.objects.filter(
+        problem=submission.problem,
+        end_time__gte=submission.submit_time,
+        creation_time__lte=submission.submit_time)
+    if show_contest_submission(submission, user, contests):
         return True
     # a user can view his team member's detail
     if submission.team:
@@ -135,27 +150,10 @@ def show_detail(submission, user):
     return False
 
 
-@register.filter()
-def submission_filter(submission_list, user):
-    """Return a list of submissions that the given user can see
-
-    Args:
-        submission_list: a list of submissions
-        user: an User object
-    Returns:
-        a list of submissions
-    """
-    user = validate_user(user)
-
-    # an admin can see all submissions because he/she is god
-    if user.user_level == user.ADMIN:
-        return submission_list
-
-    # filter for user level less than admin
-    valid_submission_list = []
-    for submission_group in submission_list:
-        submission = submission_group['grouper']
-        if show_submission(submission, user):
-            valid_submission_list.append(submission_group)
-
-    return valid_submission_list
+@register.simple_tag()
+def show_passed_testcase(submission):
+    details = submission['list']
+    if details:
+        return '(%d/%d)' % \
+            (details.filter(verdict=SubmissionDetail.AC).count(), details.count())
+    return ''

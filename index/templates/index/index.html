@@ -97,12 +97,17 @@
         {% for c_upcoming in c_upcomings %}
           <tr>
             <td style="text-align:center;">
-              {% if user|can_register:c_upcoming %}
+              {% if user|can_register:c_upcoming and not user|has_attended:c_upcoming %}
               <a href="{% url 'contest:register' c_upcoming.id %}">
                 <button type="button" class="btn btn-warning btn-xs" title="register contest">
                   <span class="glyphicon glyphicon-plus"></span>
                 </button>
               </a>
+              {% elif user|has_attended:c_upcoming %}
+              <button type="button" class="btn btn-danger btn-xs">
+                Registered
+              </button>
+              {% else %}
               {% endif %}
             </td>
             <td>

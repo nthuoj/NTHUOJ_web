@@ -46,7 +46,7 @@ def submit_to_vjudge(code, submission):
         # Convert to vjudge problem id
         problem = submission.problem
         vjudge_id = VjudgeID.objects.get(
-            judge_source=problem.judge_type,
+            judge_source=problem.judge_type.replace('OTHER_', ''),
             judge_source_id=problem.other_judge_id).vjudge_id
         language = LANGUAGE_CHOICE[problem.judge_type][submission.language]
 

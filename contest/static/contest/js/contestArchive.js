@@ -46,3 +46,9 @@ function confirm_delete() {
     return confirm("Are you sure you want to delete?");
 }
 
+function confirm_register() {
+    var from = $('#public_user_now').html();
+    var to = $('#public_user_need').val();
+    return confirm("Set Public User from " + from + " to " + to + "?");
+}
+

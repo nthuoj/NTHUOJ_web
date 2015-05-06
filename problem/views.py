@@ -68,32 +68,25 @@ def detail(request, pid):
     tag_form = TagForm()
     try:
         problem = Problem.objects.get(pk=pid)
-        last_contest = problem.contest_set.all().order_by('-start_time')
         if not has_problem_auth(user, problem):
-            if len(last_contest) and last_contest[0].start_time < timezone.now():
-                problem.visible = True
-                problem.save()
-            else:
-                logger.warning("%s has no permission to see problem %d" % (user, problem.pk))
-                raise PermissionDenied()
+            logger.warning("%s has no permission to see problem %d" % (user, problem.pk))
+            raise PermissionDenied()
     except Problem.DoesNotExist:
         logger.warning('problem %s not found' % (pid))
         raise Http404('problem %s does not exist' % (pid))
     problem.testcase = get_testcase(problem)
+    problem = verify_problem_code(problem)
     return render_index(request, 'problem/detail.html', {'problem': problem, 'tag_form': tag_form})
 
 @login_required
 def new(request):
-    if request.method == "GET":
-        return render_index(request, "problem/new.html")
-    elif request.method == "POST":
+    if request.method == "POST":
         if 'pname' in request.POST and request.POST['pname'].strip() != "":
             p = Problem(pname=request.POST['pname'], owner=request.user)
             p.save()
             logger.info("problem %s created by %s" % (p.pk, request.user))
             return redirect("/problem/%d/edit/" % p.pk)
-        else:
-            return render_index(request, "problem/new.html", {"error": "Problem name empty"})
+    return redirect("/problem/")
 
 @login_required
 def edit(request, pid=None):
@@ -111,7 +104,7 @@ def edit(request, pid=None):
     if request.method == 'GET':
         form = ProblemForm(instance=problem)
     if request.method == 'POST':
-        form = ProblemForm(request.POST, instance=problem)
+        form = ProblemForm(request.POST, request.FILES, instance=problem)
         if form.is_valid():
             problem = form.save()
             problem.description = request.POST['description']
@@ -129,22 +122,24 @@ def edit(request, pid=None):
                 with open('%s%s%s' % (PARTIAL_PATH, problem.pk, file_ex), 'w') as t_in:
                     for chunk in request.FILES['partial_judge_code'].chunks():
                         t_in.write(chunk)
+            if "partial_judge_header" in request.FILES:
+                with open('%s%s.h' % (PARTIAL_PATH, problem.pk), 'w') as t_in:
+                    for chunk in request.FILES['partial_judge_header'].chunks():
+                        t_in.write(chunk)
             logger.info('edit problem, pid = %d by %s' % (problem.pk, request.user))
             logger.info('edit problem, pid = %d' % (problem.pk))
             return redirect('/problem/%d' % (problem.pk))
+    file_ex = get_problem_file_extension(problem)
+    problem = verify_problem_code(problem)
     return render_index(request, 'problem/edit.html',
-                        {'form': form, 'pid': pid, 'pname': problem.pname,
-                         'tags': tags, 'tag_form': tag_form, 'description': problem.description,
-                         'input': problem.input, 'output': problem.output,
-                         'sample_in': problem.sample_in, 'sample_out': problem.sample_out,
+                        {'form': form, 'problem': problem,
+                         'tags': tags, 'tag_form': tag_form,
                          'testcase': testcase,
                          'path': {
                              'TESTCASE_PATH': TESTCASE_PATH,
                              'SPECIAL_PATH': SPECIAL_PATH,
-                             'PARTIAL_PATH': PARTIAL_PATH, },
-                         'has_special_judge_code': has_special_judge_code(problem),
-                         'has_partial_judge_code': has_partial_judge_code(problem),
-                         'file_ex': get_problem_file_extension(problem)})
+                             'PARTIAL_PATH': PARTIAL_PATH, }
+                         })
 
 @login_required
 def tag(request, pid):
@@ -212,11 +207,11 @@ def testcase(request, pid, tid=None):
             try:
                 with open('%s%s.in' % (TESTCASE_PATH, testcase.pk), 'w') as t_in:
                     for chunk in request.FILES['t_in'].chunks():
-                        t_in.write(chunk)
+                        t_in.write(chunk.replace('\r\n', '\n'))
                     logger.info("testcase %s.in saved by %s" % (testcase.pk, request.user))
                 with open('%s%s.out' % (TESTCASE_PATH, testcase.pk), 'w') as t_out:
                     for chunk in request.FILES['t_out'].chunks():
-                        t_out.write(chunk)
+                        t_out.write(chunk.replace('\r\n', '\n'))
                     logger.info("testcase %s.out saved by %s" % (testcase.pk, request.user))
             except IOError, OSError:
                 logger.error("saving testcase error")
@@ -274,6 +269,24 @@ def preview(request):
 def download_testcase(request, filename):
     try:
         f = open(TESTCASE_PATH+filename, "r")
+    except IOError:
+        raise Http404()
+    response = HttpResponse(FileWrapper(f), content_type="text/plain")
+    response['Content-Disposition'] = 'attachment; filename=' + filename
+    return response
+
+def download_partial(request, filename):
+    try:
+        f = open(PARTIAL_PATH+filename, "r")
+    except IOError:
+        raise Http404()
+    response = HttpResponse(FileWrapper(f), content_type="text/plain")
+    response['Content-Disposition'] = 'attachment; filename=' + filename
+    return response
+
+def download_special(request, filename):
+    try:
+        f = open(SPECIAL_PATH+filename, "r")
     except IOError:
         raise Http404()
     response = HttpResponse(FileWrapper(f), content_type="text/plain")

@@ -33,6 +33,7 @@ from axes.decorators import *
 from django.http import Http404
 from django.shortcuts import redirect
 
+from contest.public_user import is_public_user
 from users.admin import UserCreationForm, AuthenticationForm
 from users.forms import CodeSubmitForm
 from users.forms import UserProfileForm, UserLevelForm, UserForgetPasswordForm
@@ -56,7 +57,7 @@ def user_profile(request, username):
         render_data = {}
         render_data['profile_user'] = profile_user
         render_data['piechart_data'] = dumps(piechart_data)
-        if request.user == profile_user:
+        if request.user == profile_user and not is_public_user(profile_user):
             render_data['profile_form'] = UserProfileForm(instance=profile_user)
         if can_change_userlevel(request.user, profile_user):
             render_data['userlevel_form'] = UserLevelForm(instance=profile_user,
@@ -113,10 +114,9 @@ def user_create(request):
 
 
 def user_logout(request):
-    next_page = get_next_page(request.GET.get('next'))
     logger.info('user %s logged out' % str(request.user))
     logout(request)
-    return redirect(next_page)
+    return redirect(reverse('index:index'))
 
 
 def user_login(request):
@@ -138,8 +138,6 @@ def user_login(request):
             login(request, user)
             return redirect(next_page)
         else:
-            user_form.add_error(None,
-                                "You will be blocked for 6 minutes if you have over 3 wrong tries.")
             return render_index(request, 'users/auth.html', {'form': user_form, 'title': 'Login'})
     return render_index(request, 'users/auth.html', {'form': AuthenticationForm(), 'title': 'Login'})
 
@@ -153,7 +151,7 @@ def user_forget_password(request):
         if user_form.is_valid():
             user = User.objects.get(username=user_form.cleaned_data['username'])
             send_forget_password_email(request, user)
-            messages.success(request, 'Conform email has sent to you.')
+            messages.success(request, 'Confirm email has sent to you.')
         else:
             return render_index(request, 'users/auth.html', {'form': user_form, 'title': 'Forget Password'})
     return render_index(request, 'users/auth.html',
@@ -176,6 +174,8 @@ def forget_password_confirm(request, activation_key):
     user_profile = get_object_or_404(UserProfile, activation_key=activation_key)
     user = user_profile.user
     user.backend = 'django.contrib.auth.backends.ModelBackend'
+    user.is_active = True
+    user.save()
     # Let user login, so as to modify password
     login(request, user)
     logger.info('User %s is ready to reset his/her password' % user.username)
@@ -199,7 +199,7 @@ def submit(request, pid=None):
         codesubmitform = CodeSubmitForm(request.POST, user=request.user)
         if codesubmitform.is_valid():
             codesubmitform.submit()
-            return redirect(reverse('status:status'))
+            return redirect('%s?username=%s' % (reverse('status:status'), request.user.username))
         else:
             return render_index(request, 'users/submit.html', {'form': codesubmitform})
     return render_index(request, 'users/submit.html', {'form': CodeSubmitForm(initial={'pid': pid})})

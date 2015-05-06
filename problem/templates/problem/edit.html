@@ -1,15 +1,23 @@
 {% extends "problem/base.html" %}
 {% load staticfiles %}
 {% block title_name %}
-<title>Problem Edit</title>
+<title>Edit Problem {{ problem.pk }}</title>
 {% endblock title_name %}
 {% block import_source %}
-  {{block.super}}
+  {{ block.super }}
   <link rel="stylesheet" href="{% static 'problem/css/edit.css' %}">
 {% endblock %}
 {% block body_block %}
 <div class="container" id="Body">
-  <h4>You are editing problem {{pid}}: {{pname}}</h4>
+  <h2>
+    {{ problem.pk }} - {{ problem.pname }}
+    <a href="{% url 'problem:detail' problem.pk %}" class="btn btn-primary">
+      See this problem
+    </a>
+    <a href="{% url 'problem:problem' %}" class="btn btn-info">
+      Back to problem panel
+    </a>
+  </h2>
   <div style="width:80%; float:left;">
     <ul class="nav nav-tabs" role="tablist">
       <li class="active">
@@ -34,42 +42,39 @@
         <div>
           <input type="submit" value="Preview" class="btn btn-success" id="preview_button">
           <input type="submit" value="Save" class="btn btn-primary" id="save_button">
-          <a class="btn btn-warning" href="{% url 'problem:detail' pid %}">Cancel</a>
+          <a class="btn btn-warning" href="{% url 'problem:detail' problem.pk %}">Cancel</a>
         </div>
         {% csrf_token %}
         <div class="tab-pane active" id="info">
-          {% if owner %}
-          <input type="hidden" name="owner" value="{{owner}}">
-          {% endif %}
-          {% include "problem/editTab/info.html" with form=form pid=pid path=path %}
+          {% include "problem/editTab/info.html" with form=form pid=problem.pk path=path %}
         </div>
         <div class="tab-pane" id="description">
           <strong>Description</strong>
-          <textarea cols="80" rows="20" id="des" name="description">{{description}}</textarea>
+          <textarea cols="80" rows="20" id="des" name="description">{{ problem.description }}</textarea>
           <br><strong>Input</strong>
-          <textarea cols="80" rows="20" id="inText" name="input_description">{{input}}</textarea>
+          <textarea cols="80" rows="20" id="inText" name="input_description">{{ problem.input }}</textarea>
           <br><strong>Output</strong>
-          <textarea cols="80" rows="20" id="outText" name="output_description">{{output}}</textarea>
+          <textarea cols="80" rows="20" id="outText" name="output_description">{{ problem.output }}</textarea>
 
         </div>
         <div class="tab-pane" id="sample_io">
           <div class="panel panel-default" style="float:left;width:47%">
             <div class="panel-heading">Sample Input</div>
             <textarea name="sample_in" class="panel-body"
-              style="width:100%" rows="20">{{sample_in}}</textarea>
+              style="width:100%" rows="20">{{ problem.sample_in }}</textarea>
           </div>
           <div class="panel panel-default" style="float:right;width:47%">
             <div class="panel-heading">Sample Output</div>
             <textarea name="sample_out" class="panel-body"
-              style="width:100%" rows="20">{{sample_out}}</textarea>
+              style="width:100%" rows="20">{{ problem.sample_out }}</textarea>
           </div>
         </div>
       </form>
       <div class="tab-pane" id="tag">
-        {% include "problem/editTab/tag.html" with pid=pid %}
+        {% include "problem/editTab/tag.html" with pid=problem.pk %}
       </div>
       <div class="tab-pane" id="testcase">
-        {% include "problem/editTab/testcase.html" with pid=pid %}
+        {% include "problem/editTab/testcase.html" with pid=problem.pk %}
       </div>
     </div>
   </div>
