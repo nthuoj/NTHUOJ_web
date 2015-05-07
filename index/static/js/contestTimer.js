@@ -76,9 +76,9 @@ function getRestTime() {
             h = checkTime(h);
             var day;
             if(d > 1)
-                day = d + " days , ";
+                day = d + " days, ";
             else if(d == 1)
-                day = d + " day , ";
+                day = d + " day, ";
             else
                 day = "";
 
