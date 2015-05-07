@@ -38,7 +38,7 @@
   }
 </style>
 <div class="container">
-  <h2>Submit Code {% if problem_name %} - {{ problem_name }} {% endif %}</h2>
+  <h2>Submit Code {{ problem_name }}</h2>
   <form class="form-horizontal" action="/users/submit/" method="post">
     {% csrf_token %}
     <div class="row">
