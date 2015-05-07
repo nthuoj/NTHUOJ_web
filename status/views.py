@@ -54,7 +54,7 @@ def regroup_submission(submissions):
     for submission in submissions:
         submission_groups.append({
             'grouper': submission,
-            'list': SubmissionDetail.objects.filter(sid=submission.id).order_by('tid')
+            'list': SubmissionDetail.objects.filter(sid=submission.id).order_by('id')
         })
 
     return submission_groups
@@ -152,9 +152,7 @@ def view_code(request, sid):
             f.close()
             codesubmitform = CodeSubmitForm(
                 initial={'code': code, 'pid': submission.problem.id, 'language': submission.language})
-            problem_name = str(submission.problem)
-            return render_index(request, 'users/submit.html',
-                {'form': codesubmitform, 'problem_name': problem_name})
+            return render_index(request, 'users/submit.html', {'form': codesubmitform})
         else:
             logger.warning('User %s attempt to view detail of SID %s' % (request.user, sid))
             raise PermissionDenied("You don't have permission to view detail of SID %s" % sid)
