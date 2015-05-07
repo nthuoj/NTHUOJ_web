@@ -6,7 +6,6 @@
   <title>{{ title }}</title>
 {% endblock title_name %}
 {% block import_source %}
-{{ form.media }}
 <link rel="stylesheet" href={% static "css/announcement.css" %} media="screen">
 {% endblock import_source %}
 {% block body_block %}
@@ -14,6 +13,7 @@
 <div class="container" style="width:50%">
   <form action="" method="post" role="form">
     {% csrf_token %}
+    {{ form.media }}
     {% for field in form %}
     {% if field.label_tag == form.content.label_tag %}
       <div class="panel panel-default">
