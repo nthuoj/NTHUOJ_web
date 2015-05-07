@@ -49,11 +49,8 @@ def has_contest_ownership(curr_user, curr_contest):
         return True
 
     contest_coowners = curr_contest.coowner.all()
-    if contest_coowners:
-        for coowner in contest_coowners:
-            if curr_user == coowner:
-                return True
-    return False
+    return curr_user in contest_coowners
+
 
 
 def has_group_ownership(curr_user, curr_group):
@@ -98,7 +95,7 @@ def has_problem_auth(user, problem):
         return True
     # 3. be a contest owner/coowner
     contests = Contest.objects.filter(
-        start_time__lte=datetime.now(),
+        creation_time__lte=datetime.now(),
         end_time__gte=datetime.now(),
         problem=problem)
     for contest in contests:

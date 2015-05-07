@@ -29,7 +29,7 @@ from contest.models import Contest, Contestant
 from contest.contest_info import get_running_contests, get_contestant
 from problem.models import SubmissionDetail
 from team.models import TeamMember
-from utils.user_info import validate_user
+from utils.user_info import validate_user, has_contest_ownership
 
 
 register = template.Library()
@@ -95,7 +95,7 @@ def show_submission(submission, user):
 
 def show_contest_submission(submission, user, contests):
     for contest in contests:
-        if not (user == contest.owner or user in contest.coowner.all()):
+        if not has_contest_ownership(user, contest):
             continue
         contestants = get_contestant(contest)
         if submission.user in contestants:
