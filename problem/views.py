@@ -99,7 +99,7 @@ def edit(request, pid=None):
     except Problem.DoesNotExist:
         logger.warning("problem %s does not exist" % (pid))
         raise Http404("problem %s does not exist" % (pid))
-    testcase = Testcase.objects.filter(problem=problem)
+    testcase = get_testcase(problem)
     tags = problem.tags.all()
     if request.method == 'GET':
         form = ProblemForm(instance=problem)
