@@ -26,7 +26,7 @@ from datetime import date, datetime, timedelta
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 from django.db import models
 
-from utils.config_info import get_config_items
+from utils.config_info import get_config_items ,get_config
 
 
 # Create your models here.
@@ -69,12 +69,14 @@ class User(AbstractBaseUser):
         (USER, 'User'),
     )
     THEME_CHOICE = tuple(get_config_items('web_theme'))
+    DEFAULT_THEME = get_config('theme_settings', 'default')
+
 
     username = models.CharField(max_length=15, default='', unique=True, primary_key=True)
     email = models.CharField(max_length=100, default='')
     register_date = models.DateField(default=date.today, auto_now_add=True)
     user_level = models.CharField(max_length=9, choices=USER_LEVEL_CHOICE, default=USER)
-    theme = models.CharField(max_length=10, choices=THEME_CHOICE, default=THEME_CHOICE[0][0])
+    theme = models.CharField(max_length=10, choices=THEME_CHOICE, default=DEFAULT_THEME)
 
     USERNAME_FIELD = 'username'
     is_active = models.BooleanField(default=False)

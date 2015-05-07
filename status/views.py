@@ -24,6 +24,7 @@ SOFTWARE.
 import re
 import json
 
+from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.http import Http404, HttpResponse
 from django.shortcuts import render
@@ -31,8 +32,12 @@ from django.core.exceptions import PermissionDenied
 from django.core.serializers import serialize
 
 from contest.models import Contest
+from contest.contest_info import get_running_contests
+from contest.contest_info import get_freeze_time_datetime
+from contest.contest_info import get_contest_submissions
 from problem.models import Submission, SubmissionDetail, Problem
-from status.templatetags.status_filters import show_detail, submission_filter
+from status.templatetags.status_filters import show_detail
+from status.forms import StatusFilter
 from users.forms import CodeSubmitForm
 from users.models import User
 from utils.log_info import get_logger
@@ -49,69 +54,69 @@ def regroup_submission(submissions):
     for submission in submissions:
         submission_groups.append({
             'grouper': submission,
-            'list': SubmissionDetail.objects.filter(sid=submission.id).order_by('-sid')
+            'list': SubmissionDetail.objects.filter(sid=submission.id).order_by('id')
         })
 
     return submission_groups
 
 
 def status(request):
-    username = request.GET.get('username')
-    cid = request.GET.get('cid')
-    pid = request.GET.get('pid')
+    status_filter = StatusFilter(request.GET)
     submissions = Submission.objects.all().order_by('-id')
+    render_data = {}
+    render_data['status_filter'] = status_filter
+    render_data['running_contests'] = get_running_contests().order_by('id')
 
-    if username:
-        try:
+    if status_filter.is_valid():
+        username = status_filter.cleaned_data['username']
+        cid = status_filter.cleaned_data['cid']
+        pid = status_filter.cleaned_data['pid']
+        status = status_filter.cleaned_data['status']
+
+        if username:
             user = User.objects.get(username=username)
             submissions = submissions.filter(user=user)
-        except:
-            raise Http404('User %s not found' % username)
 
-    if pid:
-        try:
+        if pid:
             problem = Problem.objects.get(id=pid)
             submissions = submissions.filter(problem=problem)
-        except:
-            raise Http404('Problem %s not found' % pid)
 
-    if cid:
-        try:
+
+        if cid:
             contest = Contest.objects.get(id=cid)
-            problems = contest.problem.all()
-            submissions = submissions.filter(
-                problem__in=problems,
-                submit_time__gte=contest.start_time,
-                submit_time__lte=contest.end_time)
-        except:
-            raise Http404('Contest %s not found' % cid)
+            submissions = get_contest_submissions(contest, submissions)
 
-    submissions = get_current_page(request, submissions)
-    # Regroup submission details
-    submissions.object_list = regroup_submission(submissions.object_list)
-    # Filter what that user can see
-    submissions.object_list = submission_filter(submissions.object_list, request.user)
+        if status:
+            submissions = submissions.filter(status=status)
 
-    # Serialize to json
-    if 'type' in request.GET and request.GET['type'] == 'json':
-        submissions = [submission['grouper'] for submission in submissions.object_list]
-        # Remove unnecessary fields
-        submissions = serialize("python", submissions)
-        submissions = [s['fields'] for s in submissions]
+        submissions = get_current_page(request, submissions)
+        # Regroup submission details
+        submissions.object_list = regroup_submission(submissions.object_list)
 
-        return HttpResponse(json.dumps(submissions,
-            default=lambda obj: obj.isoformat() if hasattr(obj, 'isoformat') else obj))
+         # Serialize to json
+        if 'type' in request.GET and request.GET['type'] == 'json':
+            submissions = [submission['grouper'] for submission in submissions.object_list]
+            # Remove unnecessary fields
+            submissions = serialize("python", submissions)
+            submissions = [s['fields'] for s in submissions]
 
-    return render_index(request, 'status/status.html', {'submissions': submissions, 'request': request})
+            return HttpResponse(json.dumps(submissions,
+                default=lambda obj: obj.isoformat() if hasattr(obj, 'isoformat') else obj))
+    else:
+        messages.warning(request, 'Please check filter constraints again!')
+        return render_index(request, 'status/status.html', render_data)
 
+    if not submissions:
+        messages.warning(request, 'No submissions found for the given query!')
+
+    render_data['submissions'] = submissions
+
+    return render_index(request, 'status/status.html', render_data)
 
 def contest_status(request, contest):
     """Return a status table of given contest"""
-    problems = contest.problem.all()
-    submissions = Submission.objects.filter(
-        problem__in=problems,
-        submit_time__gte=contest.start_time,
-        submit_time__lte=contest.end_time).order_by('-id')[0:25]
+
+    submissions = get_contest_submissions(contest, Submission.objects.all())
 
     submissions = regroup_submission(submissions)
     table_content = str(render(request, 'status/statusTable.html', {'submissions': submissions}))

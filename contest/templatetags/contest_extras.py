@@ -69,11 +69,17 @@ def can_reply(user, contest):
     return contest_info.can_reply(user,contest)
 register.filter("can_reply", can_reply)
 
-#check if user is anonymous user
+#check if user is coowner
 @register.filter
-def is_anonymous(user):
-    return user_info.is_anonymous(user)
-register.filter("is_anonymous", is_anonymous)
+def is_coowner(user, contest):
+    return contest_info.is_coowner(user, contest)
+register.filter("is_coowner", is_coowner)
+
+#check if contest is freezed
+@register.filter
+def is_freezed(contest):
+    return contest_info.is_freezed(contest)
+register.filter("is_freezed", is_freezed)
 
 #check if user is judge or admin
 @register.filter
@@ -107,10 +113,15 @@ def can_register(user, contest):
     return contest_info.can_register(user, contest)
 register.filter("can_register", can_register)
 
+@register.filter
+def has_attended(user, contest):
+    return contest_info.has_attended(user, contest)
+register.filter("has_attended", has_attended)
+
 '''
-Contest should not be end. 
+Contest should not be end.
 And user should own contest(to register group)
-or user can register 
+or user can register
 '''
 @register.filter
 def show_register_btn(user, contest):

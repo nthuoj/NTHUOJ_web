@@ -31,6 +31,7 @@ register = template.Library()
 def url_replace(request, field, value):
     try:
         dict_ = request.GET.copy()
+
     except:
         dict_ = QueryDict('', mutable=True)
     dict_[field] = value

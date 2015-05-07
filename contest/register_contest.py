@@ -70,14 +70,14 @@ def public_user_register_contest(account_num, contest):
     account_num = public_user.check_account_num_valid(account_num)
     # if invalid
     if account_num == -1:
-        return
+        return False
     public_contestants = public_user.get_public_contestant(contest)
     need = account_num - len(public_contestants)
     # public contestant attend more than needed, kick some out
     if need < 0:
         public_user.delete_public_contestants(\
             public_contestants[account_num:len(public_contestants)])
-        return
+        return account_num
     #public contestant is not enough
     available_users = public_user.get_available_public_users()
     lack = need - len(available_users)
@@ -89,3 +89,4 @@ def public_user_register_contest(account_num, contest):
         new_users = public_user.create_public_users(lack)
         add_contestants_and_activate(new_users, contest)
         add_contestants_and_activate(available_users, contest)
+    return account_num

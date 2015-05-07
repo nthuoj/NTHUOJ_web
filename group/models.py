@@ -29,7 +29,7 @@ from datetime import date
 
 
 class Announce(models.Model):
-    
+
     title = models.CharField(max_length=100, default='')
     content = models.TextField(blank=True)
 
@@ -49,4 +49,4 @@ class Group(models.Model):
     creation_time = models.DateField(default=date.today, auto_now_add=True)
 
     def __unicode__(self):
-        return self.gname
+        return '%d - %s' % (self.id, self.gname)

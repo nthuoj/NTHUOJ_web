@@ -66,7 +66,6 @@
             </button>
           </a>
           {% endif%}
-
           {% if user|show_register_btn:contest %}
           <a data-toggle="modal" data-target="#register"
            data-load-remote="{% url 'contest:register_page' contest.id %}"
@@ -79,7 +78,7 @@
           {% endif %}
         </td>
         <td>{{ contest.id }}</td>
-        <td><a class="black" href="{% url 'contest:contest' contest.id %}">{{ contest.cname }}</a>
+        <td><a href="{% url 'contest:contest' contest.id %}">{{ contest.cname }}</a>
         </td>
         <td>{{ contest.start_time|date:"Y/m/d H:i:s" }}</td>
         <td>{{ contest.end_time|date:"Y/m/d H:i:s" }}</td>
