@@ -205,10 +205,11 @@ def submit(request, pid=None):
             codesubmitform.submit()
             return redirect('%s?username=%s' % (reverse('status:status'), request.user.username))
     # Get problem name
-    pid = request.POST.get('pid', pid)
-    if Problem.objects.filter(id=pid):
+    try:
+        pid = request.POST.get('pid', pid)
         render_data['problem_name'] = str(Problem.objects.get(id=pid))
-
+    except:
+        logger.warning('Submit pid %s does not exist!' % pid)
     return render_index(request, 'users/submit.html', render_data)
 
 

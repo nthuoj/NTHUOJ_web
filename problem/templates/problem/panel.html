@@ -33,10 +33,12 @@
   </div>
 </div>
 <script>
-$('[data-toggle="tooltip"]').tooltip();
-$("#add_problem_form").hide();
-$("#add_problem_btn").click(function (e) {
-    $("#add_problem_form").show();
-});
+$(function () {
+  $('[data-toggle="tooltip"]').tooltip();
+  $("#add_problem_form").hide();
+  $("#add_problem_btn").click(function (e) {
+      $("#add_problem_form").show();
+  });
+})
 </script>
 {% endblock %}
