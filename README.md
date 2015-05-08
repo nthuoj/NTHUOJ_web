@@ -41,7 +41,7 @@ apt-get install nodejs
 apt-get install npm
 npm install -g bower
 ln -s /usr/bin/nodejs /usr/bin/node
-pip install https://www.djangoproject.com/download/1.7.8/tarball/
+pip install django==1.7
 pip install django-bower
 pip install django-axes
 pip install django-autocomplete-light
