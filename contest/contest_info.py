@@ -63,9 +63,35 @@ def get_running_contests():
 def get_contestant_list(contest):
     return Contestant.objects.filter(contest=contest)
 
+
+def get_contestant(contest):
+    return Contestant.objects.filter(contest=contest).values('user')
+
+
 def get_total_testcases(problem):
     testcases = Testcase.objects.filter(problem=problem)
     return testcases.count()
+
+
+def get_contest_submissions(contest, submissions):
+    """From a querySet of submissions filter out submissions that is
+    belong to the given contest."""
+
+    problems = contest.problem.all()
+    contestants = get_contestant(contest)
+
+    filter_end_time = get_freeze_time_datetime(contest)
+    if is_ended(contest):
+        filter_end_time = contest.end_time
+
+    submissions = submissions.filter(
+        problem__in=problems,
+        user__in=contestants,
+        submit_time__gte=contest.start_time,
+        submit_time__lte=filter_end_time).order_by('-id')
+
+    return submissions
+
 
 def get_contestant_problem_submission_list(contest, contestant, problem):
     return Submission.objects.filter(problem=problem, submit_time__lte=contest.end_time,

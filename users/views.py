@@ -34,6 +34,7 @@ from django.http import Http404
 from django.shortcuts import redirect
 
 from contest.public_user import is_public_user
+from problem.models import Problem
 from users.admin import UserCreationForm, AuthenticationForm
 from users.forms import CodeSubmitForm
 from users.forms import UserProfileForm, UserLevelForm, UserForgetPasswordForm
@@ -195,14 +196,21 @@ def user_block_wrong_tries(request):
 
 @login_required()
 def submit(request, pid=None):
+    render_data = {}
+    render_data['form'] = CodeSubmitForm(initial={'pid': pid})
     if request.method == 'POST':
         codesubmitform = CodeSubmitForm(request.POST, user=request.user)
+        render_data['form'] = codesubmitform
         if codesubmitform.is_valid():
             codesubmitform.submit()
             return redirect('%s?username=%s' % (reverse('status:status'), request.user.username))
-        else:
-            return render_index(request, 'users/submit.html', {'form': codesubmitform})
-    return render_index(request, 'users/submit.html', {'form': CodeSubmitForm(initial={'pid': pid})})
+    # Get problem name
+    try:
+        pid = request.POST.get('pid', pid)
+        render_data['problem_name'] = str(Problem.objects.get(id=pid))
+    except:
+        logger.warning('Submit pid %s does not exist!' % pid)
+    return render_index(request, 'users/submit.html', render_data)
 
 
 def register_confirm(request, activation_key):
