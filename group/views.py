@@ -140,10 +140,9 @@ def list(request):
     if request.user.is_anonymous():
         my_group = []
     else:
-        unsorted_group_list = Group.objects.filter(Q(member__username__contains=request.user.username) \
-                                             | Q(owner__username=request.user.username) \
-                                             | Q(coowner__username=request.user.username)).distinct()
-        my_group = unsorted_group_list.order_by('id')
+        my_group = Group.objects.filter(Q(member__username__contains=request.user.username) \
+                                        |Q(owner__username=request.user.username) \
+                                        |Q(coowner__username=request.user.username)).distinct().order_by('id')
     
     all_group = get_current_page(request, all_group)
     my_group = get_current_page(request, my_group)
