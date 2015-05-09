@@ -33,7 +33,7 @@ from group.forms import GroupForm, GroupFormEdit
 from group.models import Group
 from utils.user_info import has_group_ownership, has_group_coownership
 from utils.log_info import get_logger
-from utils.render_helper import render_index
+from utils.render_helper import render_index, get_current_page
 from users.models import User
 
 logger = get_logger()
@@ -145,23 +145,8 @@ def list(request):
                                              | Q(coowner__username=request.user.username)).distinct()
         my_group = unsorted_group_list.order_by('id')
     
-    page = request.GET.get('page')
-    paginator = Paginator(all_group, 25)
-    try:
-        all_group = paginator.page(page)
-    except PageNotAnInteger:
-        # If page is not an integer, deliver first page.
-        all_group = paginator.page(1)
-    except EmptyPage:
-        all_group = paginator.page(paginator.num_pages)
-    
-    paginator = Paginator(my_group, 25)
-    try:
-        my_group = paginator.page(page)
-    except PageNotAnInteger:
-        my_group = paginator.page(1)
-    except EmptyPage:
-        my_group = paginator.page(paginator.num_pages)
+    all_group = get_current_page(request, all_group)
+    my_group = get_current_page(request, my_group)
 
     return render_index(
         request,'group/groupList.html', {
