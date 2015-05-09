@@ -32,10 +32,6 @@ def can_edit_group(user, group):
     user = validate_user(user)
     return user.has_admin_auth() or (user == group.owner)
 
-def can_delete_group(user, group):
-    user = validate_user(user)
-    return user.has_admin_auth() or (user == group.owner)
-
 def get_owned_group(user):
     request = Q(owner = user)|Q(coowner = user)
     owned_groups = Group.objects.filter(request)

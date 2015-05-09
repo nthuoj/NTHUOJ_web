@@ -20,7 +20,8 @@
     {% for group in group_list %}
     <tr>
       <td>
-        {% if user|can_delete_group:group %}
+        {% if user|can_edit_group:group %}
+        <!--User can delete group-->
         <a href=".">
           <button type="button" class="btn btn-danger btn-xs"
                   data-toggle="tooltip" data-placement="top" 
@@ -28,8 +29,7 @@
             <span class="glyphicon glyphicon-remove"></span>
           </button>
         </a>
-        {% endif %}
-        {% if user|can_edit_group:group %}
+        <!--User can edit group-->
         <a href=".">
           <button type="button" class="btn btn-warning btn-xs" 
                   data-toggle="tooltip" data-placement="top" 
