@@ -60,7 +60,7 @@ def has_contest_ownership(curr_user, curr_contest):
 def has_group_ownership(curr_user, curr_group):
     curr_user = validate_user(curr_user)
 
-    if curr_user == curr_group.owner:
+    if curr_user == curr_group.owner or curr_user.has_admin_auth():
         return True
     return False
 
