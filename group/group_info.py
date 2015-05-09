@@ -24,12 +24,16 @@ from users.models import User
 from utils.user_info import validate_user
 from utils import user_info
 from utils.log_info import get_logger
-from utils.user_info import has_group_ownership
+from utils.user_info import has_group_ownership, has_group_coownership
 from django.http import Http404
 
 logger = get_logger()
 
 def can_edit_group(user, group):
+    user = validate_user(user)
+    return has_group_ownership(user, group) or has_group_coownership(user, group)
+
+def can_delete_group(user, group):
     user = validate_user(user)
     return has_group_ownership(user, group)
 

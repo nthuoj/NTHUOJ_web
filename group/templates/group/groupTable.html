@@ -3,7 +3,7 @@
   <thead>
     <tr>
       {% if user.has_judge_auth %}
-      <th width="15%">
+      <th width="10%">
         <div>
           <a class="btn btn-warning" style="float:left"
              href="{% url 'group:new' %}">Add Group</a>
@@ -22,7 +22,7 @@
     {% for group in group_list %}
     <tr>
       <td>
-        {% if user|can_edit_group:group %}
+        {% if user|can_delete_group:group %}
         <!--User can delete group-->
         <a href=".">
           <button type="button" class="btn btn-danger btn-xs"
@@ -31,6 +31,8 @@
             <span class="glyphicon glyphicon-remove"></span>
           </button>
         </a>
+        {% endif %}
+        {% if user|can_edit_group:group %}
         <!--User can edit group-->
         <a href=".">
           <button type="button" class="btn btn-warning btn-xs" 
