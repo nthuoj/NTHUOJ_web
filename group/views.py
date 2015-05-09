@@ -142,7 +142,8 @@ def list(request):
     else:
         my_group = Group.objects.filter(Q(member__username__contains=request.user.username) \
                                         |Q(owner__username=request.user.username) \
-                                        |Q(coowner__username=request.user.username)).distinct().order_by('id')
+                                        |Q(coowner__username=request.user.username) \
+                                        ).distinct().order_by('id')
     
     all_group = get_current_page(request, all_group)
     my_group = get_current_page(request, my_group)
