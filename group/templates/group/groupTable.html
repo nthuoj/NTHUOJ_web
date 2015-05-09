@@ -2,14 +2,16 @@
 <table class="table table-hover">
   <thead>
     <tr>
-      <th>
-        {% if user.has_judge_auth %}
+      {% if user.has_judge_auth %}
+      <th width="15%">
         <div>
           <a class="btn btn-warning" style="float:left"
              href="{% url 'group:new' %}">Add Group</a>
         </div>
-        {% endif %}
       </th>
+      {% else %}
+      <th></th>
+      {% endif %}
       <th>#</th>
       <th>Name</th>
       <th>Owner</th>
