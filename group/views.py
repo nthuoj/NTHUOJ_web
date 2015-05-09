@@ -20,16 +20,21 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.'''
-from django.http import HttpResponse, HttpResponseRedirect
+from django.core.urlresolvers import reverse
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.contrib.auth.decorators import login_required
+from django.core.exceptions import PermissionDenied
+from django.db.models import Q
+from django.http import HttpResponse, HttpResponseRedirect, Http404
 from django.shortcuts import render_to_response, render
 from django.utils import timezone
-from django.core.exceptions import PermissionDenied
 from django.forms.models import model_to_dict
 from group.forms import GroupForm, GroupFormEdit
 from group.models import Group
-from utils.user_info import has_group_ownership
+from utils.user_info import has_group_ownership, has_group_coownership
 from utils.log_info import get_logger
 from utils.render_helper import render_index
+from users.models import User
 
 logger = get_logger()
 
@@ -131,14 +136,37 @@ def detail(request, group_id):
 
 
 def list(request):
+    all_group = Group.objects.order_by('id')
+    if request.user.is_anonymous():
+        my_group = []
+    else:
+        unsorted_group_list = Group.objects.filter(Q(member__username__contains=request.user.username) \
+                                             | Q(owner__username=request.user.username) \
+                                             | Q(coowner__username=request.user.username)).distinct()
+        my_group = unsorted_group_list.order_by('id')
+    
+    page = request.GET.get('page')
+    paginator = Paginator(all_group, 25)
+    try:
+        all_group = paginator.page(page)
+    except PageNotAnInteger:
+        # If page is not an integer, deliver first page.
+        all_group = paginator.page(1)
+    except EmptyPage:
+        all_group = paginator.page(paginator.num_pages)
+    
+    paginator = Paginator(my_group, 25)
+    try:
+        my_group = paginator.page(page)
+    except PageNotAnInteger:
+        my_group = paginator.page(1)
+    except EmptyPage:
+        my_group = paginator.page(paginator.num_pages)
 
-    all_group_list = Group.objects.order_by('-creation_time')
-    unsorted_group_list = Group.objects.filter(member__username__contains=request.user.username)
-    my_group_list = unsorted_group_list.order_by('-creation_time')
     return render_index(
         request,'group/groupList.html', {
-            'a_g_list': all_group_list,
-            'm_g_list': my_group_list,
+            'all_group_list': all_group,
+            'my_group_list': my_group,
         })
 
 def new(request):
