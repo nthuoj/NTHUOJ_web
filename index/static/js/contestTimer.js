@@ -74,13 +74,11 @@ function getRestTime() {
             m = checkTime(m);
             s = checkTime(s);
             h = checkTime(h);
-            var day;
+            var day = "";
             if(d > 1)
                 day = d + " days, ";
             else if(d == 1)
                 day = d + " day, ";
-            else
-                day = "";
 
             remainings[i].innerHTML = day + h + ":" + m + ":" + s;
         }
