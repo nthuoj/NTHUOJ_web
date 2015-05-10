@@ -53,10 +53,6 @@ autocomplete_light.register(UserAutocomplete)
 autocomplete_light.register(TagAutocomplete)
 
 class ProblemForm(forms.ModelForm):
-    description = forms.CharField(widget=CKEditorWidget())
-    input = forms.CharField(widget=CKEditorWidget())
-    output = forms.CharField(widget=CKEditorWidget())
-
     other_judge_id = forms.IntegerField(required=False, min_value=0)
     partial_judge_code = forms.FileField(required=False)
     partial_judge_header = forms.FileField(required=False)
@@ -80,9 +76,12 @@ class ProblemForm(forms.ModelForm):
             'special_judge_code',
         ]
         labels = {
-            'pname': 'Problem Name'
+            'pname': 'Problem Name',
         }
         widgets = {
+            'description': CKEditorWidget(),
+            'input': CKEditorWidget(),
+            'output': CKEditorWidget(),
             'owner': autocomplete_light.TextWidget('UserAutocomplete')
         }
 
