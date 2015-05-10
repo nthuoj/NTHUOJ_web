@@ -51,15 +51,6 @@ $(document).ready(function() {
         e.preventDefault()
         switchTab($(this).attr('href'));
     });
-    CKEDITOR.replace("des", {
-    	fontSize_sizes: '12/12px;16/16px;24/24px;48/48px;'
-    });
-    CKEDITOR.replace("inText", {
-    	fontSize_sizes: '12/12px;16/16px;24/24px;48/48px;'
-    });
-    CKEDITOR.replace("outText", {
-    	fontSize_sizes: '12/12px;16/16px;24/24px;48/48px;'
-    });
 
     $("#add_testcase").submit(function (e) {
         e.preventDefault();
@@ -70,7 +61,7 @@ $(document).ready(function() {
         $.ajax({
           type: "POST",
           url: "/problem/" + pid + "/testcase/" + update_tid + "/",
-          data: new FormData(this),  
+          data: new FormData(this),
           processData: false,
           contentType: false,
           success: function(data) {
@@ -133,7 +124,7 @@ function add_new_tag(pid) {
           new_tag_row.append($("<td><button class='btn btn-primary del_tag_btn'>Delete</button></td>"));
           $("#tagTable").append(new_tag_row);
         }
-    });    
+    });
     $("#newTag").val("");
     return false;
 }
@@ -144,7 +135,7 @@ function add_new_testcase(pid, data) {
       $.ajax({
           type: 'POST',
           url: '/problem/' + pid + '/testcase/',
-          data: data, 
+          data: data,
           processData: false,
           contentType: false,
           success: function(data) {

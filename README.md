@@ -30,6 +30,8 @@ git clone git@github.com:bruce3557/NTHUOJ_web.git
 * django-bootstrap
 * django-bootstrap-form
 * requests
+* django-ckeditor
+* Pillow
 
 ###Installation:
 * Install dependencies (for ubuntu)
@@ -49,6 +51,8 @@ pip install django-datetime-widget
 pip install django-bootstrap
 pip install django-bootstrap-form
 pip install requests
+pip install django-ckeditor
+pip install Pillow
 ```
 * Execute install.py for initial setting.
     ```

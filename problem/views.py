@@ -107,9 +107,6 @@ def edit(request, pid=None):
         form = ProblemForm(request.POST, request.FILES, instance=problem)
         if form.is_valid():
             problem = form.save()
-            problem.description = request.POST['description']
-            problem.input= request.POST['input_description']
-            problem.output = request.POST['output_description']
             problem.sample_in = request.POST['sample_in']
             problem.sample_out = request.POST['sample_out']
             problem.save()
