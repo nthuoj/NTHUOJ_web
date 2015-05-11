@@ -1,5 +1,5 @@
 #NTHUOJ_WEB
-#######Version 1.0.1
+#######Version 1.0.2
 =======
 
 ##License
@@ -41,7 +41,7 @@ apt-get install nodejs
 apt-get install npm
 npm install -g bower
 ln -s /usr/bin/nodejs /usr/bin/node
-pip install django
+pip install django==1.7
 pip install django-bower
 pip install django-axes
 pip install django-autocomplete-light
