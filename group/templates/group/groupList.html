@@ -3,6 +3,9 @@
 {% block title_name %}
 <title>Group List</title>
 {% endblock title_name %}
+{% block import_source %}
+<script src="{% static 'group/js/groupList.js' %}"></script>
+{% endblock import_source %}
 {% load group_extras %}
 {% block body_block %}
 <br>
@@ -18,22 +21,6 @@
       <button id="allGroupButton" type="button" class="btn btn-primary">
         All Group
       </button>
-      <script>
-        $(function(){
-          $('#allGroupTable').show();
-          $('#myGroupTable').hide();
-          $('#myGroupButton').click(function(){
-            $('#allGroupTable').hide();
-            $('#myGroupTable').show();
-            $('#allGroupButton').removeClass("active");
-          });
-          $('#allGroupButton').click(function(){
-            $('#allGroupTable').show();
-            $('#myGroupTable').hide();
-            $('#myGroupButton').removeClass("active");
-          });
-        })
-      </script>
     </div>
     <br>
     <br>
