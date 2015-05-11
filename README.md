@@ -16,6 +16,7 @@ git clone git@github.com:bruce3557/NTHUOJ_web.git
 
 ####Dependencies:
 * python2.7
+* python-dev
 * mysql-server
 * python-pip
 * python-mysqldb
@@ -42,6 +43,7 @@ apt-get install python-pip
 apt-get install python-mysqldb
 apt-get install nodejs
 apt-get install npm
+apt-get install python-dev
 apt-get install libjpeg-dev
 npm install -g bower
 ln -s /usr/bin/nodejs /usr/bin/node
