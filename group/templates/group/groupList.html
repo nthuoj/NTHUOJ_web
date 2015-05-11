@@ -9,28 +9,26 @@
 {% load group_extras %}
 {% block body_block %}
 <br>
-<div class="container">
-  <div class="col-lg-offset-1 col-lg-10">
-    <div class="well">
-      <h2>Group List</h2>
-    </div>
-    <div class="btn-group" data-toggle="buttons-radio" style="float:right">
-      <button id="myGroupButton" type="button" class="btn btn-primary">
-        My Group
-      </button>
-      <button id="allGroupButton" type="button" class="btn btn-primary">
-        All Group
-      </button>
-    </div>
-    <br>
-    <br>
-    <hr>
-    <div id="myGroupTable">
-      {% include "group/groupTable.html" with group_list=my_group_list %}
-    </div>
-    <div id="allGroupTable">
-      {% include "group/groupTable.html" with group_list=all_group_list %}
-    </div>
+<div class="container" id="list">
+  <div class="well">
+    <h2>Group List</h2>
+  </div>
+  <div class="btn-group" data-toggle="buttons-radio" style="float:right">
+    <button id="myGroupButton" type="button" class="btn btn-primary">
+      My Group
+    </button>
+    <button id="allGroupButton" type="button" class="btn btn-primary">
+      All Group
+    </button>
+  </div>
+  <br>
+  <br>
+  <hr>
+  <div id="myGroupTable">
+    {% include "group/groupTable.html" with group_list=my_group_list %}
+  </div>
+  <div id="allGroupTable">
+    {% include "group/groupTable.html" with group_list=all_group_list %}
   </div>
 </div>
 {% endblock body_block %}
