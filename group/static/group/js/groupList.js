@@ -22,16 +22,16 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.*/
 
 $(document).ready(function(){
-  $('#allGroupTable').show();
-  $('#myGroupTable').hide();
-  $('#myGroupButton').click(function(){
-    $('#allGroupTable').hide();
-    $('#myGroupTable').show();
-    $('#allGroupButton').removeClass("active");
-  });
-  $('#allGroupButton').click(function(){
     $('#allGroupTable').show();
     $('#myGroupTable').hide();
-    $('#myGroupButton').removeClass("active");
-  });
+    $('#myGroupButton').click(function(){
+        $('#allGroupTable').hide();
+        $('#myGroupTable').show();
+        $('#allGroupButton').removeClass("active");
+    });
+    $('#allGroupButton').click(function(){
+        $('#allGroupTable').show();
+        $('#myGroupTable').hide();
+        $('#myGroupButton').removeClass("active");
+    });
 });
