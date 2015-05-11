@@ -1,5 +1,5 @@
 #NTHUOJ_WEB
-#######Version 1.0.2
+#######Version 1.0.3
 =======
 
 ##License
@@ -56,7 +56,7 @@ pip install django-bootstrap
 pip install django-bootstrap-form
 pip install requests
 pip install django-ckeditor
-pip install pillow
+pip install -I pillow
 ```
 * Execute install.py for initial setting.
     ```
