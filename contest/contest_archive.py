@@ -44,7 +44,7 @@ def get_owned_or_started_contests(user):
 def get_owned_contests(user):
     request = Q(owner = user)|Q(coowner = user)
     owned_contests = Contest.objects.order_by('-start_time').filter(request)
-    return owned_contests
+    return owned_contests.distinct()
 
 def get_started_contests():
     now = datetime.now()

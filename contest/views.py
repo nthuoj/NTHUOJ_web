@@ -37,6 +37,7 @@ from contest.contest_info import can_create_contest
 from contest.contest_info import can_edit_contest
 from contest.contest_info import can_delete_contest
 from contest.contest_info import get_contest_or_404
+from contest.contest_archive import get_owned_contests
 from contest.contest_archive import get_contests
 from contest.contest_archive import add_contestants
 from contest.models import Contest
@@ -68,12 +69,22 @@ from utils import user_info
 from utils.render_helper import render_index, get_current_page
 from status.views import *
 from django.conf import settings
+from utils.user_info import validate_user
 
 logger = get_logger()
 
 def archive(request):
-    all_contests = get_contests(request.user)
-    contests = get_current_page(request, all_contests)
+    user = validate_user(request.user)
+    #filter for contest. 
+    #show owned contests when filter==owned
+    #else show all
+    filter_type = request.GET.get('filter')
+    if(filter_type == 'owned'):
+        contests = get_owned_contests(user)
+    else:
+        contests = get_contests(user)
+   
+    contests = get_current_page(request, contests)
     return render_index(request,
         'contest/contestArchive.html',
         {'contests':contests})
