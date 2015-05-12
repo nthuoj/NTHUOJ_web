@@ -25,6 +25,7 @@ from django import forms
 from problem.models import Problem, Tag
 from users.models import User
 from django.db.models import Q
+from ckeditor.widgets import CKEditorWidget
 
 import autocomplete_light
 
@@ -60,9 +61,11 @@ class ProblemForm(forms.ModelForm):
         model = Problem
         fields = [
             'pname',
+            'description',
+            'input',
+            'output',
             'owner',
             'visible',
-            'judge_language',
             'judge_source',
             'judge_type',
             'judge_language',
@@ -73,9 +76,12 @@ class ProblemForm(forms.ModelForm):
             'special_judge_code',
         ]
         labels = {
-            'pname': 'Problem Name'
+            'pname': 'Problem Name',
         }
         widgets = {
+            'description': CKEditorWidget(),
+            'input': CKEditorWidget(),
+            'output': CKEditorWidget(),
             'owner': autocomplete_light.TextWidget('UserAutocomplete')
         }
 

@@ -17,35 +17,21 @@
     OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
     SOFTWARE.
     '''
-from django.db.models import Q
-from group.models import Group
-
-from users.models import User
-from utils.user_info import validate_user
+from django import template
+from datetime import datetime
 from utils import user_info
-from utils.log_info import get_logger
-from utils.user_info import has_group_ownership, has_group_coownership
-from django.http import Http404
+from group import group_info
+from group.models import Group
+from users.models import User
 
-logger = get_logger()
+register = template.Library()
 
+@register.filter
 def can_edit_group(user, group):
-    user = validate_user(user)
-    return has_group_ownership(user, group) or has_group_coownership(user, group)
+    return group_info.can_edit_group(user, group)
+register.filter("can_edit_group", can_edit_group)
 
+@register.filter
 def can_delete_group(user, group):
-    user = validate_user(user)
-    return has_group_ownership(user, group)
-
-def get_owned_group(user):
-    request = Q(owner = user)|Q(coowner = user)
-    owned_groups = Group.objects.filter(request)
-    return owned_groups.distinct()
-
-def get_group_or_404(group_id):
-    try:
-        group = Group.objects.get(id = group_id)
-        return group
-    except Group.DoesNotExist:
-        logger.warning('Group: Group %s not found!' % group_id)
-        raise Http404('Group %s not found!' % group_id)
+    return group_info.can_delete_group(user, group)
+register.filter("can_delete_group", can_delete_group)

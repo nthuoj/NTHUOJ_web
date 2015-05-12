@@ -113,10 +113,15 @@ def can_register(user, contest):
     return contest_info.can_register(user, contest)
 register.filter("can_register", can_register)
 
+@register.filter
+def has_attended(user, contest):
+    return contest_info.has_attended(user, contest)
+register.filter("has_attended", has_attended)
+
 '''
-Contest should not be end. 
+Contest should not be end.
 And user should own contest(to register group)
-or user can register 
+or user can register
 '''
 @register.filter
 def show_register_btn(user, contest):

@@ -30,7 +30,7 @@ from django.db.models import Q
 
 class ContestForm(forms.ModelForm):
     dateTimeOptions = {
-            'format': 'yyyy-mm-dd hh:ii:ss',
+            'format': 'yyyy-mm-dd hh:ii:00',
             'todayBtn': 'true',
             'minuteStep': 1,
     }

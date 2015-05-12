@@ -1,0 +1,60 @@
+{% load group_extras %}
+<table class="table table-hover">
+  <thead>
+    <tr>
+      {% if user.has_judge_auth %}
+      <th width="10%">
+        <div>
+          <a class="btn btn-warning" style="float:left"
+             href="{% url 'group:new' %}">Add Group</a>
+        </div>
+      </th>
+      {% else %}
+      <th></th>
+      {% endif %}
+      <th>#</th>
+      <th>Name</th>
+      <th>Owner</th>
+      <th>Group Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for group in group_list %}
+    <tr>
+      <td>
+        {% if user|can_delete_group:group %}
+        <!--User can delete group-->
+        <a href=".">
+          <button type="button" class="btn btn-danger btn-xs"
+                  data-toggle="tooltip" data-placement="top" 
+                  title="Delete Contest">
+            <span class="glyphicon glyphicon-remove"></span>
+          </button>
+        </a>
+        {% endif %}
+        {% if user|can_edit_group:group %}
+        <!--User can edit group-->
+        <a href=".">
+          <button type="button" class="btn btn-warning btn-xs" 
+                  data-toggle="tooltip" data-placement="top" 
+                  title="Edit Contest">
+            <span class="glyphicon glyphicon-pencil"></span>
+          </button>
+        </a>
+        {% endif %}
+      </td>
+      <td>{{ group.id }}</td>
+      <td>
+        <a href="{% url 'group:detail' group.id %}">{{ group.gname }}</a>
+      </td>
+      <td>{{ group.owner }}</td>
+      <td>{{ group.description|truncatechars:70 }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+<div class="container-fluid">
+  <nav>
+    {% include "utils/pager.html" with objects=group_list %}
+  </nav>
+</div>

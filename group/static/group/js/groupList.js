@@ -19,20 +19,19 @@ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
 AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
-*/
-$(function() {
-    var one_hour = 60 * 60 * 1000;
-    setInterval(function() {
-        $.get('/get_time/', function(data) {
-            $('#time').html(data);
-        });
-    }, one_hour);
+SOFTWARE.*/
 
-    $('#globalNavigation').yourlabsAutocomplete({
-        url: '/search/'
-    }).input.bind('selectChoice', function(e, choice, autocomplete) {
-        // When a choice is selected, open it.
-        window.location.href = choice.attr('href');
+$(document).ready(function(){
+    $('#allGroupTable').show();
+    $('#myGroupTable').hide();
+    $('#myGroupButton').click(function(){
+        $('#allGroupTable').hide();
+        $('#myGroupTable').show();
+        $('#allGroupButton').removeClass("active");
     });
-})
+    $('#allGroupButton').click(function(){
+        $('#allGroupTable').show();
+        $('#myGroupTable').hide();
+        $('#myGroupButton').removeClass("active");
+    });
+});

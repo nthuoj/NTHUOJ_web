@@ -31,7 +31,7 @@ import requests, json
 from vjudge.models import VjudgeID
 from problem.models import Problem
 
-target = [Problem.UVA_JUDGE, Problem.ICPC_JUDGE, Problem.POJ_JUDGE]
+target = ['UVA', 'UVALive', 'POJ']
 # A filter that fetch all problems from vjudge
 fetch_url = 'http://acm.hust.edu.cn/vjudge/problem/listProblem.action?draw=5&columns%5B0%5D%5Bdata%5D=0&columns%5B0%5D%5Bname%5D=&columns%5B0%5D%5Bsearchable%5D=false&columns%5B0%5D%5Borderable%5D=false&columns%5B0%5D%5Bsearch%5D%5Bvalue%5D=&columns%5B0%5D%5Bsearch%5D%5Bregex%5D=false&columns%5B1%5D%5Bdata%5D=1&columns%5B1%5D%5Bname%5D=&columns%5B1%5D%5Bsearchable%5D=true&columns%5B1%5D%5Borderable%5D=true&columns%5B1%5D%5Bsearch%5D%5Bvalue%5D=&columns%5B1%5D%5Bsearch%5D%5Bregex%5D=false&columns%5B2%5D%5Bdata%5D=2&columns%5B2%5D%5Bname%5D=&columns%5B2%5D%5Bsearchable%5D=true&columns%5B2%5D%5Borderable%5D=true&columns%5B2%5D%5Bsearch%5D%5Bvalue%5D=&columns%5B2%5D%5Bsearch%5D%5Bregex%5D=false&columns%5B3%5D%5Bdata%5D=3&columns%5B3%5D%5Bname%5D=&columns%5B3%5D%5Bsearchable%5D=true&columns%5B3%5D%5Borderable%5D=true&columns%5B3%5D%5Bsearch%5D%5Bvalue%5D=&columns%5B3%5D%5Bsearch%5D%5Bregex%5D=false&columns%5B4%5D%5Bdata%5D=4&columns%5B4%5D%5Bname%5D=&columns%5B4%5D%5Bsearchable%5D=true&columns%5B4%5D%5Borderable%5D=true&columns%5B4%5D%5Bsearch%5D%5Bvalue%5D=&columns%5B4%5D%5Bsearch%5D%5Bregex%5D=false&columns%5B5%5D%5Bdata%5D=5&columns%5B5%5D%5Bname%5D=&columns%5B5%5D%5Bsearchable%5D=true&columns%5B5%5D%5Borderable%5D=true&columns%5B5%5D%5Bsearch%5D%5Bvalue%5D=&columns%5B5%5D%5Bsearch%5D%5Bregex%5D=false&order%5B0%5D%5Bcolumn%5D=1&order%5B0%5D%5Bdir%5D=asc&start=0&length=100000&search%5Bvalue%5D=&search%5Bregex%5D=false&OJId=&probNum=&title=&source='
 
@@ -39,11 +39,17 @@ r = requests.get(fetch_url)
 
 raw_data = r.text.encode("utf-8")
 raw_data = json.loads(raw_data)['data']
+failure = 0
 
 for data in raw_data:
     if data[0] in target:
-        s = VjudgeID.objects.create(
-            vjudge_id=data[5],
-            judge_source=data[0],
-            judge_source_id=data[1]
-        )
+        try:
+            s = VjudgeID.objects.create(
+                vjudge_id=data[5],
+                judge_source=data[0],
+                judge_source_id=data[1]
+            )
+        except:
+            failure += 1
+
+print 'Fetch %d problems successfully with %d failures' % (VjudgeID.objects.count(), failure)

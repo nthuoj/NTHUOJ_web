@@ -27,8 +27,8 @@ from django.db import models
 
 class VjudgeID(models.Model):
     vjudge_id = models.IntegerField(primary_key=True)
-    judge_source = models.CharField(max_length=11)
-    judge_source_id = models.CharField(max_length=11)
+    judge_source = models.CharField(max_length=20)
+    judge_source_id = models.CharField(max_length=20)
 
 
     def __unicode__(self):
