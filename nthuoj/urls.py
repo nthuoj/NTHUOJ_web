@@ -17,7 +17,7 @@ urlpatterns = patterns('',
     url(r'^contest/', include('contest.urls', namespace='contest')),
     url(r'^users/', include('users.urls', namespace='users')),
     url(r'^team/', include('team.urls', namespace='team')),
-    #url(r'^group/', include('group.urls', namespace='group')),
+    url(r'^group/', include('group.urls', namespace='group')),
     url(r'^status/', include('status.urls', namespace='status')),
 )
 handler400 = 'index.views.custom_400'
