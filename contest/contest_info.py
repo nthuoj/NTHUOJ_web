@@ -120,7 +120,7 @@ def get_submit_times(problem):
     else:
         return submit_times
 
-def get_scoreboard(contest):
+def get_scoreboard(user, contest):
     contestants = get_contestant_list(contest)
 
     scoreboard = Scoreboard(contest.start_time)
@@ -135,7 +135,7 @@ def get_scoreboard(contest):
     for contestant in contestants:
         new_contestant = ScoreboardUser(contestant.user.username)
         for problem in contest.problem.all():
-            if is_ended(contest):
+            if is_ended(contest) || has_contest_ownership(user):
                 submissions = get_contestant_problem_submission_list(contest,contestant,problem)
             else:
                 submissions = get_contestant_problem_submission_list_before_freeze_time\
