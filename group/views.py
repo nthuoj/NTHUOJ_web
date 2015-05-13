@@ -125,10 +125,8 @@ def detail(request, group_id):
         user_is_owner = False
         user_is_coowner = False
         user_has_admin_auth = False
-    if not user_is_owner and not user_is_owner and not user_has_admin_auth:
-        user_has_no_auth = True
-    else :
-        user_has_no_auth = False
+    
+    user_has_no_auth = not user_is_owner and not user_is_owner and not user_has_admin_auth
 
     running_contest_list = []
     ended_contest_list = []
