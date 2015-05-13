@@ -253,9 +253,9 @@ def delete_announce(request, announce_id, group_id):
 
     if has_group_ownership(request.user, group) or has_group_coownership(request.user, group):  
         try:
-            Announce.objects.get(id=announce_id).delete()
+            get_announce(announce_id).delete()
             return HttpResponseRedirect(reverse('group:detail', kwargs={'group_id': group_id}))
-        except Announce.objects.get(id=announce_id).DoesNotExist:
+        except get_announce(announce_id).DoesNotExist:
             logger.info('Announce: already deleted %s!' % announce_id)
             raise Http404('Announce: already deleted %s!' % announce_id)
     else:
