@@ -393,7 +393,7 @@ def is_ended(contest):
     return (datetime.datetime.now() > contest.end_time)
 
 # True if contest is not ended and during freeze time
-def is_freezed(contest):
+def is_frozen(contest):
     freeze_time = get_freeze_time_datetime(contest)
     return (datetime.datetime.now() > freeze_time) and not is_ended(contest)
 
