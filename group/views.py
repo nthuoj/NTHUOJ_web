@@ -137,17 +137,7 @@ def detail(request, group_id):
         elif contest.end_time < now:
             ended_contest_list.append(contest)
 
-    paginator = Paginator(student_list, 15)  # Show 25 users per page
-    page = request.GET.get('page')
-
-    try:
-        student_list = paginator.page(page)
-    except PageNotAnInteger:
-        # If page is not an integer, deliver first page.
-        student_list = paginator.page(1)
-    except EmptyPage:
-        # If page is out of range (e.g. 9999), deliver last page of results.
-        student_list = paginator.page(paginator.num_pages)
+    student_list = get_current_page(request, student_list)
 
     return render_index(
         request, 'group/groupDetail.html', {
