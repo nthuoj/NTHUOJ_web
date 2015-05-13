@@ -243,7 +243,7 @@ def edit(request, group_id):
 
 ##Announce
 @login_required
-def add(request, group_id):
+def add_announce(request, group_id):
     group = get_group(group_id)
 
     if has_group_ownership(request.user, group) or has_group_coownership(request.user, group) or \

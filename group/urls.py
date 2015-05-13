@@ -13,7 +13,7 @@ urlpatterns = patterns('',
     url(r'^delete/(?P<group_id>\d+)/$', views.delete, name='delete'),
     url(r'^edit/(?P<group_id>\d+)/$', views.edit, name='edit'),
     #Announce Part
-    url(r'^add/(?P<group_id>\d+)/$', views.add, name='add'),
+    url(r'^add_announce/(?P<group_id>\d+)/$', views.add_announce, name='add_announce'),
     url(r'^delete_announce/(?P<announce_id>\d+)/(?P<group_id>\d+)/$', views.delete_announce, name='delete_announce'),
     url(r'^edit_announce/(?P<announce_id>\d+)/(?P<group_id>\d+)/(?P<redirect_id>\d+)/$', views.edit_announce, name='edit_announce'),
     #Member Part

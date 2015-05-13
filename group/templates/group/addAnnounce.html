@@ -19,7 +19,7 @@
           <h4>Be sure <span style="color:red">Title</span> is not empty,
               or this form will not be saved!</h4>
         </div>
-        <form action="{% url 'group:add' group_id %}" method="POST">
+        <form action="{% url 'group:add_announce' group_id %}" method="POST">
           {% csrf_token %}
           {% for field in form %} 
           <div class="form-group" style="width:50%">
