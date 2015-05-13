@@ -271,7 +271,6 @@ def edit_announce(request, announce_id, group_id, redirect_id):
         if request.method == 'GET':
             announce_dic = model_to_dict(announce)
             form = AnnounceForm(initial=announce_dic)
-            logger.info('Now I GETT!!!!!!!')
             return render_index(
                 request,'group/editAnnounce.html', {
                     'form':form,
@@ -282,7 +281,6 @@ def edit_announce(request, announce_id, group_id, redirect_id):
                     'user_has_admin_auth': request.user.has_admin_auth(),
                 })
         if request.method == 'POST':
-            logger.info('Now I PosTTTTTT!!!!!')
             form = AnnounceForm(request.POST, instance=announce)
             if form.is_valid():
                 modified_announce = form.save()
@@ -299,7 +297,5 @@ def edit_announce(request, announce_id, group_id, redirect_id):
                         'user_is_coowner': user_is_coowner,
                         'user_has_admin_auth': request.user.has_admin_auth(),
                     })
-        else:
-            logger.info('aid:%s gid:%s method:%s bool:%s' % (announce_id,group_id,request.method, request.method=='GET'))
     else:
         raise PermissionDenied
