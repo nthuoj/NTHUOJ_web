@@ -126,7 +126,7 @@ def detail(request, group_id):
         user_is_coowner = False
         user_has_admin_auth = False
     
-    user_has_no_auth = not user_is_owner and not user_is_owner and not user_has_admin_auth
+    user_has_no_auth = not user_is_owner and not user_is_coowner
 
     running_contest_list = []
     ended_contest_list = []
@@ -234,8 +234,7 @@ def edit(request, group_id):
 def add_announce(request, group_id):
     group = get_group(group_id)
 
-    if has_group_ownership(request.user, group) or has_group_coownership(request.user, group) or \
-       request.user.has_admin_auth():
+    if has_group_ownership(request.user, group) or has_group_coownership(request.user, group):
         if request.method == 'POST':
             form = AnnounceForm(request.POST)
             if form.is_valid():
@@ -252,8 +251,7 @@ def add_announce(request, group_id):
 def delete_announce(request, announce_id, group_id):
     group = get_group(group_id)
 
-    if has_group_ownership(request.user, group) or has_group_coownership(request.user, group) or \
-       request.user.has_admin_auth():  
+    if has_group_ownership(request.user, group) or has_group_coownership(request.user, group):  
         try:
             Announce.objects.get(id=announce_id).delete()
             return HttpResponseRedirect(reverse('group:detail', kwargs={'group_id': group_id}))
