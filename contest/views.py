@@ -38,6 +38,7 @@ from contest.contest_info import can_edit_contest
 from contest.contest_info import can_delete_contest
 from contest.contest_info import get_contest_or_404
 from contest.contest_archive import get_owned_contests
+from contest.contest_archive import get_attended_contests
 from contest.contest_archive import get_contests
 from contest.contest_archive import add_contestants
 from contest.models import Contest
@@ -79,8 +80,10 @@ def archive(request):
     #show owned contests when filter==owned
     #else show all
     filter_type = request.GET.get('filter')
-    if(filter_type == 'owned'):
+    if filter_type == 'owned':
         contests = get_owned_contests(user)
+    elif filter_type == 'attended':
+        contests = get_attended_contests(user)
     else:
         contests = get_contests(user)
    

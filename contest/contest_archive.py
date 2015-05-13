@@ -50,6 +50,13 @@ def get_started_contests():
     now = datetime.now()
     return Contest.objects.order_by('-start_time').filter(start_time__lte = now)
 
+def get_attended_contests(user):
+    contestants = Contestant.objects.filter(user = user)
+    contests = []
+    for contestant in contestants:
+        contests.append(contestant.contest) 
+    return contests
+
 def add_contestants(contest):
     contestants = Contestant.objects.filter(contest = contest)
     contest.contestants = []
