@@ -185,7 +185,7 @@ def new(request):
             if form.is_valid():
                 new_group = form.save()
                 logger.info('Group: Create a new group %s!' % new_group.id)
-                return HttpResponseRedirect('/group/list')
+                return HttpResponseRedirect(reverse('group:list'))
             else:
                 return render(
                     request,
@@ -201,7 +201,7 @@ def delete(request, group_id):
         deleted_gid = group.id
         group.delete()
         logger.info('Group: Delete group %s!' % deleted_gid)
-        return HttpResponseRedirect('/group/list')
+        return HttpResponseRedirect(reverse('group:list'))
     else:
         raise PermissionDenied
 
@@ -225,7 +225,7 @@ def edit(request, group_id):
                 if form.is_valid():
                     modified_group = form.save()
                     logger.info('Group: Modified group %s!' % modified_group.id)
-                    return HttpResponseRedirect('/group/detail/%s' % modified_group.id)
+                    return HttpResponseRedirect(reverse('group:detail', kwargs={'group_id': modified_group_id}))
         else:
             raise PermissionDenied
 
