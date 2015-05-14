@@ -19,13 +19,8 @@
   </div>
   {% if user.is_authenticated %}
   <div class="btn-group" role="group" style="float:right;">
-    {% if user.has_subjudge_auth %}
-    <a href="{% url 'contest:archive' %}?filter=owned">
+    <a href="{% url 'contest:archive' %}?filter=mine">
       <button type="button" class="btn btn-default">
-    {% else%}
-    <a href="{% url 'contest:archive' %}?filter=attended">
-      <button type="button" class="btn btn-default">
-    {% endif %}
         My Contest
       </button>
     </a>

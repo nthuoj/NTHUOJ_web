@@ -40,6 +40,9 @@ def get_owned_or_started_contests(user):
     started_contests = get_started_contests()
     return owned_contests | started_contests
 
+def get_owned_or_attended_contests(user):
+    return (get_owned_contests(user)|get_attended_contests(user)).distinct()
+
 #both owned and coowned
 def get_owned_contests(user):
     request = Q(owner = user)|Q(coowner = user)
@@ -51,11 +54,9 @@ def get_started_contests():
     return Contest.objects.order_by('-start_time').filter(start_time__lte = now)
 
 def get_attended_contests(user):
-    contestants = Contestant.objects.filter(user = user)
-    contests = []
-    for contestant in contestants:
-        contests.append(contestant.contest) 
-    return contests
+    contest_list = Contestant.objects.filter(user = user).\
+                  values_list('contest', flat=True)
+    return Contest.objects.filter(pk__in=contest_list).distinct()
 
 def add_contestants(contest):
     contestants = Contestant.objects.filter(contest = contest)
