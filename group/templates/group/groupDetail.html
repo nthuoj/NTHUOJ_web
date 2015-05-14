@@ -150,7 +150,7 @@
             <th>Title</th>
             <th>Content</th>
             <th>
-              {% if not user_has_no_auth %}
+              {% if user_has_auth %}
                 <button type="button" class="btn btn-primary btn-sm" 
                         data-toggle="modal" style="float:right" 
                         data-target="#addannounce">
@@ -200,7 +200,7 @@
                 </div>
               </div>
               <!--Modal Section End-->
-              {% if not user_has_no_auth %}
+              {% if user_has_auth %}
               <a href="{% url 'group:edit_announce' announce.id group_id redirect_id %}">
                 <button type="button" class="btn btn-warning btn-sm" 
                         data-toggle="modal" style="float:right">
@@ -237,7 +237,7 @@
             <div>
               <td>{{ student.username }}</td>
               <td>
-                {% if not user_has_no_auth %}
+                {% if user_has_auth %}
                   <a href=".">
                     <button type="button" class="btn btn-danger btn-xs" style="float:right">
                       <span class="glyphicon glyphicon-remove"></span>

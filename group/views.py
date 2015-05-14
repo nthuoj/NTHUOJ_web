@@ -32,6 +32,7 @@ from django.forms.models import model_to_dict
 from group.forms import GroupForm, GroupFormEdit, AnnounceForm
 from group.models import Group, Announce
 from utils.user_info import has_group_ownership, has_group_coownership
+from utils.user_info import validate_user
 from utils.log_info import get_logger
 from utils.render_helper import render_index, get_current_page
 from users.models import User
@@ -113,22 +114,17 @@ def detail(request, group_id):
     owner = group.owner
     form = AnnounceForm()
 
-    if not request.user.is_anonymous():
-        user_is_owner = has_group_ownership(request.user, group)
-        user_is_coowner = has_group_coownership(request.user, group)
-        user_has_admin_auth = request.user.has_admin_auth()
-    else: 
-        user_is_owner = False
-        user_is_coowner = False
-        user_has_admin_auth = False
-    
-    user_has_no_auth = not user_is_owner and not user_is_coowner
+    user = validate_user(request.user)
+    user_is_owner = has_group_ownership(user, group)
+    user_is_coowner = has_group_coownership(user, group)
+
+    user_has_auth = user_is_owner or user_is_coowner
 
     running_contest_list = []
     ended_contest_list = []
     now = timezone.now()
     running_contest_list = group.trace_contest.filter(start_time__lte=now, end_time__gte=now)
-    ended_contest_list = group.trace_contest.filter(end_time__lte= now)
+    ended_contest_list = group.trace_contest.filter(end_time__lte=now)
 
     student_list = get_current_page(request, student_list)
 
@@ -143,7 +139,7 @@ def detail(request, group_id):
             'group_name': group.gname, 
             'group_description': group.description,
             'group_id': group.id,
-            'user_has_no_auth': user_has_no_auth,
+            'user_has_auth': user_has_auth,
             'form': form,
             'redirect_id' : redirect_id,
         })
