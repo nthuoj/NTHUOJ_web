@@ -62,9 +62,7 @@ def get_running_contest(request, group_id):
     all_running_contest_list = []
     now = timezone.now()
 
-    for contest in all_contest:
-        if contest.start_time < now and contest.end_time > now:
-            all_running_contest_list.append(contest)
+    all_running_contest_list = group.trace_contest.filter(start_time__lte=now, end_time__gte=now)
 
     return render_index(
         request, 'group/viewall.html', {
@@ -81,9 +79,7 @@ def get_ended_contest(request, group_id):
     all_ended_contest_list = []
     now = timezone.now()
 
-    for contest in all_contest:
-        if contest.end_time < now:
-            all_ended_contest_list.append(contest)
+    all_ended_contest_list = group.trace_contest.filter(end_time__lte=now)
 
     return render_index(
         request, 'group/viewall.html', {
@@ -131,11 +127,8 @@ def detail(request, group_id):
     running_contest_list = []
     ended_contest_list = []
     now = timezone.now()
-    for contest in all_contest:
-        if contest.start_time < now and contest.end_time > now:
-            running_contest_list.append(contest)
-        elif contest.end_time < now:
-            ended_contest_list.append(contest)
+    running_contest_list = group.trace_contest.filter(start_time__lte=now, end_time__gte=now)
+    ended_contest_list = group.trace_contest.filter(end_time__lte= now)
 
     student_list = get_current_page(request, student_list)
 
