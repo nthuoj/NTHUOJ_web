@@ -58,6 +58,7 @@ from contest.contest_info import get_contest_or_404
 from contest.public_user import get_public_contestant
 
 from problem.problem_info import get_testcase
+from problem.models import Problem
 
 from group.models import Group
 from group.group_info import get_owned_group
@@ -66,6 +67,8 @@ from group.group_info import get_group_or_404
 from utils.log_info import get_logger
 from utils import user_info
 from utils.render_helper import render_index, get_current_page
+from utils.rejudge import rejudge as rejudge_obj
+from utils.rejudge import rejudge_contest_problem
 from status.views import *
 from django.conf import settings
 
@@ -384,3 +387,42 @@ def download(request):
             return render_index(request,'contest/download.html',{'contest':contest})
         else:
             raise PermissionDenied
+
+@login_required
+def rejudge(request):
+    contest_id = request.POST.get('contest')
+    problem_id = request.POST.get('problem')
+    try:
+        contest = Contest.objects.get(pk = contest_id)
+    except:
+        #contest not exist
+        logger.warning('rejudge: Contest %s not found!' % contest_id)
+        message = 'Contest does not exist! Can not rejudge'
+        messages.error(request, message)
+        return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+        
+    if problem_id is not None:
+        try:
+            problem = Problem.objects.get(pk = problem_id)
+        except:
+            #problem not exist
+            logger.warning('rejudge: Problem %s not found!' % problem_id)
+            message = 'Problem does not exist! Can not rejudge'
+            messages.error(request, message)
+            return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+
+        rejudge_contest_problem(contest, problem)
+        logger.info('User %s rejudge Problem %s in Contest %s!' %\
+            (request.user.username,problem.id,contest.id))
+        message = 'Successfully rejudge Problem %s - %s in Contest %s - %s!' %\
+            (problem.id, problem.pname, contest.id, contest.cname)
+        messages.success(request, message)
+    else:
+        rejudge_obj(contest)
+        logger.info('User %s rejudge Contest %s!' %\
+            (request.user.username,contest_id))
+        message = 'Successfully rejudge Contest %s - %s!' %\
+            (contest.id, contest.cname)
+        messages.success(request, message)
+
+    return HttpResponseRedirect(request.META.get('HTTP_REFERER'))

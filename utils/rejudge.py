@@ -26,7 +26,10 @@ from problem.models import Submission
 from problem.models import SubmissionDetail
 
 from contest.models import Contest
+from contest.models import Contestant
+from utils.log_info import get_logger
 
+logger = get_logger()
 '''
 rejudge:
 1. problem's all submission
@@ -34,11 +37,11 @@ rejudge:
 3. submissions during contest
 '''
 def rejudge(obj):
-    if isinstance(obj,problem):
+    if isinstance(obj, Problem):
         rejudge_problem(obj)
-    elif isinstance(obj,submission):
+    elif isinstance(obj, Submission):
         rejudge_submission(obj)
-    elif isinstance(obj,contest):
+    elif isinstance(obj, Contest):
         rejudge_contest(obj)
 
 #rejudge submissions of problem
@@ -51,8 +54,13 @@ def rejudge_problem(problem):
 def rejudge_submission(submission):
     submission.status = Submission.WAIT
     submission.save()
+    logger.info('Submission %s rejudged!' % submission.id)
     sd = SubmissionDetail.objects.filter(sid = submission)
+    sd_list = SubmissionDetail.objects.filter(sid = submission).\
+              values_list('id', flat=True)
     sd.delete()
+    for sd_value in sd_list:
+        logger.info('SubmissionDetail %s deleted!' % sd_value)
 
 #rejudge submissions during contest
 def rejudge_contest(contest):
@@ -61,7 +69,8 @@ def rejudge_contest(contest):
 
 #rejudge submissions of problem in contest
 def rejudge_contest_problem(contest, problem):
-    contestants = Contestant.objects.filter(contest = contest).values_list('user', flat=True)
+    contestants = Contestant.objects.filter(contest = contest).\
+                  values_list('user', flat=True)
     submissions = Submission.objects.filter(
         problem = problem,
         submit_time__gte = contest.start_time, 
