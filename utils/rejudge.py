@@ -61,9 +61,11 @@ def rejudge_contest(contest):
 
 #rejudge submissions of problem in contest
 def rejudge_contest_problem(contest, problem):
+    contestants = Contestant.objects.filter(contest = contest).values_list('user', flat=True)
     submissions = Submission.objects.filter(
         problem = problem,
         submit_time__gte = contest.start_time, 
-        submit_time__lte = contest.end_time)
+        submit_time__lte = contest.end_time,
+        user__in = contestants)
     for submission in submissions:
         rejudge_submission(submission)
