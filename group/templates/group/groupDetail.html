@@ -20,20 +20,20 @@
           <div class="hero-unit">
             <div class="container-fluid" style="width:40%;float:left">
               <h5>#{{ group_id }}</h5>
-              <h4 style="color:gray">Group name</h4>
+              <h3 style="color:gray">Group name</h3>
               <h2>{{ group_name }}</h2>
             </div>
             <div class="container-fluid" style="width:60%;float:right">
               <div style="float:left; margin-right:70px">
-                <h4 style="color:gray;margin-bottom:30px">Owner</h4>
-                <h3 title="{{owner.email}}">{{ owner }}</h3>
+                <h3 style="color:gray;margin-bottom:30px">Owner</h3>
+                <h2 title="{{owner.email}}">{{ owner }}</h2>
               </div>
               <div style="float:left">
-                <h4 style="color:gray;margin-bottom:30px">Coowner</h4>
+                <h3 style="color:gray;margin-bottom:30px">Coowner</h3>
                 {% for coowner in coowner_list %}
-                  <h3 title="{{coowner.email}}" style="display:inline">
+                  <h2 title="{{coowner.email}}" style="display:inline">
                     {{ coowner.username }}
-                  </h3>
+                  </h2>
                   {%if forloop.last %}
                     {% else %}
                     <h3 style="display:inline">,&nbsp</h3>
