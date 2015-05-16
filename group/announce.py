@@ -72,7 +72,7 @@ def edit_announce(request, announce_id, group_id, redirect_id):
     group = get_group(group_id)
     user_is_owner = has_group_ownership(request.user, group)
     user_is_coowner = has_group_coownership(request.user, group)
-    if user_is_owner or user_is_coowner or request.user.has_admin_auth():
+    if user_is_owner or user_is_coowner:
         if request.method == 'GET':
             announce_dic = model_to_dict(announce)
             form = AnnounceForm(initial=announce_dic)
