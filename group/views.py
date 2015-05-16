@@ -37,23 +37,14 @@ from utils.log_info import get_logger
 from utils.render_helper import render_index, get_current_page
 from users.models import User
 
+from group.announce import add_announce
+from group.announce import delete_announce
+from group.announce import edit_announce
+
+from group.getter import get_announce
+from group.getter import get_group
+
 logger = get_logger()
-
-def get_group(group_id):
-    try:
-        group = Group.objects.get(id=group_id)
-    except Group.DoesNotExist:
-        logger.warning('Group: Can not edit group %s! Group does not exist!' % group_id)
-        raise Http404('Group: Can not edit group %s! Group does not exist!' % group_id)
-    return group
-
-def get_announce(announce_id):
-    try:
-        announce = Announce.objects.get(id=announce_id)
-    except Announce.DoesNotExist:
-        logger.warning('Announce: Can not edit announce %s! Announce does not exist!' % announce_id)
-        raise Http404('Announce: Can not edit announce %s! Announce does not exist!' % announce_id)
-    return announce
 
 def get_running_contest(request, group_id):
 
@@ -217,70 +208,3 @@ def edit(request, group_id):
                     return HttpResponseRedirect(reverse('group:detail', kwargs={'group_id': modified_group_id}))
         else:
             raise PermissionDenied
-
-##Announce
-@login_required
-def add_announce(request, group_id):
-    group = get_group(group_id)
-
-    if has_group_ownership(request.user, group) or has_group_coownership(request.user, group):
-        if request.method == 'POST':
-            form = AnnounceForm(request.POST)
-            if form.is_valid():
-                new_announce = form.save()
-                group.announce.add(new_announce)
-                logger.info('Announce: User %s add Announce %s!' % (request.user.username, new_announce.id))
-                return HttpResponseRedirect(reverse('group:detail', kwargs={'group_id': group_id}))
-            else:
-                return HttpResponseRedirect(reverse('group:detail', kwargs={'group_id': group_id}))
-    else:
-        raise PermissionDenied
-
-@login_required
-def delete_announce(request, announce_id, group_id):
-    group = get_group(group_id)
-
-    if has_group_ownership(request.user, group) or has_group_coownership(request.user, group):  
-        get_announce(announce_id).delete()
-        return HttpResponseRedirect(reverse('group:detail', kwargs={'group_id': group_id}))
-    else:
-        raise PermissionDenied
-
-@login_required
-def edit_announce(request, announce_id, group_id, redirect_id):
-    announce = get_announce(announce_id)
-    group = get_group(group_id)
-    user_is_owner = has_group_ownership(request.user, group)
-    user_is_coowner = has_group_coownership(request.user, group)
-    if user_is_owner or user_is_coowner or request.user.has_admin_auth():
-        if request.method == 'GET':
-            announce_dic = model_to_dict(announce)
-            form = AnnounceForm(initial=announce_dic)
-            return render_index(
-                request,'group/editAnnounce.html', {
-                    'form':form,
-                    'group_id': group.id,
-                    'announce_id': announce_id,
-                    'user_is_owner': user_is_owner,
-                    'user_is_coowner': user_is_coowner,
-                    'user_has_admin_auth': request.user.has_admin_auth(),
-                })
-        if request.method == 'POST':
-            form = AnnounceForm(request.POST, instance=announce)
-            if form.is_valid():
-                modified_announce = form.save()
-                logger.info('redirect_id: %s!' % redirect_id)
-                if redirect_id == '1':
-                    return HttpResponseRedirect(reverse('group:detail', kwargs={'group_id': group_id}))
-                elif redirect_id == '0' :
-                    return HttpResponseRedirect(reverse('group:viewall_announce', kwargs={'group_id': group_id}))
-            else:
-                 return render_index(
-                        request,'group/editAnnounce.html', {
-                        'form':form,
-                        'user_is_owner': user_is_owner,
-                        'user_is_coowner': user_is_coowner,
-                        'user_has_admin_auth': request.user.has_admin_auth(),
-                    })
-    else:
-        raise PermissionDenied
