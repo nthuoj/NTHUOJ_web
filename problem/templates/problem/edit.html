@@ -1,5 +1,7 @@
 {% extends "problem/base.html" %}
 {% load staticfiles %}
+{% load bootstrap %}
+
 {% block title_name %}
 <title>Edit Problem {{ problem.pk }}</title>
 {% endblock title_name %}
@@ -39,6 +41,7 @@
 
     <div class="tab-content">
       <form method="POST" id="problem_info" action="" enctype="multipart/form-data">
+        {{ form.media }}
         <div>
           <input type="submit" value="Preview" class="btn btn-success" id="preview_button">
           <input type="submit" value="Save" class="btn btn-primary" id="save_button">
@@ -49,12 +52,9 @@
           {% include "problem/editTab/info.html" with form=form pid=problem.pk path=path %}
         </div>
         <div class="tab-pane" id="description">
-          <strong>Description</strong>
-          <textarea cols="80" rows="20" id="des" name="description">{{ problem.description }}</textarea>
-          <br><strong>Input</strong>
-          <textarea cols="80" rows="20" id="inText" name="input_description">{{ problem.input }}</textarea>
-          <br><strong>Output</strong>
-          <textarea cols="80" rows="20" id="outText" name="output_description">{{ problem.output }}</textarea>
+          {{ form.description|bootstrap }}
+          {{ form.input|bootstrap }}
+          {{ form.output|bootstrap }}
 
         </div>
         <div class="tab-pane" id="sample_io">
@@ -79,7 +79,6 @@
     </div>
   </div>
 </div>
-<script src="{% static 'ckeditor/ckeditor.js' %}"></script>
 <script src="{% static 'problem/js/edit.js' %}"></script>
 </body>
 {% endblock %}

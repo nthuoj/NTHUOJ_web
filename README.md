@@ -16,11 +16,13 @@ git clone git@github.com:bruce3557/NTHUOJ_web.git
 
 ####Dependencies:
 * python2.7
+* python-dev
 * mysql-server
 * python-pip
 * python-mysqldb
 * nodejs
 * npm
+* libjpeg
 * bower
 * django1.7
 * django-bower
@@ -30,6 +32,8 @@ git clone git@github.com:bruce3557/NTHUOJ_web.git
 * django-bootstrap
 * django-bootstrap-form
 * requests
+* django-ckeditor
+* pillow
 
 ###Installation:
 * Install dependencies (for ubuntu)
@@ -39,6 +43,8 @@ apt-get install python-pip
 apt-get install python-mysqldb
 apt-get install nodejs
 apt-get install npm
+apt-get install python-dev
+apt-get install libjpeg-dev
 npm install -g bower
 ln -s /usr/bin/nodejs /usr/bin/node
 pip install django==1.7
@@ -49,6 +55,8 @@ pip install django-datetime-widget
 pip install django-bootstrap
 pip install django-bootstrap-form
 pip install requests
+pip install django-ckeditor
+pip install pillow
 ```
 * Execute install.py for initial setting.
     ```
