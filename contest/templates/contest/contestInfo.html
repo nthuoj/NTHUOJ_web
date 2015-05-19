@@ -53,7 +53,7 @@
             {% endfor %}
           </tbody>
         </table>
-        {% if user|has_auth:contest.id %}
+        {% if user|has_auth:contest.id and contest.problem.count %}
         <form method="POST" action="{% url 'contest:rejudge' %}">
           {% csrf_token %}
           <input type="hidden" name="contest" value="{{ contest.id}}">
