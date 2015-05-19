@@ -99,7 +99,7 @@ def edit(request, pid=None):
     except Problem.DoesNotExist:
         logger.warning("problem %s does not exist" % (pid))
         raise Http404("problem %s does not exist" % (pid))
-    testcase = Testcase.objects.filter(problem=problem)
+    testcase = get_testcase(problem)
     tags = problem.tags.all()
     if request.method == 'GET':
         form = ProblemForm(instance=problem)
@@ -107,9 +107,6 @@ def edit(request, pid=None):
         form = ProblemForm(request.POST, request.FILES, instance=problem)
         if form.is_valid():
             problem = form.save()
-            problem.description = request.POST['description']
-            problem.input= request.POST['input_description']
-            problem.output = request.POST['output_description']
             problem.sample_in = request.POST['sample_in']
             problem.sample_out = request.POST['sample_out']
             problem.save()
@@ -207,11 +204,11 @@ def testcase(request, pid, tid=None):
             try:
                 with open('%s%s.in' % (TESTCASE_PATH, testcase.pk), 'w') as t_in:
                     for chunk in request.FILES['t_in'].chunks():
-                        t_in.write(chunk)
+                        t_in.write(chunk.replace('\r\n', '\n'))
                     logger.info("testcase %s.in saved by %s" % (testcase.pk, request.user))
                 with open('%s%s.out' % (TESTCASE_PATH, testcase.pk), 'w') as t_out:
                     for chunk in request.FILES['t_out'].chunks():
-                        t_out.write(chunk)
+                        t_out.write(chunk.replace('\r\n', '\n'))
                     logger.info("testcase %s.out saved by %s" % (testcase.pk, request.user))
             except IOError, OSError:
                 logger.error("saving testcase error")
@@ -259,8 +256,8 @@ def preview(request):
     problem = Problem()
     problem.pname = request.POST['pname']
     problem.description = request.POST['description']
-    problem.input= request.POST['input_description']
-    problem.output = request.POST['output_description']
+    problem.input= request.POST['input']
+    problem.output = request.POST['output']
     problem.sample_in = request.POST['sample_in']
     problem.sample_out = request.POST['sample_out']
     problem.tag = request.POST['tags'].split(',')

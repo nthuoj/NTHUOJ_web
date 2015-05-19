@@ -25,10 +25,11 @@ from datetime import datetime
 
 from django import template
 
-from contest.models import Contest
-from contest.contest_info import get_running_contests
+from contest.models import Contest, Contestant
+from contest.contest_info import get_running_contests, get_contestant
+from problem.models import SubmissionDetail
 from team.models import TeamMember
-from utils.user_info import validate_user
+from utils.user_info import validate_user, has_contest_ownership
 
 
 register = template.Library()
@@ -92,6 +93,16 @@ def show_submission(submission, user):
     return True
 
 
+def show_contest_submission(submission, user, contests):
+    for contest in contests:
+        if not has_contest_ownership(user, contest):
+            continue
+        contestants = get_contestant(contest)
+        if submission.user in contestants:
+            return True
+    return False
+
+
 @register.filter()
 def show_detail(submission, user):
     """Test if the user can see that submission's
@@ -112,30 +123,24 @@ def show_detail(submission, user):
     # no one can see admin's detail
     if submission.user.has_admin_auth():
         return False
-    # a problem owner can view his problem's detail
-    if submission.problem.owner_id == user.username:
-        return True
-    # during the contest, only owner/coowner with user level sub-judge/judge
-    # can view the detail
-    now = datetime.now()
+    # during the contest, only owner/coowner can view contestants' detail
     contests = get_running_contests()
     if contests:
         contests = contests.filter(problem=submission.problem)
-        for contest in contests:
-            if user == contest.owner or user in contest.coowner.all():
-                return True
-        return False
+        return show_contest_submission(submission, user, contests)
     # a user can view his own detail
     if submission.user == user:
         return True
-    # contest owner/coowner can still view code after the contest.
+    # a problem owner can view his problem's detail in normal mode
+    if submission.problem.owner_id == user.username:
+        return True
+    # contest owner/coowner can still view code after the contest in normal mode
     contests = Contest.objects.filter(
         problem=submission.problem,
         end_time__gte=submission.submit_time,
-        start_time__lte=submission.submit_time)
-    for contest in contests:
-        if user == contest.owner or user in contest.coowner.all():
-            return True
+        creation_time__lte=submission.submit_time)
+    if show_contest_submission(submission, user, contests):
+        return True
     # a user can view his team member's detail
     if submission.team:
         team_member = TeamMember.objects.filter(team=submission.team, member=user)
@@ -143,3 +148,12 @@ def show_detail(submission, user):
             return True
     # no condition is satisfied
     return False
+
+
+@register.simple_tag()
+def show_passed_testcase(submission):
+    details = submission['list']
+    if details:
+        return '(%d/%d)' % \
+            (details.filter(verdict=SubmissionDetail.AC).count(), details.count())
+    return ''

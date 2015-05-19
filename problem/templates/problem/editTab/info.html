@@ -1,5 +1,15 @@
 {% load bootstrap %}
-{{ form|bootstrap }}
+{{ form.pname|bootstrap }}
+{{ form.owner|bootstrap }}
+{{ form.visible|bootstrap }}
+{{ form.judge_source|bootstrap }}
+{{ form.judge_type|bootstrap }}
+{{ form.judge_language|bootstrap }}
+{{ form.other_judge_id|bootstrap }}
+{{ form.partial_judge_code|bootstrap }}
+{{ form.partial_judge_header|bootstrap }}
+{{ form.special_judge_code|bootstrap }}
+
 {% if problem.judge_type == "LOCAL_SPECIAL" and problem.has_special_judge_code %}
   <br>special judge code: <a href="{% url 'problem:download_special' problem.filename %}">{{ problem.filename }}</a>
 {% endif %}
@@ -15,6 +25,8 @@
 <br>
 <script>
 {% if not user.has_admin_auth %}
-$("#id_owner").parent().parent().hide();
+$(function () {
+  $("#id_owner").parent().parent().hide();
+})
 {% endif %}
 </script>

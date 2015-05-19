@@ -5,8 +5,7 @@
 {% block title_name %}
 <title>Profile</title>
 {% endblock title_name %}
-{% block body_block %}
-<br>
+{% block import_source %}
 <script src={% static "Chart.js/Chart.js" %}></script>
 <script src={% static "js/profile.js"%}></script>
 <script type="text/javascript">
@@ -14,6 +13,10 @@ $(function() {
   plot_piechart({{ piechart_data|safe }});
 });
 </script>
+{% endblock import_source %}
+{% block body_block %}
+<br>
+
 <style type="text/css">
   #piechart {
     width: 100% !important;
@@ -60,7 +63,7 @@ $(function() {
         <div class="panel-heading">Profile</div>
         <div class="panel-body">
           <form class="form-horizontal" action="" method="post" style="margin:10px;">
-            {% if user == profile_user %}
+            {% if profile_form %}
               {% csrf_token %}
               {{ profile_form|bootstrap_horizontal:'col-lg-4' }}
               <div class="modal-footer">
