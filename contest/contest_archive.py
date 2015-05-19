@@ -38,7 +38,7 @@ def get_contests(user):
 def get_owned_or_started_contests(user):
     owned_contests = get_owned_contests(user)
     started_contests = get_started_contests()
-    return owned_contests | started_contests
+    return (owned_contests | started_contests).distinct()
 
 def get_owned_or_attended_contests(user):
     return (get_owned_contests(user)|get_attended_contests(user)).distinct()
@@ -51,7 +51,7 @@ def get_owned_contests(user):
 
 def get_started_contests():
     now = datetime.now()
-    return Contest.objects.order_by('-start_time').filter(start_time__lte = now)
+    return Contest.objects.order_by('-start_time').filter(start_time__lte = now).distinct()
 
 def get_attended_contests(user):
     contest_list = Contestant.objects.filter(user = user).\
