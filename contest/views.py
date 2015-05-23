@@ -390,6 +390,11 @@ def download(request):
 
 @login_required
 def rejudge(request):
+    if not request.user.has_subjudge_auth():
+        logger.warning(
+            'Contest:User %s try to rejudge. Does not have subjudge permission' %
+                    (request.user))
+        return PermissionDenied
     contest_id = request.POST.get('contest')
     problem_id = request.POST.get('problem')
     try:
@@ -401,6 +406,12 @@ def rejudge(request):
         messages.error(request, message)
         return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
         
+    if not has_contest_ownership(request.user, contest):
+        logger.warning(
+            'Contest:User %s try to rejudge. Does not have contest ownership' %
+                    (request.user))
+        return PermissionDenied
+
     if problem_id is not None:
         try:
             problem = Problem.objects.get(pk = problem_id)
