@@ -41,7 +41,8 @@
                   {% csrf_token %}
                   <input type="hidden" name="contest" value="{{ contest.id}}">
                   <input type="hidden" name="problem" value="{{ problem.id }}">
-                  <button type="submit" class="btn btn-warning btn-xs">
+                  <button type="submit" class="btn btn-warning btn-xs"
+                          onclick="return confirm_rejudge()">
                     <span class="glyphicon glyphicon-refresh"></span>
                   </button>
                 </form>
@@ -57,7 +58,8 @@
         <form method="POST" action="{% url 'contest:rejudge' %}">
           {% csrf_token %}
           <input type="hidden" name="contest" value="{{ contest.id}}">
-          <button type="submit button" class="btn btn-warning btn-block">
+          <button type="submit button" class="btn btn-warning btn-block"
+                  onclick="return confirm_rejudge()">
             Rejudge All
           </button>
         </form>

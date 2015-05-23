@@ -42,6 +42,10 @@ $(document).ready(function() {
     });
 });
 
+function confirm_rejudge() {
+    return confirm("Are you sure you want to rejudge?");
+}
+
 function confirm_delete() {
     return confirm("Are you sure you want to delete?");
 }
