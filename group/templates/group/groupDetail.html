@@ -16,37 +16,18 @@
     <br>
     <div class="container-fluid">
       <div class="span12">
+        <h2>{{ group_id }} - {{ group_name }}
+          <a href="{% url 'group:edit' group_id %}">
+            <button type="button" class="btn btn-warning btn-xs" 
+                    data-toggle="tooltip" data-placement="top">
+              <span class="glyphicon glyphicon-pencil"></span>
+            </button>
+          </a>
+        </h2>
         <div class="container-fluid">
           <div class="hero-unit">
             <div class="container-fluid" style="width:40%;float:left">
-              <h5>#{{ group_id }}</h5>
-              <h3 style="color:gray">Group name</h3>
-              <h2>{{ group_name }}
-                <a href="{% url 'group:edit' group_id %}">
-                  <button type="button" class="btn btn-warning btn-xs" data-toggle="tooltip"
-                        data-placement="top" title="Edit Contest">
-                    <span class="glyphicon glyphicon-pencil"></span>
-                  </button>
-                </a>
-              </h2>
             </div>
-            <div class="container-fluid" style="width:60%;float:right;margin-top:27px">
-              <div style="float:left; margin-right:70px">
-                <h3 style="color:gray">Owner</h3>
-                <h2 title="{{owner.email}}">{{ owner }}</h2>
-              </div>
-              <div style="float:left">
-                <h3 style="color:gray">
-                  Coowner
-                  <a href="" data-toggle="modal" data-target="#coownerList">
-                    <button type="button" class="btn btn-info btn-xs"
-                            data-toggle="tooltip" data-placement="top" 
-                            title="Contest Info">
-                      <span class="glyphicon glyphicon-info-sign"></span>
-                    </button>
-                  </a>
-                </h3>
-              </div>
               <!--Modal for coowner list-->
               <div class="modal fade" id="coownerList" role="dialog" 
                    aria-hidden="true">
