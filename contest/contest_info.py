@@ -65,7 +65,8 @@ def get_contestant_list(contest):
 
 
 def get_contestant(contest):
-    return Contestant.objects.filter(contest=contest).values('user')
+    usernames = Contestant.objects.filter(contest=contest).values('user')
+    return User.objects.filter(username__in=usernames)
 
 
 def get_total_testcases(problem):
