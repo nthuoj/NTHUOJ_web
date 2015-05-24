@@ -52,15 +52,16 @@ def rejudge_problem(problem):
 
 #rejudge single submission
 def rejudge_submission(submission):
+    if submission.status == Submission.ACCEPTED:
+        submission.problem.ac_count -= 1
+        submission.problem.save()
     submission.status = Submission.WAIT
     submission.save()
     logger.info('Submission %s rejudged!' % submission.id)
-    sd = SubmissionDetail.objects.filter(sid = submission)
-    sd_list = SubmissionDetail.objects.filter(sid = submission).\
-              values_list('id', flat=True)
-    sd.delete()
-    for sd_value in sd_list:
-        logger.info('SubmissionDetail %s deleted!' % sd_value)
+    submission_details = SubmissionDetail.objects.filter(sid = submission)
+    for submission_detail in submission_details:
+        logger.info('SubmissionDetail %s deleted!' % submission_detail)
+        submission_details.delete()
 
 #rejudge submissions during contest
 def rejudge_contest(contest):
