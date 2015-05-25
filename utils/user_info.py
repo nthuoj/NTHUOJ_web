@@ -205,5 +205,6 @@ def send_forget_password_email(request, user):
 def send_notification(user, content):
     try:
         Notification.objects.create(receiver=user, message=content)
+        logger.info("send notification to %s successfully" % user.username)
     except:
         logger.warning("There is an error when sending notification to %s" % user.username)
