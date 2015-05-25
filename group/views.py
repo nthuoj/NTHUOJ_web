@@ -101,7 +101,6 @@ def detail(request, group_id):
     all_contest = group.trace_contest.order_by('-start_time')
     annowence_list = group.announce.all()
     student_list = group.member.order_by('user_level')
-    coowner_list = group.coowner.all()
     owner = group.owner
     form = AnnounceForm()
 
@@ -124,7 +123,6 @@ def detail(request, group_id):
             'running_contest_list': running_contest_list[0:show_number],
             'ended_contest_list': ended_contest_list[0:show_number],
             'announce_list': annowence_list,
-            'coowner_list': coowner_list,
             'owner': owner,
             'student_list': student_list,
             'group_name': group.gname, 
