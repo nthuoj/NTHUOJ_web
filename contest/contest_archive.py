@@ -54,9 +54,10 @@ def get_started_contests():
     return Contest.objects.order_by('-start_time').filter(start_time__lte = now).distinct()
 
 def get_attended_contests(user):
+    now = datetime.now()
     contest_list = Contestant.objects.filter(user = user).\
                   values_list('contest', flat=True)
-    return Contest.objects.filter(pk__in=contest_list).distinct()
+    return Contest.objects.filter(pk__in=contest_list, start_time__lte = now).distinct()
 
 def add_contestants(contest):
     contestants = Contestant.objects.filter(contest = contest)

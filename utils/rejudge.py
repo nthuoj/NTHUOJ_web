@@ -27,6 +27,7 @@ from problem.models import SubmissionDetail
 
 from contest.models import Contest
 from contest.models import Contestant
+from utils.user_info import send_notification
 from utils.log_info import get_logger
 
 logger = get_logger()
@@ -57,11 +58,13 @@ def rejudge_submission(submission):
         submission.problem.save()
     submission.status = Submission.WAIT
     submission.save()
+    notification = "Your submission %s is to be rejudged!" % submission.id
+    send_notification(submission.user, notification)
     logger.info('Submission %s rejudged!' % submission.id)
     submission_details = SubmissionDetail.objects.filter(sid = submission)
     for submission_detail in submission_details:
         logger.info('SubmissionDetail %s deleted!' % submission_detail)
-        submission_details.delete()
+        submission_detail.delete()
 
 #rejudge submissions during contest
 def rejudge_contest(contest):
