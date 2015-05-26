@@ -96,6 +96,8 @@ $(document).ready(function() {
         return false;
     });
     $("body").on('click', '.del_testcase_btn', function(e) {
+        if (!confirm("Are you sure you want to delete?"))
+            return false;
         var row = $(this).parents("tr");
         var tid = $(this).parents("tr").attr('data-target');
         $.ajax({
