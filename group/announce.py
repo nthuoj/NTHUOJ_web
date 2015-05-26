@@ -81,7 +81,6 @@ def edit_announce(request, announce_id, group_id, redirect_id):
                     'announce_id': announce_id,
                     'user_is_owner': user_is_owner,
                     'user_is_coowner': user_is_coowner,
-                    'user_has_admin_auth': request.user.has_admin_auth(),
                 })
         if request.method == 'POST':
             form = AnnounceForm(request.POST, instance=announce)
@@ -98,7 +97,6 @@ def edit_announce(request, announce_id, group_id, redirect_id):
                         'form':form,
                         'user_is_owner': user_is_owner,
                         'user_is_coowner': user_is_coowner,
-                        'user_has_admin_auth': request.user.has_admin_auth(),
                     })
     else:
         raise PermissionDenied
