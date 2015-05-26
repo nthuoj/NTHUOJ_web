@@ -3,6 +3,9 @@
 {% block title_name %}
 <title>Edit for Announce...</title>
 {% endblock title_name %}
+{% block import_source %}
+<script src="{%static 'group/js/editAnnounce.js'%}"></script>
+{% endblock import_source %}
 {% load bootstrap %}
 {% block body_block %}
 <br>
@@ -15,37 +18,12 @@
       <h4>Hint: <span style="color:red">Title</span> is required!</h4>
     </div>
     {% if user_is_owner or user_is_coowner or user_has_admin_auth %}
-      <a href="" data-toggle="modal" data-target="#deleteGroupComfirm">
-        <button type="button" class="btn btn-danger btn-xs" style="float:right">
+      <a href="{% url 'group:delete_announce' announce_id group_id %}">
+        <button type="button" class="btn btn-danger btn-xs" style="float:right"
+                onclick="return confirm_delete()">
           Delete this announce
         </button>
       </a>
-      <!--Modal for Delete_Group_Comfirm-->
-      <div class="modal fade" id="deleteGroupComfirm" role="dialog" aria-hidden="true">
-        <div class="modal-dialog">
-          <div class="modal-content">
-            <div class="modal-body">
-              <h4>Are you sure to delete this announce?</h4>
-              <h4>This procedure is irrecoverable</h4>
-            </div>
-            <div class="modal-footer">
-              <div class="col-lg-offset-8 col-lg-1">
-                <button type="button" class="btn btn-default" data-dismiss="modal">
-                  No.
-                </button>
-              </div>
-              <div class="col-lg-offset-0 col-lg-0">
-                <a href="{% url 'group:delete_announce' announce_id group_id %}">
-                  <button type="button" class="btn btn-danger">
-                    I'm sure.
-                  </button>
-                </a>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <!--Modal End-->
     {% endif %}
     {% for field in form %} 
       <div class="form-group" style="width:50%">
