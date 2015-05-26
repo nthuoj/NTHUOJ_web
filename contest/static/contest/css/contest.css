@@ -22,13 +22,6 @@ SOFTWARE.
   color: green;
 }
 
-td.word-block {
+.word-block {
 	word-wrap:break-word;
 }
-
-/*
-div.inline>ul>li {
-  position: absolute;
-  display: inline;
-}*/
-
