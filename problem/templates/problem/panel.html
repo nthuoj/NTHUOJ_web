@@ -26,6 +26,20 @@
     </div>
     {% endif %}
   </div>
+  {% if user.is_authenticated %}
+  <div class="btn-group" role="group" style="float:right;">
+    <a href="{% url 'problem:problem' %}?filter=mine">
+      <button type="button" class="btn btn-default">
+        My Problem
+      </button>
+    </a>
+    <a href="{% url 'problem:problem' %}">
+      <button type="button" class="btn btn-default">
+        All Problem
+      </button>
+    </a>
+  </div>
+  {% endif %}
   <div>
     <div>
       {% include 'problem/problem_list.html' with problem=all_problem %}
