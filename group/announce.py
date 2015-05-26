@@ -65,7 +65,7 @@ def delete_announce(request, announce_id, group_id):
         raise PermissionDenied
 
 @login_required
-def edit_announce(request, announce_id, group_id, redirect_id):
+def edit_announce(request, announce_id, group_id, redirect_page):
     announce = get_announce(announce_id)
     group = get_group(group_id)
     user_is_owner = has_group_ownership(request.user, group)
@@ -86,10 +86,9 @@ def edit_announce(request, announce_id, group_id, redirect_id):
             form = AnnounceForm(request.POST, instance=announce)
             if form.is_valid():
                 modified_announce = form.save()
-                logger.info('redirect_id: %s!' % redirect_id)
-                if redirect_id == '1':
+                if redirect_page == 'detail':
                     return HttpResponseRedirect(reverse('group:detail', kwargs={'group_id': group_id}))
-                elif redirect_id == '0' :
+                elif redirect_page == 'viewall' :
                     return HttpResponseRedirect(reverse('group:viewall_announce', kwargs={'group_id': group_id}))
             else:
                  return render_index(

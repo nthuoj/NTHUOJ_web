@@ -176,7 +176,7 @@
               </div>
               <!--Modal Section End-->
               {% if user_has_auth %}
-              <a href="{% url 'group:edit_announce' announce.id group_id redirect_id %}">
+              <a href="{% url 'group:edit_announce' announce.id group_id redirect_page %}">
                 <button type="button" class="btn btn-warning btn-sm" 
                         data-toggle="modal" style="float:right">
                   Edit

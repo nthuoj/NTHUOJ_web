@@ -130,7 +130,7 @@ def detail(request, group_id):
             'group_id': group.id,
             'user_has_auth': user_has_auth,
             'form': form,
-            'redirect_id' : redirect_id,
+            'redirect_page' : 'detail',
         })
 
 def list(request):
