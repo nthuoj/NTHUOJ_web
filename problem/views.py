@@ -123,8 +123,14 @@ def edit(request, pid=None):
                 with open('%s%s.h' % (PARTIAL_PATH, problem.pk), 'w') as t_in:
                     for chunk in request.FILES['partial_judge_header'].chunks():
                         t_in.write(chunk)
+            problem = verify_problem_code(problem)
+            if problem.has_special_judge_code and problem.judge_type != problem.SPECIAL:
+                os.remove('%s%s%s' % (SPECIAL_PATH, problem.pk, file_ex))
+            if problem.has_partial_judge_code and problem.judge_type != problem.PARTIAL:
+                os.remove('%s%s%s' % (PARTIAL_PATH, problem.pk, file_ex))
+            if problem.has_partial_judge_header and problem.judge_type != problem.PARTIAL:
+                os.remove('%s%s.h' % (PARTIAL_PATH, problem.pk))
             logger.info('edit problem, pid = %d by %s' % (problem.pk, request.user))
-            logger.info('edit problem, pid = %d' % (problem.pk))
             return redirect('/problem/%d' % (problem.pk))
     file_ex = get_problem_file_extension(problem)
     problem = verify_problem_code(problem)

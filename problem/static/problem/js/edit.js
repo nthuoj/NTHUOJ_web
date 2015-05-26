@@ -110,6 +110,13 @@ $(document).ready(function() {
         });
         return false;
     });
+    $("#problem_info").submit(function() {
+        if (judge_type == 'LOCAL_SPECIAL' || judge_type == 'LOCAL_PARTIAL') {
+            if (judge_type != $("#id_judge_type").val())
+            return confirm("You've changed the judge type\nThis will remove the original codes\nAre you sure?");
+        }
+        return true;
+    });
 });
 
 
