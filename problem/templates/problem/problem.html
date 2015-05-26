@@ -92,28 +92,30 @@
     <h3>Partial Judge Header</h3>
     <a href="{% url 'problem:download_partial' problem.headername %}">{{ problem.headername }}</a>
   {% endif %}
+  {% if not problem.in_contest %}
   <h3>Tags</h3>
-  <div id='tags' style='float:left;width:60%'>
-    {% if preview %}
-      {% for tag in problem.tag %}
-        <span class='label label-info'>{{tag}}</span>
-      {% endfor %}
-    {% else %}
-      {% for tag in problem.tags.all %}
-        <span class='label label-info'>{{tag.tag_name}}</span>
-      {% endfor %}
+    <div id='tags' style='float:left;width:60%'>
+      {% if preview %}
+        {% for tag in problem.tag %}
+          <span class='label label-info'>{{tag}}</span>
+        {% endfor %}
+      {% else %}
+        {% for tag in problem.tags.all %}
+          <span class='label label-info'>{{tag.tag_name}}</span>
+        {% endfor %}
+      {% endif %}
+    </div>
+    {% if tag_form and user.is_authenticated %}
+      <form id='addTag'>
+        {% csrf_token %}
+        <div class='input-group'>
+          {{ tag_form.tag_name }}
+          <span class="input-group-btn">
+            <button id='addTagButton' class="btn btn-default" type="button">Add Tag</button>
+        </span>
+        </div>
+      </form>
     {% endif %}
-  </div>
-  {% if tag_form and user.is_authenticated %}
-    <form id='addTag'>
-      {% csrf_token %}
-      <div class='input-group'>
-        {{ tag_form.tag_name }}
-        <span class="input-group-btn">
-          <button id='addTagButton' class="btn btn-default" type="button">Add Tag</button>
-      </span>
-      </div>
-    </form>
   {% endif %}
 
   <br>

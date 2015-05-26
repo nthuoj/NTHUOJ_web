@@ -58,7 +58,6 @@ def problem(request):
             p.not_pass_rate = "%.2f" % (p.not_pass_rate)
         else:
             p.no_submission = True
-
     return render_index(request, 'problem/panel.html',
                   {'all_problem': all_problem,
                    'can_add_problem': can_add_problem})
@@ -76,6 +75,7 @@ def detail(request, pid):
         raise Http404('problem %s does not exist' % (pid))
     problem.testcase = get_testcase(problem)
     problem = verify_problem_code(problem)
+    problem.in_contest = check_in_contest(problem)
     return render_index(request, 'problem/detail.html', {'problem': problem, 'tag_form': tag_form})
 
 @login_required

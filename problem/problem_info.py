@@ -2,6 +2,7 @@ import os.path
 from utils import config_info
 from problem.models import Problem, Testcase
 from django.db.models import Q
+from datetime import datetime
 
 SPECIAL_PATH = config_info.get_config('path', 'special_judge_path')
 PARTIAL_PATH = config_info.get_config('path', 'partial_judge_path')
@@ -47,3 +48,6 @@ def verify_problem_code(problem):
     problem.headername = "%s.h" % (problem.pk)
     return problem
 
+def check_in_contest(problem):
+    contest = problem.contest_set.filter(Q(start_time__lt=datetime.now()) & Q(end_time__gt=datetime.now()))
+    return len(contest) > 0
