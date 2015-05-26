@@ -26,12 +26,14 @@
   {% endif %}
   <br>
   <br>
-  {% if request.get_full_path = "/group/my_list/" %}
+  {% url 'group:my_list' as my_list %}
+  {% if request.get_full_path = my_list %}
     <div id="myGroupTable">
       {% include "group/groupTable.html" with group_list=my_group_list %}
     </div>
   {% endif %}
-  {% if request.get_full_path = "/group/list/" %}
+  {% url 'group:list' as list%}
+  {% if request.get_full_path = list %}
   <div id="allGroupTable">
     {% include "group/groupTable.html" with group_list=all_group_list %}
   </div>
