@@ -7,6 +7,7 @@ urlpatterns = patterns('',
     url(r'^viewall_archive/(?P<group_id>\d+)/$', views.get_ended_contest, name='viewall_archive'),
     url(r'^viewall_announce/(?P<group_id>\d+)/$', views.get_all_announce, name='viewall_announce'),
     url(r'^list/$', views.list, name='list'),
+    url(r'^my_list/$', views.my_list, name='my_list'),
     url(r'^detail/(?P<group_id>\d+)/$', views.detail, name='detail'),
     #Group Add/Delete/Edit Part
     url(r'^new/$', views.new, name='new'),

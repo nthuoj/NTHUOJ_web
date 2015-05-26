@@ -135,6 +135,18 @@ def detail(request, group_id):
 
 def list(request):
     all_group = Group.objects.order_by('id')
+    all_group = get_current_page(request, all_group)
+
+    return render_index(
+        request,'group/groupList.html', {
+            'all_group_list': all_group,
+            'user_is_anonymous': request.user.is_anonymous(),
+            'request': request,
+            'pushA': 'active',
+            'pushB': None,
+        })
+
+def my_list(request):
     if request.user.is_anonymous():
         my_group = []
     else:
@@ -142,15 +154,15 @@ def list(request):
                                         |Q(owner__username=request.user.username) \
                                         |Q(coowner__username=request.user.username) \
                                         ).distinct().order_by('id')
-    
-    all_group = get_current_page(request, all_group)
     my_group = get_current_page(request, my_group)
 
     return render_index(
         request,'group/groupList.html', {
-            'all_group_list': all_group,
             'my_group_list': my_group,
             'user_is_anonymous': request.user.is_anonymous(),
+            'request': request,
+            'pushA': None,
+            'pushB': 'active',
         })
 
 def new(request):
