@@ -26,10 +26,10 @@
   <br>
   <br>
   <div id="myGroupTable">
-    {% include "group/groupTable.html" with group_list=my_group_list %}
+    {% include "group/groupTable.html" with group_list=my_group_list info_id='0' %}
   </div>
   <div id="allGroupTable">
-    {% include "group/groupTable.html" with group_list=all_group_list %}
+    {% include "group/groupTable.html" with group_list=all_group_list info_id='1' %}
   </div>
 </div>
 {% endblock body_block %}
