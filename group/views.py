@@ -150,6 +150,7 @@ def list(request):
         request,'group/groupList.html', {
             'all_group_list': all_group,
             'my_group_list': my_group,
+            'user_is_anonymous': request.user.is_anonymous(),
         })
 
 def new(request):

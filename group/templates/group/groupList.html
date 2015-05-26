@@ -13,6 +13,7 @@
   <div class="well">
     <h2>Group List</h2>
   </div>
+  {% if not user_is_anonymous %}
   <div class="btn-group" data-toggle="buttons-radio" style="float:right">
     <button id="myGroupButton" type="button" class="btn btn-primary">
       My Group
@@ -21,9 +22,9 @@
       All Group
     </button>
   </div>
+  {% endif %}
   <br>
   <br>
-  <hr>
   <div id="myGroupTable">
     {% include "group/groupTable.html" with group_list=my_group_list %}
   </div>
