@@ -24,6 +24,8 @@ def get_problem_file_extension(problem):
         return ".c"
     if problem.judge_language == problem.CPP:
         return ".cpp"
+    if problem.judge_language == problem.CPP11:
+        return ".cpp"
 
 def has_special_judge_code(problem):
     file_ex = get_problem_file_extension(problem)
