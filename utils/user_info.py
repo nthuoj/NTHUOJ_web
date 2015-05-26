@@ -33,7 +33,7 @@ from django.template.loader import render_to_string
 from contest.models import Contest
 from contest.models import Contestant
 from problem.models import Submission, SubmissionDetail
-from users.models import User, UserProfile
+from users.models import User, UserProfile, Notification
 from utils.log_info import get_logger
 from utils.config_info import get_config
 from django.conf import settings
@@ -49,18 +49,20 @@ def has_contest_ownership(curr_user, curr_contest):
         return True
 
     contest_coowners = curr_contest.coowner.all()
-    if contest_coowners:
-        for coowner in contest_coowners:
-            if curr_user == coowner:
-                return True
-    return False
+    return curr_user in contest_coowners
+
+
 
 
 def has_group_ownership(curr_user, curr_group):
     curr_user = validate_user(curr_user)
 
-    if curr_user == curr_group.owner:
+    if curr_user == curr_group.owner or curr_user.has_admin_auth():
         return True
+    return False
+
+def has_group_coownership(curr_user, curr_group):
+    curr_user = validate_user(curr_user)
 
     group_coowners = curr_group.coowner.all()
     if group_coowners:
@@ -68,7 +70,6 @@ def has_group_ownership(curr_user, curr_group):
             if curr_user == coowner:
                 return True
     return False
-
 
 def has_problem_ownership(curr_user, curr_problem):
     curr_user = validate_user(curr_user)
@@ -82,6 +83,12 @@ def has_problem_auth(user, problem):
 
     if problem.visible:
         return True
+
+    last_contest = problem.contest_set.all().order_by('-start_time')
+    if last_contest and last_contest[0].start_time < datetime.now():
+        problem.visible = True
+        problem.save()
+        return True
     # check the invisible problem
     # To see/submit an invisible problem, user must
     # 1. has admin auth
@@ -92,7 +99,7 @@ def has_problem_auth(user, problem):
         return True
     # 3. be a contest owner/coowner
     contests = Contest.objects.filter(
-        start_time__lte=datetime.now(),
+        creation_time__lte=datetime.now(),
         end_time__gte=datetime.now(),
         problem=problem)
     for contest in contests:
@@ -194,3 +201,10 @@ def send_forget_password_email(request, user):
         Thread(target=msg.send, args=()).start()
     except:
         logger.warning("There is an error when sending email to %s's mailbox" % username)
+
+def send_notification(user, content):
+    try:
+        Notification.objects.create(receiver=user, message=content)
+        logger.info("send notification to %s successfully" % user.username)
+    except:
+        logger.warning("There is an error when sending notification to %s" % user.username)

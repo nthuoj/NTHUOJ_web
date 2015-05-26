@@ -20,6 +20,8 @@ SOFTWARE.
 $(document).ready(function() {
     bootstraptify();
     init();
+    $('[data-toggle="tooltip"]').tooltip();
+    $('.progress').css('overflow', 'inherit');
 });
 
 
@@ -27,9 +29,16 @@ function init(){
     tabInit();
 }
 
-function select(target, description){
+function select(target){
     document.getElementById("id_clarification").value = target;
-    $('#description').html(description);
+    var content = $('#content'+target).html();
+    var reply = $('#reply'+target).html();
+    $('#description').html(content);
+    $('#id_reply').val(reply);
+}
+
+function noResponse(){
+    $('#id_reply').val("No Response. Please read the problem statement");
 }
 
 function tabInit(){

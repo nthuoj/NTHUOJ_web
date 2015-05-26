@@ -23,6 +23,7 @@ SOFTWARE.
 """
 from json import dumps
 
+from django.contrib import messages
 from django.contrib.auth import authenticate, login, update_session_auth_hash
 from django.contrib.auth.decorators import login_required
 from django.core.context_processors import csrf
@@ -32,6 +33,8 @@ from axes.decorators import *
 from django.http import Http404
 from django.shortcuts import redirect
 
+from contest.public_user import is_public_user
+from problem.models import Problem
 from users.admin import UserCreationForm, AuthenticationForm
 from users.forms import CodeSubmitForm
 from users.forms import UserProfileForm, UserLevelForm, UserForgetPasswordForm
@@ -39,18 +42,12 @@ from users.models import UserProfile, Notification
 from users.templatetags.profile_filters import can_change_userlevel
 from utils.log_info import get_logger
 from utils.user_info import get_user_statistics, send_activation_email, send_forget_password_email
-from utils.render_helper import render_index, get_current_page
+from utils.render_helper import render_index, get_current_page, get_next_page
 
 
 # Create your views here.
 
 logger = get_logger()
-
-
-def user_list(request):
-    users = get_current_page(request, User.objects.all())
-
-    return render_index(request, 'users/userList.html', {'users': users})
 
 
 def user_profile(request, username):
@@ -61,12 +58,14 @@ def user_profile(request, username):
         render_data = {}
         render_data['profile_user'] = profile_user
         render_data['piechart_data'] = dumps(piechart_data)
-        if request.user == profile_user:
+        if request.user == profile_user and not is_public_user(profile_user):
             render_data['profile_form'] = UserProfileForm(instance=profile_user)
         if can_change_userlevel(request.user, profile_user):
-            render_data['userlevel_form'] = UserLevelForm(instance=profile_user)
+            render_data['userlevel_form'] = UserLevelForm(instance=profile_user,
+                request_user=request.user)
 
-        if request.method == 'POST' and 'profile_form' in request.POST:
+        if request.user == profile_user and request.method == 'POST' \
+            and 'profile_form' in request.POST:
             profile_form = UserProfileForm(request.POST, instance=profile_user)
             render_data['profile_form'] = profile_form
             if profile_form.is_valid() and request.user == profile_user:
@@ -74,23 +73,23 @@ def user_profile(request, username):
                 profile_form.save()
                 update_session_auth_hash(request, profile_user)
                 request.user = profile_user
-                render_data['profile_message'] = 'Update successfully'
+                messages.success(request, 'Update profile successfully!')
 
         if request.method == 'POST' and 'userlevel_form' in request.POST:
-            userlevel_form = UserLevelForm(request.POST)
+            userlevel_form = UserLevelForm(request.POST, request_user=request.user)
             if can_change_userlevel(request.user, profile_user):
                 if userlevel_form.is_valid(request.user):
                     user_level = userlevel_form.cleaned_data['user_level']
-                    logger.info('User %s update %s\'s user_level to %s' %
+                    logger.info("User %s update %s's user level to %s" %
                                 (request.user, username, user_level))
                     profile_user.user_level = user_level
                     profile_user.save()
-                    render_data['userlevel_message'] = 'Update successfully'
+                    render_data['userlevel_form'] = userlevel_form
+                    messages.success(request, 'Update user level successfully!')
                 else:
                     user_level = userlevel_form.cleaned_data['user_level']
-                    render_data['userlevel_message'] = 'You can\'t switch user %s to %s' % \
-                                                       (profile_user, user_level)
-
+                    messages.warning(request, "You can't switch user %s to %s" % \
+                                    (profile_user, user_level))
         return render_index(request, 'users/profile.html', render_data)
 
     except User.DoesNotExist:
@@ -122,8 +121,9 @@ def user_logout(request):
 
 
 def user_login(request):
+    next_page = get_next_page(request.GET.get('next'))
     if request.user.is_authenticated():
-        return redirect(reverse('index:index'))
+        return redirect(next_page)
     if request.method == 'POST':
         user_form = AuthenticationForm(data=request.POST)
         if user_form.is_valid():
@@ -137,10 +137,8 @@ def user_login(request):
             request.session.set_expiry(one_hour)
             logger.info('user %s set session timeout one hour' % str(user))
             login(request, user)
-            return redirect(reverse('index:index'))
+            return redirect(next_page)
         else:
-            user_form.add_error(None,
-                                "You will be blocked for 6 minutes if you have over 3 wrong tries.")
             return render_index(request, 'users/auth.html', {'form': user_form, 'title': 'Login'})
     return render_index(request, 'users/auth.html', {'form': AuthenticationForm(), 'title': 'Login'})
 
@@ -149,17 +147,16 @@ def user_forget_password(request):
     if request.user.is_authenticated():
         return redirect(reverse('index:index'))
 
-    message = ''
     if request.method == 'POST':
         user_form = UserForgetPasswordForm(data=request.POST)
         if user_form.is_valid():
             user = User.objects.get(username=user_form.cleaned_data['username'])
             send_forget_password_email(request, user)
-            message = 'Conform email has sent to you.'
+            messages.success(request, 'Confirm email has sent to you.')
         else:
             return render_index(request, 'users/auth.html', {'form': user_form, 'title': 'Forget Password'})
     return render_index(request, 'users/auth.html',
-                        {'form': UserForgetPasswordForm(), 'title': 'Forget Password', 'message': message})
+                        {'form': UserForgetPasswordForm(), 'title': 'Forget Password'})
 
 
 def forget_password_confirm(request, activation_key):
@@ -178,6 +175,8 @@ def forget_password_confirm(request, activation_key):
     user_profile = get_object_or_404(UserProfile, activation_key=activation_key)
     user = user_profile.user
     user.backend = 'django.contrib.auth.backends.ModelBackend'
+    user.is_active = True
+    user.save()
     # Let user login, so as to modify password
     login(request, user)
     logger.info('User %s is ready to reset his/her password' % user.username)
@@ -197,14 +196,21 @@ def user_block_wrong_tries(request):
 
 @login_required()
 def submit(request, pid=None):
+    render_data = {}
+    render_data['form'] = CodeSubmitForm(initial={'pid': pid})
     if request.method == 'POST':
         codesubmitform = CodeSubmitForm(request.POST, user=request.user)
+        render_data['form'] = codesubmitform
         if codesubmitform.is_valid():
             codesubmitform.submit()
-            return redirect(reverse('status:status'))
-        else:
-            return render_index(request, 'users/submit.html', {'form': codesubmitform})
-    return render_index(request, 'users/submit.html', {'form': CodeSubmitForm(initial={'pid': pid})})
+            return redirect('%s?username=%s' % (reverse('status:status'), request.user.username))
+    # Get problem name
+    try:
+        pid = request.POST.get('pid', pid)
+        render_data['problem_name'] = str(Problem.objects.get(id=pid))
+    except:
+        logger.warning('Submit pid %s does not exist!' % pid)
+    return render_index(request, 'users/submit.html', render_data)
 
 
 def register_confirm(request, activation_key):

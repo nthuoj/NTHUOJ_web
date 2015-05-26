@@ -49,7 +49,7 @@ class CodeSubmitForm(forms.Form):
     def clean_pid(self):
         pid = self.cleaned_data['pid']
         if not unicode(pid).isnumeric():
-            raise forms.ValidationError("Pid must be a number")
+            raise forms.ValidationError("Problem ID must be a number")
         try:
             problem = Problem.objects.get(id=pid)
             if not user_info.has_problem_auth(self.user, problem):
@@ -133,7 +133,16 @@ class UserProfileForm(forms.ModelForm):
 
 class UserLevelForm(forms.ModelForm):
     """A form for updating user's userlevel."""
-    user_level = forms.ChoiceField(label='Userlevel', choices=User.USER_LEVEL_CHOICE)
+    def __init__(self, *args, **kwargs):
+        request_user = kwargs.pop('request_user', User())
+        super(UserLevelForm, self).__init__(*args, **kwargs)
+        self.fields['user_level'].label = 'User Level'
+        # Admin can have all choices, which is the default
+        if request_user.has_admin_auth():
+            return
+        # Judge can only promote a user to these levels
+        if request_user.has_judge_auth():
+            self.fields['user_level'].choices = ((User.SUB_JUDGE, 'Sub-judge'), (User.USER, 'User'))
 
     class Meta:
         model = User
