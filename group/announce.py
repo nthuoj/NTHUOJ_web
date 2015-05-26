@@ -51,8 +51,6 @@ def add_announce(request, group_id):
                 group.announce.add(new_announce)
                 logger.info('Announce: User %s add Announce %s!' % (request.user.username, new_announce.id))
                 return HttpResponseRedirect(reverse('group:detail', kwargs={'group_id': group_id}))
-            else:
-                return HttpResponseRedirect(reverse('group:detail', kwargs={'group_id': group_id}))
     else:
         raise PermissionDenied
 
