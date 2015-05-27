@@ -139,14 +139,12 @@ def list(request):
             'include_flag': 'all_group',
         })
 
+@login_required
 def my_list(request):
-    if request.user.is_anonymous():
-        my_group = []
-    else:
-        my_group = Group.objects.filter(Q(member__username__contains=request.user.username) \
-                                        |Q(owner__username=request.user.username) \
-                                        |Q(coowner__username=request.user.username) \
-                                        ).distinct().order_by('id')
+    my_group = Group.objects.filter(Q(member__username__contains=request.user.username) \
+                                    |Q(owner__username=request.user.username) \
+                                    |Q(coowner__username=request.user.username) \
+                                    ).distinct().order_by('id')
     my_group = get_current_page(request, my_group)
 
     return render_index(
