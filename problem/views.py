@@ -272,9 +272,19 @@ def preview(request):
     return render_index(request, 'problem/preview.html', {'problem': problem, 'preview': True})
 
 def download_testcase(request, filename):
+    user = validate_user(request.user)
+    pid = filename.split('.')[0]
+    try:
+        problem = Problem.objects.get(pk=pid)
+    except: 
+        raise Http404()
+    if not has_problem_auth(user, problem):
+        logger.warning("%s has no permission to see testcase of problem %d" % (user, problem.pk))
+        raise Http404()
     try:
         f = open(TESTCASE_PATH+filename, "r")
     except IOError:
+        logger.warning("open testcase %s error" % filename)
         raise Http404()
     response = HttpResponse(FileWrapper(f), content_type="text/plain")
     response['Content-Disposition'] = 'attachment; filename=' + filename
