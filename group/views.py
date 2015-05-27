@@ -137,8 +137,6 @@ def list(request):
     return render_index(
         request,'group/groupList.html', {
             'all_group_list': all_group,
-            'allGroupButton_pushed': 'active',
-            'myGroupButton_pushed': None,
             'include_flag': 'all_group',
         })
 
@@ -155,8 +153,6 @@ def my_list(request):
     return render_index(
         request,'group/groupList.html', {
             'my_group_list': my_group,
-            'allGroupButton_pushed': None,
-            'myGroupButton_pushed': 'active',
             'include_flag': 'my_group',
         })
 

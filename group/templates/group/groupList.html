@@ -13,12 +13,14 @@
   {% if user.is_authenticated %}
   <div class="btn-group" style="float:right">
     <a href="{% url 'group:my_list' %}"> 
-      <button id="myGroupButton" type="button" class="btn btn-primary {{myGroupButton_pushed}}">
+      <button id="myGroupButton" type="button" 
+              class="btn btn-primary {% if include_flag = 'my_group' %} active {% endif %}">
         My Group
       </button>
     </a>
     <a href="{% url 'group:list' %}">
-      <button id="allGroupButton" type="button" class="btn btn-primary {{allGroupButton_pushed}}">
+      <button id="allGroupButton" type="button" 
+              class="btn btn-primary {% if include_flag = 'all_group' %} active {% endif %}">
         All Group
       </button>
     </a>
