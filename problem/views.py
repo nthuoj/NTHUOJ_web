@@ -51,8 +51,10 @@ def problem(request):
     filter_type = request.GET.get('filter')
     if filter_type == 'mine':
         problem_list = get_owner_problem_list(user)
+        mine = True
     else:
         problem_list = get_problem_list(user)
+        mine = False
     problems = get_current_page(request, problem_list, 15)
     for p in problems:
         if p.total_submission != 0:
@@ -64,7 +66,7 @@ def problem(request):
             p.no_submission = True
 
     return render_index(request, 'problem/panel.html',
-                  {'all_problem': problems,
+                  {'all_problem': problems, 'mine': mine,
                    'can_add_problem': can_add_problem})
 
 def detail(request, pid):
