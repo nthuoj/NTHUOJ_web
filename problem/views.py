@@ -124,7 +124,7 @@ def edit(request, pid=None):
                     for chunk in request.FILES['partial_judge_header'].chunks():
                         t_in.write(chunk)
             problem = verify_problem_code(problem)
-            if problem.has_special_judge_code and 
+            if problem.has_special_judge_code and \
                 problem.judge_type != problem.SPECIAL:
                 os.remove('%s%s%s' % (SPECIAL_PATH, problem.pk, file_ex))
             if problem.judge_type != problem.PARTIAL:
