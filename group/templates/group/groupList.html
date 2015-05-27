@@ -13,12 +13,12 @@
   {% if not user_is_anonymous %}
   <div class="btn-group" style="float:right">
     <a href="{% url 'group:my_list' %}"> 
-      <button id="myGroupButton" type="button" class="btn btn-primary {{pushB}}">
+      <button id="myGroupButton" type="button" class="btn btn-primary {{myGroupButton_pushed}}">
         My Group
       </button>
     </a>
     <a href="{% url 'group:list' %}">
-      <button id="allGroupButton" type="button" class="btn btn-primary {{pushA}}">
+      <button id="allGroupButton" type="button" class="btn btn-primary {{allGroupButton_pushed}}">
         All Group
       </button>
     </a>
@@ -26,14 +26,12 @@
   {% endif %}
   <br>
   <br>
-  {% url 'group:my_list' as my_list %}
-  {% if request.get_full_path = my_list %}
+  {% if include_flag = 'my_group' %}
     <div id="myGroupTable">
       {% include "group/groupTable.html" with group_list=my_group_list %}
     </div>
   {% endif %}
-  {% url 'group:list' as list%}
-  {% if request.get_full_path = list %}
+  {% if include_flag = 'all_group' %}
   <div id="allGroupTable">
     {% include "group/groupTable.html" with group_list=all_group_list %}
   </div>

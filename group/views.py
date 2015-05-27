@@ -139,8 +139,9 @@ def list(request):
             'all_group_list': all_group,
             'user_is_anonymous': request.user.is_anonymous(),
             'request': request,
-            'pushA': 'active',
-            'pushB': None,
+            'allGroupButton_pushed': 'active',
+            'myGroupButton_pushed': None,
+            'include_flag': 'all_group',
         })
 
 def my_list(request):
@@ -158,8 +159,9 @@ def my_list(request):
             'my_group_list': my_group,
             'user_is_anonymous': request.user.is_anonymous(),
             'request': request,
-            'pushA': None,
-            'pushB': 'active',
+            'allGroupButton_pushed': None,
+            'myGroupButton_pushed': 'active',
+            'include_flag': 'my_group',
         })
 
 def new(request):
