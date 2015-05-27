@@ -122,7 +122,6 @@ def detail(request, group_id):
             'running_contest_list': running_contest_list,
             'ended_contest_list': ended_contest_list,
             'announce_list': annowence_list,
-            'owner': owner,
             'student_list': student_list,
             'group': group,
             'user_has_auth': user_has_auth,
