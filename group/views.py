@@ -50,7 +50,6 @@ def get_running_contest(request, group_id):
 
     group = get_group(group_id)
 
-    all_contest = group.trace_contest.all()
     all_running_contest_list = []
     now = timezone.now()
 
@@ -67,7 +66,6 @@ def get_ended_contest(request, group_id):
 
     group = get_group(group_id)
 
-    all_contest = group.trace_contest.all()
     all_ended_contest_list = []
     now = timezone.now()
 
