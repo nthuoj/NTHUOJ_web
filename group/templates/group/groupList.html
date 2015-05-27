@@ -10,7 +10,7 @@
   <div class="well">
     <h2>Group List</h2>
   </div>
-  {% if not user_is_anonymous %}
+  {% if user.is_authenticated %}
   <div class="btn-group" style="float:right">
     <a href="{% url 'group:my_list' %}"> 
       <button id="myGroupButton" type="button" class="btn btn-primary {{myGroupButton_pushed}}">
