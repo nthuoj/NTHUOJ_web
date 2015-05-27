@@ -97,10 +97,8 @@ def detail(request, group_id):
 
     group = get_group(group_id)
     show_number = 5; #number for brief list to show in group detail page.
-    all_contest = group.trace_contest.order_by('-start_time')
-    annowence_list = group.announce.all()
+    annowence_list = group.announce.all()[0:show_number]
     student_list = group.member.order_by('username')
-    owner = group.owner
     form = AnnounceForm()
 
     user = validate_user(request.user)
