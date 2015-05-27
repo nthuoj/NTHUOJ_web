@@ -112,15 +112,15 @@ def detail(request, group_id):
     running_contest_list = []
     ended_contest_list = []
     now = timezone.now()
-    running_contest_list = group.trace_contest.filter(start_time__lte=now, end_time__gte=now)
-    ended_contest_list = group.trace_contest.filter(end_time__lte=now)
+    running_contest_list = group.trace_contest.filter(start_time__lte=now, end_time__gte=now)[0:show_number]
+    ended_contest_list = group.trace_contest.filter(end_time__lte=now)[0:show_number]
 
     student_list = get_current_page(request, student_list)
 
     return render_index(
         request, 'group/groupDetail.html', {
-            'running_contest_list': running_contest_list[0:show_number],
-            'ended_contest_list': ended_contest_list[0:show_number],
+            'running_contest_list': running_contest_list,
+            'ended_contest_list': ended_contest_list,
             'announce_list': annowence_list,
             'owner': owner,
             'student_list': student_list,
