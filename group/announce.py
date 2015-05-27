@@ -99,4 +99,3 @@ def edit_announce(request, announce_id, group_id, redirect_page):
                     })
     else:
         raise PermissionDenied
-        
