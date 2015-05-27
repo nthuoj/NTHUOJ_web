@@ -2,7 +2,7 @@
 {% load bootstrap %}
 {% load static %}
 {% block title_name %}
-<title>{{ group_name }}</title>
+<title>{{ group.gname }}</title>
 {% endblock title_name %}
 {% block body_block %}
 <br>
@@ -10,8 +10,8 @@
   <div class="row-fluid">
     <div class="container-fluid">
       <div class="span12">
-        <h2>{{ group_id }} - {{ group_name }}
-          <a href="{% url 'group:edit' group_id %}">
+        <h2>{{ group.id }} - {{ group.gname }}
+          <a href="{% url 'group:edit' group.id %}">
             <button type="button" class="btn btn-warning btn-xs" 
                     data-toggle="tooltip" data-placement="top">
               <span class="glyphicon glyphicon-pencil"></span>
@@ -25,7 +25,7 @@
   <div class="container-fluid">
     <div class="Description" style="float:left">
       <p style="font-size:16px; color:gray; word-wrap:break-word">
-        {{ group_description }}
+        {{ group.description }}
       </p>
     </div>
   </div>
@@ -70,7 +70,7 @@
                 </tbody>
               </table>
               <a class="btn btn-sm btn-default" style="float:right"
-                 onclick="window.open('{% url 'group:viewall_contest' group_id %}', '', config='height=500,width=800');">view all</a>
+                 onclick="window.open('{% url 'group:viewall_contest' group.id %}', '', config='height=500,width=800');">view all</a>
             </div>
           </div>
         </div>
@@ -108,7 +108,7 @@
                 </tbody>
               </table>
               <a class="btn btn-sm btn-default" style="float:right"
-                 onclick="window.open('{% url 'group:viewall_archive' group_id %}', '', config='height=500,width=800');">view all</a>
+                 onclick="window.open('{% url 'group:viewall_archive' group.id %}', '', config='height=500,width=800');">view all</a>
             </div>
           </div>
         </div>
@@ -131,7 +131,7 @@
                         data-target="#addannounce">
                   Add announce
                 </button>
-                {% include "group/addAnnounce.html" with group_id=group_id %}
+                {% include "group/addAnnounce.html" with group=group %}
               {% endif %}
             </th>
           </tr>
@@ -176,7 +176,7 @@
               </div>
               <!--Modal Section End-->
               {% if user_has_auth %}
-              <a href="{% url 'group:edit_announce' announce.id group_id redirect_page %}">
+              <a href="{% url 'group:edit_announce' announce.id group.id redirect_page %}">
                 <button type="button" class="btn btn-warning btn-sm" 
                         data-toggle="modal" style="float:right">
                   Edit
@@ -189,7 +189,7 @@
         </tbody>
       </table>
       <a class="btn btn-sm btn-default" style="float:right"
-         onclick="window.open('{% url 'group:viewall_announce' group_id %}', '', config='height=500,width=800');">view all</a>
+         onclick="window.open('{% url 'group:viewall_announce' group.id %}', '', config='height=500,width=800');">view all</a>
       <br>
     </div>
     <hr>
