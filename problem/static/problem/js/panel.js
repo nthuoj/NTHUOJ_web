@@ -1,7 +1,7 @@
 $(document).ready(function() {
     $('[data-toggle="tooltip"]').tooltip();
     $('.progress').css('overflow', 'inherit');
-    $('.del_btn').click(function() {
+    $('.del-btn').click(function() {
         return confirm("Are you sure you want to delete?");
     });
     $('.rejudge-btn').click(function() {
