@@ -39,6 +39,9 @@ def show_contest_submission(submission, user, contests):
     for contest in contests:
         if not has_contest_ownership(user, contest):
             continue
+        if submission.user == contest.owner or \
+                submission.user in contest.coowner.all():
+            return True
         contestants = get_contestant(contest)
         if submission.user in contestants:
             return True
@@ -67,7 +70,10 @@ def show_detail(submission, user):
     # during the contest, only owner/coowner can view contestants' detail
     contests = get_running_contests()
     if contests:
-        contests = contests.filter(problem=submission.problem)
+        contests = contests.filter(
+            problem=submission.problem,
+            creation_time__lte=submission.submit_time
+        )
         return show_contest_submission(submission, user, contests)
     # a user can view his own detail
     if submission.user == user:
@@ -75,7 +81,8 @@ def show_detail(submission, user):
     # a problem owner can view his problem's detail in normal mode
     if submission.problem.owner_id == user.username:
         return True
-    # contest owner/coowner can still view code after the contest in normal mode
+    # contest owner/coowner can still view code after the contest in normal
+    # mode
     contests = Contest.objects.filter(
         problem=submission.problem,
         end_time__gte=submission.submit_time,
@@ -84,7 +91,8 @@ def show_detail(submission, user):
         return True
     # a user can view his team member's detail
     if submission.team:
-        team_member = TeamMember.objects.filter(team=submission.team, member=user)
+        team_member = TeamMember.objects.filter(
+            team=submission.team, member=user)
         if team_member or submission.team.leader == user:
             return True
     # no condition is satisfied
@@ -96,5 +104,6 @@ def show_passed_testcase(submission):
     details = submission['list']
     if details:
         return '(%d/%d)' % \
-            (details.filter(verdict=SubmissionDetail.AC).count(), details.count())
+            (details.filter(verdict=SubmissionDetail.AC).count(),
+             details.count())
     return ''

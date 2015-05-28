@@ -106,8 +106,8 @@ def status(request):
 
 def contest_status(request, contest):
     """Return a status table of given contest"""
-
-    submissions = get_contest_submissions(contest, Submission.objects.all())
+    submissions = get_visible_submission(request.user)
+    submissions = get_contest_submissions(contest, submissions)
 
     submissions = regroup_submission(submissions)
     table_content = str(render(request, 'status/statusTable.html', {'submissions': submissions}))
