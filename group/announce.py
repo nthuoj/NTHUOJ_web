@@ -87,6 +87,7 @@ def edit_announce(request, announce_id, group_id, redirect_page):
             form = AnnounceForm(request.POST, instance=announce)
             if form.is_valid():
                 modified_announce = form.save()
+                logger.info('Announce: Announce %s has been changed!' % (announce.id))
                 if redirect_page == 'detail':
                     return HttpResponseRedirect(reverse('group:detail', kwargs={'group_id': group_id}))
                 elif redirect_page == 'viewall' :
