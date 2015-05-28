@@ -48,9 +48,15 @@ logger = log_info.get_logger()
 def problem(request):
     user = validate_user(request.user)
     can_add_problem = user.has_subjudge_auth()
-    all_problem_list = get_problem_list(user)
-    all_problem = get_current_page(request, all_problem_list, 15)
-    for p in all_problem:
+    filter_type = request.GET.get('filter')
+    if filter_type == 'mine':
+        problem_list = get_owner_problem_list(user)
+        mine = True
+    else:
+        problem_list = get_problem_list(user)
+        mine = False
+    problems = get_current_page(request, problem_list, 15)
+    for p in problems:
         if p.total_submission != 0:
             p.pass_rate = float(p.ac_count) / float(p.total_submission) * 100.0
             p.not_pass_rate = 100.0 - p.pass_rate
@@ -60,7 +66,7 @@ def problem(request):
             p.no_submission = True
 
     return render_index(request, 'problem/panel.html',
-                  {'all_problem': all_problem,
+                  {'all_problem': problems, 'mine': mine,
                    'can_add_problem': can_add_problem})
 
 def detail(request, pid):

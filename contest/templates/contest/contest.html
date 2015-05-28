@@ -1,7 +1,7 @@
 {% extends "index/base.html" %} {% load staticfiles %} {% load contest_extras %}
 
 {% block title_name %}
-<title>Contest</title>
+<title>{{ contest }}</title>
 {% endblock title_name %}
 
 {% block import_source %}
@@ -11,6 +11,7 @@
 
 {% block body_block %}
   <div class="container" onload="getRestTime()">
+    <br>
     <!--Title-->
     <div class="well">
       <h2>{{ contest.id }} - {{ contest.cname }}
@@ -22,9 +23,9 @@
         </button>
       </a>
       {% endif %}
-      {% if contest|is_freezed %}
+      {% if contest|is_frozen %}
       <h4>
-      <span class="label label-danger">Freezed</span>
+      <span class="label label-danger">Frozen</span>
       </h4>
       {% endif %}
       </h2>
@@ -69,7 +70,7 @@
               <th width="20%">Reply</th>
               <th width="10%">Replier</th>
               <th width="10%">Reply Time</th>
-              <th width="5%">For all team</th>
+              <th width="10%">For all team</th>
             </tr>
           </thead>
           <tbody>
