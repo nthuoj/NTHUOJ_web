@@ -57,8 +57,7 @@ def show_detail(submission, user):
         a boolean of the judgement
     """
     user = validate_user(user)
-    return True
-    # basic requirement: submission must be shown
+
     # admin can see everyone's detail
     if user.has_admin_auth():
         return True
