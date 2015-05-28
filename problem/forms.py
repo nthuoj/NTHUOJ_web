@@ -142,9 +142,7 @@ class TagFilter(forms.Form):
 
     def clean_tag_name(self):
         tag_name = self.cleaned_data['tag_name'].strip()
-        if len(tag_name) == 0:
-            return tag_name
-        if not Tag.objects.filter(tag_name=tag_name).exists():
+        if len(tag_name) != 0 and not Tag.objects.filter(tag_name=tag_name).exists():
             raise forms.ValidationError("Tag does not exists")
         return tag_name
 
