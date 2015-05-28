@@ -17,7 +17,7 @@
       <button type="button" class="close" data-dismiss="alert">×</button>
       <h4>Hint: <span style="color:red">Title</span> is required!</h4>
     </div>
-    {% if user_is_owner or user_is_coowner or user_has_admin_auth %}
+    {% if user_is_owner or user_is_coowner %}
       <a href="{% url 'group:delete_announce' announce_id group_id %}">
         <button type="button" class="btn btn-danger btn-xs" style="float:right"
                 onclick="return confirm_delete()">
