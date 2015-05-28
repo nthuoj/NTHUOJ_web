@@ -123,9 +123,9 @@ def contest(request, cid):
         user.has_admin_auth()):
         for problem in contest.problem.all():
             problem.testcase = get_testcase(problem)
-        scoreboard = get_scoreboard(contest)
+        scoreboard = get_scoreboard(user, contest)
         status = contest_status(request, contest)
-        clarifications = get_clarifications(user,contest)
+        clarifications = get_clarifications(user, contest)
 
         initial_form = {'contest':contest,'asker':user}
         form = ClarificationForm(initial=initial_form)
