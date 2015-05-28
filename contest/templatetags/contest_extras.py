@@ -77,9 +77,9 @@ register.filter("is_coowner", is_coowner)
 
 #check if contest is freezed
 @register.filter
-def is_freezed(contest):
-    return contest_info.is_freezed(contest)
-register.filter("is_freezed", is_freezed)
+def is_frozen(contest):
+    return contest_info.is_frozen(contest)
+register.filter("is_frozen", is_frozen)
 
 #check if user is judge or admin
 @register.filter
