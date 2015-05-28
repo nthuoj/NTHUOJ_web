@@ -78,8 +78,14 @@ def get_current_page(request, objects, slice=25):
 
         Returns a subset of `objects` according to the given page.
     """
+    import datetime
+    print datetime.datetime.now()
     paginator = Paginator(objects, slice)  # Show 25 items per page by default
     page = request.GET.get('page')
+    objects = paginator.page(1)
+    print datetime.datetime.now()
+
+    return objects
 
     try:
         objects = paginator.page(page)
