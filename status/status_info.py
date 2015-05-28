@@ -1,7 +1,8 @@
 from datetime import datetime
 from django.db.models import Q
 
-from contest.contest_info import get_running_contests, get_freeze_time_datetime
+from contest.contest_info import get_running_contests, \
+    get_freeze_time_datetime, get_contestant
 from contest.models import Contest
 from problem.models import Problem, Submission, SubmissionDetail
 from users.models import User
@@ -35,7 +36,7 @@ def get_visible_submission(user):
         user__in=User.objects.filter(user_level=User.ADMIN)
     )
 
-    # Invisible problems' submission can't be seen
+    # Invisible problem is
     invisible_problem = Problem.objects.filter(
         visible=False
     ).exclude(
@@ -56,10 +57,21 @@ def get_visible_submission(user):
                 problem__in=contest.problem.all(),
                 submit_time__gte=contest.creation_time
             )
-            # 2. Can't view other's submission after contest freeze
+            # 2. Can't view other contestants' submission after contest freeze
             submissions = submissions.exclude(
+                user=get_contestant(contest).exclude(username=user.username),
                 problem__in=contest.problem.all(),
                 submit_time__gte=get_freeze_time_datetime(contest)
             )
+        else:
+            # Exclude contest problem from invlsible problem for owner/coowners
+            invisible_problem = invisible_problem.exclude(
+                id__in=contest.problem.filter(visible=False).values_list('id', flat=True)
+            )
+
+    # Invisible problems' submission can't be seen
+    submissions = submissions.exclude(
+        problem__in=invisible_problem
+    )
 
     return submissions
