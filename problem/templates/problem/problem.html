@@ -100,7 +100,7 @@
       {% endfor %}
     {% else %}
       {% for tag in problem.tags.all %}
-        <a class='label label-info' href="{% url 'problem:problem' %}?tag={{ tag.tag_name }}">{{ tag.tag_name }}</a>
+        <a class='label label-info' href="{% url 'problem:problem' %}?tag_name={{ tag.tag_name }}">{{ tag.tag_name }}</a>
       {% endfor %}
     {% endif %}
   </div>
