@@ -1,3 +1,4 @@
+from contest.contest_info import get_running_contests
 from problem.models import Submission, SubmissionDetail
 from users.models import User
 from utils.user_info import validate_user
