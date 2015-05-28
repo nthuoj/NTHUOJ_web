@@ -80,10 +80,6 @@
       <span class='label label-danger'>EOF</span>
     </div>
   </div>
-  {% if problem.judge_type == "LOCAL_SPECIAL" and problem.has_special_judge_code %}
-    <h3>Special Judge Code</h3>
-    <a href="{% url 'problem:download_special' problem.filename %}">{{ problem.filename }}</a>
-  {% endif %}
   {% if problem.judge_type == "LOCAL_PARTIAL" and problem.has_partial_judge_code %}
     <h3>Partial Judge Code</h3>
     <a href="{% url 'problem:download_partial' problem.filename %}">{{ problem.filename }}</a>

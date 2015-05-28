@@ -30,7 +30,7 @@ from django.core.servers.basehttp import FileWrapper
 from django.utils import timezone
 
 from utils.render_helper import render_index
-from utils.user_info import validate_user, has_problem_auth
+from utils.user_info import validate_user, has_problem_auth, has_problem_ownership
 from users.models import User
 from problem.models import Problem, Tag, Testcase
 from problem.forms import ProblemForm, TagForm
@@ -271,15 +271,16 @@ def preview(request):
     problem.tag = request.POST['tags'].split(',')
     return render_index(request, 'problem/preview.html', {'problem': problem, 'preview': True})
 
+@login_required
 def download_testcase(request, filename):
-    user = validate_user(request.user)
     pid = filename.split('.')[0]
     try:
         problem = Problem.objects.get(pk=pid)
     except: 
         raise Http404()
-    if not has_problem_auth(user, problem):
-        logger.warning("%s has no permission to see testcase of problem %d" % (user, problem.pk))
+    if not has_problem_ownership(request.user, problem) and \
+            not request.user.has_admin_auth():
+        logger.warning("%s has no permission to see testcase of problem %d" % (request.user, problem.pk))
         raise Http404()
     try:
         f = open(TESTCASE_PATH+filename, "r")
@@ -299,7 +300,18 @@ def download_partial(request, filename):
     response['Content-Disposition'] = 'attachment; filename=' + filename
     return response
 
+@login_required
 def download_special(request, filename):
+    pid = filename.split('.')[0]
+    try:
+        problem = Problem.objects.get(pk=pid)
+    except: 
+        raise Http404()
+    if not has_problem_ownership(request.user, problem) and \
+            not request.user.has_admin_auth():
+        logger.warning("%s has no permission to download problem %d special judge code" 
+                % (request.user, problem.pk))
+        raise Http404()
     try:
         f = open(SPECIAL_PATH+filename, "r")
     except IOError:
