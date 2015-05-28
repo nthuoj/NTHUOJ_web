@@ -102,7 +102,6 @@ def detail(request, group_id):
     user = validate_user(request.user)
     user_is_owner = has_group_ownership(user, group)
     user_is_coowner = has_group_coownership(user, group)
-
     user_has_auth = user_is_owner or user_is_coowner
 
     running_contest_list = []
