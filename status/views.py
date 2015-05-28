@@ -52,11 +52,7 @@ logger = get_logger()
 
 def status(request):
     status_filter = StatusFilter(request.GET)
-    import datetime
-    d =  datetime.datetime.now()
     submissions = get_visible_submission(request.user).order_by('-id')
-    dd = datetime.datetime.now()
-    print '\n', dd - d, '\n'
     render_data = {}
     render_data['status_filter'] = status_filter
     render_data['running_contests'] = get_running_contests().order_by('id')

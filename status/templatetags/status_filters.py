@@ -35,64 +35,6 @@ from utils.user_info import validate_user, has_contest_ownership
 register = template.Library()
 
 
-@register.filter()
-def show_submission(submission, user):
-    """Test if the user can see that submission
-
-    Args:
-        submission: a Submission object
-        user: an User object
-    Returns:
-        a boolean of the judgement
-    """
-    user = validate_user(user)
-    return True
-
-    # admin can see all submissions
-    if user.user_level == user.ADMIN:
-        return True
-
-    # no one can see admin's submissions
-    if submission.user.user_level == user.ADMIN:
-        return False
-
-    # user's own submission must be seen
-    if submission.user == user:
-        return True
-
-    # problem owner can see all submission of his problem
-    if submission.problem.owner_id == user.username:
-        return True
-
-    # contest owner/coowner's submission can't be seen before the end of contest
-    contests = Contest.objects.filter(
-        is_homework=False,
-        problem=submission.problem,
-        creation_time__lte=submission.submit_time,
-        end_time__gte=datetime.now())
-
-    if contests:
-        owners = []
-        for contest in contests:
-            owners.append(contest.owner)
-            owners.extend(contest.coowner.all())
-        if user in owners:
-            # owner/coowner can see submission
-            return True
-        else:
-            # not a owner/coowner
-            # to see submission, submission.user must not be owners
-            return submission.user not in owners
-
-    # an invisible problem's submission can't be seen
-    if not submission.problem.visible:
-        return False
-    # problem owner's submission can't be seen
-    if submission.user.username == submission.problem.owner_id:
-        return False
-    return True
-
-
 def show_contest_submission(submission, user, contests):
     for contest in contests:
         if not has_contest_ownership(user, contest):
