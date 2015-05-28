@@ -6,9 +6,10 @@ $(document).ready(function() {
     });
     $('.rejudge-btn').click(function() {
         var submission = $(this).attr('data-submission');
-        return confirm("\
+        var check = prompt("\
 		The problem has " + submission + " submissions\n\
 		Rejudge might take a long time\n\
-		Are you sure to rejudge?");
+		Enter the submission number of this problem to continue");
+	return check == submission;
     });
 });
