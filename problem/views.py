@@ -291,6 +291,7 @@ def download_special(request, filename):
     response['Content-Disposition'] = 'attachment; filename=' + filename
     return response
 
+@login_required
 def rejudge(request):
     pid = request.GET.get('pid')
     if pid:
@@ -304,7 +305,6 @@ def rejudge(request):
             rejudge_problem(problem)
             logger.info("problem %s rejudged" % problem.pk)
         except Problem.DoesNotExist:
-            print pid
             raise Http404()
     return redirect('/problem/')
 
