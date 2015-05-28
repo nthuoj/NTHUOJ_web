@@ -30,7 +30,7 @@ from django.core.servers.basehttp import FileWrapper
 from django.utils import timezone
 
 from utils.render_helper import render_index
-from utils.user_info import validate_user, has_problem_auth
+from utils.user_info import validate_user, has_problem_auth, has_problem_ownership
 from users.models import User
 from problem.models import Problem, Tag, Testcase
 from problem.forms import ProblemForm, TagForm
@@ -38,6 +38,7 @@ from utils import log_info, config_info
 from problem.problem_info import *
 from utils import log_info
 from utils.render_helper import render_index, get_current_page
+from utils.rejudge import rejudge_problem
 
 import os
 import json
@@ -289,4 +290,21 @@ def download_special(request, filename):
     response = HttpResponse(FileWrapper(f), content_type="text/plain")
     response['Content-Disposition'] = 'attachment; filename=' + filename
     return response
+
+def rejudge(request):
+    pid = request.GET.get('pid')
+    if pid:
+        try:
+            problem = Problem.objects.get(pk=pid)
+            if not has_problem_ownership(request.user, problem) and \
+                    not request.user.has_admin_auth():
+                logger.warning("%s has no permission to rejudge problem %d"
+                        % (request.user, problem.pk))
+                raise PermissionDenied()
+            rejudge_problem(problem)
+            logger.info("problem %s rejudged" % problem.pk)
+        except Problem.DoesNotExist:
+            print pid
+            raise Http404()
+    return redirect('/problem/')
 
