@@ -291,14 +291,14 @@ def download_testcase(request, filename):
     response['Content-Disposition'] = 'attachment; filename=' + filename
     return response
 
+@login_required
 def download_partial(request, filename):
-    user = validate_user(request.user)
     pid = filename.split('.')[0]
     try:
         problem = Problem.objects.get(pk=pid)
     except: 
         raise Http404()
-    if not has_problem_auth(user, problem):
+    if not has_problem_auth(request.user, problem):
         logger.warning("%s has no permission to download problem %d partial judge code" 
                 % (request.user, problem.pk))
         raise Http404()
