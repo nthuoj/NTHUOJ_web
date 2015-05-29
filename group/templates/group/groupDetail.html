@@ -181,13 +181,13 @@
               <a href="{% url 'group:edit_announce' announce.id group.id redirect_page %}">
                 <button type="button" class="btn btn-warning btn-sm" 
                         data-toggle="modal" style="float:right">
-                  Edit
+                  <span class="glyphicon glyphicon-pencil"></span>
                 </button>
               </a>
               <a href="{% url 'group:delete_announce' announce.id group.id %}">
                 <button type="button" class="btn btn-danger btn-sm" 
                         style="float:right" onclick="return confirm_delete()">
-                  Delete
+                  <span class="glyphicon glyphicon-remove"></span>
                 </button>
               </a>
               {% endif %}
