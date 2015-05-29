@@ -123,7 +123,6 @@
         <thead>
           <tr>
             <th>Title</th>
-            <th>Content</th>
             <th>
               {% if user_has_auth %}
                 <button type="button" class="btn btn-primary btn-sm" 
@@ -139,13 +138,11 @@
         <tbody>
           {% for announce in announce_list %}
           <tr>
-            <td id="title{{announce.id}}">{{ announce.title|truncatechars:20 }}</td>
-            <td id="content{{announce.id}}">{{ announce.content|truncatechars:60 }}</td>
-            <td>
-              <a href="" class="btn btn-sm btn-default" 
-                 data-toggle="modal"
-                 data-target="#announceContentModal{{announce.id}}"
-                 style="float:right">Detail</a>
+            <td id="title{{announce.id}}">
+              <a href="" data-toggle="modal"
+                 data-target="#announceContentModal{{announce.id}}">
+                 {{ announce.title|truncatechars:20 }}
+              </a>
               <!--Modal Section-->
               <div class="modal fade" id="announceContentModal{{announce.id}}"
                  role="dialog" aria-hidden="true">
@@ -175,6 +172,8 @@
                 </div>
               </div>
               <!--Modal Section End-->
+            </td>
+            <td>
               {% if user_has_auth %}
               <a href="{% url 'group:edit_announce' announce.id group.id redirect_page %}">
                 <button type="button" class="btn btn-warning btn-sm" 
