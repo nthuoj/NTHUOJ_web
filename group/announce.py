@@ -80,8 +80,6 @@ def edit_announce(request, announce_id, group_id, redirect_page):
                     'form':form,
                     'group_id': group.id,
                     'announce_id': announce_id,
-                    'user_is_owner': user_is_owner,
-                    'user_is_coowner': user_is_coowner,
                 })
         if request.method == 'POST':
             form = AnnounceForm(request.POST, instance=announce)
@@ -96,8 +94,6 @@ def edit_announce(request, announce_id, group_id, redirect_page):
                  return render_index(
                         request,'group/editAnnounce.html', {
                         'form':form,
-                        'user_is_owner': user_is_owner,
-                        'user_is_coowner': user_is_coowner,
                     })
     else:
         raise PermissionDenied
