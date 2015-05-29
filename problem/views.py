@@ -74,7 +74,7 @@ def problem(request):
         mine = False
     return render_index(request, 'problem/panel.html',
                   {'all_problem': problems, 'mine': mine,
-                      'can_add_problem': can_add_problem, 'tag_filter': tag_filter})
+                   'can_add_problem': can_add_problem, 'tag_filter': tag_filter})
 
 def detail(request, pid):
     user = validate_user(request.user)
