@@ -4,6 +4,9 @@
 {% block title_name %}
 <title>{{ group.gname }}</title>
 {% endblock title_name %}
+{% block import_source %}
+<script src="{%static 'group/js/editAnnounce.js'%}"></script>
+{% endblock import_source %}
 {% block body_block %}
 <br>
 <div class="container" id="body">
@@ -179,6 +182,12 @@
                 <button type="button" class="btn btn-warning btn-sm" 
                         data-toggle="modal" style="float:right">
                   Edit
+                </button>
+              </a>
+              <a href="{% url 'group:delete_announce' announce.id group.id %}">
+                <button type="button" class="btn btn-danger btn-sm" 
+                        style="float:right" onclick="return confirm_delete()">
+                  Delete
                 </button>
               </a>
               {% endif %}
