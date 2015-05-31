@@ -60,6 +60,8 @@ def problem(request):
             mine = False
         if tag_name:
             problem_list = problem_list.filter(tags__tag_name=tag_name)
+            for p in problem_list:
+                p.in_contest = check_in_contest(p)
         problems = get_current_page(request, problem_list, 15)
         for p in problems:
             if p.total_submission != 0:

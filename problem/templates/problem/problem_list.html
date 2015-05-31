@@ -10,6 +10,7 @@
     </thead>
   <tbody>
     {% for p in problem %}
+      {% if not p.in_contest %}
       <tr>
         <td>
           {% if user == p.owner or user.has_admin_auth %}
@@ -49,6 +50,7 @@
         </td>
         <td>{{ p.owner }}</td>
       </tr>
+      {% endif %}
     {% endfor %}
   </tbody>
 </table>
