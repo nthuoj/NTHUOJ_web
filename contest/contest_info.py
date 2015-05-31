@@ -96,13 +96,21 @@ def get_contest_submissions(contest, submissions):
 
 
 def get_contestant_problem_submission_list(contest, contestant, problem):
-    return Submission.objects.filter(problem=problem, submit_time__lte=contest.end_time,
-        submit_time__gte=contest.start_time, user=contestant.user).order_by('submit_time')
+    return Submission.objects.filter(
+        problem=problem,
+        submit_time__lte=contest.end_time,
+        submit_time__gte=contest.start_time,
+        user=contestant.user
+        ).exclude(status = Submission.JUDGE_ERROR).order_by('submit_time')
 
 def get_contestant_problem_submission_list_before_freeze_time(contest, contestant, problem):
     freeze_time = get_freeze_time_datetime(contest)
-    return Submission.objects.filter(problem=problem, submit_time__lte=freeze_time,
-        submit_time__gte=contest.start_time, user=contestant.user).order_by('submit_time')
+    return Submission.objects.filter(
+        problem=problem, 
+        submit_time__lte=freeze_time,
+        submit_time__gte=contest.start_time,
+        user=contestant.user
+        ).exclude(status = Submission.JUDGE_ERROR).order_by('submit_time')
 
 def get_passed_testcases(submission):
     passed_testcases = SubmissionDetail.objects.filter(sid=submission, verdict=SubmissionDetail.AC)
