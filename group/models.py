@@ -30,7 +30,7 @@ from datetime import date
 
 class Announce(models.Model):
 
-    title = models.CharField(max_length=100, default='Required')
+    title = models.CharField(max_length=100, default='Title')
     content = models.TextField(blank=True)
 
     def __unicode__(self):
