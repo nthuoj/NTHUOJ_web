@@ -46,6 +46,7 @@ from utils import user_info
 
 from django.http import Http404
 from django.contrib.auth.hashers import make_password
+from django.db.models import Q
 
 import csv
 from django.http import HttpResponse
@@ -86,8 +87,8 @@ def get_contest_submissions(contest, submissions):
         filter_end_time = contest.end_time
 
     submissions = submissions.filter(
+        Q(user__in=contestants) | Q(user=contest.owner) | Q(user__in=contest.coowner.all()),
         problem__in=problems,
-        user__in=contestants,
         submit_time__gte=contest.start_time,
         submit_time__lte=filter_end_time).order_by('-id')
 
