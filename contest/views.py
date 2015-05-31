@@ -59,6 +59,8 @@ from contest.contest_info import get_contest_or_404
 from contest.public_user import get_public_contestant
 
 from problem.problem_info import get_testcase
+from problem.problem_info import verify_problem_code
+from problem.problem_info import check_in_contest
 
 from group.models import Group
 from group.group_info import get_owned_group
@@ -123,6 +125,8 @@ def contest(request, cid):
         user.has_admin_auth()):
         for problem in contest.problem.all():
             problem.testcase = get_testcase(problem)
+            problem = verify_problem_code(problem)
+            problem.in_contest = check_in_contest(problem)
         scoreboard = get_scoreboard(contest)
         status = contest_status(request, contest)
         clarifications = get_clarifications(user,contest)
