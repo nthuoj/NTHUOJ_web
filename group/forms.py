@@ -19,7 +19,7 @@
     '''
 
 from django import forms
-from group.models import Group
+from group.models import Group, Announce
 
 class GroupForm(forms.ModelForm):
     class Meta:
@@ -44,3 +44,16 @@ class GroupFormEdit(forms.ModelForm):
             'announce',
             'trace_contest',
         ]
+
+class AnnounceForm(forms.ModelForm):
+    title = forms.CharField(required=False)
+    class Meta:
+        model = Announce
+        fields = [
+            'title',
+            'content',
+        ]
+        widgets = {
+            'title': forms.TextInput(),
+            'content': forms.Textarea(),
+        }
