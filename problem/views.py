@@ -28,9 +28,10 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.contrib.auth.decorators import login_required
 from django.core.servers.basehttp import FileWrapper
 from django.utils import timezone
+from django.contrib import messages
 
 from utils.render_helper import render_index
-from utils.user_info import validate_user, has_problem_auth
+from utils.user_info import validate_user, has_problem_auth, has_problem_ownership
 from users.models import User
 from problem.models import Problem, Tag, Testcase
 from problem.forms import ProblemForm, TagForm
@@ -38,6 +39,7 @@ from utils import log_info, config_info
 from problem.problem_info import *
 from utils import log_info
 from utils.render_helper import render_index, get_current_page
+from utils.rejudge import rejudge_problem
 
 import os
 import json
@@ -130,7 +132,7 @@ def edit(request, pid=None):
                     for chunk in request.FILES['partial_judge_header'].chunks():
                         t_in.write(chunk)
             logger.info('edit problem, pid = %d by %s' % (problem.pk, request.user))
-            logger.info('edit problem, pid = %d' % (problem.pk))
+            messages.success(request, 'problem %d edited' % problem.pk)
             return redirect('/problem/%d' % (problem.pk))
     file_ex = get_problem_file_extension(problem)
     problem = verify_problem_code(problem)
@@ -200,11 +202,14 @@ def testcase(request, pid, tid=None):
             if testcase.problem != problem:
                 logger.warning("testcase %s does not belong to problem %s" % (tid, pid))
                 raise Http404("testcase %s does not belong to problem %s" % (tid, pid))
+        has_message = False
         if 'time_limit' in request.POST:
             testcase.time_limit = request.POST['time_limit']
             testcase.memory_limit = request.POST['memory_limit']
             testcase.save()
             logger.info("testcase saved, tid = %s by %s" % (testcase.pk, request.user))
+            messages.success(request, "testcase %s saved" % testcase.pk)
+            has_message = True
         if 't_in' in request.FILES:
             TESTCASE_PATH = config_info.get_config('path', 'testcase_path')
             try:
@@ -216,6 +221,8 @@ def testcase(request, pid, tid=None):
                     for chunk in request.FILES['t_out'].chunks():
                         t_out.write(chunk.replace('\r\n', '\n'))
                     logger.info("testcase %s.out saved by %s" % (testcase.pk, request.user))
+                if not has_message:
+                    messages.success(request, "testcase %s saved" % testcase.pk)
             except IOError, OSError:
                 logger.error("saving testcase error")
             return HttpResponse(json.dumps({'tid': testcase.pk}),
@@ -242,6 +249,7 @@ def delete_testcase(request, pid, tid):
     except IOError, OSError:
         logger.error("remove testcase %s error" % (testcase.pk))
     logger.info("testcase %d deleted by %s" % (testcase.pk, request.user))
+    messages.success(request, "testcase %s deleted" % testcase.pk)
     testcase.delete()
     return HttpResponse()
 
@@ -255,6 +263,7 @@ def delete_problem(request, pid):
     if not request.user.has_admin_auth() and request.user != problem.owner:
         raise PermissionDenied
     logger.info("problem %d deleted by %s" % (problem.pk, request.user))
+    messages.success(request, "problem %d deleted" % problem.pk)
     problem.delete()
     return redirect('/problem/')
 
@@ -295,4 +304,22 @@ def download_special(request, filename):
     response = HttpResponse(FileWrapper(f), content_type="text/plain")
     response['Content-Disposition'] = 'attachment; filename=' + filename
     return response
+
+@login_required
+def rejudge(request):
+    pid = request.GET.get('pid')
+    if pid:
+        try:
+            problem = Problem.objects.get(pk=pid)
+            if not has_problem_ownership(request.user, problem) and \
+                    not request.user.has_admin_auth():
+                logger.warning("%s has no permission to rejudge problem %d"
+                        % (request.user, problem.pk))
+                raise PermissionDenied()
+            rejudge_problem(problem)
+            logger.info("problem %s rejudged" % problem.pk)
+            messages.success(request, 'problem %s rejuded' % problem.pk)
+        except Problem.DoesNotExist:
+            raise Http404()
+    return redirect('/problem/')
 
