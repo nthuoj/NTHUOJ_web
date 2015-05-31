@@ -95,7 +95,7 @@ def detail(request, group_id):
 
     group = get_group(group_id)
     show_number = 5; #number for brief list to show in group detail page.
-    announce_list = group.announce.all()[0:show_number]
+    announce_list = group.announce.order_by('-id')[0:show_number]
     student_list = group.member.order_by('username')
     form = AnnounceForm()
 
