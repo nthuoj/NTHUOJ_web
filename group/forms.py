@@ -46,6 +46,7 @@ class GroupFormEdit(forms.ModelForm):
         ]
 
 class AnnounceForm(forms.ModelForm):
+    title = forms.CharField(required=False)
     class Meta:
         model = Announce
         fields = [

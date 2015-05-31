@@ -142,10 +142,17 @@
           {% for announce in announce_list %}
           <tr>
             <td id="title{{announce.id}}">
+              {% if not announce.title %}
+              <a href="" data-toggle="modal"
+                 data-target="#announceContentModal{{announce.id}}">
+                 No title
+              </a>
+              {% else %}
               <a href="" data-toggle="modal"
                  data-target="#announceContentModal{{announce.id}}">
                  {{ announce.title|truncatechars:20 }}
               </a>
+              {% endif %}
               <!--Modal Section-->
               <div class="modal fade" id="announceContentModal{{announce.id}}"
                  role="dialog" aria-hidden="true">
@@ -155,9 +162,15 @@
                       <button type="btn-default" class="close" 
                               data-dismiss="modal"
                               aria-hidden="true">&times;</button>
+                      {% if not announce.title %}
+                      <h3 class="modal-title" id="modal-title">
+                         No title
+                      </h3>
+                      {% else %}
                       <h3 class="modal-title" id="modal-title" title="{{ announce.title}}">
                         {{ announce.title|truncatechars:25 }}
                       </h3>
+                      {% endif %}
                     </div> 
                     <div class="modal-body">
                       <p id="modal-content" style="word-wrap:break-word">
