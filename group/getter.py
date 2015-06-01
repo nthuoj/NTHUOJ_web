@@ -19,34 +19,24 @@ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
 AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
-'''
+SOFTWARE.'''
 
-from django.db import models
-from users.models import User
-from contest.models import Contest
-from datetime import date
+from django.http import Http404
+from group.models import Group, Announce
+from utils.log_info import get_logger
 
+def get_announce(announce_id):
+    try:
+        announce = Announce.objects.get(id=announce_id)
+    except Announce.DoesNotExist:
+        logger.warning('Announce: Can not edit announce %s! Announce does not exist!' % announce_id)
+        raise Http404('Announce: Can not edit announce %s! Announce does not exist!' % announce_id)
+    return announce
 
-class Announce(models.Model):
-
-    title = models.CharField(max_length=100)
-    content = models.TextField(blank=True)
-
-    def __unicode__(self):
-        return self.title
-
-
-class Group(models.Model):
-
-    gname = models.CharField(max_length=50, default='')
-    owner = models.ForeignKey(User, related_name='group_owner')
-    coowner = models.ManyToManyField(User, related_name='group_coowner', blank=True)
-    member = models.ManyToManyField(User, related_name='member', blank=True)
-    description = models.TextField(blank=True)
-    announce = models.ManyToManyField(Announce, blank=True)
-    trace_contest = models.ManyToManyField(Contest, blank=True)
-    creation_time = models.DateField(default=date.today, auto_now_add=True)
-
-    def __unicode__(self):
-        return '%d - %s' % (self.id, self.gname)
+def get_group(group_id):
+	try:
+	    group = Group.objects.get(id=group_id)
+	except Group.DoesNotExist:
+	    logger.warning('Group: Can not edit group %s! Group does not exist!' % group_id)
+	    raise Http404('Group: Can not edit group %s! Group does not exist!' % group_id)
+	return group

@@ -1,5 +1,9 @@
-{% load staticfiles %}
+{% load staticfiles %} {% load contest_extras %}
 <h3>{{ contest.cname }}</h3>
+{% if contest|is_frozen %}
+<span class="label label-danger">Frozen</span>
+*Frozen contest will not update scoreboard until the contest ends.
+{% endif %}
 <h5>Freeze time: {{ contest.freeze_time }} minutes</h5>
 <script src="{% static 'contest/js/scoreboard.js' %}"></script>
 <link href="{% static 'contest/css/scoreboard.css' %}" rel="stylesheet">
