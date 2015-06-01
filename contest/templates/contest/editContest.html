@@ -3,7 +3,7 @@
 {% load contest_extras %}
 {% block title_name %}
 {% load bootstrap %}
-<title>{{ title }}</title>
+<title>{{ title }} {{ contest }}</title>
 {% endblock title_name %}
 
 {% block import_source %}
@@ -20,7 +20,7 @@
 <div class="container" id="list">
   <div class="well">
     <h2>
-    {{ title }}
+    {{ contest }}
     {% if contest %}
     <a href="{% url 'contest:contest' contest.id %}">
       <button type="button" class="btn btn-primary">

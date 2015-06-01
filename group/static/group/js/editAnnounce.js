@@ -17,11 +17,6 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
-
-.green {
-  color: green;
-}
-
-.word-block {
-	word-wrap:break-word;
+function confirm_delete() {
+    return confirm("Are you sure you want to delete?");
 }
