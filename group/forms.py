@@ -20,8 +20,14 @@
 
 from django import forms
 from group.models import Group, Announce
+from users.models import User
+from django.db.models import Q
 
 class GroupForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super(GroupForm, self).__init__(*args, **kwargs)
+        # access object through self.instance...
+        self.fields['coowner'].queryset = User.objects.exclude(Q(user_level=User.USER))
     class Meta:
         model = Group
         fields = [
@@ -30,18 +36,22 @@ class GroupForm(forms.ModelForm):
             'coowner',
             'member',
             'description',
-            'announce',
             'trace_contest',
         ]
 
 class GroupFormEdit(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super(GroupFormEdit, self).__init__(*args, **kwargs)
+        # access object through self.instance...
+        initial = kwargs.get('initial',{})
+        owner = initial.get('owner',User())
+        self.fields['coowner'].queryset = User.objects.exclude(Q(user_level=User.USER)|Q(pk = owner))
     class Meta:
         model = Group
         fields = [
+            'gname',
             'coowner',
-            'member',
             'description',
-            'announce',
             'trace_contest',
         ]
 

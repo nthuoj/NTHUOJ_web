@@ -77,17 +77,17 @@
         <!--Modal Section End-->
         {% if user|can_delete_group:group %}
         <!--User can delete group-->
-        <a href=".">
+        <a href="{% url 'group:delete' group.id %}">
           <button type="button" class="btn btn-danger btn-xs"
                   data-toggle="tooltip" data-placement="top" 
-                  title="Delete Contest">
+                  title="Delete Contest" onclick="return confirm_delete()">
             <span class="glyphicon glyphicon-remove"></span>
           </button>
         </a>
         {% endif %}
         {% if user|can_edit_group:group %}
         <!--User can edit group-->
-        <a href=".">
+        <a href="{% url 'group:edit' group.id %}">
           <button type="button" class="btn btn-warning btn-xs" 
                   data-toggle="tooltip" data-placement="top" 
                   title="Edit Contest">
