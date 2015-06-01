@@ -69,7 +69,3 @@ pip install pillow
 * The email host should be gmail.
 
 * Your google account seeting 'Access for less secure apps' should turn on.
-
-###Virtual judge account
-* We use [virtual judge](http://vjudge.net) for judging codes from other resources(UVA, ICPC, etc).
-
