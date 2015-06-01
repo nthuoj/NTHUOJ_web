@@ -11,12 +11,14 @@
   <div class="well">
     <h2>Problems</h2>
     <form method="get">
-      <div class="col-lg-8"></div>
-    {% for field in tag_filter %}
-      <div class="col-lg-2">{{ field|bootstrap }}</div>
-    {% endfor %}
+      <!-- <div class="col-lg-8"></div> -->
+      {% for field in tag_filter %}
+        <div class="col-lg-3">{{ field|bootstrap }}</div>
+      {% endfor %}
     <div class="modal-footer">
-      <button type="submit" class="btn btn-primary">Search</button>
+        <div class="col-lg-2">
+          <button type="submit" class="btn btn-primary">Search</button>
+        </div>
     </div>
     </form>
   </div>
