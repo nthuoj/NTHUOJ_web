@@ -63,7 +63,7 @@ function checkTime(i) {
 function getRestTime() {
     var end = new Date(document.getElementById('end').innerHTML)
     var start = new Date(document.getElementById('start').innerHTML)
-    var serverTime = new Date(document.getElementById('server_time').innerHTML);
+    var serverTime = new Date(document.getElementById('time').innerHTML);
     if (serverTime.getTime() < start.getTime()) {
         document.getElementById('timeline').style.width = "0%";
         document.getElementById('clock').innerHTML = "Contest Not Started Yet";
@@ -74,12 +74,25 @@ function getRestTime() {
             result /= 60;
             var m = parseInt(result % 60);
             result /= 60;
-            var h = parseInt(result % 60);
+            var h = parseInt(result % 24);
+            result /= 24;
+            var d = parseInt(result);
+            if(d>1){
+                d = d + "days, ";
+            }
+            else if(d == 1){
+                d = d + "day, ";
+            }
+            else{
+                d = "";
+            }
             m = checkTime(m);
             s = checkTime(s);
             h = checkTime(h);
+
             var percentage = (Date.now() - start.getTime()) / (end.getTime() - start.getTime());
-            document.getElementById('clock').innerHTML = h + ":" + m + ":" + s;
+            //document.getElementById('clock').innerHTML = h + ":" + m + ":" + s;
+            document.getElementById('clock').innerHTML = d + h + ":" + m + ":" + s;
             document.getElementById('timeline').style.width = percentage * 100 + "%";
             var t = setTimeout(function() {
                 getRestTime(start, end)
