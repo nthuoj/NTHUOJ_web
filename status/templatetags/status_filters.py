@@ -111,12 +111,16 @@ def can_rejudge(submission, user):
         a boolean of the judgement
     """
     user = validate_user(user)
-    # There are 2 kinds of people can rejudge submission:
-    # 1. Problem owner
+    # There are 3 kinds of people can rejudge submission:
+    # 1. Admin Almighty
+    if user.has_admin_auth():
+        return True
+
+    # 2. Problem owner
     if has_problem_ownership(user, submission.problem):
         return True
 
-    # 2. Contest owner / coowner
+    # 3. Contest owner / coowner
     contests = Contest.objects.filter(
         problem=submission.problem,
         end_time__gte=submission.submit_time,
