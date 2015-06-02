@@ -34,7 +34,7 @@ from utils.render_helper import render_index
 from utils.user_info import validate_user, has_problem_auth, has_problem_ownership
 from users.models import User
 from problem.models import Problem, Tag, Testcase
-from problem.forms import ProblemForm, TagForm
+from problem.forms import ProblemForm, TagForm, TagFilter
 from utils import log_info, config_info
 from problem.problem_info import *
 from utils import log_info
@@ -51,25 +51,34 @@ def problem(request):
     user = validate_user(request.user)
     can_add_problem = user.has_subjudge_auth()
     filter_type = request.GET.get('filter')
-    if filter_type == 'mine':
-        problem_list = get_owner_problem_list(user)
-        mine = True
-    else:
-        problem_list = get_problem_list(user)
-        mine = False
-    problems = get_current_page(request, problem_list, 15)
-    for p in problems:
-        if p.total_submission != 0:
-            p.pass_rate = float(p.ac_count) / float(p.total_submission) * 100.0
-            p.not_pass_rate = 100.0 - p.pass_rate
-            p.pass_rate = "%.2f" % (p.pass_rate)
-            p.not_pass_rate = "%.2f" % (p.not_pass_rate)
+    tag_filter = TagFilter(request.GET)
+    if tag_filter.is_valid():
+        tag_name = tag_filter.cleaned_data['tag_name']
+        if filter_type == 'mine':
+            problem_list = get_owner_problem_list(user)
+            mine = True
         else:
-            p.no_submission = True
-
+            problem_list = get_problem_list(user)
+            mine = False
+        if tag_name:
+            problem_list = problem_list.filter(tags__tag_name=tag_name)
+            for p in problem_list:
+                p.in_contest = check_in_contest(p)
+        problems = get_current_page(request, problem_list, 15)
+        for p in problems:
+            if p.total_submission != 0:
+                p.pass_rate = float(p.ac_count) / float(p.total_submission) * 100.0
+                p.not_pass_rate = 100.0 - p.pass_rate
+                p.pass_rate = "%.2f" % (p.pass_rate)
+                p.not_pass_rate = "%.2f" % (p.not_pass_rate)
+            else:
+                p.no_submission = True
+    else:
+        problems = []
+        mine = False
     return render_index(request, 'problem/panel.html',
                   {'all_problem': problems, 'mine': mine,
-                   'can_add_problem': can_add_problem})
+                   'can_add_problem': can_add_problem, 'tag_filter': tag_filter})
 
 def detail(request, pid):
     user = validate_user(request.user)

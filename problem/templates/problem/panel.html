@@ -1,5 +1,6 @@
 {% extends 'problem/base.html' %}
 {% load static %}
+{% load bootstrap %}
 {% block title_name %}
 <title>Problem Panel</title>
 {% endblock title_name %}
@@ -8,7 +9,18 @@
   <br>
   <!--title-->
   <div class="well">
-    <h2>Problem Panel</h2>
+    <h2>Problems</h2>
+    <form method="get">
+      <!-- <div class="col-lg-8"></div> -->
+      {% for field in tag_filter %}
+        <div class="col-lg-3">{{ field|bootstrap }}</div>
+      {% endfor %}
+    <div class="modal-footer">
+        <div class="col-lg-2">
+          <button type="submit" class="btn btn-primary">Search</button>
+        </div>
+    </div>
+    </form>
   </div>
   <div>
     {% if can_add_problem %}
