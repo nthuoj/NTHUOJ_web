@@ -74,8 +74,8 @@ $(function () {
         var file = evt.target.files[0];
 
         if (file) {
-            if (file.size > 10000) {
-                alert('You can\'t upload file over 10000 bytes.');
+            if (file.size > 40 * 1024) {
+                alert('You can\'t upload file over 40KB.');
             } else {
                 var reader = new FileReader();
                 reader.onload = function(e) {

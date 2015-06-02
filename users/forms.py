@@ -43,7 +43,7 @@ class CodeSubmitForm(forms.Form):
     language = forms.ChoiceField(choices=LANGUAGE_CHOICE, initial=Submission.CPP,
                                  help_text="Backend: %s<br>gcc: %s<br>g++: %s"
                                  % (BACKEND_VERSION, GCC_VERSION, GPP_VERSION))
-    code = forms.CharField(max_length=40000,
+    code = forms.CharField(max_length=40 * 1024,
                            widget=forms.Textarea(attrs={'id': 'code_editor'}))
 
     def clean_pid(self):
