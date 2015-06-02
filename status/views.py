@@ -27,7 +27,7 @@ import json
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.http import Http404, HttpResponse
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404, redirect
 from django.core.exceptions import PermissionDenied
 from django.core.serializers import serialize
 
@@ -36,7 +36,7 @@ from contest.contest_info import get_running_contests
 from contest.contest_info import get_freeze_time_datetime
 from contest.contest_info import get_contest_submissions
 from problem.models import Submission, Problem
-from status.templatetags.status_filters import show_detail
+from status.templatetags.status_filters import show_detail, can_rejudge
 from status.forms import StatusFilter
 from status.status_info import get_visible_submission, regroup_submission
 from users.forms import CodeSubmitForm
@@ -44,6 +44,7 @@ from users.models import User
 from utils.log_info import get_logger
 from utils.file_info import get_extension
 from utils.render_helper import render_index, get_current_page
+from utils.rejudge import rejudge_submission
 
 # Create your views here.
 
@@ -155,3 +156,14 @@ def view_code(request, sid):
     except IOError:
         logger.warning('File %s Not Found!' % filename)
         raise Http404('File %s Not Found!' % filename)
+
+
+@login_required()
+def rejudge(request, sid):
+    submission = get_object_or_404(Submission, id=sid)
+    if can_rejudge(submission, request.user):
+        rejudge_submission(submission)
+        messages.success(request, 'Submission %s rejuded' % sid)
+        return redirect('status:status')
+    else:
+        raise PermissionDenied()
