@@ -35,7 +35,7 @@
             {{ submission.grouper.id }}
           {% endif %}
           {% if submission.grouper|can_rejudge:user %}
-            <a href={% url "status:rejudge" submission.grouper.id %}>
+            <a href="{% url "status:rejudge" submission.grouper.id %}?{{ request.GET.urlencode }}">
               <span id="rejudge" class="glyphicon glyphicon-refresh"></span>
             </a>
           {% endif %}

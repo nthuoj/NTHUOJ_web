@@ -23,6 +23,7 @@ SOFTWARE.
 """
 import re
 import json
+import urllib
 
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
@@ -30,6 +31,7 @@ from django.http import Http404, HttpResponse
 from django.shortcuts import render, get_object_or_404, redirect
 from django.core.exceptions import PermissionDenied
 from django.core.serializers import serialize
+from django.core.urlresolvers import reverse
 
 from contest.models import Contest
 from contest.contest_info import get_running_contests
@@ -163,7 +165,9 @@ def rejudge(request, sid):
     submission = get_object_or_404(Submission, id=sid)
     if can_rejudge(submission, request.user):
         rejudge_submission(submission)
+        print request.GET
         messages.success(request, 'Submission %s rejuded' % sid)
-        return redirect('status:status')
+        return redirect('%s?%s' % \
+            (reverse('status:status'), urllib.urlencode(request.GET)))
     else:
         raise PermissionDenied()
