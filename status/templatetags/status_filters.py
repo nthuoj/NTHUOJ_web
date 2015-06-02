@@ -111,7 +111,7 @@ def can_rejudge(submission, user):
         a boolean of the judgement
     """
     user = validate_user(user)
-    # There are 3 kinds of people can rejudge submission:
+    # There are 2 kinds of people can rejudge submission:
     # 1. Admin Almighty
     if user.has_admin_auth():
         return True
