@@ -165,9 +165,11 @@ def rejudge(request, sid):
     submission = get_object_or_404(Submission, id=sid)
     if can_rejudge(submission, request.user):
         rejudge_submission(submission)
-        print request.GET
         messages.success(request, 'Submission %s rejuded' % sid)
+        logger.info('Submission %s rejudged' % sid)
         return redirect('%s?%s' % \
             (reverse('status:status'), urllib.urlencode(request.GET)))
     else:
+        logger.warning('%s has no permission to rejudge submission %s' % \
+            (request.user, sid))
         raise PermissionDenied()
