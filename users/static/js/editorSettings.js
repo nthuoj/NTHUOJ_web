@@ -75,7 +75,7 @@ $(function () {
 
         if (file) {
             if (file.size > 40 * 1024) {
-                alert('You can\'t upload file over 40KB.');
+                alert("You can't upload file over 40KB.");
             } else {
                 var reader = new FileReader();
                 reader.onload = function(e) {
