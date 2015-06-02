@@ -32,8 +32,8 @@ function write_content(id, type){
         notification_type = 'read';
     else
         notification_type = 'unread';
-    var message = document.getElementById(element).textContent;
-    document.getElementById("area").textContent = message;
+    var message = $('#'+element).html();
+    $("#area").html(message);
 }
 function readify(){
     window.location.href = "http://" + window.location.host +
