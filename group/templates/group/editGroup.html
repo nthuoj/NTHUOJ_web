@@ -1,7 +1,7 @@
 {% extends "index/base.html" %}
 {% load static %}
 {% block title_name %}
-<title>Edit for Group...</title>
+<title>Edit for {{ group.gname }}...</title>
 {% endblock title_name %}
 {% load bootstrap %}
 {% block import_source %}
@@ -14,15 +14,8 @@
 <br>
 <br>
 <div class="col-lg-offset-1 col-lg-10">
-  {% if not group.id %}
-    <h4>new:</h4>
-  {% else %}
-    <h4>edit:</h4>
-    <h2>#{{ group.id }} - {{ group.gname }}</h2>
-  {% endif %}
+  <h2>#{{ group.id }} - {{ group.gname }}</h2>
   <div class="well">
-    <br>
-    <br>
     <div class="alert alert-dismissable alert-warning">
       <button type="button" class="close" data-dismiss="alert">×</button>
       {% if not group.id %}
