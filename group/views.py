@@ -22,8 +22,9 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.'''
 from django.core.urlresolvers import reverse
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
+from django.contrib.auth.decorators import login_required
+from django.contrib import messages
 from django.db.models import Q
 from django.http import HttpResponse, HttpResponseRedirect, Http404
 from django.shortcuts import render_to_response, render
@@ -176,7 +177,8 @@ def delete(request, group_id):
         group = get_group(group_id)
         deleted_gid = group.id
         group.delete()
-        logger.info('Group: Delete group %s!' % deleted_gid)
+        message = 'Group %s deleted!' % (deleted_gid)
+        messages.warning(request, message)
         return HttpResponseRedirect(reverse('group:list'))
     else:
         raise PermissionDenied
