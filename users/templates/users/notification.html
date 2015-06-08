@@ -44,7 +44,7 @@
                 <td href="#Notification-popup" class="open-popup-link"
                     onclick="write_content('{{ unread_notification.id }}','{{ unread_notification.read }}');">
                   <p id="{{ unread_notification.id }}_content"
-                     class="ellipsis">{{ unread_notification.message}}</p>
+                     class="ellipsis">{{ unread_notification.message|safe }}</p>
                 </td>
                 <td style="text-align: right;">
                   <input type="checkbox" style="margin-left:0px;"
@@ -100,7 +100,7 @@
                 <td href="#Notification-popup" class="open-popup-link"
                     onclick="write_content('{{ notification.id }}','{{ notification.read }}');">
                   <p id="{{ notification.id }}_content"
-                     class="ellipsis">{{ notification.message}}</p>
+                     class="ellipsis">{{ notification.message|safe }}</p>
                 </td>
                 <td style="text-align: right;">
                   <input type="checkbox" style="margin-left:0px;"
@@ -143,9 +143,7 @@
       <div class="jumbotron popdiv"  id="Notification-popup">
         <h2><p class="poptitle"><b>Notification</b></p></h2>
         <div class="form-group">
-          <textarea class="form-control input-sm" type="text"
-                    id="area" readonly="true">
-          </textarea>
+          <div id="area" class="well"></div>
         </div>
       </div>
     </div>
