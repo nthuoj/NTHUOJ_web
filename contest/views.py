@@ -123,7 +123,8 @@ def contest(request, cid):
     if ((contest.start_time < now) or\
         user_info.has_contest_ownership(user,contest) or\
         user.has_admin_auth()):
-        for problem in contest.problem.all():
+        contest.problems = contest.problem.all()
+        for problem in contest.problems:
             problem.testcase = get_testcase(problem)
             problem = verify_problem_code(problem)
             problem.in_contest = check_in_contest(problem)
