@@ -65,7 +65,7 @@ $(document).ready(function() {
             processData: false,
             contentType: false,
             success: function(data) {
-                alert("testcase updated");
+                window.location.href = "/problem/" + pid + "/edit/?tab=testcase";
             }
         });
     });
@@ -89,7 +89,6 @@ $(document).ready(function() {
             url: "/problem/" + pid + "/testcase/" + tid + "/",
             data: time + "&" + memory + "&" + csrf,
             success: function(data) {
-                alert('testcase updated');
                 window.location.href = "/problem/" + pid + "/edit/?tab=testcase";
             }
         });
@@ -102,7 +101,6 @@ $(document).ready(function() {
             type: 'GET',
             url: '/problem/' + pid + '/testcase/' + tid + '/delete/',
             success: function(data) {
-                alert('testcase deleted');
                 window.location.href = "/problem/" + pid + "/edit/?tab=testcase";
             }
         });
@@ -235,7 +233,7 @@ function refreshTestcaseEvent() {
             url: "/problem/" + pid + "/testcase/" + tid + "/",
             data: time + "&" + memory + "&" + csrf,
             success: function(data) {
-                alert('testcase updated')
+                window.location.href = "/problem/" + pid + "/edit/?tab=testcase";
             }
         });
         return false;
@@ -248,6 +246,7 @@ function refreshTestcaseEvent() {
             url: '/problem/' + pid + '/testcase/' + tid + '/delete/',
             success: function(data) {
                 row.remove();
+                alert('testcase updated')
             }
         });
         return false;

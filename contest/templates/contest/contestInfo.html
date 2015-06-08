@@ -26,9 +26,7 @@
           <thead>
             <tr>
               {% if user|has_auth:contest.id %}
-              <!--
               <th style="text-align:center;width:20%;">Rejudge</th>
-              -->
               {% endif %}
               <th style="text-align:center;width:20%;">#</th>
               <th style="text-align:center;width:60%;">Problem</th>
@@ -38,13 +36,17 @@
             {% for problem in contest.problem.all %}
             <tr>
               {% if user|has_auth:contest.id %}
-              <!--
               <td>
-                <button type="button" class="btn btn-warning btn-xs">
-                  <span class="glyphicon glyphicon-refresh"></span>
-                </button>
+                <form method="POST" action="{% url 'contest:rejudge' %}">
+                  {% csrf_token %}
+                  <input type="hidden" name="contest" value="{{ contest.id}}">
+                  <input type="hidden" name="problem" value="{{ problem.id }}">
+                  <button type="submit" class="btn btn-warning btn-xs"
+                          onclick="return confirm_rejudge_problem('{{problem.pname}}')">
+                    <span class="glyphicon glyphicon-refresh"></span>
+                  </button>
+                </form>
               </td>
-              -->
               {% endif %}
               <td>{{ forloop.counter }}</td>
               <td>{{ problem }}</td>
@@ -52,16 +54,21 @@
             {% endfor %}
           </tbody>
         </table>
+        {% if user|has_auth:contest.id and contest.problem.count %}
+        <form method="POST" action="{% url 'contest:rejudge' %}">
+          {% csrf_token %}
+          <input type="hidden" name="contest" value="{{ contest.id}}">
+          <button type="submit button" class="btn btn-warning btn-block"
+                  onclick="return confirm_rejudge_contest('{{contest.cname}}')">
+            Rejudge All
+          </button>
+        </form>
+        {% endif %}
       </div>
       <div class="tab-pane" id="contestant">
         <table class="table" style="text-align:center">
           <thead>
             <tr>
-              {% if user|has_auth:contest.id %}
-              <!--
-              <th style="width:20%;"></th>
-              -->
-              {% endif %}
               <th style="text-align:center;width:20%;">#</th>
               <th style="text-align:center;width:60%;">Contestant</th>
             </tr>
@@ -69,15 +76,6 @@
           <tbody>
             {% for contestant in contest.contestants %}
             <tr>
-              {% if user|has_auth:contest.id %}
-              <!--
-              <td>
-                <button type="button" class="btn btn-danger btn-xs">
-                  <span class="glyphicon glyphicon-minus"></span>
-                </button>
-              </td>
-            -->
-              {% endif %}
               <td>{{ forloop.counter }}</td>
               <td>{{ contestant }}</td>
             </tr>
