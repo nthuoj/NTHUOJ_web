@@ -64,7 +64,6 @@ sudo pip install django-ckeditor
 sudo pip install requests
 sudo pip install -I pillow
 sudo apt-get install git
-=======
 ```
 
 * Execute install.py for initial setting.
