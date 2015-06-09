@@ -1,14 +1,15 @@
 from django.conf.urls import patterns, include, url
 from django.contrib import admin
 from django.conf import settings
+from django.contrib.auth.decorators import login_required
 from ckeditor.views import upload, browse
 import autocomplete_light
 # OP autodiscover
 autocomplete_light.autodiscover()
 
 urlpatterns = patterns('',
-    url(r'^ckeditor/upload/', upload, name='ckeditor_upload'),
-    url(r'^ckeditor/browse/', browse, name='ckeditor_browse'),
+    url(r'^ckeditor/upload/', login_required(upload), name='ckeditor_upload'),
+    url(r'^ckeditor/browse/', login_required(browse), name='ckeditor_browse'),
     url(r'^media/(?P<path>.*)$', 'django.views.static.serve', {'document_root': settings.MEDIA_ROOT, 'show_indexes': True}),
     url(r'^autocomplete/', include('autocomplete_light.urls')),
     url(r'^admin/', include(admin.site.urls)),
