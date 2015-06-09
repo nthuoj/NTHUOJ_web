@@ -61,6 +61,7 @@ from contest.public_user import get_public_contestant
 from problem.problem_info import get_testcase
 from problem.problem_info import verify_problem_code
 from problem.problem_info import check_in_contest
+from problem.models import Problem
 
 from group.models import Group
 from group.group_info import get_owned_group
@@ -69,6 +70,8 @@ from group.group_info import get_group_or_404
 from utils.log_info import get_logger
 from utils import user_info
 from utils.render_helper import render_index, get_current_page
+from utils.rejudge import rejudge as rejudge_obj
+from utils.rejudge import rejudge_contest_problem
 from status.views import *
 from django.conf import settings
 from utils.user_info import validate_user
@@ -128,9 +131,9 @@ def contest(request, cid):
             problem.testcase = get_testcase(problem)
             problem = verify_problem_code(problem)
             problem.in_contest = check_in_contest(problem)
-        scoreboard = get_scoreboard(contest)
+        scoreboard = get_scoreboard(user, contest)
         status = contest_status(request, contest)
-        clarifications = get_clarifications(user,contest)
+        clarifications = get_clarifications(user, contest)
 
         initial_form = {'contest':contest,'asker':user}
         form = ClarificationForm(initial=initial_form)
@@ -400,3 +403,54 @@ def download(request):
             return render_index(request,'contest/download.html',{'contest':contest})
         else:
             raise PermissionDenied
+
+@login_required
+def rejudge(request):
+    if not request.user.has_subjudge_auth() :
+        logger.warning(
+            'Contest:User %s try to rejudge. Does not have subjudge permission' %
+                    (request.user))
+        raise PermissionDenied
+    contest_id = request.POST.get('contest')
+    problem_id = request.POST.get('problem')
+    try:
+        contest = Contest.objects.get(pk = contest_id)
+    except:
+        #contest not exist
+        logger.warning('rejudge: Contest %s not found!' % contest_id)
+        message = 'Contest does not exist! Can not rejudge'
+        messages.error(request, message)
+        return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+        
+    if not user_info.has_contest_ownership(request.user, contest) and\
+        not request.user.has_admin_auth():
+        logger.warning(
+            'Contest:User %s try to rejudge. Does not have contest ownership' %
+                    (request.user))
+        raise PermissionDenied
+
+    if problem_id is not None:
+        try:
+            problem = Problem.objects.get(pk = problem_id)
+        except:
+            #problem not exist
+            logger.warning('rejudge: Problem %s not found!' % problem_id)
+            message = 'Problem does not exist! Can not rejudge'
+            messages.error(request, message)
+            return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+
+        rejudge_contest_problem(contest, problem)
+        logger.info('User %s rejudge Problem %s in Contest %s!' %\
+            (request.user.username,problem.id,contest.id))
+        message = 'Successfully rejudge Problem %s - %s in Contest %s - %s!' %\
+            (problem.id, problem.pname, contest.id, contest.cname)
+        messages.success(request, message)
+    else:
+        rejudge_obj(contest)
+        logger.info('User %s rejudge Contest %s!' %\
+            (request.user.username,contest_id))
+        message = 'Successfully rejudge Contest %s - %s!' %\
+            (contest.id, contest.cname)
+        messages.success(request, message)
+
+    return HttpResponseRedirect(request.META.get('HTTP_REFERER'))

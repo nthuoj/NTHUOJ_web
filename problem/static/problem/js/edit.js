@@ -65,7 +65,7 @@ $(document).ready(function() {
             processData: false,
             contentType: false,
             success: function(data) {
-                alert("testcase updated");
+                window.location.href = "/problem/" + pid + "/edit/?tab=testcase";
             }
         });
     });
@@ -89,7 +89,6 @@ $(document).ready(function() {
             url: "/problem/" + pid + "/testcase/" + tid + "/",
             data: time + "&" + memory + "&" + csrf,
             success: function(data) {
-                alert('testcase updated');
                 window.location.href = "/problem/" + pid + "/edit/?tab=testcase";
             }
         });
@@ -104,7 +103,6 @@ $(document).ready(function() {
             type: 'GET',
             url: '/problem/' + pid + '/testcase/' + tid + '/delete/',
             success: function(data) {
-                alert('testcase deleted');
                 window.location.href = "/problem/" + pid + "/edit/?tab=testcase";
             }
         });
@@ -225,3 +223,4 @@ $("#id_judge_source").on("change", function(e) {
 $("#id_judge_type").on("change", function(e) {
     choose_judge_type(this.value);
 });
+

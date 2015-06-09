@@ -42,6 +42,27 @@ $(document).ready(function() {
     });
 });
 
+function confirm_rejudge_problem(object){
+    return confirm_rejudge("problem",object);
+}
+
+function confirm_rejudge_contest(object){
+    return confirm_rejudge("contest",object);
+}
+
+function confirm_rejudge(type,object) {
+    var message = "Are you sure you want to rejudge " + type + " '" 
+                + object + "'?\nPlease type in " + type + " name to confirm."; 
+    var name = prompt(message,"");
+    if(name==object){
+        return true;
+    }
+    else if(name!=""){
+        alert("Input does not match!");
+    }
+    return false;
+}
+
 function confirm_delete() {
     return confirm("Are you sure you want to delete?");
 }

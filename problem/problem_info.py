@@ -20,6 +20,9 @@ def get_problem_list(user):
         else:
             return Problem.objects.filter(Q(visible=True) | Q(owner=user)).order_by('id')
 
+def get_owner_problem_list(user):
+    return Problem.objects.filter(owner=user).order_by('id')
+
 def get_problem_file_extension(problem):
     if problem.judge_language == problem.C:
         return ".c"
@@ -51,3 +54,4 @@ def verify_problem_code(problem):
 def check_in_contest(problem):
     contest = problem.contest_set.filter(Q(start_time__lt=datetime.now()) & Q(end_time__gt=datetime.now()))
     return len(contest) > 0
+

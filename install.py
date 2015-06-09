@@ -63,14 +63,6 @@ if not config.has_section('email'):
         password=getpass.getpass("Email host's password: ")
     )
 
-if not config.has_section('vjudge'):
-    # Setting virtual judge info
-    print 'We use virtual judge(http://vjudge.net) for other judge source(UVA, ICPC, etc.)'
-    write_config(config, 'vjudge',
-        username=raw_input('Virtual judge username: '),
-        password=getpass.getpass("Virtual judge password: ")
-    )
-
 # Change defaut path
 paths = dict(config.items('path'))
 print 'Default path configuration is:\n'

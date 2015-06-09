@@ -26,7 +26,6 @@ from threading import Thread
 
 from users.models import User
 from problem.models import Problem, Submission, SubmissionDetail, Testcase
-from vjudge.submit import submit_to_vjudge
 from utils import log_info, user_info, config_info, file_info
 
 logger = log_info.get_logger()
@@ -81,8 +80,8 @@ class CodeSubmitForm(forms.Form):
             logger.warning('Sid %s fail to save code' % submission.id)
 
         if problem.judge_source == Problem.OTHER:
-            submit_thread = Thread(target=submit_to_vjudge, args=(code, submission))
-            submit_thread.start()
+            #  Send to other judge
+            pass
 
     def __init__(self, *args, **kwargs):
         self.user = kwargs.pop('user', User())

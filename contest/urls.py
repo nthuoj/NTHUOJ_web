@@ -41,4 +41,5 @@ urlpatterns = patterns('contest.views',
     url(r'^ask/$',views.ask,name='ask'),
     url(r'^reply/$',views.reply,name='reply'),
     url(r'^download/$',views.download,name='download'),
+    url(r'^rejudge/$',views.rejudge,name='rejudge'),
 )

@@ -51,7 +51,6 @@ INSTALLED_APPS = (
     'bootstrapform',
     'djangobower',
     'datetimewidget',
-    'vjudge',
     'ckeditor',
 )
 
