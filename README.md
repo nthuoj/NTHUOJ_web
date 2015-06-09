@@ -33,25 +33,23 @@ git config --global url."https://".insteadOf git://
 * django-bower
 * django-axes
 * django-autocomplete-light
-* django-datetime-widget
 * django-bootstrap
 * django-bootstrap-form
-* requests
-<<<<<<< HEAD
-* git
-=======
 * django-ckeditor
+* django-datetime-widget
+* requests
+* git
 * pillow
->>>>>>> 04ed9d91f0d50415114330044ea6b41f28054337
 
 ###Installation:
 * Install dependencies (for ubuntu)
 ```
-<<<<<<< HEAD
 sudo apt-get install mysql-server
 sudo apt-get install python-pip
 sudo apt-get install python-mysqldb
 sudo apt-get install nodejs
+sudo apt-get install python-dev
+sudo apt-get install libjpeg-dev
 sudo apt-get install npm
 sudo npm install -g bower
 sudo ln -s /usr/bin/nodejs /usr/bin/node
@@ -62,29 +60,11 @@ sudo pip install django-autocomplete-light
 sudo pip install django-datetime-widget
 sudo pip install django-bootstrap
 sudo pip install django-bootstrap-form
+sudo pip install django-ckeditor
 sudo pip install requests
+sudo pip install -I pillow
 sudo apt-get install git
 =======
-apt-get install mysql-server
-apt-get install python-pip
-apt-get install python-mysqldb
-apt-get install nodejs
-apt-get install npm
-apt-get install python-dev
-apt-get install libjpeg-dev
-npm install -g bower
-ln -s /usr/bin/nodejs /usr/bin/node
-pip install django==1.7
-pip install django-bower
-pip install django-axes
-pip install django-autocomplete-light
-pip install django-datetime-widget
-pip install django-bootstrap
-pip install django-bootstrap-form
-pip install requests
-pip install django-ckeditor
-pip install pillow
->>>>>>> 04ed9d91f0d50415114330044ea6b41f28054337
 ```
 
 * Execute install.py for initial setting.
