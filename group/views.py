@@ -203,7 +203,7 @@ def edit(request, group_id):
             if form.is_valid():
                 modified_group = form.save()
                 message = 'Group %s modified!' % (modified_group.id)
-                messages.warning(request, message)
+                messages.success(request, message)
                 logger.info('Group: Modified group %s!' % modified_group.id)
                 return HttpResponseRedirect(reverse('group:detail', kwargs={'group_id': modified_group.id}))
             else:
