@@ -1,7 +1,11 @@
 {% extends "index/base.html" %}
 {% load static %}
 {% block title_name %}
-<title>Edit for {{ group.gname }}...</title>
+{% if group %}
+<title>Edit for #{{ group.id }}...</title>
+{% else %}
+<title>New group...</title>
+{% endif %}
 {% endblock title_name %}
 {% load bootstrap %}
 {% block import_source %}
