@@ -51,7 +51,7 @@ INSTALLED_APPS = (
     'bootstrapform',
     'djangobower',
     'datetimewidget',
-    'vjudge',
+    'ckeditor',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -108,6 +108,9 @@ USE_TZ = False
 STATIC_ROOT = os.path.join(PROJECT_ROOT, 'static')
 STATIC_URL = '/static/'
 
+MEDIA_ROOT = os.path.join(PROJECT_ROOT, 'media')
+MEDIA_URL = '/media/'
+
 # django-axes 1.3.8 configurations
 # https://pypi.python.org/pypi/django-axes/
 
@@ -122,6 +125,16 @@ EMAIL_HOST_USER = get_config('email', 'user')
 EMAIL_HOST_PASSWORD = get_config('email', 'password')
 EMAIL_PORT = 587
 
+# django-ckeditor configurations
+CKEDITOR_UPLOAD_PATH = 'uploads/'
+CKEDITOR_IMAGE_BACKEND = 'pillow'
+CKEDITOR_CONFIGS = {
+    'default': {
+        'toolbar': 'full',
+    },
+}
+
+
 # django-bower settings
 BOWER_COMPONENTS_ROOT = os.path.join(PROJECT_ROOT, 'components')
 
@@ -133,10 +146,8 @@ BOWER_INSTALLED_APPS = (
     'https://github.com/dimsemenov/Magnific-Popup.git', # Magnific-Popup
     'https://github.com/codemirror/CodeMirror.git', # CodeMirror
     'http://gregpike.net/demos/bootstrap-file-input/bootstrap.file-input.js', # bootstrap fileinput
-    'https://github.com/zeroclipboard/zeroclipboard.git',
     'https://github.com/lou/multi-select.git', # multiselect
     'https://github.com/riklomas/quicksearch.git', # quicksearch
-    'ckeditor#full/stable', # ckeditor
     'https://gantry.googlecode.com/svn/trunk/root/js/jquery.url.min.js', # jquery url plugin
 )
 

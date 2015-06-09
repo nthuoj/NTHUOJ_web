@@ -1,18 +1,14 @@
 <!--
 The MIT License (MIT)
-
 Copyright (c) 2014 NTHUOJ team
-
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
 in the Software without restriction, including without limitation the rights
 to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 copies of the Software, and to permit persons to whom the Software is
 furnished to do so, subject to the following conditions:
-
 The above copyright notice and this permission notice shall be included in all
 copies or substantial portions of the Software.
-
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -20,6 +16,30 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
+
+                       _oo0oo_
+                      o8888888o
+                      88" . "88
+                      (| -_- |)
+                      0\  =  /0
+                    ___/`---'\___
+                  .' \\|     |# '.
+                 / \\|||  :  |||# \
+                / _||||| -:- |||||- \
+               |   | \\\  -  #/ |   |
+               | \_|  ''\---/''  |_/ |
+               \  .-\__  '-'  ___/-. /
+             ___'. .'  /--.--\  `. .'___
+          ."" '<  `.___\_<|>_/___.' >' "".
+         | | :  `- \`.;`\ _ /`;.`/ - ` : | |
+         \  \ `_.   \_ __\ /__ _/   .-` /  /
+     =====`-.____`.___ \_____/___.-`___.-'=====
+                       `=---='
+
+
+     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+               佛祖保佑         永無BUG
 -->
 <!DOCTYPE html>
 {% load static %}
@@ -29,83 +49,19 @@ SOFTWARE.
     <meta charset="UTF-8">
     {% block title_name %}
     {% endblock title_name %}
-    <!-- necessarily jQeuery -->
-    <script src={% static "jquery/dist/jquery.min.js" %}></script>
-    <!-- bootstrap, bootwatch JS & CSS -->
+    <!-- bootstrap, bootwatch CSS -->
     {% if user.is_authenticated %}
-    <link rel="stylesheet" href="{% static '' %}bootswatch/{{user.theme}}/bootstrap.css">
+    <link rel="stylesheet" href="{% static '' %}bootswatch/{{user.theme}}/bootstrap.min.css">
     {% else %}
-    <link rel="stylesheet" href="{% static '' %}bootswatch/{{default_theme}}/bootstrap.css">
+    <link rel="stylesheet" href="{% static '' %}bootswatch/{{default_theme}}/bootstrap.min.css">
     {% endif %}
-    <script src={% static "bootstrap/dist/js/bootstrap.min.js" %}></script>
-    <script src={% static './js/function.js'%}></script>
-    <!-- Magnific Popup core JS & CSS -->
+    <!-- Magnific Popup core CSS -->
     <link rel="stylesheet" href={% static "magnific-popup/dist/magnific-popup.css" %}>
-    <script src={% static "magnific-popup/dist/jquery.magnific-popup.min.js" %}></script>
-    {% include 'autocomplete_light/static.html' %}
-    <script src={% static "js/popup-setting.js" %}></script>
-    <script src={% static "js/base.js" %}></script>
     <link rel="stylesheet" href={% static "css/index.css" %} media="screen">
     <link rel="stylesheet" href={% static "css/mfp-fade.css" %} media="screen">
-    <script src={% static "js/clock.js" %}></script>
-    <script src={% static "zeroclipboard/dist/ZeroClipboard.js"%}></script>
-    {% block import_source %}
-    {% endblock import_source %}
+    <script src={% static "jquery/dist/jquery.min.js" %}></script>
   </head>
   <body>
-  <script type="text/javascript">
-  $(function() {
-    $('#globalNavigation').yourlabsAutocomplete({
-        url: '{% url "index:search" %}'
-    }).input.bind('selectChoice', function(e, choice, autocomplete) {
-        // When a choice is selected, open it.
-        window.location.href = choice.attr('href');
-    });
-  })
-  </script>
-    <!-- feedback-popup -->
-    <div id="feedback-popup" class="mfp-hide">
-      <div class="jumbotron popdiv">
-        <h2><p class="poptitle"><b>Feedback</b></p></h2>
-        <form class="form-horizontal feedback">
-          <div class="form-group">
-            <textarea class="form-control input-sm" type="text" id="inputSmall" >
-            </textarea>
-            <div class="poptxt_sm">
-              <br>
-              <a href="" class="btn btn-primary">
-                Submit
-              </a>
-            </div>
-          </div>
-        </form>
-      </div>
-    </div>
-
-    <!-- sidebar -->
-    <!--
-    <div id="mwt_mwt_slider_scroll">
-      <div id="mwt_fb_tab">
-        <a href="#feedback-popup" class="open-popup-link sidebar_color">
-          <span>F</span>
-          <span>e</span>
-          <span>e</span>
-          <span>d</span>
-          <span>b</span>
-          <span>a</span>
-          <span>c</span>
-          <span>k</span>
-        </a>
-      </div>
-      <div id="mwt_slider_content">feedback</div>
-
-      <div id="mwt_fb_tab2">
-        <span>{{ people }}</span>
-      </div>
-      <div id="mwt_slider_content">feedback</div>
-    </div>
-    -->
-
     <!-- navbar -->
     <nav class="navbar navbar-inverse newbar" >
       <div class="container-fluid">
@@ -124,7 +80,7 @@ SOFTWARE.
             <li class="nav-text"><a href="{% url 'problem:problem' %}">Problem</a></li>
             <li class="nav-text"><a href="{% url 'users:submit' %}">Submit</a></li>
             <li class="nav-text"><a href="{% url 'status:status' %}?username={{ user.username }}">Status</a></li>
-            <!--<li class="nav-text"><a href="">Group</a></li>-->
+            <li class="nav-text"><a href="{% url 'group:list' %}">Group</a></li>
             <!--
             <li class="dropdown nav-text">
               <a href="#" class="dropdown-toggle" data-toggle="dropdown"
@@ -192,16 +148,25 @@ SOFTWARE.
     </div>
 
     <!-- footer -->
-    <div class="panel-primary sticky-footer ">
-      <div class="panel-heading footer">
-        <button id="contact_us" data-clipboard-text="nthucsoj@gmail.com" title="Click to copy me.">Contact us
-        </button>
-        <script src={% static "js/clipboard.js"%}></script>
-        <p id="footer_text">
-        © NTHU Online Judge 2015, Templates are from Bootswatch Project</p>
-        <p id='time'>
-        {{ tstr }}
-        </p>
-    </div>
+    <footer>
+      <div class="navbar navbar-inverse navbar-fixed-bottom sticky-footer container-fluid">
+        <div class="navbar-collapse collapse">
+          <p class="navbar-text col-lg-4">Contact us: nthucsoj@gmail.com</p>
+          <p class="navbar-text col-lg-6">© NTHU Online Judge 2015, Templates are from Bootswatch Project</p>
+          <p id="time" class="navbar-text">{{ tstr }}</p>
+        </div>
+      </div>
+    </footer>
+
+    <!-- JS -->
+    <script src={% static "bootstrap/dist/js/bootstrap.min.js" %}></script>
+    <script src={% static './js/function.js'%}></script>
+    <script src={% static "magnific-popup/dist/jquery.magnific-popup.min.js" %}></script>
+    {% include 'autocomplete_light/static.html' %}
+    <script src={% static "js/popup-setting.js" %}></script>
+    <script src={% static "js/base.js" %}></script>
+    <script src={% static "js/clock.js" %}></script>
+    {% block import_source %}
+    {% endblock import_source %}
   </body>
 </html>

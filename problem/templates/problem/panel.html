@@ -1,5 +1,6 @@
 {% extends 'problem/base.html' %}
 {% load static %}
+{% load bootstrap %}
 {% block title_name %}
 <title>Problem Panel</title>
 {% endblock title_name %}
@@ -8,7 +9,18 @@
   <br>
   <!--title-->
   <div class="well">
-    <h2>Problem Panel</h2>
+    <h2>Problems</h2>
+    <form method="get">
+      <!-- <div class="col-lg-8"></div> -->
+      {% for field in tag_filter %}
+        <div class="col-lg-3">{{ field|bootstrap }}</div>
+      {% endfor %}
+    <div class="modal-footer">
+        <div class="col-lg-2">
+          <button type="submit" class="btn btn-primary">Search</button>
+        </div>
+    </div>
+    </form>
   </div>
   <div>
     {% if can_add_problem %}
@@ -26,6 +38,20 @@
     </div>
     {% endif %}
   </div>
+  {% if user.is_authenticated %}
+  <div class="btn-group" role="group" style="float:right;">
+    <a href="{% url 'problem:problem' %}?filter=mine">
+      <button type="button" class="btn btn-default {% if mine %}active{% endif %}">
+        My Problem
+      </button>
+    </a>
+    <a href="{% url 'problem:problem' %}">
+      <button type="button" class="btn btn-default {% if not mine %}active{% endif %}">
+        All Problem
+      </button>
+    </a>
+  </div>
+  {% endif %}
   <div>
     <div>
       {% include 'problem/problem_list.html' with problem=all_problem %}
@@ -33,10 +59,12 @@
   </div>
 </div>
 <script>
-$('[data-toggle="tooltip"]').tooltip();
-$("#add_problem_form").hide();
-$("#add_problem_btn").click(function (e) {
-    $("#add_problem_form").show();
-});
+$(function () {
+  $('[data-toggle="tooltip"]').tooltip();
+  $("#add_problem_form").hide();
+  $("#add_problem_btn").click(function (e) {
+      $("#add_problem_form").show();
+  });
+})
 </script>
 {% endblock %}

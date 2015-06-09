@@ -33,7 +33,7 @@ from django.template.loader import render_to_string
 from contest.models import Contest
 from contest.models import Contestant
 from problem.models import Submission, SubmissionDetail
-from users.models import User, UserProfile
+from users.models import User, UserProfile, Notification
 from utils.log_info import get_logger
 from utils.config_info import get_config
 from django.conf import settings
@@ -53,11 +53,16 @@ def has_contest_ownership(curr_user, curr_contest):
 
 
 
+
 def has_group_ownership(curr_user, curr_group):
     curr_user = validate_user(curr_user)
 
-    if curr_user == curr_group.owner:
+    if curr_user == curr_group.owner or curr_user.has_admin_auth():
         return True
+    return False
+
+def has_group_coownership(curr_user, curr_group):
+    curr_user = validate_user(curr_user)
 
     group_coowners = curr_group.coowner.all()
     if group_coowners:
@@ -65,7 +70,6 @@ def has_group_ownership(curr_user, curr_group):
             if curr_user == coowner:
                 return True
     return False
-
 
 def has_problem_ownership(curr_user, curr_problem):
     curr_user = validate_user(curr_user)
@@ -197,3 +201,10 @@ def send_forget_password_email(request, user):
         Thread(target=msg.send, args=()).start()
     except:
         logger.warning("There is an error when sending email to %s's mailbox" % username)
+
+def send_notification(user, content):
+    try:
+        Notification.objects.create(receiver=user, message=content)
+        logger.info("send notification to %s successfully" % user.username)
+    except:
+        logger.warning("There is an error when sending notification to %s" % user.username)

@@ -21,11 +21,13 @@ git config --global url."https://".insteadOf git://
 
 ####Dependencies:
 * python2.7
+* python-dev
 * mysql-server
 * python-pip
 * python-mysqldb
 * nodejs
 * npm
+* libjpeg
 * bower
 * django1.7
 * django-bower
@@ -35,11 +37,17 @@ git config --global url."https://".insteadOf git://
 * django-bootstrap
 * django-bootstrap-form
 * requests
+<<<<<<< HEAD
 * git
+=======
+* django-ckeditor
+* pillow
+>>>>>>> 04ed9d91f0d50415114330044ea6b41f28054337
 
 ###Installation:
 * Install dependencies (for ubuntu)
 ```
+<<<<<<< HEAD
 sudo apt-get install mysql-server
 sudo apt-get install python-pip
 sudo apt-get install python-mysqldb
@@ -56,6 +64,27 @@ sudo pip install django-bootstrap
 sudo pip install django-bootstrap-form
 sudo pip install requests
 sudo apt-get install git
+=======
+apt-get install mysql-server
+apt-get install python-pip
+apt-get install python-mysqldb
+apt-get install nodejs
+apt-get install npm
+apt-get install python-dev
+apt-get install libjpeg-dev
+npm install -g bower
+ln -s /usr/bin/nodejs /usr/bin/node
+pip install django==1.7
+pip install django-bower
+pip install django-axes
+pip install django-autocomplete-light
+pip install django-datetime-widget
+pip install django-bootstrap
+pip install django-bootstrap-form
+pip install requests
+pip install django-ckeditor
+pip install pillow
+>>>>>>> 04ed9d91f0d50415114330044ea6b41f28054337
 ```
 
 * Execute install.py for initial setting.
@@ -71,7 +100,3 @@ python install.py
 * The email host should be gmail.
 
 * Your google account seeting 'Access for less secure apps' should turn on.
-
-###Virtual judge account
-* We use [virtual judge](http://vjudge.net) for judging codes from other resources(UVA, ICPC, etc).
-

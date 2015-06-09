@@ -68,11 +68,19 @@ function getRestTime() {
             result /= 60;
             var m = parseInt(result % 60);
             result /= 60;
-            var h = parseInt(result);
+            var h = parseInt(result % 24);
+            result /= 24;
+            var d = parseInt(result);
             m = checkTime(m);
             s = checkTime(s);
             h = checkTime(h);
-            remainings[i].innerHTML = h + ":" + m + ":" + s;
+            var day = "";
+            if(d > 1)
+                day = d + " days, ";
+            else if(d == 1)
+                day = d + " day, ";
+
+            remainings[i].innerHTML = day + h + ":" + m + ":" + s;
         }
     }
     for(var i=0;i<upcoming_time.length;i++){

@@ -29,8 +29,7 @@ urlpatterns = patterns('',
     # /problem  : problem panel
     url(r'^(?P<pid>\d+)/$', views.detail, name='detail'),
     # /problem/10 : detail of problem 10
-    url(r'^(?P<pid>\d+)/delete/$', views.delete_problem, name='delete_problem'),
-    # /problem/10/delete : delete problem 10
+    url(r'^(?P<pid>\d+)/delete/$', views.delete_problem, name='delete_problem'), # /problem/10/delete : delete problem 10
     url(r'^(?P<pid>\d+)/edit/$', views.edit, name='edit'),
     # /problem/10/edit : edit problem 10
     url(r'^new/$', views.new, name='new'),
@@ -51,4 +50,5 @@ urlpatterns = patterns('',
     url(r'^testcase/(?P<filename>.+)/$', views.download_testcase, name="download_testcase"),
     url(r'^partial/(?P<filename>.+)/$', views.download_partial, name="download_partial"),
     url(r'^special/(?P<filename>.+)/$', views.download_special, name="download_special"),
+    url(r'^rejudge/$', views.rejudge, name="rejudge"),
 )
