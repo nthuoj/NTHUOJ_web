@@ -82,6 +82,8 @@ $(function () {
                     var contents = e.target.result;
                     try {
                         editor.getDoc().setValue(contents);
+                        window.scrollTo(0, document.body.scrollHeight);
+
                     } catch (e) {
 
                     }
