@@ -16,15 +16,6 @@
 <div class="col-lg-offset-1 col-lg-10">
   <h2>#{{ group.id }} - {{ group.gname }}</h2>
   <div class="well">
-    <div class="alert alert-dismissable alert-warning">
-      <button type="button" class="close" data-dismiss="alert">×</button>
-      {% if not group.id %}
-        <h4>Hey! You Are Now Setting for New Group ...</h4>
-      {% else %}
-        <h4>Hey! You Are Now Setting for Group #{{ group.id }}...</h4>
-      {% endif %}
-      <p style="color:white">Any change you made will be saved to group</p>
-    </div>
     <form action="." method="POST">
       {% csrf_token %}
       {% for field in form %}
