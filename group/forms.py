@@ -25,9 +25,11 @@ from django.db.models import Q
 
 class GroupForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
-        super(GroupForm, self).__init__(*args, **kwargs)
         # access object through self.instance...
-        self.fields['coowner'].queryset = User.objects.exclude(Q(user_level=User.USER))
+        user = kwargs.pop('user', User())
+        super(GroupForm, self).__init__(*args, **kwargs)
+        self.fields['coowner'].queryset = User.objects.exclude(Q(user_level=User.USER)|Q(username=user.username))
+
     class Meta:
         model = Group
         fields = [

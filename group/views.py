@@ -154,7 +154,7 @@ def my_list(request):
 def new(request):
     if request.user.has_judge_auth():
         if request.method == 'GET':
-            form = GroupForm(initial={'owner':request.user})
+            form = GroupForm(user=request.user, initial={'owner':request.user})
             return render_index(request,'group/editGroup.html',{'form':form})
         if request.method == 'POST':
             form = GroupForm(request.POST, initial={'owner':request.user})
