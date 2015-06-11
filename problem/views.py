@@ -34,7 +34,7 @@ from utils.render_helper import render_index
 from utils.user_info import validate_user, has_problem_auth, has_problem_ownership
 from users.models import User
 from problem.models import Problem, Tag, Testcase
-from problem.forms import ProblemForm, TagForm
+from problem.forms import ProblemForm, TagForm, TagFilter
 from utils import log_info, config_info
 from problem.problem_info import *
 from utils import log_info
@@ -51,25 +51,34 @@ def problem(request):
     user = validate_user(request.user)
     can_add_problem = user.has_subjudge_auth()
     filter_type = request.GET.get('filter')
-    if filter_type == 'mine':
-        problem_list = get_owner_problem_list(user)
-        mine = True
-    else:
-        problem_list = get_problem_list(user)
-        mine = False
-    problems = get_current_page(request, problem_list, 15)
-    for p in problems:
-        if p.total_submission != 0:
-            p.pass_rate = float(p.ac_count) / float(p.total_submission) * 100.0
-            p.not_pass_rate = 100.0 - p.pass_rate
-            p.pass_rate = "%.2f" % (p.pass_rate)
-            p.not_pass_rate = "%.2f" % (p.not_pass_rate)
+    tag_filter = TagFilter(request.GET)
+    if tag_filter.is_valid():
+        tag_name = tag_filter.cleaned_data['tag_name']
+        if filter_type == 'mine':
+            problem_list = get_owner_problem_list(user)
+            mine = True
         else:
-            p.no_submission = True
-
+            problem_list = get_problem_list(user)
+            mine = False
+        if tag_name:
+            problem_list = problem_list.filter(tags__tag_name=tag_name)
+            for p in problem_list:
+                p.in_contest = check_in_contest(p)
+        problems = get_current_page(request, problem_list, 15)
+        for p in problems:
+            if p.total_submission != 0:
+                p.pass_rate = float(p.ac_count) / float(p.total_submission) * 100.0
+                p.not_pass_rate = 100.0 - p.pass_rate
+                p.pass_rate = "%.2f" % (p.pass_rate)
+                p.not_pass_rate = "%.2f" % (p.not_pass_rate)
+            else:
+                p.no_submission = True
+    else:
+        problems = []
+        mine = False
     return render_index(request, 'problem/panel.html',
                   {'all_problem': problems, 'mine': mine,
-                   'can_add_problem': can_add_problem})
+                   'can_add_problem': can_add_problem, 'tag_filter': tag_filter})
 
 def detail(request, pid):
     user = validate_user(request.user)
@@ -84,6 +93,7 @@ def detail(request, pid):
         raise Http404('problem %s does not exist' % (pid))
     problem.testcase = get_testcase(problem)
     problem = verify_problem_code(problem)
+    problem.in_contest = check_in_contest(problem)
     return render_index(request, 'problem/detail.html', {'problem': problem, 'tag_form': tag_form})
 
 @login_required
@@ -131,6 +141,15 @@ def edit(request, pid=None):
                 with open('%s%s.h' % (PARTIAL_PATH, problem.pk), 'w') as t_in:
                     for chunk in request.FILES['partial_judge_header'].chunks():
                         t_in.write(chunk)
+            problem = verify_problem_code(problem)
+            if problem.has_special_judge_code and \
+                problem.judge_type != problem.SPECIAL:
+                os.remove('%s%s%s' % (SPECIAL_PATH, problem.pk, file_ex))
+            if problem.judge_type != problem.PARTIAL:
+                if problem.has_partial_judge_code:
+                    os.remove('%s%s%s' % (PARTIAL_PATH, problem.pk, file_ex))
+                if problem.has_partial_judge_header:
+                    os.remove('%s%s.h' % (PARTIAL_PATH, problem.pk))
             logger.info('edit problem, pid = %d by %s' % (problem.pk, request.user))
             messages.success(request, 'problem %d edited' % problem.pk)
             return redirect('/problem/%d' % (problem.pk))
@@ -278,16 +297,37 @@ def preview(request):
     problem.tag = request.POST['tags'].split(',')
     return render_index(request, 'problem/preview.html', {'problem': problem, 'preview': True})
 
+@login_required
 def download_testcase(request, filename):
+    pid = filename.split('.')[0]
+    try:
+        problem = Problem.objects.get(pk=pid)
+    except: 
+        raise Http404()
+    if not has_problem_ownership(request.user, problem) and \
+            not request.user.has_admin_auth():
+        logger.warning("%s has no permission to see testcase of problem %d" % (request.user, problem.pk))
+        raise Http404()
     try:
         f = open(TESTCASE_PATH+filename, "r")
     except IOError:
+        logger.warning("open testcase %s error" % filename)
         raise Http404()
     response = HttpResponse(FileWrapper(f), content_type="text/plain")
     response['Content-Disposition'] = 'attachment; filename=' + filename
     return response
 
+@login_required
 def download_partial(request, filename):
+    pid = filename.split('.')[0]
+    try:
+        problem = Problem.objects.get(pk=pid)
+    except: 
+        raise Http404()
+    if not has_problem_auth(request.user, problem):
+        logger.warning("%s has no permission to download problem %d partial judge code" 
+                % (request.user, problem.pk))
+        raise Http404()
     try:
         f = open(PARTIAL_PATH+filename, "r")
     except IOError:
@@ -296,7 +336,18 @@ def download_partial(request, filename):
     response['Content-Disposition'] = 'attachment; filename=' + filename
     return response
 
+@login_required
 def download_special(request, filename):
+    pid = filename.split('.')[0]
+    try:
+        problem = Problem.objects.get(pk=pid)
+    except: 
+        raise Http404()
+    if not has_problem_ownership(request.user, problem) and \
+            not request.user.has_admin_auth():
+        logger.warning("%s has no permission to download problem %d special judge code" 
+                % (request.user, problem.pk))
+        raise Http404()
     try:
         f = open(SPECIAL_PATH+filename, "r")
     except IOError:

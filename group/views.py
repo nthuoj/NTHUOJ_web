@@ -22,8 +22,9 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.'''
 from django.core.urlresolvers import reverse
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
+from django.contrib.auth.decorators import login_required
+from django.contrib import messages
 from django.db.models import Q
 from django.http import HttpResponse, HttpResponseRedirect, Http404
 from django.shortcuts import render_to_response, render
@@ -148,57 +149,68 @@ def my_list(request):
             'include_flag': 'my_group',
         })
 
+#Group new/delete/edit
+@login_required
 def new(request):
-
     if request.user.has_judge_auth():
         if request.method == 'GET':
-            form = GroupForm()
+            form = GroupForm(user=request.user, initial={'owner':request.user})
             return render_index(request,'group/editGroup.html',{'form':form})
         if request.method == 'POST':
-            form = GroupForm(request.POST)
+            form = GroupForm(request.POST, initial={'owner':request.user})
             if form.is_valid():
                 new_group = form.save()
                 logger.info('Group: Create a new group %s!' % new_group.id)
                 return HttpResponseRedirect(reverse('group:list'))
             else:
-                return render(
+                return render_index(
                     request,
-                    'index/404.html',
-                    {'error_message': 'Cannot create group! Info is blank!'})
+                    'group/editGroup.html', {'form': form})
     else:
         raise PermissionDenied
 
+@login_required
 def delete(request, group_id):
-
-    if request.user.has_judge_auth():
-        get_group(group_id)
+    group = get_group(group_id)
+    user_is_owner = has_group_ownership(request.user, group)
+    if user_is_owner:
+        group = get_group(group_id)
         deleted_gid = group.id
         group.delete()
-        logger.info('Group: Delete group %s!' % deleted_gid)
+        message = 'Group %s deleted!' % (deleted_gid)
+        messages.warning(request, message)
         return HttpResponseRedirect(reverse('group:list'))
     else:
         raise PermissionDenied
 
+@login_required
 def edit(request, group_id):
-
-        group = get_group(group_id)
-
-        coowner_list = []
-        all_coowner = group.coowner.all()
-        for coowner in all_coowner:
-            coowner_list.append(coowner.username)
-
-        if request.user.username == group.owner.username or \
-           request.user.username in coowner_list:
-            if request.method == 'GET':
-                group_dic = model_to_dict(group)
-                form = GroupFormEdit(initial = group_dic)
-                return render_index(request,'group/editGroup.html',{'form':form})
-            if request.method == 'POST':
-                form = GroupFormEdit(request.POST, instance = group)
-                if form.is_valid():
-                    modified_group = form.save()
-                    logger.info('Group: Modified group %s!' % modified_group.id)
-                    return HttpResponseRedirect(reverse('group:detail', kwargs={'group_id': modified_group_id}))
-        else:
-            raise PermissionDenied
+    group = get_group(group_id)
+    user_is_owner = has_group_ownership(request.user, group)
+    user_is_coowner = has_group_coownership(request.user, group)
+    if user_is_owner or user_is_coowner:
+        if request.method == 'GET':
+            group_dic = model_to_dict(group)
+            form = GroupFormEdit(initial=group_dic)
+            return render_index(
+                request,'group/editGroup.html', {
+                    'form':form,
+                    'group': group,
+                    'user_is_coowner': user_is_coowner,
+                })
+        if request.method == 'POST':
+            form = GroupFormEdit(request.POST, instance=group)
+            if form.is_valid():
+                modified_group = form.save()
+                message = 'Group %s modified!' % (modified_group.id)
+                messages.success(request, message)
+                logger.info('Group: Modified group %s!' % modified_group.id)
+                return HttpResponseRedirect(reverse('group:detail', kwargs={'group_id': modified_group.id}))
+            else:
+                return render_index(
+                    request,'group/editGroup.html', {
+                    'form':form,
+                    'user_is_coowner': user_is_coowner,
+                })
+    else:
+        raise PermissionDenied

@@ -23,10 +23,8 @@ SOFTWARE.
 */
 $(function() {
     var one_hour = 60 * 60 * 1000;
-    setInterval(function() {
-        $.get('/get_time/', function(data) {
-            $('#time').html(data);
-        });
+    setTimeout(function() {
+        location.reload();
     }, one_hour);
 
     $('#globalNavigation').yourlabsAutocomplete({

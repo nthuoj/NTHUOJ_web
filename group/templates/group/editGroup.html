@@ -1,69 +1,58 @@
 {% extends "index/base.html" %}
 {% load static %}
-{% load bootstrap %}
 {% block title_name %}
-
+{% if group %}
+<title>Edit for Group {{ group.id }}...</title>
+{% else %}
+<title>New group...</title>
+{% endif %}
 {% endblock title_name %}
- {% block body_block %}
+{% load bootstrap %}
+{% block import_source %}
+<script src="{% static 'multiselect/js/jquery.multi-select.js' %}" type="text/javascript"></script>
+<script src="{% static 'quicksearch/jquery.quicksearch.js' %}" type="text/javascript"></script>
+<script src="{% static 'group/js/editGroup.js' %}" type="text/javascript"></script>
+<link href="{% static 'multiselect/css/multi-select.css'%}" media="screen" rel="stylesheet" type="text/css">
+{% endblock import_source %} 
+{% block body_block %}
 <br>
 <br>
-<div class="container">
-  <a onclick="history.back()" type="reset" class="btn btn-sm btn-default">
-    Cancel
-  </a>
-  <br>
-  <br>
-  <div class="alert alert-dismissable alert-warning">
-    <button type="button" class="close" data-dismiss="alert">×</button>
-    <h4>Hey! You Now Setting for Group...</h4>
-    <p style="color:white">hint: HOLD shift to select more than two object</p>
-    <p style="color:white">hint: any change you made will save to the group</p>
-  </div>
-  <form action="." method="POST">
-    {% csrf_token %}
-    {% for field in form %}
-    {% if field.label_tag == form.gname.label_tag %}
-    <div class="panel panel-default">
-      <div class="panel-heading" style="font-size:16px">set group name</div>
-      <div class="panel-body">{{ field|bootstrap }}</div>
-    </div>
-    {% elif field.label_tag == form.owner.label_tag %}
-    <div class="panel panel-default">
-      <div class="panel-heading" style="font-size:16px">set owner</div>
-      <div class="panel-body">{{ field|bootstrap  }}</div>
-    </div>
-    {% elif field.label_tag == form.coowner.label_tag %}
-    <div class="panel panel-default">
-      <div class="panel-heading" style="font-size:16px">set coowner</div>
-      <div class="panel-body">{{ field|bootstrap  }}</div>
-    </div>
-    {% elif field.label_tag == form.member.label_tag %}
-    <div class="panel panel-default">
-      <div class="panel-heading" style="font-size:16px">set member</div>
-      <div class="panel-body">{{ field|bootstrap  }}</div>
-    </div>
-    {% elif field.label_tag == form.description.label_tag %}
-    <div class="panel panel-default">
-      <div class="panel-heading" style="font-size:16px">set description</div>
-      <div class="panel-body">{{ field|bootstrap  }}</div>
-    </div>
-    {% elif field.label_tag == form.announce.label_tag %}
-    <div class="panel panel-default">
-      <div class="panel-heading" style="font-size:16px">set announce</div>
-      <div class="panel-body">{{ field|bootstrap  }}</div>
-    </div>
-    {% elif field.label_tag == form.trace_contest.label_tag %}
-    <div class="panel panel-default">
-      <div class="panel-heading" style="font-size:16px">set trace contest</div>
-      <div class="panel-body">{{ field|bootstrap  }}</div>
-    </div>
+<div class="col-lg-offset-1 col-lg-10">
+  <h2>
+    {% if group %}
+    {{ group.id }} - {{ group.gname }}
+    <a href="{% url 'group:detail' group.id %}">
+      <button type="button" class="btn btn-primary">
+        See this group
+      </button>
+    </a>
     {% endif %}
-    {% endfor %}
-    <br>
-    <input class="btn btn-sm btn-primary" type="submit" style="float:right" value="Comfirm">
-  </form>
+    <a href="{% url 'group:list' %}">
+      <button type="button" class="btn btn-info">
+        Go to Group list
+      </button>
+    </a>
+  </h2>
+  <div class="well">
+    <form action="." method="POST">
+      {% csrf_token %}
+      {% for field in form %}
+        {% if field.label_tag == form.owner.label_tag %}
+          {{ field.as_hidden }}
+        {% elif field.label_tag == form.coowner.label_tag and user_is_coowner %}
+            {{ field.as_hidden }}
+        {% elif field.label_tag == form.member.label_tag %}
+          {{ field.as_hidden }}
+        {% else %}
+          {{ field|bootstrap }}
+        {% endif %}
+      {% endfor %}
+      <br>
+      <input class="btn btn-sm btn-primary" type="submit" style="float:right" value="Save">
+      <br>
+      <br>
+    </form>
+  </div>
 </div>
-<br>
-<br>
 <br>
 {% endblock body_block %}
