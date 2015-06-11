@@ -14,12 +14,14 @@
     <div class="container-fluid">
       <div class="span12">
         <h2>{{ group.id }} - {{ group.gname }}
+          {% if user_has_auth %}
           <a href="{% url 'group:edit' group.id %}">
             <button type="button" class="btn btn-warning btn-xs" 
                     data-toggle="tooltip" data-placement="top">
               <span class="glyphicon glyphicon-pencil"></span>
             </button>
           </a>
+          {% endif %}
         </h2>
       </div>
     </div>
