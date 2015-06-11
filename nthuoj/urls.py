@@ -19,10 +19,14 @@ def judge_auth_required(view):
         return HttpResponseRedirect(settings.LOGIN_URL)
     return f
 
-urlpatterns = patterns('',
-    url(r'^ckeditor/upload/', judge_auth_required(upload), name='ckeditor_upload'),
-    url(r'^ckeditor/browse/', judge_auth_required(browse), name='ckeditor_browse'),
-    url(r'^media/(?P<path>.*)$', 'django.views.static.serve', {'document_root': settings.MEDIA_ROOT, 'show_indexes': True}),
+urlpatterns = patterns(
+    '',
+    url(r'^ckeditor/upload/', judge_auth_required(upload),
+        name='ckeditor_upload'),
+    url(r'^ckeditor/browse/', judge_auth_required(browse),
+        name='ckeditor_browse'),
+    url(r'^media/(?P<path>.*)$', 'django.views.static.serve',
+        {'document_root': settings.MEDIA_ROOT, 'show_indexes': True}),
     url(r'^autocomplete/', include('autocomplete_light.urls')),
     url(r'^admin/', include(admin.site.urls)),
     url(r'^get_time/', 'index.views.get_time'),
