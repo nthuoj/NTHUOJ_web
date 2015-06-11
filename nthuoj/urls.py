@@ -1,15 +1,27 @@
 from django.conf.urls import patterns, include, url
 from django.contrib import admin
 from django.conf import settings
-from django.contrib.auth.decorators import login_required
+from django.http import HttpResponseRedirect
 from ckeditor.views import upload, browse
+from utils.user_info import validate_user
 import autocomplete_light
+
 # OP autodiscover
 autocomplete_light.autodiscover()
 
+
+def judge_auth_required(view):
+    """A decorator to ensure user has judge auth."""
+    def f(request, *args, **kwargs):
+        user = validate_user(request.user)
+        if user.has_judge_auth():
+            return view(request, *args, **kwargs)
+        return HttpResponseRedirect(settings.LOGIN_URL)
+    return f
+
 urlpatterns = patterns('',
-    url(r'^ckeditor/upload/', login_required(upload), name='ckeditor_upload'),
-    url(r'^ckeditor/browse/', login_required(browse), name='ckeditor_browse'),
+    url(r'^ckeditor/upload/', judge_auth_required(upload), name='ckeditor_upload'),
+    url(r'^ckeditor/browse/', judge_auth_required(browse), name='ckeditor_browse'),
     url(r'^media/(?P<path>.*)$', 'django.views.static.serve', {'document_root': settings.MEDIA_ROOT, 'show_indexes': True}),
     url(r'^autocomplete/', include('autocomplete_light.urls')),
     url(r'^admin/', include(admin.site.urls)),
