@@ -46,14 +46,12 @@ git config --global url."https://".insteadOf git://
 * Install dependencies (for ubuntu)
 ```
 sudo apt-get install git
-sudo apt-get install mysql-server
+sudo apt-get install mysql-server python-mysqldb
 sudo apt-get install python-pip
-sudo apt-get install python-mysqldb
-sudo apt-get install nodejs
 sudo apt-get install python-dev
 sudo apt-get install libjpeg-dev
 sudo apt-get install dos2unix
-sudo apt-get install npm
+sudo apt-get install npm nodejs
 sudo npm install -g bower
 sudo ln -s /usr/bin/nodejs /usr/bin/node
 sudo pip install -r requirements.txt
