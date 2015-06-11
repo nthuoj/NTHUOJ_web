@@ -40,6 +40,7 @@ git config --global url."https://".insteadOf git://
 * requests
 * git
 * pillow
+* dos2unix
 
 ###Installation:
 * Install dependencies (for ubuntu)
@@ -51,6 +52,7 @@ sudo apt-get install python-mysqldb
 sudo apt-get install nodejs
 sudo apt-get install python-dev
 sudo apt-get install libjpeg-dev
+sudo apt-get install dos2unix
 sudo apt-get install npm
 sudo npm install -g bower
 sudo ln -s /usr/bin/nodejs /usr/bin/node
