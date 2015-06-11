@@ -29,7 +29,8 @@ from contest.models import Contest, Contestant
 from contest.contest_info import get_running_contests, get_contestant
 from problem.models import SubmissionDetail
 from team.models import TeamMember
-from utils.user_info import validate_user, has_contest_ownership
+from utils.user_info import validate_user, has_contest_ownership, \
+    has_problem_ownership
 
 
 register = template.Library()
@@ -96,6 +97,38 @@ def show_detail(submission, user):
         if team_member or submission.team.leader == user:
             return True
     # no condition is satisfied
+    return False
+
+
+@register.filter()
+def can_rejudge(submission, user):
+    """Test if the user can rejudge that submission
+
+    Args:
+        submission: the submission to show
+        user: an User object
+    Returns:
+        a boolean of the judgement
+    """
+    user = validate_user(user)
+    # There are 2 kinds of people can rejudge submission:
+    # 1. Admin Almighty
+    if user.has_admin_auth():
+        return True
+
+    # 2. Problem owner
+    if has_problem_ownership(user, submission.problem):
+        return True
+
+    # 3. Contest owner / coowner
+    contests = Contest.objects.filter(
+        problem=submission.problem,
+        end_time__gte=submission.submit_time,
+        creation_time__lte=submission.submit_time)
+    for contest in contests:
+        if has_contest_ownership(user, contest):
+            return True
+
     return False
 
 
