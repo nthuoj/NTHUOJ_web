@@ -44,6 +44,7 @@ git config --global url."https://".insteadOf git://
 ###Installation:
 * Install dependencies (for ubuntu)
 ```
+sudo apt-get install git
 sudo apt-get install mysql-server
 sudo apt-get install python-pip
 sudo apt-get install python-mysqldb
@@ -53,17 +54,7 @@ sudo apt-get install libjpeg-dev
 sudo apt-get install npm
 sudo npm install -g bower
 sudo ln -s /usr/bin/nodejs /usr/bin/node
-sudo pip install django==1.7
-sudo pip install django-bower
-sudo pip install django-axes
-sudo pip install django-autocomplete-light
-sudo pip install django-datetime-widget
-sudo pip install django-bootstrap
-sudo pip install django-bootstrap-form
-sudo pip install django-ckeditor
-sudo pip install requests
-sudo pip install -I pillow
-sudo apt-get install git
+sudo pip install -r requirements.txt
 ```
 
 * Execute install.py for initial setting.
