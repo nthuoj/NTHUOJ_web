@@ -42,7 +42,7 @@ class CodeSubmitForm(forms.Form):
     language = forms.ChoiceField(choices=LANGUAGE_CHOICE, initial=Submission.CPP,
                                  help_text="Backend: %s<br>gcc: %s<br>g++: %s"
                                  % (BACKEND_VERSION, GCC_VERSION, GPP_VERSION))
-    code = forms.CharField(max_length=10000,
+    code = forms.CharField(max_length=40 * 1024,
                            widget=forms.Textarea(attrs={'id': 'code_editor'}))
 
     def clean_pid(self):
@@ -175,6 +175,3 @@ class UserForgetPasswordForm(forms.Form):
         if username and email and User.objects.filter(username=username, email=email):
             return email
         raise forms.ValidationError("Username and Email don't match")
-
-
-

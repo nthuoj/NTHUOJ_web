@@ -139,7 +139,7 @@
         <div class="tab-pane active" id="overview">
           {% include "contest/overview.html" %}
         </div>
-        {% for problem in contest.problem.all %}
+        {% for problem in contest.problems %}
         <div class="tab-pane" id="problem{{ problem.id }}">
           {% include "problem/problem.html" %}
         </div>

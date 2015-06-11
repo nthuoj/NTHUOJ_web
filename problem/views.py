@@ -93,6 +93,7 @@ def detail(request, pid):
         raise Http404('problem %s does not exist' % (pid))
     problem.testcase = get_testcase(problem)
     problem = verify_problem_code(problem)
+    problem.in_contest = check_in_contest(problem)
     return render_index(request, 'problem/detail.html', {'problem': problem, 'tag_form': tag_form})
 
 @login_required
@@ -140,6 +141,15 @@ def edit(request, pid=None):
                 with open('%s%s.h' % (PARTIAL_PATH, problem.pk), 'w') as t_in:
                     for chunk in request.FILES['partial_judge_header'].chunks():
                         t_in.write(chunk)
+            problem = verify_problem_code(problem)
+            if problem.has_special_judge_code and \
+                problem.judge_type != problem.SPECIAL:
+                os.remove('%s%s%s' % (SPECIAL_PATH, problem.pk, file_ex))
+            if problem.judge_type != problem.PARTIAL:
+                if problem.has_partial_judge_code:
+                    os.remove('%s%s%s' % (PARTIAL_PATH, problem.pk, file_ex))
+                if problem.has_partial_judge_header:
+                    os.remove('%s%s.h' % (PARTIAL_PATH, problem.pk))
             logger.info('edit problem, pid = %d by %s' % (problem.pk, request.user))
             messages.success(request, 'problem %d edited' % problem.pk)
             return redirect('/problem/%d' % (problem.pk))
@@ -287,16 +297,37 @@ def preview(request):
     problem.tag = request.POST['tags'].split(',')
     return render_index(request, 'problem/preview.html', {'problem': problem, 'preview': True})
 
+@login_required
 def download_testcase(request, filename):
+    pid = filename.split('.')[0]
+    try:
+        problem = Problem.objects.get(pk=pid)
+    except: 
+        raise Http404()
+    if not has_problem_ownership(request.user, problem) and \
+            not request.user.has_admin_auth():
+        logger.warning("%s has no permission to see testcase of problem %d" % (request.user, problem.pk))
+        raise Http404()
     try:
         f = open(TESTCASE_PATH+filename, "r")
     except IOError:
+        logger.warning("open testcase %s error" % filename)
         raise Http404()
     response = HttpResponse(FileWrapper(f), content_type="text/plain")
     response['Content-Disposition'] = 'attachment; filename=' + filename
     return response
 
+@login_required
 def download_partial(request, filename):
+    pid = filename.split('.')[0]
+    try:
+        problem = Problem.objects.get(pk=pid)
+    except: 
+        raise Http404()
+    if not has_problem_auth(request.user, problem):
+        logger.warning("%s has no permission to download problem %d partial judge code" 
+                % (request.user, problem.pk))
+        raise Http404()
     try:
         f = open(PARTIAL_PATH+filename, "r")
     except IOError:
@@ -305,7 +336,18 @@ def download_partial(request, filename):
     response['Content-Disposition'] = 'attachment; filename=' + filename
     return response
 
+@login_required
 def download_special(request, filename):
+    pid = filename.split('.')[0]
+    try:
+        problem = Problem.objects.get(pk=pid)
+    except: 
+        raise Http404()
+    if not has_problem_ownership(request.user, problem) and \
+            not request.user.has_admin_auth():
+        logger.warning("%s has no permission to download problem %d special judge code" 
+                % (request.user, problem.pk))
+        raise Http404()
     try:
         f = open(SPECIAL_PATH+filename, "r")
     except IOError:
