@@ -2,7 +2,7 @@ from django.conf.urls import patterns, include, url
 from django.contrib import admin
 from django.conf import settings
 from ckeditor.views import upload, browse
-from utils.user_info import judge_auth_required
+from utils.user_info import subjudge_auth_required
 import autocomplete_light
 
 # OP autodiscover
@@ -11,9 +11,9 @@ autocomplete_light.autodiscover()
 
 urlpatterns = patterns(
     '',
-    url(r'^ckeditor/upload/', judge_auth_required(upload),
+    url(r'^ckeditor/upload/', subjudge_auth_required(upload),
         name='ckeditor_upload'),
-    url(r'^ckeditor/browse/', judge_auth_required(browse),
+    url(r'^ckeditor/browse/', subjudge_auth_required(browse),
         name='ckeditor_browse'),
     url(r'^media/(?P<path>.*)$', 'django.views.static.serve',
         {'document_root': settings.MEDIA_ROOT, 'show_indexes': True}),

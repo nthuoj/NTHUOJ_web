@@ -46,12 +46,12 @@ EMAIL_HOST_USER = get_config('email', 'user')
 logger = get_logger()
 
 
-def judge_auth_required(view):
+def subjudge_auth_required(view):
     """A decorator to ensure user has judge auth."""
     @csrf_exempt
     def f(request, *args, **kwargs):
         user = validate_user(request.user)
-        if user.has_judge_auth():
+        if user.has_subjudge_auth():
             return view(request, *args, **kwargs)
         return HttpResponseRedirect(settings.LOGIN_URL)
     return f
