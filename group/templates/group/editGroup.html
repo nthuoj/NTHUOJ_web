@@ -18,7 +18,21 @@
 <br>
 <br>
 <div class="col-lg-offset-1 col-lg-10">
-  <h2>{{ group.id }} - {{ group.gname }}</h2>
+  <h2>
+    {% if group %}
+    {{ group.id }} - {{ group.gname }}
+    <a href="{% url 'group:detail' group.id %}">
+      <button type="button" class="btn btn-primary">
+        See this group
+      </button>
+    </a>
+    {% endif %}
+    <a href="{% url 'group:list' %}">
+      <button type="button" class="btn btn-info">
+        Go to Group list
+      </button>
+    </a>
+  </h2>
   <div class="well">
     <form action="." method="POST">
       {% csrf_token %}
