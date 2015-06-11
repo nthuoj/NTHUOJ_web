@@ -2,6 +2,7 @@ from django.conf.urls import patterns, include, url
 from django.contrib import admin
 from django.conf import settings
 from django.http import HttpResponseRedirect
+from django.views.decorators.csrf import csrf_exempt
 from ckeditor.views import upload, browse
 from utils.user_info import validate_user
 import autocomplete_light
@@ -21,9 +22,9 @@ def judge_auth_required(view):
 
 urlpatterns = patterns(
     '',
-    url(r'^ckeditor/upload/', judge_auth_required(upload),
+    url(r'^ckeditor/upload/', csrf_exempt(judge_auth_required(upload)),
         name='ckeditor_upload'),
-    url(r'^ckeditor/browse/', judge_auth_required(browse),
+    url(r'^ckeditor/browse/', csrf_exempt(judge_auth_required(browse)),
         name='ckeditor_browse'),
     url(r'^media/(?P<path>.*)$', 'django.views.static.serve',
         {'document_root': settings.MEDIA_ROOT, 'show_indexes': True}),
