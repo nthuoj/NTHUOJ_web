@@ -299,9 +299,10 @@ def preview(request):
 
 @login_required
 def download_testcase(request, filename):
-    pid = filename.split('.')[0]
+    tid = filename.split('.')[0]
     try:
-        problem = Problem.objects.get(pk=pid)
+        testcase = Testcase.objects.get(pk=tid)
+        problem = testcase.problem
     except: 
         raise Http404()
     if not has_problem_ownership(request.user, problem) and \
