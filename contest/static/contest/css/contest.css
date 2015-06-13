@@ -18,7 +18,10 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-div.inline>ul>li {
-  position: absolute;
-  display: inline;
+.green {
+  color: green;
+}
+
+.word-block {
+	word-wrap:break-word;
 }

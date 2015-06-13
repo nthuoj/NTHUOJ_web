@@ -1,4 +1,4 @@
-'''
+"""
 The MIT License (MIT)
 
 Copyright (c) 2014 NTHUOJ team
@@ -20,7 +20,7 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
-'''
+"""
 from django import forms
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
@@ -28,21 +28,27 @@ from django.contrib.auth.forms import ReadOnlyPasswordHashField, AuthenticationF
 from django.contrib.auth.models import Group
 from django.core.validators  import RegexValidator
 
+from contest.public_user import is_public_user, attends_not_ended_contest
+from utils.config_info import get_config
 from users.models import User, Notification
+from users.models import UserProfile
+
 
 # Register your models here.
 
 admin.site.register(Notification)
+admin.site.register(UserProfile)
+
 
 class UserCreationForm(forms.ModelForm):
     """A form for creating new users. Includes all the required
     fields, plus a repeated password."""
-    username = forms.CharField(label='Username', 
-        widget=forms.TextInput(attrs={'class': 'form-control'}),
+    USERNAME_BLACK_LIST = get_config('username', 'black_list', filename='user_auth.cfg').splitlines()
+    username = forms.CharField(label='Username',
         validators=[RegexValidator(regex='^\w+$', message='Username must be Alphanumeric')])
-    email = forms.EmailField(label='Email', widget=forms.TextInput(attrs={'class': 'form-control'}))
-    password1 = forms.CharField(label='Password', widget=forms.PasswordInput(attrs={'class': 'form-control'}))
-    password2 = forms.CharField(label='Password Confirmation', widget=forms.PasswordInput(attrs={'class': 'form-control'}))
+    email = forms.EmailField(label='Email')
+    password1 = forms.CharField(label='Password', widget=forms.PasswordInput())
+    password2 = forms.CharField(label='Password Confirmation', widget=forms.PasswordInput())
 
     class Meta:
         model = User
@@ -56,8 +62,16 @@ class UserCreationForm(forms.ModelForm):
             raise forms.ValidationError("Passwords don't match")
         return password2
 
+    def clean_username(self):
+        username = self.cleaned_data.get("username")
+        username_lower = username.lower()
+        for token in self.USERNAME_BLACK_LIST:
+            if token.lower() in username_lower:
+                raise forms.ValidationError("Username shouldn't contain %s." % token)
+
+        return username
+
     def save(self, commit=True):
-        # Save the provided password in hashed format
         user = super(UserCreationForm, self).save(commit=False)
         user.set_password(self.cleaned_data["password1"])
         user.email = self.cleaned_data["email"]
@@ -65,10 +79,22 @@ class UserCreationForm(forms.ModelForm):
             user.save()
         return user
 
+
 class AuthenticationForm(AuthenticationForm):
     """Extend default AuthenticationForm with prettified bootstrap attribute"""
-    username = forms.CharField(label='Username', widget=forms.TextInput(attrs={'class': 'form-control'}))
-    password = forms.CharField(label='Password', widget=forms.PasswordInput(attrs={'class': 'form-control'}))
+    username = forms.CharField(label='Username')
+    password = forms.CharField(label='Password', widget=forms.PasswordInput())
+
+    def __init__(self, *args, **kwargs):
+        super(AuthenticationForm, self).__init__(*args, **kwargs)
+        self.error_messages['inactive'] = 'This account is inactive. Check your email to activate the account!'
+
+    def confirm_login_allowed(self, user):
+        if is_public_user(user) and not attends_not_ended_contest(user):
+            user.is_active = False
+            user.save()
+
+        super(AuthenticationForm, self).confirm_login_allowed(user)
 
 
 class UserChangeForm(forms.ModelForm):
@@ -100,7 +126,7 @@ class UserAdmin(UserAdmin):
     list_display = ('username', 'is_admin')
     list_filter = ('is_admin',)
     fieldsets = (
-        (None, {'fields': ('username', 'password', 'email', 'user_level', 'active', 'theme')}),
+        (None, {'fields': ('username', 'password', 'email', 'user_level', 'theme', 'is_active')}),
         ('Permissions', {'fields': ('is_admin',)}),
     )
     # add_fieldsets is not a standard ModelAdmin attribute. UserAdmin
@@ -116,6 +142,7 @@ class UserAdmin(UserAdmin):
     filter_horizontal = ()
 
 admin.site.register(User, UserAdmin)
+
 # since we're not using Django's built-in permissions,
 # unregister the Group model from admin.
 admin.site.unregister(Group)

@@ -1,49 +1,32 @@
-<!--
-The MIT License (MIT)
-
-Copyright (c) 2014 NTHUOJ team
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
--->
 {% load static %}
-<div style='height:90px;' class='panel panel-default'>
-  <div style='padding-left:10px;padding-right:10px'>
-    <div style='float:left;width:60%;'>
-      <h2>{{problem.pname}} &nbsp;&nbsp;
-        {% if problem.owner == user or user.user_level == 'ADMIN' %}
-          <a href="{% url 'problem:edit' problem.pk %}">EDIT</a>
+<div class="pname_block panel">
+  <div class="left">
+    <div class="pname">
+      <h2>{{ problem.pk }} - {{ problem.pname }} &nbsp;&nbsp;
+        {% if problem.owner == user or user.user_level == 'ADMIN'%}
+          {% if not preview %}
+            <a class="btn btn-warning" href="{% url 'problem:problem.views.edit' problem.pk %}">
+              <span class="glyphicon glyphicon-pencil"></span>
+            </a>
+          {% endif %}
         {% endif %}
       </h2>
     </div>
-    <div class="problem-option" style="float:right;">
-      <h5>
-        <a>Status</a> &nbsp;|&nbsp;
-        <a>Printable </a> &nbsp;|&nbsp; 
-        <a>Rank</a> &nbsp;|&nbsp;
-        <a data-toggle='modal' data-target='#myModal'>Limits</a>
-      </h5>
-      <button class="btn btn-primary btn-lg" style='float:right'>Submit</button>
+  </div>
+  <div class="right">
+    <div class="problem-option">
+      <a href="/status/?pid={{ problem.pk }}">Status</a> &nbsp;|&nbsp;
+      <!-- <a>Printable </a> &nbsp;|&nbsp; -->
+      <!-- <a>Rank</a> &nbsp;|&nbsp; -->
+      <a data-toggle='modal' data-target='#limit_{{ problem.pk }}'>Limits</a>
+      {% if not preview %}
+        <a class="btn btn-primary" href="{% url 'users:submit' problem.pk %}">Submit</a>
+      {% endif %}
     </div>
   </div>
 </div>
 
-<div class='modal fade' id='myModal'>
+<div class='modal fade' id='limit_{{ problem.pk }}'>
   <div class='modal-dialog modal-sm'>
     <div class='modal-content'>
       <div class='modal-header'>
@@ -60,7 +43,7 @@ SOFTWARE.
               <td></td>
               <th>Time</th>
               <th>Memory</th>
-              {% for t in testcase %}
+              {% for t in problem.testcase %}
               <tr>
                 <th>Case {{forloop.counter}}</th>
                 <td>{{t.time_limit}} sec</td>
@@ -76,15 +59,15 @@ SOFTWARE.
 
 <div style="width:75%; float:left">
   <h3>Description</h3>
-  <p>{{problem.description|safe}}</p>
+  {{ problem.description | safe }}
   <h3>Input</h3>
-  <p>{{problem.input|safe}}</p>
+  {{ problem.input | safe }}
   <h3>Output</h3>
-  <p>{{problem.output|safe}}</p>
+  {{ problem.output | safe }}
   <h3>Sample Input</h3>
   <div class='panel panel-default'>
     <div class='panel-body'>
-      <samp id='sampinText'>{{problem.sample_in|linebreaksbr}}</samp>
+      <samp id='sampinText'>{{ problem.sample_in|linebreaksbr }}</samp>
       <br>
       <span class='label label-danger'>EOF</span>
     </div>
@@ -92,23 +75,46 @@ SOFTWARE.
   <h3>Sample Output</h3>
   <div class='panel panel-default'>
     <div class='panel-body'>
-      <samp id='sampoutText' name='sampoutText'>{{problem.sample_out|linebreaksbr}}</samp>
+      <samp id='sampoutText' name='sampoutText'>{{ problem.sample_out|linebreaksbr }}</samp>
       <br>
       <span class='label label-danger'>EOF</span>
     </div>
   </div>
+  {% if problem.judge_type == "LOCAL_PARTIAL" and problem.has_partial_judge_code %}
+    <h3>Partial Judge Code</h3>
+    <a href="{% url 'problem:download_partial' problem.filename %}">{{ problem.filename }}</a>
+  {% endif %}
+  {% if problem.judge_type == "LOCAL_PARTIAL" and problem.has_partial_judge_header %}
+    <h3>Partial Judge Header</h3>
+    <a href="{% url 'problem:download_partial' problem.headername %}">{{ problem.headername }}</a>
+  {% endif %}
+  {% if not problem.in_contest %}
   <h3>Tags</h3>
-  <div id='tags' style='float:left;width:60%'>
-    {% for tag in tags %}
-      <span class='label label-info'>{{tag.tag_name}}</span>
-    {% endfor %}
-  </div>
-  <div class='input-group' style='float:right;width:30%'>
-    <input type='text' id='newTag' class='form-control' width='25%'>
-    <span class='input-group-btn'>
-      <button id='addTagButton' class='btn btn-default'>Add Tag</button>
-    </span>
-  </div>
+    <div id='tags' style='float:left;width:60%'>
+      {% if preview %}
+        {% for tag in problem.tag %}
+          <span class='label label-info'>{{tag}}</span>
+        {% endfor %}
+      {% else %}
+        {% for tag in problem.tags.all %}
+          <span class='label label-info'>{{tag.tag_name}}</span>
+        {% endfor %}
+      {% endif %}
+    </div>
+    {% if tag_form and user.is_authenticated %}
+      <form id='addTag'>
+        {% csrf_token %}
+        <div class='input-group'>
+          {{ tag_form.tag_name }}
+          <span class="input-group-btn">
+	    <button id='addTagButton' class="btn btn-default" type="button">
+	      Add Tag
+	    </button>
+          </span>
+        </div>
+      </form>
+    {% endif %}
+  {% endif %}
 
   <br>
   <br>
@@ -120,5 +126,8 @@ SOFTWARE.
   <br>
   <br>
 </div>
-</body>
+<script>
+var pid = {{problem.pk}};
+</script>
 <script src="{% static 'problem/js/problem.js' %}"></script>
+

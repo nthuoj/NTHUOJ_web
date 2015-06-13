@@ -26,8 +26,35 @@ SOFTWARE.
   margin-bottom: 50px;
   min-height: 500px;
 }
-
+.pname_block {
+  position: relative;
+  min-height: 100px;
+  margin-bottom: 50px;
+  width: 100%;
+  display: flex;
+  display: -webkit-flex;
+}
+.pname {
+  word-wrap: break-word;
+  word-break: normal;
+}
+.pname_block .left {
+  padding-left: 10px;
+  flex: 1;
+  -webkit-flex: 1;
+}
+.pname_block .right {
+  padding: 10px;
+}
 .problem-option a {
   text-decoration: none;
   cursor: pointer;
+}
+#add_problem_form {
+  display: inline-block;
+  margin-left:10px;
+}
+#add_problem_btn {
+  display:inline-block;
+  margin-bottom: 20px;
 }

@@ -1,4 +1,4 @@
-'''
+"""
 The MIT License (MIT)
 
 Copyright (c) 2014 NTHUOJ team
@@ -20,34 +20,73 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
-'''
-
-
+"""
 import getpass
-import os.path
+import ConfigParser
 
 from func import *
 
 
-if not os.path.isfile('nthuoj.ini'):
-    # Setting nthuoj.ini
-    host = raw_input('Mysql host: ')
-    db = raw_input('Mysql database: ')
-    user = raw_input('Please input your mysql user: ')
-    pwd = getpass.getpass()
-    write_ini_file(host, db, user, pwd)
+CONFIG_PATH = 'nthuoj/config/nthuoj.cfg'
 
+if not os.path.isfile(CONFIG_PATH):
+    # If the config file does not exist, write default config
+    write_default_config(CONFIG_PATH)
+
+config = ConfigParser.RawConfigParser()
+config.optionxform = str
+config.read(CONFIG_PATH)
+
+
+if not config.has_section('client'):
+    # Setting mysql info
+    write_config(config, 'client',
+        {'default-character-set': 'utf8'},
+        host=raw_input('Mysql host: '),
+        database=raw_input('Mysql database: '),
+        user=raw_input('Mysql user: '),
+        password=getpass.getpass('Mysql user password: ')
+    )
+
+if not config.has_section('system_version'):
+    # Getting system version info
+    write_config(config, 'system_version',
+        backend=raw_input('Host os version: '),
+        gcc=raw_input('gcc version: '),
+        gpp=raw_input('g++ version: ')
+    )
+
+if not config.has_section('email'):
+    # Setting email info
+    write_config(config, 'email',
+        user=raw_input('Email host(gmail): '),
+        password=getpass.getpass("Email host's password: ")
+    )
+
+# Change defaut path
+paths = dict(config.items('path'))
+print 'Default path configuration is:\n'
+for key in paths:
+    print '%s: %s' % (key, paths[key])
+
+if prompt('Customize source code, testcase path?'):
+    for key in paths:
+        path = raw_input('%s: ' % key)
+        paths[key] = path
+        os.system('mkdir %s' % path)
+
+    write_config(config, paths)
+
+# Writing our configuration file
+with open(CONFIG_PATH, 'wb') as configfile:
+    config.write(configfile)
+
+# Bower
+if prompt('Install static file by `bower install`?'):
+    django_manage('bower install')
 
 # Database Migratinos
-db_migrate()
-
-
-# Create super user
-ans = raw_input('Create super user?[Y/n] ')
-if ans == '' or ans == 'y' or ans == 'Y':
-    django_manage('createsuperuser')
-
-# Install needed library & setup
-
-# django-axes
 django_manage('syncdb')
+
+django_manage('makemigrations')
+django_manage('migrate')

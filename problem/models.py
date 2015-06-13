@@ -22,15 +22,15 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 '''
 
-from django.db import models
-from users.models import User
-from team.models import Team
 from datetime import datetime
+from django.db import models
+from team.models import Team
+from users.models import User
 
 # Create your models here.
 
 class Tag(models.Model):
-    
+
     tag_name = models.CharField(max_length=20, default='')
 
     def __unicode__(self):
@@ -39,16 +39,38 @@ class Tag(models.Model):
 
 class Problem(models.Model):
     LOCAL = 'LOCAL'
-    SPECIAL = 'SPECIAL'
-    ERROR_TORRENT = 'ERR_TORRENT'
-    PARTIAL = 'PARTIAL'
     OTHER = 'OTHER'
-    JUDGE_TYPE_CHOICE = (
+    JUDGE_SOURCE_CHOICE = (
         (LOCAL, 'Local Judge'),
-        (SPECIAL, 'Special Judge'),
-        (ERROR_TORRENT, 'Error Torrent'),
-        (PARTIAL, 'Partial Judge'),
         (OTHER, 'Use Other Judge'),
+    )
+
+    NORMAL = 'LOCAL_NORMAL'
+    SPECIAL = 'LOCAL_SPECIAL'
+    ERROR_TOLERANT = 'LOCAL_ERR_TOLERANT'
+    PARTIAL = 'LOCAL_PARTIAL'
+    UVA_JUDGE = 'OTHER_UVA'
+    ICPC_JUDGE = 'OTHER_UVALive'
+    POJ_JUDGE = 'OTHER_POJ'
+    JUDGE_TYPE_CHOICE = (
+        # Local Judge
+        (NORMAL, 'Normal Judge'),
+        (SPECIAL, 'Special Judge'),
+        # (ERROR_TOLERANT, 'Error TOLERANT'),
+        (PARTIAL, 'Partial Judge'),
+        # Other Judge
+        (UVA_JUDGE, 'Uva'),
+        (ICPC_JUDGE, 'ACM ICPC Live Archive'),
+        (POJ_JUDGE, 'POJ'),
+    )
+
+    C = 'C'
+    CPP = 'CPP'
+    CPP11 = 'CPP11'
+    LANGUAGE_CHOICE = (
+        (C, 'C'),
+        (CPP, 'C++'),
+        (CPP11, 'C++11'),
     )
 
     pname = models.CharField(max_length=50, default='')
@@ -59,24 +81,27 @@ class Problem(models.Model):
     sample_in = models.TextField(blank=True)
     sample_out = models.TextField(blank=True)
     visible = models.BooleanField(default=False)
-    error_torrence = models.DecimalField(decimal_places=15, max_digits=17, default=0)
+    error_tolerance = models.DecimalField(decimal_places=15, max_digits=17, default=0)
     other_judge_id = models.IntegerField(blank=True, null=True)
     tags = models.ManyToManyField(Tag, blank=True, null=True)
-    judge_source = models.CharField(max_length=11, choices=JUDGE_TYPE_CHOICE, default=LOCAL)
+    judge_source = models.CharField(max_length=11, choices=JUDGE_SOURCE_CHOICE, default=LOCAL)
+    judge_type = models.CharField(max_length=20, choices=JUDGE_TYPE_CHOICE, default=NORMAL)
+    judge_language = models.CharField(max_length=11, choices=LANGUAGE_CHOICE, default=CPP)
+    ac_count = models.IntegerField(default=0)
+    total_submission = models.IntegerField(default=0)
 
     def __unicode__(self):
-        return self.pname
+        return '%d - %s' % (self.id, self.pname)
 
 
 class Testcase(models.Model):
-
     problem = models.ForeignKey(Problem)
     description = models.TextField(blank=True)
     time_limit = models.IntegerField(default=1)
     memory_limit = models.IntegerField(default=32)
 
     def __unicode__(self):
-        return self.problem.pname + ': ' + self.description
+        return '%s: %s' % (self.problem.pname, self.description)
 
 
 class Submission(models.Model):
@@ -111,12 +136,12 @@ class Submission(models.Model):
     team = models.ForeignKey(Team, blank=True, null=True)
     submit_time = models.DateTimeField(default=datetime.now)
     error_msg = models.TextField(blank=True)
-    status = models.CharField(max_length=7, choices=STATUS_CHOICE, default=WAIT)
+    status = models.CharField(max_length=25, choices=STATUS_CHOICE, default=WAIT)
     language = models.CharField(max_length=5, choices=LANGUAGE_CHOICE, default=C)
-         
+    other_judge_sid = models.IntegerField(blank=True, null=True)
     def __unicode__(self):
         return str(self.id)
- 
+
 
 class SubmissionDetail(models.Model):
     AC = 'AC'
@@ -125,7 +150,7 @@ class SubmissionDetail(models.Model):
     MLE = 'MLE'
     RE = 'RE'
     PE = 'PE'
-    VIRDECT_CHOICE = (
+    VERDICT_CHOICE = (
         (AC, 'Accepted'),
         (WA, 'Wrong Answer'),
         (TLE, 'Time Limit Exceeded'),
@@ -144,5 +169,5 @@ class SubmissionDetail(models.Model):
         unique_together = (('tid', 'sid'),)
 
     def __unicode__(self):
-        return 'sid ' + str(self.sid.id) + ', tid ' + str(self.tid.id)
+        return 'sid %d, tid %d' % (self.sid.id, self.tid.id)
 

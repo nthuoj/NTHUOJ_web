@@ -17,12 +17,59 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
+$(document).ready(function() {
+    $('[data-toggle="tooltip"]').tooltip({
+        'placement': 'top'
+    });
+    $('[data-load-remote]').on('click', function(e) {
+        e.preventDefault();
+        var $this = $(this);
+        var remote = $this.data('load-remote');
+        if (remote) {
+            $($this.data('remote-target')).load(remote);
+        }
+    });
+    $('[name=infoTab] a').click(function(e) {
+        e.preventDefault()
+        $('#infoTab a').tab('show')
+    });
+    var loading = '<h3 style="text-align:center;">Loading...</h3>'
+    $('#contestInfo').on('hidden.bs.modal', function(e) {
+        $('#contestInfoContent').html(loading);
+    });
+    $('#register').on('hidden.bs.modal', function(e) {
+        $('#registerContent').html(loading);
+    });
+});
 
-$('[name=infoTab] a').click(function(e) {
-    e.preventDefault()
-    $('[name=infoTab] a[href="#problem"]').tab('show')
-    $('[name=infoTab] a[href="#contestant"]').tab('show')
-    $('[name=infoTab] a[href="#time"]').tab('show')
-    $('[name=infoTab] a[href="#coowner"]').tab('show')
-    $('[name=infoTab] a[href="#others"]').tab('show')
-})
+function confirm_rejudge_problem(object){
+    return confirm_rejudge("problem",object);
+}
+
+function confirm_rejudge_contest(object){
+    return confirm_rejudge("contest",object);
+}
+
+function confirm_rejudge(type,object) {
+    var message = "Are you sure you want to rejudge " + type + " '" 
+                + object + "'?\nPlease type in " + type + " name to confirm."; 
+    var name = prompt(message,"");
+    if(name==object){
+        return true;
+    }
+    else if(name!=""){
+        alert("Input does not match!");
+    }
+    return false;
+}
+
+function confirm_delete() {
+    return confirm("Are you sure you want to delete?");
+}
+
+function confirm_register() {
+    var from = $('#public_user_now').html();
+    var to = $('#public_user_need').val();
+    return confirm("Set Public User from " + from + " to " + to + "?");
+}
+

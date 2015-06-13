@@ -1,70 +1,25 @@
-<!--
-The MIT License (MIT)
-
-Copyright (c) 2014 NTHUOJ team
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
--->
 {% extends "index/base.html" %}
 {% load static %}
-
+{% load bootstrap %}
+{% block title_name %}
+<title>{{ title }}</title>
+{% endblock title_name %}
 {% block body_block %}
-<div class="container" style="width:40%">
+<div class="container col-lg-offset-3 col-lg-6">
   <h3>{{ title }}</h3>
-  <form class="form-horizontal" action="" method="post">
+
+  <form class="form-horizontal" method="post">
     {% csrf_token %}
-    {% for field in form %}
-    <div class="form-group">
-      <div class='row'>
-        <div class='col-md-2'>
-          <label class="control-label">{{ field.label }}</label>
-        </div>
-        <div class='col-md-8'>
-          {{ field }}
-        </div>
-      </div>
-      {% if form.non_field_errors %}
-      <ul>
-        {% for error in form.non_field_errors %}
-          <li class='col-md-offset-2'><strong style="color:red">{{ error|escape }}</strong></li>
-        {% endfor %}
-      </ul>
-      {% endif %} 
-      {% if field.errors %}
-      <ul>
-        {% for error in field.errors %}
-          <li class='col-md-offset-2'><strong style="color:red">{{ error|escape }}</strong></li>
-        {% endfor %}
-      </ul>
-      {% endif %}
-    </div>
-    {% endfor %}
+    {{ form|bootstrap_horizontal:"col-lg-2" }}
     <div class="modal-footer">
-      <div id='msg' class='col-md-4'>{{ message }}</div>
       <button type="submit" class="btn btn-primary">Submit</button>
     </div>
     <hr>
-    <div class="poptxt_login">
-      Don't have an account? You can 
-      <a href={% url "users:create" %}>
-        <p class="p6">register here</p>
-      </a>
+    <div>
+      Don't have an account? You can
+      <a href={% url "users:create" %}>register here</a>.<br>
+      Forget your password? You can change your password
+      <a href={% url "users:forget_password" %}>here</a>.
     </div>
   </form>
 </div>

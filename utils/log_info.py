@@ -1,4 +1,4 @@
-'''
+"""
 The MIT License (MIT)
 
 Copyright (c) 2014 NTHUOJ team
@@ -20,48 +20,54 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
-'''
+"""
 import logging
+import os
+
+loggers = dict()
 
 
-def get_logger(name='NTHU OJ'):
-    '''Return a logger with specified settings
+def get_logger(name='NTHU OJ', log_dir='log'):
+    """Return a logger with specified settings
 
     Args:
         name: the name of the module.
     Returns:
         the logger with specified format.
-    '''
-    # create logger
-    logger = logging.getLogger(name)
-    logger.setLevel(logging.DEBUG)
+    """
 
-    # create console handler and set level to debug
-    ch = logging.StreamHandler()
-    ch.setLevel(logging.DEBUG)
+    global loggers
+    logger = None
+    if loggers.has_key(name):
+        logger = loggers[name]
 
-    # create formatter
-    formatter = logging.Formatter('[%(asctime)s] %(levelname)s: %(message)s')
+    if not logger:
+        logging_format = '[%(asctime)s] %(levelname)s: %(message)s'
 
-    # add formatter to ch
-    ch.setFormatter(formatter)
+        if not os.path.exists(log_dir):
+            os.makedirs(log_dir, 0755)
+        file_path = os.path.join(log_dir, 'nthuoj.log')
 
-    # add ch to logger
-    logger.addHandler(ch)
+        logging.basicConfig(filename=file_path, filemode='w')
+
+        # create logger
+        logger = logging.getLogger(name)
+        logger.setLevel(logging.INFO)
+
+        # create formatter for console use
+        formatter = logging.Formatter(logging_format)
+
+        # create console handler and set level to info
+        ch = logging.StreamHandler()
+        ch.setLevel(logging.INFO)
+
+        # add formatter to ch
+        ch.setFormatter(formatter)
+
+        # add ch to logger
+        logger.addHandler(ch)
+
+        # put back into loggers
+        loggers[name] = logger
 
     return logger
-
-
-def get_client_ip(request):
-    '''Return ip from request
-    Args:
-        request: the request in view.
-    Returns:
-        the client ip of that request.
-    '''
-    x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
-    if x_forwarded_for:
-        ip = x_forwarded_for.split(',')[-1].strip()
-    else:
-        ip = request.META.get('REMOTE_ADDR')
-    return ip

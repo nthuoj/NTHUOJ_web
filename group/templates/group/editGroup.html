@@ -1,0 +1,58 @@
+{% extends "index/base.html" %}
+{% load static %}
+{% block title_name %}
+{% if group %}
+<title>Edit for Group {{ group.id }}...</title>
+{% else %}
+<title>New group...</title>
+{% endif %}
+{% endblock title_name %}
+{% load bootstrap %}
+{% block import_source %}
+<script src="{% static 'multiselect/js/jquery.multi-select.js' %}" type="text/javascript"></script>
+<script src="{% static 'quicksearch/jquery.quicksearch.js' %}" type="text/javascript"></script>
+<script src="{% static 'group/js/editGroup.js' %}" type="text/javascript"></script>
+<link href="{% static 'multiselect/css/multi-select.css'%}" media="screen" rel="stylesheet" type="text/css">
+{% endblock import_source %} 
+{% block body_block %}
+<br>
+<br>
+<div class="col-lg-offset-1 col-lg-10">
+  <h2>
+    {% if group %}
+    {{ group.id }} - {{ group.gname }}
+    <a href="{% url 'group:detail' group.id %}">
+      <button type="button" class="btn btn-primary">
+        See this group
+      </button>
+    </a>
+    {% endif %}
+    <a href="{% url 'group:list' %}">
+      <button type="button" class="btn btn-info">
+        Go to Group list
+      </button>
+    </a>
+  </h2>
+  <div class="well">
+    <form action="." method="POST">
+      {% csrf_token %}
+      {% for field in form %}
+        {% if field.label_tag == form.owner.label_tag %}
+          {{ field.as_hidden }}
+        {% elif field.label_tag == form.coowner.label_tag and user_is_coowner %}
+            {{ field.as_hidden }}
+        {% elif field.label_tag == form.member.label_tag %}
+          {{ field.as_hidden }}
+        {% else %}
+          {{ field|bootstrap }}
+        {% endif %}
+      {% endfor %}
+      <br>
+      <input class="btn btn-sm btn-primary" type="submit" style="float:right" value="Save">
+      <br>
+      <br>
+    </form>
+  </div>
+</div>
+<br>
+{% endblock body_block %}

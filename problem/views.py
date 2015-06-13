@@ -23,11 +23,23 @@ SOFTWARE.
 '''
 from django.http import HttpResponse, HttpResponseBadRequest, Http404
 from django.shortcuts import render, redirect
+from django.core.exceptions import PermissionDenied
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.contrib.auth.decorators import login_required
+from django.core.servers.basehttp import FileWrapper
+from django.utils import timezone
+from django.contrib import messages
 
+from utils.render_helper import render_index
+from utils.user_info import validate_user, has_problem_auth, has_problem_ownership
 from users.models import User
 from problem.models import Problem, Tag, Testcase
-from problem.forms import ProblemForm
+from problem.forms import ProblemForm, TagForm, TagFilter
+from utils import log_info, config_info
+from problem.problem_info import *
 from utils import log_info
+from utils.render_helper import render_index, get_current_page
+from utils.rejudge import rejudge_problem
 
 import os
 import json
@@ -36,42 +48,329 @@ logger = log_info.get_logger()
 
 # Create your views here.
 def problem(request):
-    a = {'name': 'my_problem', 'pid': 1, 'pass': 60, 'not_pass': 40}
-    b = {'name': 'all_problem', 'pid': 1, 'pass': 60, 'not_pass': 40}
-    return render(request, 'problem/panel.html', {'my_problem':[a,a,a], 'all_problem':[a,a,a,b,b,b]})
-
-def volume(request):
-    problem_id=[]
-    if Problem.objects.count() != 0:
-        problems = Problem.objects.latest('id')
-        volume_number = (problems.id - 1) // 100
-        for i in range(1,volume_number + 2):
-            start_id = ((i - 1) * 100 + 1)
-            if problems.id < i * 100:
-                end_id = problems.id
+    user = validate_user(request.user)
+    can_add_problem = user.has_subjudge_auth()
+    filter_type = request.GET.get('filter')
+    tag_filter = TagFilter(request.GET)
+    if tag_filter.is_valid():
+        tag_name = tag_filter.cleaned_data['tag_name']
+        if filter_type == 'mine':
+            problem_list = get_owner_problem_list(user)
+            mine = True
+        else:
+            problem_list = get_problem_list(user)
+            mine = False
+        if tag_name:
+            problem_list = problem_list.filter(tags__tag_name=tag_name)
+            for p in problem_list:
+                p.in_contest = check_in_contest(p)
+        problems = get_current_page(request, problem_list, 15)
+        for p in problems:
+            if p.total_submission != 0:
+                p.pass_rate = float(p.ac_count) / float(p.total_submission) * 100.0
+                p.not_pass_rate = 100.0 - p.pass_rate
+                p.pass_rate = "%.2f" % (p.pass_rate)
+                p.not_pass_rate = "%.2f" % (p.not_pass_rate)
             else:
-                end_id = i * 100
-            problem_id.append(str(start_id) + ' ~ ' + str(end_id))
-
-    return render(request, 'problem/category.html', {'problem_id':problem_id})
+                p.no_submission = True
+    else:
+        problems = []
+        mine = False
+    return render_index(request, 'problem/panel.html',
+                  {'all_problem': problems, 'mine': mine,
+                   'can_add_problem': can_add_problem, 'tag_filter': tag_filter})
 
 def detail(request, pid):
-    user = request.user
+    user = validate_user(request.user)
+    tag_form = TagForm()
     try:
         problem = Problem.objects.get(pk=pid)
+        if not has_problem_auth(user, problem):
+            logger.warning("%s has no permission to see problem %d" % (user, problem.pk))
+            raise PermissionDenied()
     except Problem.DoesNotExist:
         logger.warning('problem %s not found' % (pid))
         raise Http404('problem %s does not exist' % (pid))
-    testcase = Testcase.objects.filter(problem=problem)
-    tag = problem.tags.all()
-    return render(request, 'problem/detail.html',
-                  {'problem': problem, 'tags': tag, 'testcase': testcase})
+    problem.testcase = get_testcase(problem)
+    problem = verify_problem_code(problem)
+    problem.in_contest = check_in_contest(problem)
+    return render_index(request, 'problem/detail.html', {'problem': problem, 'tag_form': tag_form})
 
-def edit(request, pid):
-    return render(request, 'problem/edit.html')
-
+@login_required
 def new(request):
-    return render(request, 'problem/edit.html')
+    if request.method == "POST":
+        if 'pname' in request.POST and request.POST['pname'].strip() != "":
+            p = Problem(pname=request.POST['pname'], owner=request.user)
+            p.save()
+            logger.info("problem %s created by %s" % (p.pk, request.user))
+            return redirect("/problem/%d/edit/" % p.pk)
+    return redirect("/problem/")
+
+@login_required
+def edit(request, pid=None):
+    tag_form = TagForm()
+    try:
+        problem = Problem.objects.get(pk=pid)
+        if not request.user.has_admin_auth() and request.user != problem.owner:
+            logger.warning("user %s has no permission to edit problem %s" % (request.user, pid))
+            raise PermissionDenied()
+    except Problem.DoesNotExist:
+        logger.warning("problem %s does not exist" % (pid))
+        raise Http404("problem %s does not exist" % (pid))
+    testcase = get_testcase(problem)
+    tags = problem.tags.all()
+    if request.method == 'GET':
+        form = ProblemForm(instance=problem)
+    if request.method == 'POST':
+        form = ProblemForm(request.POST, request.FILES, instance=problem)
+        if form.is_valid():
+            problem = form.save()
+            problem.sample_in = request.POST['sample_in']
+            problem.sample_out = request.POST['sample_out']
+            problem.save()
+            file_ex = get_problem_file_extension(problem)
+            if "special_judge_code" in request.FILES:
+                with open('%s%s%s' % (SPECIAL_PATH, problem.pk, file_ex), 'w') as t_in:
+                    for chunk in request.FILES['special_judge_code'].chunks():
+                        t_in.write(chunk)
+            if "partial_judge_code" in request.FILES:
+                with open('%s%s%s' % (PARTIAL_PATH, problem.pk, file_ex), 'w') as t_in:
+                    for chunk in request.FILES['partial_judge_code'].chunks():
+                        t_in.write(chunk)
+            if "partial_judge_header" in request.FILES:
+                with open('%s%s.h' % (PARTIAL_PATH, problem.pk), 'w') as t_in:
+                    for chunk in request.FILES['partial_judge_header'].chunks():
+                        t_in.write(chunk)
+            problem = verify_problem_code(problem)
+            if problem.has_special_judge_code and \
+                problem.judge_type != problem.SPECIAL:
+                os.remove('%s%s%s' % (SPECIAL_PATH, problem.pk, file_ex))
+            if problem.judge_type != problem.PARTIAL:
+                if problem.has_partial_judge_code:
+                    os.remove('%s%s%s' % (PARTIAL_PATH, problem.pk, file_ex))
+                if problem.has_partial_judge_header:
+                    os.remove('%s%s.h' % (PARTIAL_PATH, problem.pk))
+            logger.info('edit problem, pid = %d by %s' % (problem.pk, request.user))
+            messages.success(request, 'problem %d edited' % problem.pk)
+            return redirect('/problem/%d' % (problem.pk))
+    file_ex = get_problem_file_extension(problem)
+    problem = verify_problem_code(problem)
+    return render_index(request, 'problem/edit.html',
+                        {'form': form, 'problem': problem,
+                         'tags': tags, 'tag_form': tag_form,
+                         'testcase': testcase,
+                         'path': {
+                             'TESTCASE_PATH': TESTCASE_PATH,
+                             'SPECIAL_PATH': SPECIAL_PATH,
+                             'PARTIAL_PATH': PARTIAL_PATH, }
+                         })
+
+@login_required
+def tag(request, pid):
+    if request.method == "POST":
+        tag = request.POST['tag_name']
+        try:
+            problem = Problem.objects.get(pk=pid)
+        except Problem.DoesNotExist:
+            logger.warning("problem %s does not exist" % (pid))
+            raise Http404("problem %s does not exist" % (pid))
+        if not problem.tags.filter(tag_name=tag).exists():
+            new_tag, created = Tag.objects.get_or_create(tag_name=tag)
+            problem.tags.add(new_tag)
+            problem.save()
+            logger.info("add new tag '%s' to problem %s by %s" % (tag, pid, request.user))
+            return HttpResponse(json.dumps({'tag_id': new_tag.pk}),
+                                content_type="application/json")
+        return HttpRequestBadRequest()
+    return HttpResponse()
+
+@login_required
+def delete_tag(request, pid, tag_id):
+    try:
+        problem = Problem.objects.get(pk=pid)
+        tag = Tag.objects.get(pk=tag_id)
+    except Problem.DoesNotExist:
+        logger.warning("problem %s does not exist" % (pid))
+        raise Http404("problem %s does not exist" % (pid))
+    except Tag.DoesNotExist:
+        logger.warning("tag %s does not exist" % (tag_id))
+        raise Http404("tag %s does not exist" % (tag_id))
+    if not request.user.has_admin_auth() and request.user != problem.owner:
+        raise PermissionDenied()
+    logger.info("tag %s deleted by %s" % (tag.tag_name, request.user))
+    problem.tags.remove(tag)
+    return HttpResponse()
+
+@login_required
+def testcase(request, pid, tid=None):
+    if request.method == 'POST':
+        try:
+            problem = Problem.objects.get(pk=pid)
+        except Problem.DoesNotExist:
+            logger.warning("problem %s does not exist" % (pid))
+            raise Http404("problem %s does not exist" % (pid))
+        if tid == None:
+            testcase = Testcase()
+            testcase.problem = problem
+        else:
+            try:
+                testcase = Testcase.objects.get(pk=tid)
+            except Testcase.DoesNotExist:
+                logger.warning("testcase %s does not exist" % (tid))
+                raise Http404("testcase %s does not exist" % (tid))
+            if testcase.problem != problem:
+                logger.warning("testcase %s does not belong to problem %s" % (tid, pid))
+                raise Http404("testcase %s does not belong to problem %s" % (tid, pid))
+        has_message = False
+        if 'time_limit' in request.POST:
+            testcase.time_limit = request.POST['time_limit']
+            testcase.memory_limit = request.POST['memory_limit']
+            testcase.save()
+            logger.info("testcase saved, tid = %s by %s" % (testcase.pk, request.user))
+            messages.success(request, "testcase %s saved" % testcase.pk)
+            has_message = True
+        if 't_in' in request.FILES:
+            TESTCASE_PATH = config_info.get_config('path', 'testcase_path')
+            try:
+                with open('%s%s.in' % (TESTCASE_PATH, testcase.pk), 'w') as t_in:
+                    for chunk in request.FILES['t_in'].chunks():
+                        t_in.write(chunk.replace('\r\n', '\n'))
+                    logger.info("testcase %s.in saved by %s" % (testcase.pk, request.user))
+                with open('%s%s.out' % (TESTCASE_PATH, testcase.pk), 'w') as t_out:
+                    for chunk in request.FILES['t_out'].chunks():
+                        t_out.write(chunk.replace('\r\n', '\n'))
+                    logger.info("testcase %s.out saved by %s" % (testcase.pk, request.user))
+                if not has_message:
+                    messages.success(request, "testcase %s saved" % testcase.pk)
+            except IOError, OSError:
+                logger.error("saving testcase error")
+            return HttpResponse(json.dumps({'tid': testcase.pk}),
+                                content_type="application/json")
+    return HttpResponse()
+
+@login_required
+def delete_testcase(request, pid, tid):
+    try:
+        problem = Problem.objects.get(pk=pid)
+        testcase = Testcase.objects.get(pk=tid)
+    except Problem.DoesNotExist:
+        logger.warning("problem %s does not exist" % (pid))
+        raise Http404("problem %s does not exist" % (pid))
+    except Testcase.DoesNotExist:
+        logger.warning("testcase %s does not exist" % (tid))
+        raise Http404("testcase %s does not exist" % (tid))
+    if not request.user.has_admin_auth() and request.user != problem.owner:
+        raise PermissionDenied
+    logger.info("testcase %d deleted" % (testcase.pk))
+    try:
+        os.remove('%s%d.in' % (TESTCASE_PATH, testcase.pk))
+        os.remove('%s%d.out' % (TESTCASE_PATH, testcase.pk))
+    except IOError, OSError:
+        logger.error("remove testcase %s error" % (testcase.pk))
+    logger.info("testcase %d deleted by %s" % (testcase.pk, request.user))
+    messages.success(request, "testcase %s deleted" % testcase.pk)
+    testcase.delete()
+    return HttpResponse()
+
+@login_required
+def delete_problem(request, pid):
+    try:
+        problem = Problem.objects.get(pk=pid)
+    except Problem.DoesNotExist:
+        logger.warning("problem %s does not exist" % (pid))
+        raise Http404("problem %s does not exist" % (pid))
+    if not request.user.has_admin_auth() and request.user != problem.owner:
+        raise PermissionDenied
+    logger.info("problem %d deleted by %s" % (problem.pk, request.user))
+    messages.success(request, "problem %d deleted" % problem.pk)
+    problem.delete()
+    return redirect('/problem/')
 
 def preview(request):
-    return render(request, 'problem/preview.html')
+    problem = Problem()
+    problem.pname = request.POST['pname']
+    problem.description = request.POST['description']
+    problem.input= request.POST['input']
+    problem.output = request.POST['output']
+    problem.sample_in = request.POST['sample_in']
+    problem.sample_out = request.POST['sample_out']
+    problem.tag = request.POST['tags'].split(',')
+    return render_index(request, 'problem/preview.html', {'problem': problem, 'preview': True})
+
+@login_required
+def download_testcase(request, filename):
+    pid = filename.split('.')[0]
+    try:
+        problem = Problem.objects.get(pk=pid)
+    except: 
+        raise Http404()
+    if not has_problem_ownership(request.user, problem) and \
+            not request.user.has_admin_auth():
+        logger.warning("%s has no permission to see testcase of problem %d" % (request.user, problem.pk))
+        raise Http404()
+    try:
+        f = open(TESTCASE_PATH+filename, "r")
+    except IOError:
+        logger.warning("open testcase %s error" % filename)
+        raise Http404()
+    response = HttpResponse(FileWrapper(f), content_type="text/plain")
+    response['Content-Disposition'] = 'attachment; filename=' + filename
+    return response
+
+@login_required
+def download_partial(request, filename):
+    pid = filename.split('.')[0]
+    try:
+        problem = Problem.objects.get(pk=pid)
+    except: 
+        raise Http404()
+    if not has_problem_auth(request.user, problem):
+        logger.warning("%s has no permission to download problem %d partial judge code" 
+                % (request.user, problem.pk))
+        raise Http404()
+    try:
+        f = open(PARTIAL_PATH+filename, "r")
+    except IOError:
+        raise Http404()
+    response = HttpResponse(FileWrapper(f), content_type="text/plain")
+    response['Content-Disposition'] = 'attachment; filename=' + filename
+    return response
+
+@login_required
+def download_special(request, filename):
+    pid = filename.split('.')[0]
+    try:
+        problem = Problem.objects.get(pk=pid)
+    except: 
+        raise Http404()
+    if not has_problem_ownership(request.user, problem) and \
+            not request.user.has_admin_auth():
+        logger.warning("%s has no permission to download problem %d special judge code" 
+                % (request.user, problem.pk))
+        raise Http404()
+    try:
+        f = open(SPECIAL_PATH+filename, "r")
+    except IOError:
+        raise Http404()
+    response = HttpResponse(FileWrapper(f), content_type="text/plain")
+    response['Content-Disposition'] = 'attachment; filename=' + filename
+    return response
+
+@login_required
+def rejudge(request):
+    pid = request.GET.get('pid')
+    if pid:
+        try:
+            problem = Problem.objects.get(pk=pid)
+            if not has_problem_ownership(request.user, problem) and \
+                    not request.user.has_admin_auth():
+                logger.warning("%s has no permission to rejudge problem %d"
+                        % (request.user, problem.pk))
+                raise PermissionDenied()
+            rejudge_problem(problem)
+            logger.info("problem %s rejudged" % problem.pk)
+            messages.success(request, 'problem %s rejuded' % problem.pk)
+        except Problem.DoesNotExist:
+            raise Http404()
+    return redirect('/problem/')
+

@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+{% extends "index/base.html" %}
+{% load static %}
+{% load bootstrap %}
+{% block title_name %}
+  <title>{{ title }}</title>
+{% endblock title_name %}
+{% block import_source %}
+<link rel="stylesheet" href={% static "css/announcement.css" %} media="screen">
+{% endblock import_source %}
+{% block body_block %}
+<br>
+<div class="container" style="width:50%">
+  <form action="" method="post" role="form">
+    {% csrf_token %}
+    {{ form.media }}
+    {% for field in form %}
+    {% if field.label_tag == form.content.label_tag %}
+      <div class="panel panel-default">
+        <div class="panel-heading" style="font-size:25px">Set Content</div>
+        <div class="panel-body">{{ field|bootstrap }}</div>
+      </div>
+    {% else %}
+      {{ field|bootstrap }}
+    {% endif %}
+    {% endfor %}
+    {% if title == 'Create Announcement' %}
+    <button type="submit" class="btn btn-primary">Add</button>
+    {% else %}
+    <button type="submit" class="btn btn-primary">Update</button>
+    {% endif %}
+    <a href="{%url 'index:index' %}" class="btn btn-primary">Cancel</a>
+  </form>
+</div>
+<br>
+<script>$('input').removeAttr("readonly");</script>
+{% endblock body_block %}

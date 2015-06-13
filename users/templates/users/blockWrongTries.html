@@ -1,0 +1,16 @@
+{% extends "index/base.html" %}
+{% load static %}
+{% block title_name %}
+<title>Block Page</title>
+{% endblock title_name %}
+{% block body_block %}
+  <div class="container"
+       style="margin-top:50px;margin-bottom:50px;min-height:500px;">
+    <p style="text-align: center;font-size: 75px;">Blocked!</p>
+    <p style="text-align: center;font-size: 30px;margin-top: 50px;">
+      You are seeing this because you have more than 3 wrong login attempts.<br>
+      Your login access will be freezed until <b>{{unblock_time}}</b><br>
+      You can still utilize other functionalities of this site.
+    </p>
+  </div>
+{% endblock body_block %}

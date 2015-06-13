@@ -1,4 +1,4 @@
-'''
+"""
 The MIT License (MIT)
 
 Copyright (c) 2014 NTHUOJ team
@@ -20,33 +20,81 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
-'''
+"""
+import time
+from datetime import datetime
+
 from django.shortcuts import render
-from index.views import custom_proc
 from django.template import RequestContext
+from django.http import Http404
+from django.core.exceptions import PermissionDenied
+from django.core.exceptions import SuspiciousOperation
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.core.urlresolvers import resolve, reverse
 
-def render_404(request, message):
-    '''Help to render 404 page
+from users.models import Notification
+from utils.config_info import get_config
 
-    example: 
-        render_404(request, 'Page not found')
-    '''
-    return render(request, 'index/404.html',
-        {'error_message': message}, status=500)
+DEFAULT_THEME = get_config('theme_settings', 'default')
 
+class CustomHttpExceptionMiddleware(object):
+    def process_exception(self, request, exception):
+        message = unicode(exception)
+        if isinstance(exception, Http404):
+            return render_index(request, 'index/404.html', {'error_message': message}, status=404)
+        elif isinstance(exception, SuspiciousOperation):
+            return render_index(request, 'index/400.html', {'error_message': message}, status=400)
+        elif isinstance(exception, PermissionDenied):
+            return render_index(request, 'index/403.html', {'error_message': message}, status=403)
+        elif isinstance(exception, Exception):
+            return render_index(request, 'index/500.html', {'error_message': message}, status=500)
 
-def render_500(request, message):
-    '''Help to render 500 page
-
-    example: 
-        render_500(request, 'Request query does not exist')
-    '''
-    return render(request, 'index/500.html',
-        {'error_message': message}, status=500)
 
 def render_index(request, *args, **kwargs):
-    '''Helper to render index page with custom_proc'''
+    """Helper to render index page with custom_proc"""
     # add context_instance keyword
     kwargs.update({'context_instance': RequestContext(request, processors=[custom_proc])})
 
     return render(request, *args, **kwargs)
+
+
+def custom_proc(request):
+    amount = Notification.objects.filter \
+        (receiver=request.user, read=False).count()
+
+    return {
+        'amount': amount,
+        'default_theme': DEFAULT_THEME,
+        'request': request
+    }
+
+
+def get_current_page(request, objects, slice=25):
+    """Template for paging
+        `objects` is the universe of the set.
+
+        Returns a subset of `objects` according to the given page.
+    """
+    paginator = Paginator(objects, slice)  # Show 25 items per page by default
+    page = request.GET.get('page')
+
+    try:
+        objects = paginator.page(page)
+    except PageNotAnInteger:
+        # If page is not an integer, deliver first page.
+        objects = paginator.page(1)
+    except EmptyPage:
+        # If page is out of range (e.g. 9999), deliver last page of results.
+        objects = paginator.page(paginator.num_pages)
+
+    return objects
+
+
+def get_next_page(next_page):
+    try:
+        resolve(next_page)
+    except:
+        # Redirect to index if the given location can not be resolved.
+        next_page = reverse('index:index')
+
+    return next_page

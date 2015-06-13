@@ -1,53 +1,42 @@
-<!--
-The MIT License (MIT)
-Copyright (c) 2014 NTHUOJ team
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
--->
-{% load contest_extras %}
+{% load contest_extras %} {% load staticfiles %} {% block import_source %}
+<link href="{% static 'contest/css/overview.css' %}" rel="stylesheet">
+{% endblock import_source %}
 <table class="table table-striped">
   <thead>
     <tr>
       <th>#</th>
       <th>Problem</th>
-      <th>Pass Rate</th>
+      <th>Pass Rate (passed user / total user)</th>
     </tr>
   </thead>
   <tbody>
-    {% for problem in contest.problem.all %}
+    {% for problem in scoreboard.problems %}
     <tr>
-      <td>{{ forloop.counter }}</td>
-      <td><a href="#">{{ problem.pname }}</td>
-        <td>
-          <div class="progress">
-            <div name="pass" class="progress-bar progress-bar-success" role="progressbar" 
-                 aria-valuenow="30" aria-valuemin="0" aria-valuemax="100" style="width: 0%;">
-              <span name="pass_ratio">
-               
-              </span>
-            </div>
-            <div name="not_pass" class="progress-bar progress-bar-danger" role="progressbar"
-                 aria-valuenow="30" aria-valuemin="0" aria-valuemax="100" style="width: 0%;">
-            </div>
+      <td>{{ problem.id }}</td>
+      <td>
+        <a href="#problem{{ problem.id }}" class="overview_problem"
+           tabindex="-1" role="tab" data-toggle="tab">{{ problem.pname }}</a>
+      </td>
+      <td>
+        {% if problem.no_submission %}
+        No Submission
+        {% else %}
+        <div class="progress">
+          <div class="progress-bar progress-bar-success" 
+               style="width: {{problem.pass_rate}}%;"
+               data-toggle="tooltip" data-placement="top" 
+               title="{{problem.pass_rate|floatformat:2}}%">
           </div>
-        </td>
-      </tr>
-      {% endfor %}
+          <div class="progress-bar progress-bar-danger" 
+               style="width: {{problem.not_pass_rate}}%;"
+               data-toggle="tooltip" data-placement="top" 
+               title="{{problem.not_pass_rate|floatformat:2}}%">
+          </div>
+        </div>
+        {% endif %}
+      </td>
+    </tr>
+    {% endfor %}
   </tbody>
 </table>
 {% load staticfiles %}
-<link href="{% static 'contest/css/overview.css' %}" rel="stylesheet">
-<script src="{%static 'contest/js/overview.js'%}"></script>

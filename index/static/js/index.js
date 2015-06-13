@@ -21,39 +21,17 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
-var displayInfo = false;
-var loginInfo = false;
-
-window.onload = function() {
-    //alert("You have new messages!");
-}
-
-function info() {
-    if(displayInfo == false){
-        document.getElementById("information").style.display = "block";
-        displayInfo = !displayInfo;
-    }
-    else{
-        document.getElementById("information").style.display = "none";
-        displayInfo = !displayInfo;
-    }
-}
 $(function() {
-    var one_minute = 60*1000;
-    setInterval(function() {
-        $.get('/get_time/', function(data) {
-            $('#time').html(data);
-        });
-    }, one_minute);
-
-    // Let footer hide before the page hits the bottom.
-    $(".footer").hide();
-    $(window).scroll(function() {
-        if($(window).scrollTop() + $(window).height()
-           > $(document).height() - $(".footer").height()) {
-            $(".footer").fadeIn(250);
-        } else {
-            $(".footer").fadeOut(250);
-        }
-    });
+    index_alert();
 })
+function index_alert(){
+    var alert_info = '';
+    try{
+        alert_info = document.getElementById("alert_info").value;
+    } catch(e){ }
+    if(alert_info == 'mailbox'){
+        message = 'Please go to your mailbox and click the confirmation ' +
+        'link;otherwise , your account would not be activated!';
+        alert(message);
+    }
+}

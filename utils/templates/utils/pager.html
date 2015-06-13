@@ -1,0 +1,30 @@
+{% load utils_filters %}
+{% load static %}
+<form class="form-inline" id="pagerForm">
+  <ul class="pager">
+    <span class="step-links">
+      {% if objects.has_previous %}
+        <li>
+          <a href="?{% url_replace request 'page' objects.previous_page_number %}">
+            <span>&larr;</span>Previous
+          </a>
+        </li>
+       {% endif %}
+      <span class="current">
+        Page
+        <input type="text" class="form-control input-sm" style="width: 50px;"
+        name="page" value="{{ objects.number }}">
+        of {{ objects.paginator.num_pages }}.
+      </span>
+      {% if objects.has_next %}
+        <li>
+          <a href="?{% url_replace request 'page' objects.next_page_number %}">
+            Next<span>&rarr;</span>
+          </a>
+        </li>
+      {% endif %}
+    </span>
+  </ul>
+</form>
+<script src={% static "jquery.url.min/index.js" %}></script>
+<script src={% static "js/pager.js" %}></script>

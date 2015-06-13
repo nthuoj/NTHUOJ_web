@@ -1,97 +1,32 @@
-<!--
-The MIT License (MIT)
+{% load bootstrap %}
+{{ form.pname|bootstrap }}
+{{ form.owner|bootstrap }}
+{{ form.visible|bootstrap }}
+{{ form.judge_source|bootstrap }}
+{{ form.judge_type|bootstrap }}
+{{ form.judge_language|bootstrap }}
+{{ form.other_judge_id|bootstrap }}
+{{ form.partial_judge_code|bootstrap }}
+{{ form.partial_judge_header|bootstrap }}
+{{ form.special_judge_code|bootstrap }}
 
-Copyright (c) 2014 NTHUOJ team
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
--->
-<table>
-  <tr>
-    <th style="width:20%">Problem Name:</th>
-    <td>
-      <input class="form-control" name="probName">
-    </td>
-  </tr>
-  <tr>
-    <th style="width:20%">Owner:</th>
-    <td>
-      <input class="form-control" name="owner">
-    </td>
-  </tr>
-  <tr>
-    <th style="width:20%">Visible:</th>
-    <td>
-      <input type="checkbox" value="visible" name='visible'>
-    </td>
-  </tr>
-  <tr>
-    <th style="width:20%">Judge Source:</th>
-    <td>
-      <select class="form-control" name='source'>
-        <option>Local (Default)</option>
-        <option>ICPC</option>
-        <option>POJ</option>
-        <option>ZOJ</option>
-        <option>UVA</option>
-      </select>
-    </td>
-  </tr>
-  <tr>
-    <th style="width:20%">Real ID:</th>
-    <td>
-      <input class="form-control" name='realID'>
-    </td>
-  </tr>
-  <tr>
-    <th style="width:20%">Problem Page:</th>
-    <td>
-      <input class="form-control" name='probPage'>
-    </td>
-  </tr>
-  <tr>
-    <th style="width:20%">Special Judge:</th>
-    <td>
-      <input type="radio" name="special" value='no'>No&nbsp;
-      <input type="radio" name="special" value='c'>C&nbsp;
-      <input type="radio" name="special" value='cpp'>C++
-    </td>
-  </tr>
-  <tr>
-    <th>Floating Point Error:</th>
-    <td>
-      <input type="checkbox" onclick='floatError(this)' name='float'>&nbsp;&nbsp;
-      <input type="text" name="error" id="error" class='form-control' style="display:inline;width:20%">
-    </td>
-    <script>
-    $("#error").hide();
-
-    function floatError(cb) {
-      if (cb.checked) {
-        $("#error").show();
-      } else {
-        $("#error").hide();
-      }
-    }
-    </script>
-  </tr>
-</table>
+{% if problem.judge_type == "LOCAL_SPECIAL" and problem.has_special_judge_code %}
+  <br>special judge code: <a href="{% url 'problem:download_special' problem.filename %}">{{ problem.filename }}</a>
+{% endif %}
+{% if problem.judge_type == "LOCAL_PARTIAL" and problem.has_partial_judge_code %}
+  <br>partial judge code: <a href="{% url 'problem:download_partial' problem.filename %}">{{ problem.filename }}</a>
+{% endif %}
+{% if problem.judge_type == "LOCAL_PARTIAL" and problem.has_partial_judge_header %}
+  <br>partial judge header: <a href="{% url 'problem:download_partial' problem.headername %}">{{ problem.headername }}</a>
+{% endif %}
 <br>
 <br>
 <br>
 <br>
+<script>
+{% if not user.has_admin_auth %}
+$(function () {
+  $("#id_owner").parent().parent().hide();
+})
+{% endif %}
+</script>

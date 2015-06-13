@@ -27,11 +27,10 @@ from users.models import User
 from contest.models import Contest
 from datetime import date
 
-# Create your models here.
 
 class Announce(models.Model):
-    
-    title = models.CharField(max_length=100, default='')
+
+    title = models.CharField(max_length=100)
     content = models.TextField(blank=True)
 
     def __unicode__(self):
@@ -50,5 +49,4 @@ class Group(models.Model):
     creation_time = models.DateField(default=date.today, auto_now_add=True)
 
     def __unicode__(self):
-        return self.gname
-
+        return '%d - %s' % (self.id, self.gname)

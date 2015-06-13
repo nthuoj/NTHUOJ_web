@@ -1,4 +1,4 @@
-'''
+"""
 The MIT License (MIT)
 
 Copyright (c) 2014 NTHUOJ team
@@ -20,12 +20,18 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
-'''
-from datetime import date
+"""
+from datetime import date, datetime, timedelta
+
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 from django.db import models
 
+from utils.config_info import get_config_items ,get_config
+
+
 # Create your models here.
+
+
 class UserManager(BaseUserManager):
     def create_user(self, username, password=None):
         """
@@ -46,6 +52,7 @@ class UserManager(BaseUserManager):
         """
         user = self.create_user(username=username, password=password)
         user.is_admin = True
+        user.is_active = True
         user.save(using=self._db)
         return user
 
@@ -61,28 +68,18 @@ class User(AbstractBaseUser):
         (SUB_JUDGE, 'Sub-judge'),
         (USER, 'User'),
     )
-    PAPER = 'PAPER'
-    READABLE = 'READABLE'
-    COSMO = 'COSMO'
-    DEFAULT = 'DEFAULT'
-    LUMEN = 'LUMEN'
-    THEME_CHOICE = (
-        (PAPER, 'Paper'),
-        (READABLE, 'Readable'),
-        (COSMO, 'Cosmo'),
-        (DEFAULT, 'Default'),
-        (LUMEN, 'Lumen'),
-    )
+    THEME_CHOICE = tuple(get_config_items('web_theme'))
+    DEFAULT_THEME = get_config('theme_settings', 'default')
+
 
     username = models.CharField(max_length=15, default='', unique=True, primary_key=True)
     email = models.CharField(max_length=100, default='')
     register_date = models.DateField(default=date.today, auto_now_add=True)
-    active = models.BooleanField(default=False)
     user_level = models.CharField(max_length=9, choices=USER_LEVEL_CHOICE, default=USER)
-    theme = models.CharField(max_length=8, choices=THEME_CHOICE, default=PAPER)
+    theme = models.CharField(max_length=10, choices=THEME_CHOICE, default=DEFAULT_THEME)
 
     USERNAME_FIELD = 'username'
-    is_active = models.BooleanField(default=True)
+    is_active = models.BooleanField(default=False)
     is_admin = models.BooleanField(default=False)
     objects = UserManager()
 
@@ -92,7 +89,6 @@ class User(AbstractBaseUser):
 
     def has_judge_auth(self):
         has_auth = ((self.user_level == self.ADMIN) or (self.user_level == self.JUDGE))
-
         return has_auth
 
     def has_subjudge_auth(self):
@@ -125,10 +121,24 @@ class User(AbstractBaseUser):
     def is_staff(self):
         return self.is_admin
 
+
 class Notification(models.Model):
-    reciver = models.ForeignKey(User)
+    receiver = models.ForeignKey(User)
     message = models.TextField(null=True)
     read = models.BooleanField(default=False)
 
     def __unicode__(self):
         return str(self.id)
+
+
+class UserProfile(models.Model):
+    user = models.OneToOneField(User)
+    activation_key = models.CharField(max_length=40, blank=True)
+    # default active time is 15 minutes
+    active_time = models.DateTimeField(default=lambda: datetime.now() + timedelta(minutes=15))
+
+    def __unicode__(self):
+        return self.user.username
+
+    class Meta:
+        verbose_name_plural=u'User profiles'

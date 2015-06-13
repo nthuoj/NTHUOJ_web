@@ -27,26 +27,29 @@ SOFTWARE.
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <!-- necessarily jQeuery -->
-  <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js">
-  </script>
+  <title>404</title>
   <!-- bootstrap, bootwatch JS & CSS -->
-  <link rel="stylesheet" 
-        href="http://bootswatch.com/paper/bootstrap.css" media="screen">
-  <link rel="stylesheet" 
-        href="http://bootswatch.com/assets/css/bootswatch.min.css">
-  <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js">
-  </script>
+  {% if user.is_authenticated %}
+    <link rel="stylesheet" href="{% static '' %}bootswatch/{{user.theme}}/bootstrap.css">
+    {% else %}
+    <link rel="stylesheet" href="{% static '' %}bootswatch/{{default_theme}}/bootstrap.css">
+  {% endif %}
+  <script src={% static "jquery/dist/jquery.min.js" %}></script>
+  <script src={% static "bootstrap/dist/js/bootstrap.min.js" %}></script>
   <link rel="stylesheet" href={% static "./css/index.css"%} media="screen">
 </head>
 <body>
   <div style="position:relative;bottom:0px;">
-    <p style="text-align:center" class="err1" >4&nbsp0&nbsp4</p>
+    <p class="status" >4&nbsp0&nbsp4</p>
   </div>
-  <p style="text-align:center" class="err2">Page Not Found</p>
-  <p style="text-align:center" class="err2">{{ error_message }}</p>
-  <p style="text-align:center" class="err3">
-    Sorry , the page you are looking for seems to be missing.
+  <br>
+  <p class="status-title">Page Not Found</p>
+  <br>
+  <p class="status-message">{{ error_message }}</p>
+  <br>
+  <p class="status-condition">
+    Sorry , the page you are looking for seems to be missing.<br>
+    <a href="javascript:history.go(-1)">Go Back</a>
   </p>
 </body>
 </html>

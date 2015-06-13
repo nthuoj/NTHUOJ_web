@@ -25,6 +25,7 @@ from team.models import Team
 from datetime import datetime
 from datetime import timedelta
 from django.utils import timezone
+from django.core.validators import MinValueValidator
 
 # Create your models here.
 
@@ -35,7 +36,7 @@ class Contest(models.Model):
     coowner = models.ManyToManyField(User, related_name='coowner', blank=True)
     start_time = models.DateTimeField(default=datetime.now)
     end_time = models.DateTimeField(default=datetime.now)
-    freeze_time = models.IntegerField(default=0)
+    freeze_time = models.IntegerField(default=0, validators = [MinValueValidator(0)])
     problem = models.ManyToManyField(Problem, blank=True)
     is_homework = models.BooleanField(default=False)
     open_register = models.BooleanField(default=True)
@@ -52,13 +53,13 @@ class Contest(models.Model):
         return str(deltatime)
 
     def __unicode__(self):
-        return self.cname
+        return '%d - %s' % (self.id, self.cname)
 
 
 class Contestant(models.Model):
 
     contest = models.ForeignKey(Contest)
-    user = models.ForeignKey(User)
+    user = models.ForeignKey(User, related_name='user')
     team = models.ForeignKey(Team, blank=True, null=True)
 
     class Meta:
@@ -77,10 +78,10 @@ class Clarification(models.Model):
     content = models.CharField(max_length=500, default='')
     reply = models.CharField(max_length=500, default=default_response)
     asker = models.ForeignKey(User, related_name='asker')
-    replyer = models.ForeignKey(User, related_name='replyer', blank=True, null=True)
+    replier = models.ForeignKey(User, related_name='replier', blank=True, null=True)
     ask_time = models.DateTimeField(default=datetime.now, auto_now=True)
-    reply_time = models.DateTimeField(blank=True)
-    realy_all = models.BooleanField(default=False)
+    reply_time = models.DateTimeField(blank=True, null=True)
+    reply_all = models.BooleanField(default=False)
 
     def __unicode__(self):
         return str(self.id)

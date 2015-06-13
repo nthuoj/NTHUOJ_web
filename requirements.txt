@@ -1,0 +1,10 @@
+django==1.7
+django-bower
+django-axes
+django-autocomplete-light
+django-datetime-widget
+django-bootstrap
+django-bootstrap-form
+django-ckeditor
+requests
+pillow

@@ -20,30 +20,20 @@ SOFTWARE.
 $(document).ready(function() {
     add_attribute('id_coowner', 'class', 'searchable');
     add_attribute('id_problem', 'class', 'searchable');
+    hide('id_owner');
     enable_search();
-    bootstraptify();
+    modify_label();
+    widen_multiselect();
 });
-
-function add_attribute(id, attribute, value) {
-    var att = document.createAttribute(attribute);
-    att.value = value;
-    document.getElementById(id).setAttributeNode(att);
-}
-
-function add_form_control(id) {
-    add_attribute(id, 'class', 'form-control');
-}
-
-function hide(id){
-    add_attribute(id,'type','hidden');
-}
 
 function enable_search() {
     $('.searchable').multiSelect({
-        selectableHeader: "<input type='text' class='search-input form-control' autocomplete='off'>",
-        selectionHeader: "<input type='text' class='search-input form-control' autocomplete='off'>",
-        selectableFooter: "<div class='custom-header'>All</div>",
-        selectionFooter: "<div class='custom-header'>Selected</div>",
+        selectableHeader: 
+        "<input type='text' class='search-input form-control' autocomplete='off' placeholder='Search and Add...'>",
+        selectionHeader: 
+        "<input type='text' class='search-input form-control' autocomplete='off' placeholder='Search and Delete...'>",
+        selectableFooter: "<div class='all-header' style='text-align:center;'>All</div>",
+        selectionFooter: "<div class='selected-header' style='text-align:center;'>Selected</div>",
         afterInit: function(ms) {
             var that = this,
                 $selectableSearch = that.$selectableUl.prev(),
@@ -78,10 +68,15 @@ function enable_search() {
     });
 }
 
-function bootstraptify() {
-    add_form_control('id_cname');
-    hide('id_owner');
-    add_form_control('id_start_time');
-    add_form_control('id_end_time');
-    add_form_control('id_freeze_time');
+function widen_multiselect(){
+    add_attribute('ms-id_coowner','style','width:100%;');
+    add_attribute('ms-id_problem','style','width:100%;');
+}
+
+function modify_label(){
+    modify_html('[for=id_cname]','Contest name');
+    modify_html('[for=id_freeze_time]','Freeze Time(mins):');
+    modify_html('[for=id_start_time]','Start Time(YYYY-MM-DD hh:mm:ss):');
+    modify_html('[for=id_end_time]','End Time(YYYY-MM-DD hh:mm:ss):');
+    modify_html('.help-block','');
 }
