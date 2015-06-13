@@ -50,11 +50,10 @@ logger = get_logger()
 def get_running_contest(request, group_id):
 
     group = get_group(group_id)
-
-    all_running_contest_list = []
     now = timezone.now()
 
     all_running_contest_list = group.trace_contest.filter(start_time__lte=now, end_time__gte=now)
+    all_running_contest_list = get_current_page(request, all_running_contest_list)
 
     return render_index(
         request, 'group/viewall.html', {
@@ -66,11 +65,10 @@ def get_running_contest(request, group_id):
 def get_ended_contest(request, group_id):
 
     group = get_group(group_id)
-
-    all_ended_contest_list = []
     now = timezone.now()
 
     all_ended_contest_list = group.trace_contest.filter(end_time__lte=now)
+    all_ended_contest_list = get_current_page(request, all_ended_contest_list)
 
     return render_index(
         request, 'group/viewall.html', {
@@ -83,12 +81,21 @@ def get_all_announce(request, group_id):
 
     group = get_group(group_id)
 
-    all_announce_list = group.announce.all()
+    user = validate_user(request.user)
+    user_is_owner = has_group_ownership(user, group)
+    user_is_coowner = has_group_coownership(user, group)
+    user_has_auth = user_is_owner or user_is_coowner
+
+    all_announce_list = group.announce.order_by('-id')
+    all_announce_list = get_current_page(request, all_announce_list)
     return render_index(
         request, 'group/viewall.html', {
             'data_list': all_announce_list,
             'title': 'announce',
             'list_type': 'announce',
+            'user_has_auth': user_has_auth,
+            'redirect_page': 'viewall',
+            'group': group,
         })
 
 

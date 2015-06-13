@@ -55,13 +55,16 @@ def add_announce(request, group_id):
         raise PermissionDenied
 
 @login_required
-def delete_announce(request, announce_id, group_id):
+def delete_announce(request, announce_id, group_id, redirect_page):
     group = get_group(group_id)
 
     if has_group_ownership(request.user, group) or has_group_coownership(request.user, group):  
         get_announce(announce_id).delete()
         logger.info('Announce: User %s delete Announce %s!' % (request.user.username, announce_id))
-        return HttpResponseRedirect(reverse('group:detail', kwargs={'group_id': group_id}))
+        if redirect_page == 'detail':
+            return HttpResponseRedirect(reverse('group:detail', kwargs={'group_id': group_id}))
+        elif redirect_page == 'viewall' :
+            return HttpResponseRedirect(reverse('group:viewall_announce', kwargs={'group_id': group_id}))
     else:
         raise PermissionDenied
 

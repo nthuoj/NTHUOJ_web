@@ -200,7 +200,7 @@
                     <span class="glyphicon glyphicon-pencil"></span>
                   </button>
                 </a>
-                <a href="{% url 'group:delete_announce' announce.id group.id %}">
+                <a href="{% url 'group:delete_announce' announce.id group.id redirect_page %}">
                   <button type="button" class="btn btn-danger btn-sm" 
                           onclick="return confirm_delete()">
                     <span class="glyphicon glyphicon-remove"></span>
