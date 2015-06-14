@@ -29,6 +29,9 @@ import random
 from django.core.urlresolvers import reverse
 from django.core.mail import EmailMultiAlternatives
 from django.template.loader import render_to_string
+from django.http import HttpResponseRedirect
+from django.views.decorators.csrf import csrf_exempt
+
 
 from contest.models import Contest
 from contest.models import Contestant
@@ -42,6 +45,18 @@ EMAIL_HOST_USER = get_config('email', 'user')
 
 logger = get_logger()
 
+
+def subjudge_auth_required(view):
+    """A decorator to ensure user has judge auth."""
+    @csrf_exempt
+    def f(request, *args, **kwargs):
+        user = validate_user(request.user)
+        if user.has_subjudge_auth():
+            return view(request, *args, **kwargs)
+        return HttpResponseRedirect(settings.LOGIN_URL)
+    return f
+
+
 def has_contest_ownership(curr_user, curr_contest):
     curr_user = validate_user(curr_user)
 
@@ -52,14 +67,13 @@ def has_contest_ownership(curr_user, curr_contest):
     return curr_user in contest_coowners
 
 
-
-
 def has_group_ownership(curr_user, curr_group):
     curr_user = validate_user(curr_user)
 
     if curr_user == curr_group.owner or curr_user.has_admin_auth():
         return True
     return False
+
 
 def has_group_coownership(curr_user, curr_group):
     curr_user = validate_user(curr_user)
@@ -70,6 +84,7 @@ def has_group_coownership(curr_user, curr_group):
             if curr_user == coowner:
                 return True
     return False
+
 
 def has_problem_ownership(curr_user, curr_problem):
     curr_user = validate_user(curr_user)

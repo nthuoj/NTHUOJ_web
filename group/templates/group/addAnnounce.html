@@ -17,7 +17,7 @@
         <form action="{% url 'group:add_announce' group.id %}" method="POST">
           {% csrf_token %}
           {% for field in form %} 
-          <div class="form-group" style="width:50%">
+          <div class="form-group" style="width:100%">
             {{ field|bootstrap }}
           </div>
           {% endfor %}

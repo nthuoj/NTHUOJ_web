@@ -237,13 +237,13 @@ def testcase(request, pid, tid=None):
                 with open(input_filename, 'w') as t_in:
                     for chunk in request.FILES['t_in'].chunks():
                         t_in.write(chunk)
-                    call(['dos2unix', input_filename])
-                    logger.info("testcase %s.in saved by %s" % (testcase.pk, request.user))
+                call(['dos2unix', input_filename])
+                logger.info("testcase %s.in saved by %s" % (testcase.pk, request.user))
                 with open(output_filename, 'w') as t_out:
                     for chunk in request.FILES['t_out'].chunks():
                         t_out.write(chunk)
-                    call(['dos2unix', output_filename])
-                    logger.info("testcase %s.out saved by %s" % (testcase.pk, request.user))
+                call(['dos2unix', output_filename])
+                logger.info("testcase %s.out saved by %s" % (testcase.pk, request.user))
                 if not has_message:
                     messages.success(request, "testcase %s saved" % testcase.pk)
             except IOError, OSError:
@@ -303,9 +303,10 @@ def preview(request):
 
 @login_required
 def download_testcase(request, filename):
-    pid = filename.split('.')[0]
+    tid = filename.split('.')[0]
     try:
-        problem = Problem.objects.get(pk=pid)
+        testcase = Testcase.objects.get(pk=tid)
+        problem = testcase.problem
     except:
         raise Http404()
     if not has_problem_ownership(request.user, problem) and \

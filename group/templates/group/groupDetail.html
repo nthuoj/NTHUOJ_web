@@ -14,20 +14,22 @@
     <div class="container-fluid">
       <div class="span12">
         <h2>{{ group.id }} - {{ group.gname }}
+          {% if user_has_auth %}
           <a href="{% url 'group:edit' group.id %}">
             <button type="button" class="btn btn-warning btn-xs" 
                     data-toggle="tooltip" data-placement="top">
               <span class="glyphicon glyphicon-pencil"></span>
             </button>
           </a>
+          {% endif %}
         </h2>
       </div>
     </div>
   </div>
   <hr>
   <div class="container-fluid">
-    <div class="Description" style="float:left">
-      <p style="font-size:16px; color:gray; word-wrap:break-word">
+    <div class="Description" style="word-break:break-all">
+      <p style="font-size:16px; color:gray">
         {{ group.description|linebreaks }}
       </p>
     </div>
@@ -191,18 +193,20 @@
             </td>
             <td>
               {% if user_has_auth %}
-              <a href="{% url 'group:edit_announce' announce.id group.id redirect_page %}">
-                <button type="button" class="btn btn-warning btn-sm" 
-                        data-toggle="modal" style="float:right">
-                  <span class="glyphicon glyphicon-pencil"></span>
-                </button>
-              </a>
-              <a href="{% url 'group:delete_announce' announce.id group.id %}">
-                <button type="button" class="btn btn-danger btn-sm" 
-                        style="float:right" onclick="return confirm_delete()">
-                  <span class="glyphicon glyphicon-remove"></span>
-                </button>
-              </a>
+              <div style="float:right">
+                <a href="{% url 'group:edit_announce' announce.id group.id redirect_page %}">
+                  <button type="button" class="btn btn-warning btn-sm" 
+                          data-toggle="modal">
+                    <span class="glyphicon glyphicon-pencil"></span>
+                  </button>
+                </a>
+                <a href="{% url 'group:delete_announce' announce.id group.id %}">
+                  <button type="button" class="btn btn-danger btn-sm" 
+                          onclick="return confirm_delete()">
+                    <span class="glyphicon glyphicon-remove"></span>
+                  </button>
+                </a>
+              </div>
               {% endif %}
             </td>
           </tr>
