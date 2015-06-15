@@ -63,7 +63,7 @@ def delete_announce(request, announce_id, group_id, redirect_page):
         logger.info('Announce: User %s delete Announce %s!' % (request.user.username, announce_id))
         if redirect_page == 'detail':
             return HttpResponseRedirect(reverse('group:detail', kwargs={'group_id': group_id}))
-        elif redirect_page == 'viewall' :
+        else : #redirect_page=='viewall'
             return HttpResponseRedirect(reverse('group:viewall_announce', kwargs={'group_id': group_id}))
     else:
         raise PermissionDenied
@@ -91,7 +91,7 @@ def edit_announce(request, announce_id, group_id, redirect_page):
                 logger.info('Announce: Announce %s has been changed!' % (announce.id))
                 if redirect_page == 'detail':
                     return HttpResponseRedirect(reverse('group:detail', kwargs={'group_id': group_id}))
-                elif redirect_page == 'viewall' :
+                else : #redirect_page=='viewall'
                     return HttpResponseRedirect(reverse('group:viewall_announce', kwargs={'group_id': group_id}))
             else:
                  return render_index(
