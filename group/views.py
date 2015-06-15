@@ -52,8 +52,8 @@ def get_running_contest(request, group_id):
     group = get_group(group_id)
     now = timezone.now()
 
-    all_running_contest_list = group.trace_contest.filter(start_time__lte=now, end_time__gte=now)
-    all_running_contest_list = get_current_page(request, all_running_contest_list)
+    all_running_contest_list_unpaged = group.trace_contest.filter(start_time__lte=now, end_time__gte=now)
+    all_running_contest_list = get_current_page(request, all_running_contest_list_unpaged)
 
     return render_index(
         request, 'group/viewall.html', {
@@ -67,8 +67,8 @@ def get_ended_contest(request, group_id):
     group = get_group(group_id)
     now = timezone.now()
 
-    all_ended_contest_list = group.trace_contest.filter(end_time__lte=now)
-    all_ended_contest_list = get_current_page(request, all_ended_contest_list)
+    all_ended_contest_list_unpaged = group.trace_contest.filter(end_time__lte=now)
+    all_ended_contest_list = get_current_page(request, all_ended_contest_list_unpaged)
 
     return render_index(
         request, 'group/viewall.html', {
