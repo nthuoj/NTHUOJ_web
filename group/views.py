@@ -86,8 +86,8 @@ def get_all_announce(request, group_id):
     user_is_coowner = has_group_coownership(user, group)
     user_has_auth = user_is_owner or user_is_coowner
 
-    all_announce_list = group.announce.order_by('-id')
-    all_announce_list = get_current_page(request, all_announce_list)
+    all_announce_list_unpaged = group.announce.order_by('-id')
+    all_announce_list = get_current_page(request, all_announce_list_unpaged)
     return render_index(
         request, 'group/viewall.html', {
             'data_list': all_announce_list,
