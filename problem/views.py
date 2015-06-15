@@ -40,7 +40,7 @@ from problem.problem_info import *
 from utils import log_info
 from utils.render_helper import render_index, get_current_page
 from utils.rejudge import rejudge_problem
-from subprocess import call
+from subprocess import check_call
 import os
 import json
 
@@ -237,12 +237,12 @@ def testcase(request, pid, tid=None):
                 with open(input_filename, 'w') as t_in:
                     for chunk in request.FILES['t_in'].chunks():
                         t_in.write(chunk)
-                call(['dos2unix', input_filename])
+                check_call(['dos2unix', input_filename])
                 logger.info("testcase %s.in saved by %s" % (testcase.pk, request.user))
                 with open(output_filename, 'w') as t_out:
                     for chunk in request.FILES['t_out'].chunks():
                         t_out.write(chunk)
-                call(['dos2unix', output_filename])
+                check_call(['dos2unix', output_filename])
                 logger.info("testcase %s.out saved by %s" % (testcase.pk, request.user))
                 if not has_message:
                     messages.success(request, "testcase %s saved" % testcase.pk)
