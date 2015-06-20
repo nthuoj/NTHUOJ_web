@@ -174,8 +174,8 @@
                       </h3>
                       {% endif %}
                     </div> 
-                    <div class="modal-body">
-                      <p id="modal-content" style="word-wrap:break-word">
+                    <div class="modal-body" style="word-break:break-all">
+                      <p id="modal-content">
                         {{ announce.content|linebreaks }}
                       </p>
                     </div>
@@ -200,7 +200,7 @@
                     <span class="glyphicon glyphicon-pencil"></span>
                   </button>
                 </a>
-                <a href="{% url 'group:delete_announce' announce.id group.id %}">
+                <a href="{% url 'group:delete_announce' announce.id group.id redirect_page %}">
                   <button type="button" class="btn btn-danger btn-sm" 
                           onclick="return confirm_delete()">
                     <span class="glyphicon glyphicon-remove"></span>
