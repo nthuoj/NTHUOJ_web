@@ -40,7 +40,7 @@ from problem.problem_info import *
 from utils import log_info
 from utils.render_helper import render_index, get_current_page
 from utils.rejudge import rejudge_problem
-
+from subprocess import check_call
 import os
 import json
 
@@ -232,14 +232,18 @@ def testcase(request, pid, tid=None):
         if 't_in' in request.FILES:
             TESTCASE_PATH = config_info.get_config('path', 'testcase_path')
             try:
-                with open('%s%s.in' % (TESTCASE_PATH, testcase.pk), 'w') as t_in:
+                input_filename = '%s%s.in' % (TESTCASE_PATH, testcase.pk)
+                output_filename = '%s%s.out' % (TESTCASE_PATH, testcase.pk)
+                with open(input_filename, 'w') as t_in:
                     for chunk in request.FILES['t_in'].chunks():
-                        t_in.write(chunk.replace('\r\n', '\n'))
-                    logger.info("testcase %s.in saved by %s" % (testcase.pk, request.user))
-                with open('%s%s.out' % (TESTCASE_PATH, testcase.pk), 'w') as t_out:
+                        t_in.write(chunk)
+                check_call(['dos2unix', input_filename])
+                logger.info("testcase %s.in saved by %s" % (testcase.pk, request.user))
+                with open(output_filename, 'w') as t_out:
                     for chunk in request.FILES['t_out'].chunks():
-                        t_out.write(chunk.replace('\r\n', '\n'))
-                    logger.info("testcase %s.out saved by %s" % (testcase.pk, request.user))
+                        t_out.write(chunk)
+                check_call(['dos2unix', output_filename])
+                logger.info("testcase %s.out saved by %s" % (testcase.pk, request.user))
                 if not has_message:
                     messages.success(request, "testcase %s saved" % testcase.pk)
             except IOError, OSError:
@@ -303,7 +307,7 @@ def download_testcase(request, filename):
     try:
         testcase = Testcase.objects.get(pk=tid)
         problem = testcase.problem
-    except: 
+    except:
         raise Http404()
     if not has_problem_ownership(request.user, problem) and \
             not request.user.has_admin_auth():
@@ -323,10 +327,10 @@ def download_partial(request, filename):
     pid = filename.split('.')[0]
     try:
         problem = Problem.objects.get(pk=pid)
-    except: 
+    except:
         raise Http404()
     if not has_problem_auth(request.user, problem):
-        logger.warning("%s has no permission to download problem %d partial judge code" 
+        logger.warning("%s has no permission to download problem %d partial judge code"
                 % (request.user, problem.pk))
         raise Http404()
     try:
@@ -342,11 +346,11 @@ def download_special(request, filename):
     pid = filename.split('.')[0]
     try:
         problem = Problem.objects.get(pk=pid)
-    except: 
+    except:
         raise Http404()
     if not has_problem_ownership(request.user, problem) and \
             not request.user.has_admin_auth():
-        logger.warning("%s has no permission to download problem %d special judge code" 
+        logger.warning("%s has no permission to download problem %d special judge code"
                 % (request.user, problem.pk))
         raise Http404()
     try:
