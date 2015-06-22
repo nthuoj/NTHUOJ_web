@@ -43,7 +43,7 @@ from users.templatetags.profile_filters import can_change_userlevel
 from utils.log_info import get_logger
 from utils.user_info import get_user_statistics, send_activation_email, send_forget_password_email
 from utils.render_helper import render_index, get_current_page, get_next_page
-
+from utils.config_info import get_config
 
 # Create your views here.
 
@@ -133,9 +133,10 @@ def user_login(request):
             user.backend = 'django.contrib.auth.backends.ModelBackend'
             ip = get_ip(request)
             logger.info('user %s @ %s logged in' % (str(user), ip))
-            one_hour = 60 * 60
-            request.session.set_expiry(one_hour)
-            logger.info('user %s set session timeout one hour' % str(user))
+            hours = int(get_config('session_expiry', 'expiry'))
+            expiry = hours * 60 * 60
+            request.session.set_expiry(expiry)
+            logger.info('user %s set session timeout %d-hour' % (str(user), hours))
             login(request, user)
             return redirect(next_page)
         else:
