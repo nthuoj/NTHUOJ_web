@@ -22,13 +22,11 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
 from django.conf import settings
-from django.views.decorators.csrf import csrf_exempt
 from utils.user_info import validate_user
 
 
 def subjudge_auth_required(view):
     """A decorator to ensure user has judge auth."""
-    @csrf_exempt
     def f(request, *args, **kwargs):
         user = validate_user(request.user)
         if user.has_subjudge_auth():
@@ -39,7 +37,6 @@ def subjudge_auth_required(view):
 
 def judge_auth_required(view):
     """A decorator to ensure user has judge auth."""
-    @csrf_exempt
     def f(request, *args, **kwargs):
         user = validate_user(request.user)
         if user.has_judge():
@@ -50,7 +47,6 @@ def judge_auth_required(view):
 
 def admin_auth_required(view):
     """A decorator to ensure user has judge auth."""
-    @csrf_exempt
     def f(request, *args, **kwargs):
         user = validate_user(request.user)
         if user.has_admin_auth():

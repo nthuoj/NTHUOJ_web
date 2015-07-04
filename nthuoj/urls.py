@@ -3,6 +3,7 @@ from django.contrib import admin
 from django.conf import settings
 from ckeditor.views import upload, browse
 from utils.decorators import subjudge_auth_required
+from django.views.decorators.csrf import csrf_exempt
 import autocomplete_light
 
 # OP autodiscover
@@ -11,9 +12,9 @@ autocomplete_light.autodiscover()
 
 urlpatterns = patterns(
     '',
-    url(r'^ckeditor/upload/', subjudge_auth_required(upload),
+    url(r'^ckeditor/upload/', csrf_exempt(subjudge_auth_required(upload)),
         name='ckeditor_upload'),
-    url(r'^ckeditor/browse/', subjudge_auth_required(browse),
+    url(r'^ckeditor/browse/', csrf_exempt(subjudge_auth_required(browse)),
         name='ckeditor_browse'),
     url(r'^media/(?P<path>.*)$', 'django.views.static.serve',
         {'document_root': settings.MEDIA_ROOT, 'show_indexes': True}),
