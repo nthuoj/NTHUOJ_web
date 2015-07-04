@@ -2,7 +2,7 @@ from django.conf.urls import patterns, include, url
 from django.contrib import admin
 from django.conf import settings
 from ckeditor.views import upload, browse
-from utils.user_info import subjudge_auth_required
+from utils.decorators import subjudge_auth_required
 import autocomplete_light
 
 # OP autodiscover
