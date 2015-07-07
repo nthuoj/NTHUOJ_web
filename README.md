@@ -55,7 +55,7 @@ python install.py
 * Please DON'T run this command with sudo to prevent error in permission setttings.
 * Information other than those concerning database can be left blank and be configured later by modifying `'project_root/config/nthuoj.cfg'`.
 * Our project will not automatically create a database for you. So if you want to use a local database, please create it yourself.
-
+* For more detailed deployment instructions, you can follow this [note](https://gist.github.com/henryyang42/e70c7f444788e674c4da)
 
 ###Email host:
 * The email host should be gmail.

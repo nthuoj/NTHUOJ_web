@@ -8,3 +8,5 @@ django-bootstrap-form
 django-ckeditor
 requests
 pillow
+MySQL-python
+gunicorn
