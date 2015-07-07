@@ -1,5 +1,5 @@
 #NTHUOJ_WEB
-#######Version 1.0.2
+#######Version 1.0.3
 =======
 
 ##License
@@ -29,18 +29,9 @@ git config --global url."https://".insteadOf git://
 * npm
 * libjpeg
 * bower
-* django1.7
-* django-bower
-* django-axes
-* django-autocomplete-light
-* django-bootstrap
-* django-bootstrap-form
-* django-ckeditor
-* django-datetime-widget
-* requests
 * git
-* pillow
 * dos2unix
+* python dependencies in [requirements.txt](requirements.txt)
 
 ###Installation:
 * Install dependencies (for ubuntu)
