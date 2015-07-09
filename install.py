@@ -63,12 +63,6 @@ if not config.has_section('email'):
         password=getpass.getpass("Email host's password: ")
     )
 
-if not config.has_section('session_expiry'):
-    # Setting session expiry
-    write_config(config, 'session_expiry',
-        expiry=raw_input('Session expiry(hours): '),
-    )
-
 # Change defaut path
 paths = dict(config.items('path'))
 print 'Default path configuration is:\n'
