@@ -149,8 +149,3 @@ def custom_500(request):
 
 def base(request):
     return render_index(request, 'index/base.html',{})
-
-def get_time(request):
-    t = time.time()
-    tstr = datetime.fromtimestamp(t).strftime('%Y/%m/%d %H:%M:%S')
-    return HttpResponse(tstr)

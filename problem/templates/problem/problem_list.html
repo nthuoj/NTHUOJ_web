@@ -1,3 +1,4 @@
+{% load staticfiles %}
 <table class="table table-striped table-hover">
   <thead>
       <tr>
@@ -10,14 +11,16 @@
     </thead>
   <tbody>
     {% for p in problem %}
+      {% if not p.in_contest %}
       <tr>
         <td>
           {% if user == p.owner or user.has_admin_auth %}
-            <!-- <button class="btn btn-info btn-xs" data-toggle="tooltip" -->
-            <!--     data-pacement="top" title="Rejudge Problem"> -->
-            <!--   <span id='rejudge' class='glyphicon glyphicon-refresh'></span> -->
-            <!-- </button> -->
-            <a class="del_btn" href="{% url 'problem:delete_problem' p.pk %}">
+	    <a class="btn btn-info btn-xs rejudge-btn"  href="{% url 'problem:rejudge' %}?pid={{ p.pk }}"
+		    data-toggle="tooltip" data-pacement="top" title="Rejudge Problem"
+		    data-submission="{{ p.total_submission }}">
+              <span id='rejudge' class='glyphicon glyphicon-refresh'></span>
+            </a>
+            <a class="del-btn" href="{% url 'problem:delete_problem' p.pk %}">
               <button type="button" class="btn btn-danger btn-xs" data-toggle="tooltip"
                     data-placement="top" title="Delete Problem">
                 <span class="glyphicon glyphicon-remove"></span>
@@ -49,17 +52,10 @@
         </td>
         <td>{{ p.owner }}</td>
       </tr>
+      {% endif %}
     {% endfor %}
   </tbody>
 </table>
-<script>
-$(document).ready(function () {
-  $('[data-toggle="tooltip"]').tooltip();
-  $('.progress').css('overflow', 'inherit');
-  $('.del_btn').click(function () {
-      return confirm("Are you sure you want to delete?");
-  });
-});
-</script>
+<script src="{% static 'problem/js/panel.js' %}"></script>
 
 {% include "utils/pager.html" with objects=problem %}

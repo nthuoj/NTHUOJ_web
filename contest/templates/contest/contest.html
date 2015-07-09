@@ -1,32 +1,36 @@
 {% extends "index/base.html" %} {% load staticfiles %} {% load contest_extras %}
 
 {% block title_name %}
-<title>Contest</title>
+<title>{{ contest }}</title>
 {% endblock title_name %}
 
 {% block import_source %}
 <link href="{% static 'contest/css/contest.css' %}" rel="stylesheet">
-<script src="{%static 'contest/js/contest.js'%}"></script>
+<script src="{% static 'contest/js/contest.js'%}"></script>
 {% endblock import_source %}
 
 {% block body_block %}
-  <div class="container" onload="getRestTime()">
+
+<body onload="getRestTime()">
+  <div class="container">
+
     <!--Title-->
     <div class="well">
       <h2>{{ contest.id }} - {{ contest.cname }}
-      {% if user|can_edit_contest:contest %}
-       <a href="{% url 'contest:edit' contest.id %}">
-        <button type="button" class="btn btn-warning btn-sm" data-toggle="tooltip"
-                data-placement="top" title="Edit Contest">
-          <span class="glyphicon glyphicon-pencil"></span>
-        </button>
-      </a>
-      {% endif %}
-      {% if contest|is_freezed %}
-      <h4>
-      <span class="label label-danger">Freezed</span>
-      </h4>
-      {% endif %}
+        {% if user|can_edit_contest:contest %}
+        <a href="{% url 'contest:edit' contest.id %}">
+          <button type="button" class="btn btn-warning btn-sm" data-toggle="tooltip"
+                  data-placement="top" title="Edit Contest">
+            <span class="glyphicon glyphicon-pencil"></span>
+          </button>
+        </a>
+        {% endif %}
+        {% if contest|is_frozen %}
+        <h4>
+          <span class="label label-danger">Frozen</span>
+          *Frozen contest will not update scoreboard until the contest ends.
+        </h4>
+        {% endif %}
       </h2>
     </div>
     <div class="panel panel-info">
@@ -34,7 +38,6 @@
         <h1 class="panel-title" style="text-align:center;">Time</h1>
       </div>
       <div class="panel-body inline">
-        <a id="server_time" hidden>{{ tstr }}</a>
         <table style="width:100%;text-align:center;">
           <tr>
             <td id="start" style="text-align:left;">{{ contest.start_time|date:"Y/m/d H:i:s" }}</td>
@@ -69,7 +72,7 @@
               <th width="20%">Reply</th>
               <th width="10%">Replier</th>
               <th width="10%">Reply Time</th>
-              <th width="5%">For all team</th>
+              <th width="10%">For all team</th>
             </tr>
           </thead>
           <tbody>
@@ -136,7 +139,7 @@
         <div class="tab-pane active" id="overview">
           {% include "contest/overview.html" %}
         </div>
-        {% for problem in contest.problem.all %}
+        {% for problem in contest.problems %}
         <div class="tab-pane" id="problem{{ problem.id }}">
           {% include "problem/problem.html" %}
         </div>
@@ -163,4 +166,5 @@
     {% include "contest/reply.html" %}
     {% endif %}
   </div>
+</body>
 {% endblock body_block %}

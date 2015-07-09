@@ -1,135 +1,45 @@
 {% extends "index/base.html" %}
-{% load static %}
+{% load static %} 
+{% block title_name %}
+<title>Group List</title>
+{% endblock title_name %}
+{% block import_source %}
+<script src="{%static 'group/js/editAnnounce.js'%}"></script>
+{% endblock import_source %}
+{% load group_extras %}
 {% block body_block %}
-
-<div class="container-fluid">
-  <div class="contest">
-    <br>
-    <div class="well">
-      <!-- Create/Delete group need judge auth -->
-      {% if user.has_judge_auth %}
-      <div class="form-group">
-        <a class="btn btn-sm btn-default" style="float:right"
-           href="{% url 'group:new' %}">Create</a>
-      </div>
-      {% endif %}
-      <h2>Group List</h2>
-    </div>
-    <div class="filter" style="float:right">
-      <div class="btn-group" data-toggle="buttons-radio" style="float:right">
-        <button id="myGroupButton" type="button" class="btn btn-primary">My Group</button>
-        <button id="allGroupButton" type="button" class="btn btn-primary">All Group</button>
-        <script>
-          $(function(){
-            $('#allGroupTable').show();
-            $('#myGroupTable').hide();
-            $('#myGroupButton').click(function(){
-              $('#allGroupTable').hide();
-              $('#myGroup_Table').show();
-            });
-            $('#allGroupButton').click(function(){
-              $('#allGroupTable').show();
-              $('#myGroupTable').hide();
-            });
-          })
-        </script>
-      </div>
-    </div>
-    <a href="" class="btn btn-sm btn-default" data-toggle="modal"
-       data-target="#searchGroupModal" style="float:left">Search group</a>
-    <table id="allGroupTable" class="table table-hover">
-      <thead>
-        <tr>
-          <th>Name</th>
-          <th>Owner/TA</th>
-          <th>Group Description</th>
-          <th></th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for group in a_g_list %}
-        <tr>
-          <td>
-            <a href="{% url 'group:detail' group.id %}">{{ group.gname }}</a>
-          </td>
-          <td>{{ group.owner }}</td>
-          <td>{{ group.description|truncatechars:70 }}</td>
-          <td>
-            {% if user.has_judge_auth %}
-            <a href="{% url 'group:delete' group.id %}">
-              <button type="button" class="btn btn-danger" style="float:right">
-                Delete
-              </button>
-            </a>
-            {% endif %}
-          </td>
-        </tr>
-        {% endfor %}
-      </tbody>
-    </table>
-    <table id="myGroupTable" class="table table-hover">
-      <thead>
-        <tr>
-          <th>Name</th>
-          <th>Owner/TA</th>
-          <th>Group Description</th>
-          <th></th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for group in m_g_list %}
-        <tr>
-          <td>
-            <a href="{% url 'group:detail' group.id %}">{{ group.gname }}</a>
-          </td>
-          <td>{{ group.owner }}</td>
-          <td>{{ group.description|truncatechars:70 }}</td>
-          <td>
-            {% if user.has_judge_auth %}
-            <a href="{% url 'group:delete' group.id %}">
-              <button type="button" class="btn btn-danger" style="float:right">
-                Delete
-              </button>
-            </a>
-            {% endif %}
-          </td>
-        </tr>
-        {% endfor %}
-      </tbody>
-    </table>
-    <ul class="pager">
-      <li><a href="#" style="color:gray">← Previous</a>
-      </li>
-      <li><a href="#" style="color:black">Next →</a>
-      </li>
-    </ul>
+<br>
+<div class="container" id="list">
+  <div class="well">
+    <h2>Group List</h2>
   </div>
-  <hr>
-</div>
-<!---Modal Section-->
-<!--1. Modal for search group-->
-<div class="modal fade" id="searchGroupModal" role="dialog" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="btn-default" class="close" data-dismiss="modal" aria-hidden="true">
-          &times;
-        </button>
-        <h4 class="modal-title">Search</h4>
-      </div>
-      <div class="modal-body">
-        <div class="input-group" style="width:90%">
-          <span class="input-group-addon">search group</span>
-          <input type="text" class="form-control">
-        </div>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel
-        </button>
-        <button type="button" class="btn btn-primary"> Confirm </button>
-      </div>
-    </div>
+  {% if user.is_authenticated %}
+  <div class="btn-group" style="float:right">
+    <a href="{% url 'group:my_list' %}"> 
+      <button id="myGroupButton" type="button" 
+              class="btn btn-primary {% if include_flag = 'my_group' %} active {% endif %}">
+        My Group
+      </button>
+    </a>
+    <a href="{% url 'group:list' %}">
+      <button id="allGroupButton" type="button" 
+              class="btn btn-primary {% if include_flag = 'all_group' %} active {% endif %}">
+        All Group
+      </button>
+    </a>
   </div>
+  {% endif %}
+  <br>
+  <br>
+  {% if include_flag = 'my_group' %}
+    <div id="myGroupTable">
+      {% include "group/groupTable.html" with group_list=my_group_list %}
+    </div>
+  {% endif %}
+  {% if include_flag = 'all_group' %}
+  <div id="allGroupTable">
+    {% include "group/groupTable.html" with group_list=all_group_list %}
+  </div>
+  {% endif %}
 </div>
-<!--Modal Section End-->
 {% endblock body_block %}

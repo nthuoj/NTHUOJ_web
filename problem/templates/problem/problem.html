@@ -80,10 +80,6 @@
       <span class='label label-danger'>EOF</span>
     </div>
   </div>
-  {% if problem.judge_type == "LOCAL_SPECIAL" and problem.has_special_judge_code %}
-    <h3>Special Judge Code</h3>
-    <a href="{% url 'problem:download_special' problem.filename %}">{{ problem.filename }}</a>
-  {% endif %}
   {% if problem.judge_type == "LOCAL_PARTIAL" and problem.has_partial_judge_code %}
     <h3>Partial Judge Code</h3>
     <a href="{% url 'problem:download_partial' problem.filename %}">{{ problem.filename }}</a>
@@ -92,28 +88,32 @@
     <h3>Partial Judge Header</h3>
     <a href="{% url 'problem:download_partial' problem.headername %}">{{ problem.headername }}</a>
   {% endif %}
+  {% if not problem.in_contest %}
   <h3>Tags</h3>
-  <div id='tags' style='float:left;width:60%'>
-    {% if preview %}
-      {% for tag in problem.tag %}
-        <span class='label label-info'>{{tag}}</span>
-      {% endfor %}
-    {% else %}
-      {% for tag in problem.tags.all %}
-        <span class='label label-info'>{{tag.tag_name}}</span>
-      {% endfor %}
+    <div id='tags' style='float:left;width:60%'>
+      {% if preview %}
+        {% for tag in problem.tag %}
+          <span class='label label-info'>{{tag}}</span>
+        {% endfor %}
+      {% else %}
+        {% for tag in problem.tags.all %}
+          <span class='label label-info'>{{tag.tag_name}}</span>
+        {% endfor %}
+      {% endif %}
+    </div>
+    {% if tag_form and user.is_authenticated %}
+      <form id='addTag'>
+        {% csrf_token %}
+        <div class='input-group'>
+          {{ tag_form.tag_name }}
+          <span class="input-group-btn">
+	    <button id='addTagButton' class="btn btn-default" type="button">
+	      Add Tag
+	    </button>
+          </span>
+        </div>
+      </form>
     {% endif %}
-  </div>
-  {% if tag_form and user.is_authenticated %}
-    <form id='addTag'>
-      {% csrf_token %}
-      <div class='input-group'>
-        {{ tag_form.tag_name }}
-        <span class="input-group-btn">
-          <button id='addTagButton' class="btn btn-default" type="button">Add Tag</button>
-      </span>
-      </div>
-    </form>
   {% endif %}
 
   <br>

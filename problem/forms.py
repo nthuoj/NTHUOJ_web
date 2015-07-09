@@ -134,3 +134,15 @@ class TagForm(forms.ModelForm):
                                         attrs={'class': 'form-control'})
         }
 
+
+class TagFilter(forms.Form):
+    tag_name = forms.CharField(max_length=20, label='Tag', required=False,
+            widget= autocomplete_light.TextWidget('TagAutocomplete',
+                                        attrs={'class': 'form-control'}))
+
+    def clean_tag_name(self):
+        tag_name = self.cleaned_data['tag_name'].strip()
+        if len(tag_name) != 0 and not Tag.objects.filter(tag_name=tag_name).exists():
+            raise forms.ValidationError("Tag does not exists")
+        return tag_name
+

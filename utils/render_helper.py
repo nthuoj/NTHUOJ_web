@@ -62,10 +62,7 @@ def custom_proc(request):
     amount = Notification.objects.filter \
         (receiver=request.user, read=False).count()
 
-    t = time.time()
-    tstr = datetime.fromtimestamp(t).strftime('%Y/%m/%d %H:%M:%S')
     return {
-        'tstr': tstr,
         'amount': amount,
         'default_theme': DEFAULT_THEME,
         'request': request

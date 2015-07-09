@@ -26,7 +26,6 @@ from threading import Thread
 
 from users.models import User
 from problem.models import Problem, Submission, SubmissionDetail, Testcase
-from vjudge.submit import submit_to_vjudge
 from utils import log_info, user_info, config_info, file_info
 
 logger = log_info.get_logger()
@@ -43,7 +42,7 @@ class CodeSubmitForm(forms.Form):
     language = forms.ChoiceField(choices=LANGUAGE_CHOICE, initial=Submission.CPP,
                                  help_text="Backend: %s<br>gcc: %s<br>g++: %s"
                                  % (BACKEND_VERSION, GCC_VERSION, GPP_VERSION))
-    code = forms.CharField(max_length=10000,
+    code = forms.CharField(max_length=40 * 1024,
                            widget=forms.Textarea(attrs={'id': 'code_editor'}))
 
     def clean_pid(self):
@@ -81,8 +80,8 @@ class CodeSubmitForm(forms.Form):
             logger.warning('Sid %s fail to save code' % submission.id)
 
         if problem.judge_source == Problem.OTHER:
-            submit_thread = Thread(target=submit_to_vjudge, args=(code, submission))
-            submit_thread.start()
+            #  Send to other judge
+            pass
 
     def __init__(self, *args, **kwargs):
         self.user = kwargs.pop('user', User())
@@ -176,6 +175,3 @@ class UserForgetPasswordForm(forms.Form):
         if username and email and User.objects.filter(username=username, email=email):
             return email
         raise forms.ValidationError("Username and Email don't match")
-
-
-

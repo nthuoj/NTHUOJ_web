@@ -29,11 +29,14 @@ import random
 from django.core.urlresolvers import reverse
 from django.core.mail import EmailMultiAlternatives
 from django.template.loader import render_to_string
+from django.http import HttpResponseRedirect
+from django.views.decorators.csrf import csrf_exempt
+
 
 from contest.models import Contest
 from contest.models import Contestant
 from problem.models import Submission, SubmissionDetail
-from users.models import User, UserProfile
+from users.models import User, UserProfile, Notification
 from utils.log_info import get_logger
 from utils.config_info import get_config
 from django.conf import settings
@@ -41,6 +44,18 @@ from django.conf import settings
 EMAIL_HOST_USER = get_config('email', 'user')
 
 logger = get_logger()
+
+
+def subjudge_auth_required(view):
+    """A decorator to ensure user has judge auth."""
+    @csrf_exempt
+    def f(request, *args, **kwargs):
+        user = validate_user(request.user)
+        if user.has_subjudge_auth():
+            return view(request, *args, **kwargs)
+        return HttpResponseRedirect(settings.LOGIN_URL)
+    return f
+
 
 def has_contest_ownership(curr_user, curr_contest):
     curr_user = validate_user(curr_user)
@@ -52,12 +67,16 @@ def has_contest_ownership(curr_user, curr_contest):
     return curr_user in contest_coowners
 
 
-
 def has_group_ownership(curr_user, curr_group):
     curr_user = validate_user(curr_user)
 
-    if curr_user == curr_group.owner:
+    if curr_user == curr_group.owner or curr_user.has_admin_auth():
         return True
+    return False
+
+
+def has_group_coownership(curr_user, curr_group):
+    curr_user = validate_user(curr_user)
 
     group_coowners = curr_group.coowner.all()
     if group_coowners:
@@ -197,3 +216,10 @@ def send_forget_password_email(request, user):
         Thread(target=msg.send, args=()).start()
     except:
         logger.warning("There is an error when sending email to %s's mailbox" % username)
+
+def send_notification(user, content):
+    try:
+        Notification.objects.create(receiver=user, message=content)
+        logger.info("send notification to %s successfully" % user.username)
+    except:
+        logger.warning("There is an error when sending notification to %s" % user.username)

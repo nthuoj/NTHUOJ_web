@@ -1,27 +1,42 @@
-/*
+'''
 The MIT License (MIT)
+
 Copyright (c) 2014 NTHUOJ team
+
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
 in the Software without restriction, including without limitation the rights
 to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 copies of the Software, and to permit persons to whom the Software is
 furnished to do so, subject to the following conditions:
+
 The above copyright notice and this permission notice shall be included in all
 copies or substantial portions of the Software.
+
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
 AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
-*/
+SOFTWARE.'''
 
-.green {
-  color: green;
-}
+from django.http import Http404
+from group.models import Group, Announce
+from utils.log_info import get_logger
 
-.word-block {
-	word-wrap:break-word;
-}
+def get_announce(announce_id):
+    try:
+        announce = Announce.objects.get(id=announce_id)
+    except Announce.DoesNotExist:
+        logger.warning('Announce: Can not edit announce %s! Announce does not exist!' % announce_id)
+        raise Http404('Announce: Can not edit announce %s! Announce does not exist!' % announce_id)
+    return announce
+
+def get_group(group_id):
+	try:
+	    group = Group.objects.get(id=group_id)
+	except Group.DoesNotExist:
+	    logger.warning('Group: Can not edit group %s! Group does not exist!' % group_id)
+	    raise Http404('Group: Can not edit group %s! Group does not exist!' % group_id)
+	return group

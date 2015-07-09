@@ -60,6 +60,9 @@ sandstone = Sandstone
 slate = Slate
 superhero = Superhero
 yeti = Yeti
+
+[session_expiry]
+expiry = 5
 """
 
 

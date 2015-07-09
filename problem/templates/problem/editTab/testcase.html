@@ -30,8 +30,8 @@
       {% csrf_token %}
       <td><input type="file" name="t_in" required></td>
       <td><input type="file" name="t_out" required></td>
-      <td><input type="number" class="form-control" id="new_time_limit" name="time_limit" min="0" required></td>
-      <td><input type="number" class="form-control" id="new_memory_limit" name="memory_limit" min="0" required></td>
+      <td><input type="number" class="form-control" id="new_time_limit" name="time_limit" min="0" value="1" required></td>
+      <td><input type="number" class="form-control" id="new_memory_limit" name="memory_limit" min="0" value="32" required></td>
       <td><button class="btn btn-primary" id="add_testcase_btn">Add</button></td>
     </form>
   </tr>

@@ -65,7 +65,7 @@ $(document).ready(function() {
             processData: false,
             contentType: false,
             success: function(data) {
-                alert("testcase updated");
+                window.location.href = "/problem/" + pid + "/edit/?tab=testcase";
             }
         });
     });
@@ -89,24 +89,34 @@ $(document).ready(function() {
             url: "/problem/" + pid + "/testcase/" + tid + "/",
             data: time + "&" + memory + "&" + csrf,
             success: function(data) {
-                alert('testcase updated');
                 window.location.href = "/problem/" + pid + "/edit/?tab=testcase";
             }
         });
         return false;
     });
     $("body").on('click', '.del_testcase_btn', function(e) {
+        if (!confirm("Are you sure you want to delete?"))
+            return false;
         var row = $(this).parents("tr");
         var tid = $(this).parents("tr").attr('data-target');
         $.ajax({
             type: 'GET',
             url: '/problem/' + pid + '/testcase/' + tid + '/delete/',
             success: function(data) {
-                alert('testcase deleted');
                 window.location.href = "/problem/" + pid + "/edit/?tab=testcase";
             }
         });
         return false;
+    });
+    $("#problem_info").submit(function() {
+        if (judge_type == 'LOCAL_SPECIAL' || judge_type == 'LOCAL_PARTIAL') {
+            if (judge_type != $("#id_judge_type").val())
+            return confirm("\
+		    You've changed the judge type\n\
+		    This will remove the original codes\n\
+		    Are you sure?");
+        }
+        return true;
     });
 });
 
@@ -214,42 +224,3 @@ $("#id_judge_type").on("change", function(e) {
     choose_judge_type(this.value);
 });
 
-function refreshTestcaseEvent() {
-    $("body").on("click", ".reupload_btn", function(e) {
-        update_tid = $(this).parents("tr").attr('data-target');
-    });
-    $("body").on("click", ".update_btn", function(e) {
-        var tid = $(this).parents("tr").attr('data-target');
-        var time = $("#" + tid + "_time").serialize();
-        var memory = $("#" + tid + "_memory").serialize();
-        if ($("#" + tid + "_time").val() < 0) {
-            alert("time limit can't be negative");
-            return false;
-        }
-        if ($("#" + tid + "_memory").val() < 0) {
-            alert("memory limit can't be negative");
-            return false;
-        }
-        $.ajax({
-            type: "POST",
-            url: "/problem/" + pid + "/testcase/" + tid + "/",
-            data: time + "&" + memory + "&" + csrf,
-            success: function(data) {
-                alert('testcase updated')
-            }
-        });
-        return false;
-    });
-    $("body").on('click', '.del_testcase_btn', function(e) {
-        var row = $(this).parents("tr");
-        var tid = $(this).parents("tr").attr('data-target');
-        $.ajax({
-            type: 'GET',
-            url: '/problem/' + pid + '/testcase/' + tid + '/delete/',
-            success: function(data) {
-                row.remove();
-            }
-        });
-        return false;
-    });
-}
