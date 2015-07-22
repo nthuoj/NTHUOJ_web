@@ -1,5 +1,5 @@
 #NTHUOJ_WEB
-#######Version 1.0.2
+#######Version 1.0.4
 =======
 
 ##License
@@ -29,18 +29,9 @@ git config --global url."https://".insteadOf git://
 * npm
 * libjpeg
 * bower
-* django1.7
-* django-bower
-* django-axes
-* django-autocomplete-light
-* django-bootstrap
-* django-bootstrap-form
-* django-ckeditor
-* django-datetime-widget
-* requests
 * git
-* pillow
 * dos2unix
+* python dependencies in [requirements.txt](requirements.txt)
 
 ###Installation:
 * Install dependencies (for ubuntu)
@@ -64,7 +55,7 @@ python install.py
 * Please DON'T run this command with sudo to prevent error in permission setttings.
 * Information other than those concerning database can be left blank and be configured later by modifying `'project_root/config/nthuoj.cfg'`.
 * Our project will not automatically create a database for you. So if you want to use a local database, please create it yourself.
-
+* For more detailed deployment instructions, you can follow this [note](https://gist.github.com/henryyang42/e70c7f444788e674c4da)
 
 ###Email host:
 * The email host should be gmail.
