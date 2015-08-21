@@ -11,7 +11,7 @@ Please refer to MIT license with [our license file](https://github.com/bruce3557
 
 ###Get our project
 ```
-git clone https://github.com:bruce3557/NTHUOJ_web.git
+git clone https://github.com/bruce3557/NTHUOJ_web.git
 ```
 
 ###Configure Git For Installing Bower Dependencies
