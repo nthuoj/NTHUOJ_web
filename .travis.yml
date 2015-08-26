@@ -8,5 +8,4 @@ install:
   - pip install pep8
 before_script:
   - "pep8 --exclude=urls.py --ignore=E501 ."
-  - pyflakes .
 script: nosetests
