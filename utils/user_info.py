@@ -30,7 +30,6 @@ from django.core.urlresolvers import reverse
 from django.core.mail import EmailMultiAlternatives
 from django.template.loader import render_to_string
 from django.http import HttpResponseRedirect
-from django.views.decorators.csrf import csrf_exempt
 
 
 from contest.models import Contest
@@ -44,17 +43,6 @@ from django.conf import settings
 EMAIL_HOST_USER = get_config('email', 'user')
 
 logger = get_logger()
-
-
-def subjudge_auth_required(view):
-    """A decorator to ensure user has judge auth."""
-    @csrf_exempt
-    def f(request, *args, **kwargs):
-        user = validate_user(request.user)
-        if user.has_subjudge_auth():
-            return view(request, *args, **kwargs)
-        return HttpResponseRedirect(settings.LOGIN_URL)
-    return f
 
 
 def has_contest_ownership(curr_user, curr_contest):
