@@ -38,7 +38,7 @@ def get_logger(name='NTHU OJ', log_dir='log'):
 
     global loggers
     logger = None
-    if loggers.has_key(name):
+    if name in loggers:
         logger = loggers[name]
 
     if not logger:
