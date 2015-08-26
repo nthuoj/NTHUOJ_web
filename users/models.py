@@ -26,13 +26,14 @@ from datetime import date, datetime, timedelta
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 from django.db import models
 
-from utils.config_info import get_config_items ,get_config
+from utils.config_info import get_config_items, get_config
 
 
 # Create your models here.
 
 
 class UserManager(BaseUserManager):
+
     def create_user(self, username, password=None):
         """
         Creates and saves a User with the given username and password.
@@ -71,12 +72,14 @@ class User(AbstractBaseUser):
     THEME_CHOICE = tuple(get_config_items('web_theme'))
     DEFAULT_THEME = get_config('theme_settings', 'default')
 
-
-    username = models.CharField(max_length=15, default='', unique=True, primary_key=True)
+    username = models.CharField(
+        max_length=15, default='', unique=True, primary_key=True)
     email = models.CharField(max_length=100, default='')
     register_date = models.DateField(default=date.today, auto_now_add=True)
-    user_level = models.CharField(max_length=9, choices=USER_LEVEL_CHOICE, default=USER)
-    theme = models.CharField(max_length=10, choices=THEME_CHOICE, default=DEFAULT_THEME)
+    user_level = models.CharField(
+        max_length=9, choices=USER_LEVEL_CHOICE, default=USER)
+    theme = models.CharField(
+        max_length=10, choices=THEME_CHOICE, default=DEFAULT_THEME)
 
     USERNAME_FIELD = 'username'
     is_active = models.BooleanField(default=False)
@@ -88,11 +91,12 @@ class User(AbstractBaseUser):
         return has_auth
 
     def has_judge_auth(self):
-        has_auth = ((self.user_level == self.ADMIN) or (self.user_level == self.JUDGE))
+        has_auth = (
+            (self.user_level == self.ADMIN) or (self.user_level == self.JUDGE))
         return has_auth
 
     def has_subjudge_auth(self):
-        has_auth = ((self.user_level == self.ADMIN) or ( self.user_level == self.JUDGE) \
+        has_auth = ((self.user_level == self.ADMIN) or (self.user_level == self.JUDGE)
                     or (self.user_level == self.SUB_JUDGE))
         return has_auth
 
@@ -135,10 +139,11 @@ class UserProfile(models.Model):
     user = models.OneToOneField(User)
     activation_key = models.CharField(max_length=40, blank=True)
     # default active time is 15 minutes
-    active_time = models.DateTimeField(default=lambda: datetime.now() + timedelta(minutes=15))
+    active_time = models.DateTimeField(
+        default=lambda: datetime.now() + timedelta(minutes=15))
 
     def __unicode__(self):
         return self.user.username
 
     class Meta:
-        verbose_name_plural=u'User profiles'
+        verbose_name_plural = u'User profiles'

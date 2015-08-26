@@ -59,13 +59,14 @@ def user_profile(request, username):
         render_data['profile_user'] = profile_user
         render_data['piechart_data'] = dumps(piechart_data)
         if request.user == profile_user and not is_public_user(profile_user):
-            render_data['profile_form'] = UserProfileForm(instance=profile_user)
+            render_data['profile_form'] = UserProfileForm(
+                instance=profile_user)
         if can_change_userlevel(request.user, profile_user):
             render_data['userlevel_form'] = UserLevelForm(instance=profile_user,
-                request_user=request.user)
+                                                          request_user=request.user)
 
         if request.user == profile_user and request.method == 'POST' \
-            and 'profile_form' in request.POST:
+                and 'profile_form' in request.POST:
             profile_form = UserProfileForm(request.POST, instance=profile_user)
             render_data['profile_form'] = profile_form
             if profile_form.is_valid() and request.user == profile_user:
@@ -76,7 +77,8 @@ def user_profile(request, username):
                 messages.success(request, 'Update profile successfully!')
 
         if request.method == 'POST' and 'userlevel_form' in request.POST:
-            userlevel_form = UserLevelForm(request.POST, request_user=request.user)
+            userlevel_form = UserLevelForm(
+                request.POST, request_user=request.user)
             if can_change_userlevel(request.user, profile_user):
                 if userlevel_form.is_valid(request.user):
                     user_level = userlevel_form.cleaned_data['user_level']
@@ -85,11 +87,12 @@ def user_profile(request, username):
                     profile_user.user_level = user_level
                     profile_user.save()
                     render_data['userlevel_form'] = userlevel_form
-                    messages.success(request, 'Update user level successfully!')
+                    messages.success(
+                        request, 'Update user level successfully!')
                 else:
                     user_level = userlevel_form.cleaned_data['user_level']
-                    messages.warning(request, "You can't switch user %s to %s" % \
-                                    (profile_user, user_level))
+                    messages.warning(request, "You can't switch user %s to %s" %
+                                     (profile_user, user_level))
         return render_index(request, 'users/profile.html', render_data)
 
     except User.DoesNotExist:
@@ -136,7 +139,8 @@ def user_login(request):
             hours = int(get_config('session_expiry', 'expiry'))
             expiry = hours * 60 * 60
             request.session.set_expiry(expiry)
-            logger.info('user %s set session timeout %d-hour' % (str(user), hours))
+            logger.info('user %s set session timeout %d-hour' %
+                        (str(user), hours))
             login(request, user)
             return redirect(next_page)
         else:
@@ -151,7 +155,8 @@ def user_forget_password(request):
     if request.method == 'POST':
         user_form = UserForgetPasswordForm(data=request.POST)
         if user_form.is_valid():
-            user = User.objects.get(username=user_form.cleaned_data['username'])
+            user = User.objects.get(
+                username=user_form.cleaned_data['username'])
             send_forget_password_email(request, user)
             messages.success(request, 'Confirm email has sent to you.')
         else:
@@ -171,9 +176,11 @@ def forget_password_confirm(request, activation_key):
     the activation key (if not then display 404)
     '''
     # clear expired activation_key
-    UserProfile.objects.filter(active_time__lte=datetime.datetime.now()).delete()
+    UserProfile.objects.filter(
+        active_time__lte=datetime.datetime.now()).delete()
 
-    user_profile = get_object_or_404(UserProfile, activation_key=activation_key)
+    user_profile = get_object_or_404(
+        UserProfile, activation_key=activation_key)
     user = user_profile.user
     user.backend = 'django.contrib.auth.backends.ModelBackend'
     user.is_active = True
@@ -225,9 +232,11 @@ def register_confirm(request, activation_key):
     the activation key (if not then display 404)
     '''
     # clear expired activation_key
-    UserProfile.objects.filter(active_time__lte=datetime.datetime.now()).delete()
+    UserProfile.objects.filter(
+        active_time__lte=datetime.datetime.now()).delete()
 
-    user_profile = get_object_or_404(UserProfile, activation_key=activation_key)
+    user_profile = get_object_or_404(
+        UserProfile, activation_key=activation_key)
     user = user_profile.user
     user.is_active = True
     user.save()
@@ -253,8 +262,10 @@ def user_notification(request, current_tab='none'):
 @login_required()
 def user_readify(request, read_id, current_tab):
     try:
-        Notification.objects.filter(id=long(read_id), receiver=request.user).update(read=True)
-        logger.info('Notification id %ld updates successfully!' % long(read_id))
+        Notification.objects.filter(
+            id=long(read_id), receiver=request.user).update(read=True)
+        logger.info('Notification id %ld updates successfully!' %
+                    long(read_id))
     except Notification.DoesNotExist:
         logger.warning('Notification id %ld does not exist!' % long(read_id))
     return HttpResponseRedirect(reverse('users:tab', kwargs={'current_tab': current_tab}))
@@ -266,9 +277,12 @@ def user_delete_notification(request, delete_ids, current_tab):
     if delete_ids != '':
         for delete_id in id_list:
             try:
-                Notification.objects.filter(id=long(delete_id), receiver=request.user).delete()
-                logger.info('Notification id %ld deletes successfully!' % long(delete_id))
+                Notification.objects.filter(
+                    id=long(delete_id), receiver=request.user).delete()
+                logger.info(
+                    'Notification id %ld deletes successfully!' % long(delete_id))
             except Notification.DoesNotExist:
-                logger.warning('Notification id %ld does not exist!' % long(delete_id))
+                logger.warning(
+                    'Notification id %ld does not exist!' % long(delete_id))
 
     return HttpResponseRedirect(reverse('users:tab', kwargs={'current_tab': current_tab}))

@@ -30,6 +30,7 @@ from utils.render_helper import render_index
 from django.template import RequestContext
 # Create your views here.
 
+
 def team_list(request):
     team_profile = {
         'id': 1,
@@ -39,9 +40,9 @@ def team_list(request):
         'description': 'we are ISeaTel',
         'create_time': datetime.datetime.now()
     }
-    team_list = [{}]*200
+    team_list = [{}] * 200
     for i in range(200):  # Generate lots of entries for testing paging
-        team_profile['id'] = i+1
+        team_profile['id'] = i + 1
         team_list[i] = team_profile.copy()
 
     paginator = Paginator(team_list, 25)  # Show 25 teams per page

@@ -86,15 +86,15 @@ def status(request):
         # Regroup submission details
         submissions.object_list = regroup_submission(submissions.object_list)
 
-         # Serialize to json
+        # Serialize to json
         if 'type' in request.GET and request.GET['type'] == 'json':
-            submissions = [submission['grouper'] for submission in submissions.object_list]
+            submissions = [submission['grouper']
+                           for submission in submissions.object_list]
             # Remove unnecessary fields
             submissions = serialize("python", submissions)
             submissions = [s['fields'] for s in submissions]
 
-            return HttpResponse(json.dumps(submissions,
-                default=lambda obj: obj.isoformat() if hasattr(obj, 'isoformat') else obj))
+            return HttpResponse(json.dumps(submissions, default=lambda obj: obj.isoformat() if hasattr(obj, 'isoformat') else obj))
     else:
         messages.warning(request, 'Please check filter constraints again!')
         return render_index(request, 'status/status.html', render_data)
@@ -113,9 +113,11 @@ def contest_status(request, contest):
     submissions = get_contest_submissions(contest, submissions)
 
     submissions = regroup_submission(submissions)
-    table_content = str(render(request, 'status/statusTable.html', {'submissions': submissions}))
+    table_content = str(
+        render(request, 'status/statusTable.html', {'submissions': submissions}))
     # remove rendered response header
-    table_content = re.sub('Content-Type: text/html; charset=utf-8', '', table_content)
+    table_content = re.sub(
+        'Content-Type: text/html; charset=utf-8', '', table_content)
     return table_content
 
 
@@ -127,8 +129,10 @@ def error_message(request, sid):
         if show_detail(submission, request.user):
             return render_index(request, 'status/errorMessage.html', {'error_message': error_msg})
         else:
-            logger.warning('User %s attempt to view detail of SID %s' % (request.user, sid))
-            raise PermissionDenied("You don't have permission to view detail of SID %s" % sid)
+            logger.warning(
+                'User %s attempt to view detail of SID %s' % (request.user, sid))
+            raise PermissionDenied(
+                "You don't have permission to view detail of SID %s" % sid)
 
     except Submission.DoesNotExist:
         logger.warning('SID %s Not Found!' % sid)
@@ -147,11 +151,12 @@ def view_code(request, sid):
             codesubmitform = CodeSubmitForm(
                 initial={'code': code, 'pid': submission.problem.id, 'language': submission.language})
             problem_name = str(submission.problem)
-            return render_index(request, 'users/submit.html',
-                {'form': codesubmitform, 'problem_name': problem_name})
+            return render_index(request, 'users/submit.html', {'form': codesubmitform, 'problem_name': problem_name})
         else:
-            logger.warning('User %s attempt to view detail of SID %s' % (request.user, sid))
-            raise PermissionDenied("You don't have permission to view detail of SID %s" % sid)
+            logger.warning(
+                'User %s attempt to view detail of SID %s' % (request.user, sid))
+            raise PermissionDenied(
+                "You don't have permission to view detail of SID %s" % sid)
     except Submission.DoesNotExist:
         logger.warning('SID %s Not Found!' % sid)
         raise Http404('SID %s Not Found!' % sid)
@@ -167,9 +172,8 @@ def rejudge(request, sid):
         rejudge_submission(submission)
         messages.success(request, 'Submission %s rejuded' % sid)
         logger.info('Submission %s rejudged' % sid)
-        return redirect('%s?%s' % \
-            (reverse('status:status'), urllib.urlencode(request.GET)))
+        return redirect('%s?%s' % (reverse('status:status'), urllib.urlencode(request.GET)))
     else:
-        logger.warning('%s has no permission to rejudge submission %s' % \
-            (request.user, sid))
+        logger.warning(
+            '%s has no permission to rejudge submission %s' % (request.user, sid))
         raise PermissionDenied()

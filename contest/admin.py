@@ -26,4 +26,3 @@ from contest.models import Contest, Contestant, Clarification
 admin.site.register(Contest)
 admin.site.register(Contestant)
 admin.site.register(Clarification)
-

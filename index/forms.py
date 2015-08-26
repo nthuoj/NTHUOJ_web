@@ -21,15 +21,19 @@ from django import forms
 from index.models import Announcement
 from datetimewidget.widgets import DateTimeWidget, DateWidget, TimeWidget
 
+
 class AnnouncementCreationForm(forms.ModelForm):
     dateTimeOptions = {
-            'format': 'yyyy-mm-dd hh:ii:00',
-            'todayBtn': 'true',
-            'minuteStep': 30,
+        'format': 'yyyy-mm-dd hh:ii:00',
+        'todayBtn': 'true',
+        'minuteStep': 30,
     }
     content = forms.CharField(widget=forms.Textarea)
-    start_time = forms.DateTimeField(widget=DateTimeWidget(options=dateTimeOptions, bootstrap_version=3))
-    end_time = forms.DateTimeField(widget=DateTimeWidget(options=dateTimeOptions, bootstrap_version=3))
+    start_time = forms.DateTimeField(
+        widget=DateTimeWidget(options=dateTimeOptions, bootstrap_version=3))
+    end_time = forms.DateTimeField(
+        widget=DateTimeWidget(options=dateTimeOptions, bootstrap_version=3))
+
     class Meta:
         model = Announcement
         fields = ('content', 'start_time', 'end_time')
@@ -38,5 +42,6 @@ class AnnouncementCreationForm(forms.ModelForm):
         start_time = self.cleaned_data.get("start_time")
         end_time = self.cleaned_data.get("end_time")
         if end_time <= start_time:
-            raise forms.ValidationError("End time cannot be earlier than start time.")
+            raise forms.ValidationError(
+                "End time cannot be earlier than start time.")
         return end_time

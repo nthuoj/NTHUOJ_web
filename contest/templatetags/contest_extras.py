@@ -35,53 +35,67 @@ from utils import user_info
 register = template.Library()
 
 # check if user has contest ownership
+
+
 @register.filter
 def has_auth(user, contest_id):
-    contest = Contest.objects.get(id = contest_id)
+    contest = Contest.objects.get(id=contest_id)
     user = user_info.validate_user(user)
     return user_info.has_contest_ownership(user, contest) | user.has_admin_auth()
 
 register.filter("has_auth", has_auth)
 
-#clarification
+# clarification
+
+
 @register.filter
 def can_create_contest(user):
     return contest_info.can_create_contest(user)
 register.filter("can_create_contest", can_create_contest)
 
+
 @register.filter
 def can_edit_contest(user, contest):
-    return contest_info.can_edit_contest(user,contest)
+    return contest_info.can_edit_contest(user, contest)
 register.filter("can_edit_contest", can_edit_contest)
+
 
 @register.filter
 def can_delete_contest(user, contest):
-    return contest_info.can_delete_contest(user,contest)
+    return contest_info.can_delete_contest(user, contest)
 register.filter("can_delete_contest", can_delete_contest)
+
 
 @register.filter
 def can_ask(user, contest):
-    return contest_info.can_ask(user,contest)
+    return contest_info.can_ask(user, contest)
 register.filter("can_ask", can_ask)
+
 
 @register.filter
 def can_reply(user, contest):
-    return contest_info.can_reply(user,contest)
+    return contest_info.can_reply(user, contest)
 register.filter("can_reply", can_reply)
 
-#check if user is coowner
+# check if user is coowner
+
+
 @register.filter
 def is_coowner(user, contest):
     return contest_info.is_coowner(user, contest)
 register.filter("is_coowner", is_coowner)
 
-#check if contest is freezed
+# check if contest is freezed
+
+
 @register.filter
 def is_frozen(contest):
     return contest_info.is_frozen(contest)
 register.filter("is_frozen", is_frozen)
 
-#check if user is judge or admin
+# check if user is judge or admin
+
+
 @register.filter
 def has_judge_auth(user):
     if user.is_authenticated():
@@ -90,28 +104,35 @@ def has_judge_auth(user):
         return False
 register.filter("has_judge_auth", has_judge_auth)
 
-#scoreboard
+# scoreboard
+
+
 @register.filter
 def users_sorted_by_penalty(scoreboard):
     scoreboard.sort_users_by_penalty()
     return scoreboard.users
 register.filter("users_sorted_by_penalty", users_sorted_by_penalty)
 
+
 @register.filter
 def users_sorted_by_solved_testcases(scoreboard):
     scoreboard.sort_users_by_solved_testcases()
     return scoreboard.users
-register.filter("users_sorted_by_solved_testcases", users_sorted_by_solved_testcases)
+register.filter(
+    "users_sorted_by_solved_testcases", users_sorted_by_solved_testcases)
+
 
 @register.filter
 def total_contestant(scoreboard):
     return len(scoreboard.users)
 register.filter("total_contestant", total_contestant)
 
+
 @register.filter
 def can_register(user, contest):
     return contest_info.can_register(user, contest)
 register.filter("can_register", can_register)
+
 
 @register.filter
 def has_attended(user, contest):
@@ -123,6 +144,8 @@ Contest should not be end.
 And user should own contest(to register group)
 or user can register
 '''
+
+
 @register.filter
 def show_register_btn(user, contest):
     if not user.is_authenticated():

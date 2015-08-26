@@ -25,18 +25,24 @@ from django.http import Http404
 from group.models import Group, Announce
 from utils.log_info import get_logger
 
+
 def get_announce(announce_id):
     try:
         announce = Announce.objects.get(id=announce_id)
     except Announce.DoesNotExist:
-        logger.warning('Announce: Can not edit announce %s! Announce does not exist!' % announce_id)
-        raise Http404('Announce: Can not edit announce %s! Announce does not exist!' % announce_id)
+        logger.warning(
+            'Announce: Can not edit announce %s! Announce does not exist!' % announce_id)
+        raise Http404(
+            'Announce: Can not edit announce %s! Announce does not exist!' % announce_id)
     return announce
 
+
 def get_group(group_id):
-	try:
-	    group = Group.objects.get(id=group_id)
-	except Group.DoesNotExist:
-	    logger.warning('Group: Can not edit group %s! Group does not exist!' % group_id)
-	    raise Http404('Group: Can not edit group %s! Group does not exist!' % group_id)
-	return group
+    try:
+        group = Group.objects.get(id=group_id)
+    except Group.DoesNotExist:
+        logger.warning(
+            'Group: Can not edit group %s! Group does not exist!' % group_id)
+        raise Http404(
+            'Group: Can not edit group %s! Group does not exist!' % group_id)
+    return group

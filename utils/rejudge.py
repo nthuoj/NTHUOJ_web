@@ -37,6 +37,8 @@ rejudge:
 2. a single submission
 3. submissions during contest
 '''
+
+
 def rejudge(obj):
     if isinstance(obj, Problem):
         rejudge_problem(obj)
@@ -45,13 +47,17 @@ def rejudge(obj):
     elif isinstance(obj, Contest):
         rejudge_contest(obj)
 
-#rejudge submissions of problem
+# rejudge submissions of problem
+
+
 def rejudge_problem(problem):
-    submissions = Submission.objects.filter(problem = problem)
+    submissions = Submission.objects.filter(problem=problem)
     for submission in submissions:
         rejudge_submission(submission)
 
-#rejudge single submission
+# rejudge single submission
+
+
 def rejudge_submission(submission):
     if submission.status == Submission.ACCEPTED:
         submission.problem.ac_count -= 1
@@ -61,24 +67,28 @@ def rejudge_submission(submission):
     notification = "Your submission %s is to be rejudged!" % submission.id
     send_notification(submission.user, notification)
     logger.info('Submission %s rejudged!' % submission.id)
-    submission_details = SubmissionDetail.objects.filter(sid = submission)
+    submission_details = SubmissionDetail.objects.filter(sid=submission)
     for submission_detail in submission_details:
         logger.info('SubmissionDetail %s deleted!' % submission_detail)
         submission_detail.delete()
 
-#rejudge submissions during contest
+# rejudge submissions during contest
+
+
 def rejudge_contest(contest):
     for problem in contest.problem.all():
         rejudge_contest_problem(contest, problem)
 
-#rejudge submissions of problem in contest
+# rejudge submissions of problem in contest
+
+
 def rejudge_contest_problem(contest, problem):
-    contestants = Contestant.objects.filter(contest = contest).\
-                  values_list('user', flat=True)
+    contestants = Contestant.objects.filter(contest=contest).\
+        values_list('user', flat=True)
     submissions = Submission.objects.filter(
-        problem = problem,
-        submit_time__gte = contest.start_time, 
-        submit_time__lte = contest.end_time,
-        user__in = contestants)
+        problem=problem,
+        submit_time__gte=contest.start_time,
+        submit_time__lte=contest.end_time,
+        user__in=contestants)
     for submission in submissions:
         rejudge_submission(submission)

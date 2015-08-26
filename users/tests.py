@@ -31,6 +31,7 @@ from users.models import User
 
 
 class UserTestCase(TestCase):
+
     def setUp(self):
         user = User.objects.create_user(username='test001', password='test001')
         user.is_active = True
@@ -68,20 +69,19 @@ class UserTestCase(TestCase):
         self.client.post(
             reverse('users:create'),
             {'username': 'test002', 'password1': 'test002',
-            'password2':'002test', 'email': 'oj@nthucs.edu.tw'})
+             'password2': '002test', 'email': 'oj@nthucs.edu.tw'})
         self.assertNotEqual(User.objects.all().count(), user_count + 1)
 
         # sign up with invalid email format
         self.client.post(
             reverse('users:create'),
             {'username': 'test002', 'password1': 'test002',
-                'password2':'test002', 'email': 'oj'})
+                'password2': 'test002', 'email': 'oj'})
         self.assertNotEqual(User.objects.all().count(), user_count + 1)
 
         # sign up with used username
         self.client.post(
             reverse('users:create'),
             {'username': 'test001', 'password1': 'test002',
-            'password2':'test002', 'email': 'oj@nthucs.edu.tw'})
+             'password2': 'test002', 'email': 'oj@nthucs.edu.tw'})
         self.assertNotEqual(User.objects.all().count(), user_count + 1)
-

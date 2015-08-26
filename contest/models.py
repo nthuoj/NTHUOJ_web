@@ -29,6 +29,7 @@ from django.core.validators import MinValueValidator
 
 # Create your models here.
 
+
 class Contest(models.Model):
 
     cname = models.CharField(max_length=50, default='')
@@ -36,18 +37,20 @@ class Contest(models.Model):
     coowner = models.ManyToManyField(User, related_name='coowner', blank=True)
     start_time = models.DateTimeField(default=datetime.now)
     end_time = models.DateTimeField(default=datetime.now)
-    freeze_time = models.IntegerField(default=0, validators = [MinValueValidator(0)])
+    freeze_time = models.IntegerField(
+        default=0, validators=[MinValueValidator(0)])
     problem = models.ManyToManyField(Problem, blank=True)
     is_homework = models.BooleanField(default=False)
     open_register = models.BooleanField(default=True)
-    creation_time = models.DateTimeField(default=datetime.now, auto_now_add=True)
+    creation_time = models.DateTimeField(
+        default=datetime.now, auto_now_add=True)
 
     def time_diff(self):
         present = timezone.now()
         if self.start_time < present:
-            delta = self.end_time  - present
+            delta = self.end_time - present
         else:
-            delta = self.start_time  - present
+            delta = self.start_time - present
 
         deltatime = delta - timedelta(microseconds=delta.microseconds)
         return str(deltatime)
@@ -78,7 +81,8 @@ class Clarification(models.Model):
     content = models.CharField(max_length=500, default='')
     reply = models.CharField(max_length=500, default=default_response)
     asker = models.ForeignKey(User, related_name='asker')
-    replier = models.ForeignKey(User, related_name='replier', blank=True, null=True)
+    replier = models.ForeignKey(
+        User, related_name='replier', blank=True, null=True)
     ask_time = models.DateTimeField(default=datetime.now, auto_now=True)
     reply_time = models.DateTimeField(blank=True, null=True)
     reply_all = models.BooleanField(default=False)

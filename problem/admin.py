@@ -32,4 +32,3 @@ admin.site.register(Testcase)
 admin.site.register(Submission)
 admin.site.register(SubmissionDetail)
 admin.site.register(Tag)
-

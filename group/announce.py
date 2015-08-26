@@ -38,7 +38,9 @@ from group.getter import get_announce
 
 logger = get_logger()
 
-##Announce
+# Announce
+
+
 @login_required
 def add_announce(request, group_id):
     group = get_group(group_id)
@@ -49,24 +51,28 @@ def add_announce(request, group_id):
             if form.is_valid():
                 new_announce = form.save()
                 group.announce.add(new_announce)
-                logger.info('Announce: User %s add Announce %s!' % (request.user.username, new_announce.id))
+                logger.info('Announce: User %s add Announce %s!' %
+                            (request.user.username, new_announce.id))
             return HttpResponseRedirect(reverse('group:detail', kwargs={'group_id': group_id}))
     else:
         raise PermissionDenied
+
 
 @login_required
 def delete_announce(request, announce_id, group_id, redirect_page):
     group = get_group(group_id)
 
-    if has_group_ownership(request.user, group) or has_group_coownership(request.user, group):  
+    if has_group_ownership(request.user, group) or has_group_coownership(request.user, group):
         get_announce(announce_id).delete()
-        logger.info('Announce: User %s delete Announce %s!' % (request.user.username, announce_id))
+        logger.info('Announce: User %s delete Announce %s!' %
+                    (request.user.username, announce_id))
         if redirect_page == 'detail':
             return HttpResponseRedirect(reverse('group:detail', kwargs={'group_id': group_id}))
-        else : #redirect_page=='viewall'
+        else:  # redirect_page=='viewall'
             return HttpResponseRedirect(reverse('group:viewall_announce', kwargs={'group_id': group_id}))
     else:
         raise PermissionDenied
+
 
 @login_required
 def edit_announce(request, announce_id, group_id, redirect_page):
@@ -79,8 +85,8 @@ def edit_announce(request, announce_id, group_id, redirect_page):
             announce_dic = model_to_dict(announce)
             form = AnnounceForm(initial=announce_dic)
             return render_index(
-                request,'group/editAnnounce.html', {
-                    'form':form,
+                request, 'group/editAnnounce.html', {
+                    'form': form,
                     'group_id': group.id,
                     'announce_id': announce_id,
                 })
@@ -88,15 +94,16 @@ def edit_announce(request, announce_id, group_id, redirect_page):
             form = AnnounceForm(request.POST, instance=announce)
             if form.is_valid():
                 modified_announce = form.save()
-                logger.info('Announce: Announce %s has been changed!' % (announce.id))
+                logger.info(
+                    'Announce: Announce %s has been changed!' % (announce.id))
                 if redirect_page == 'detail':
                     return HttpResponseRedirect(reverse('group:detail', kwargs={'group_id': group_id}))
-                else : #redirect_page=='viewall'
+                else:  # redirect_page=='viewall'
                     return HttpResponseRedirect(reverse('group:viewall_announce', kwargs={'group_id': group_id}))
             else:
-                 return render_index(
-                        request,'group/editAnnounce.html', {
-                        'form':form,
+                return render_index(
+                    request, 'group/editAnnounce.html', {
+                        'form': form,
                     })
     else:
         raise PermissionDenied
