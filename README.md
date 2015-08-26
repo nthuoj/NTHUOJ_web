@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/henryyang42/NTHUOJ_web.svg)](https://travis-ci.org/henryyang42/NTHUOJ_web)
+
 #NTHUOJ_WEB
 #######Version 1.0.4
 =======
