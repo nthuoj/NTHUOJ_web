@@ -26,19 +26,24 @@ from datetime import datetime
 
 logger = get_logger()
 
+
 def delete_public_contestants(contestants):
     for contestant in contestants:
         user = contestant.user
         contest = contestant.contest
         contestant.delete()
-        logger.info('Contest: User %s leaves Contest %s!' % (user.username, contest.id))
+        logger.info('Contest: User %s leaves Contest %s!' %
+                    (user.username, contest.id))
+
 
 def get_public_users():
-    return User.objects.filter(username__startswith = settings.PUBLIC_USER_PREFIX)
+    return User.objects.filter(username__startswith=settings.PUBLIC_USER_PREFIX)
+
 
 def get_public_contestant(contest):
     return Contestant.objects.filter(
-        user__username__startswith = settings.PUBLIC_USER_PREFIX, contest = contest)
+        user__username__startswith=settings.PUBLIC_USER_PREFIX, contest=contest)
+
 
 def get_available_public_users():
     public_users = get_public_users()
@@ -50,12 +55,14 @@ def get_available_public_users():
 
     return available_public_users
 
+
 def attends_not_ended_contest(user):
-    user_attends = Contestant.objects.filter(user = user)
+    user_attends = Contestant.objects.filter(user=user)
     for contestant in user_attends:
         if(datetime.now() < contestant.contest.end_time):
             return True
     return False
+
 
 def create_public_users(need):
     public_users = get_public_users()
@@ -69,15 +76,18 @@ def create_public_users(need):
         new_users.append(new_user)
     return new_users
 
+
 def activate_public_users(public_users):
     for public_user in public_users:
         public_user.is_active = True
         public_user.save()
 
+
 def deactivate_public_users(public_users):
     for public_user in public_users:
         public_user.is_active = False
         public_user.save()
+
 
 def is_public_user(user):
     return user.username.startswith(settings.PUBLIC_USER_PREFIX)
@@ -86,20 +96,26 @@ def is_public_user(user):
 '''
 if invalid return -1
 '''
+
+
 def check_account_num_valid(account_num):
     if not is_integer(account_num):
-        logger.warning('Contest: input word is not interger! Can not register public user!')
+        logger.warning(
+            'Contest: input word is not interger! Can not register public user!')
         return -1
     account_num = int(account_num)
     if account_num < 0:
-        logger.warning('Contest: input word is less than 0. Can not register public user!')
+        logger.warning(
+            'Contest: input word is less than 0. Can not register public user!')
         return -1
     if account_num > settings.MAX_PUBLIC_USER:
         too_many_public_user_warning = 'Contest: register public user more than ' \
-             + str(settings.MAX_PUBLIC_USER) + '! Set to ' + str(settings.MAX_PUBLIC_USER) + '!'
+            + str(settings.MAX_PUBLIC_USER) + '! Set to ' + \
+            str(settings.MAX_PUBLIC_USER) + '!'
         logger.warning(too_many_public_user_warning)
         account_num = settings.MAX_PUBLIC_USER
     return account_num
+
 
 def is_integer(obj):
     try:

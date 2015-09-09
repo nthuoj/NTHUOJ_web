@@ -73,7 +73,7 @@ def write_default_config(path):
     print 'done\n'
 
 
-def write_config(config, section, config_dict=None,**kwargs):
+def write_config(config, section, config_dict=None, **kwargs):
     config.add_section(section)
     if config_dict:
         for key in config_dict:
@@ -95,4 +95,3 @@ def prompt(question):
     if ans == '' or ans == 'y' or ans == 'Y':
         return True
     return False
-

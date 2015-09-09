@@ -47,6 +47,8 @@ import json
 logger = log_info.get_logger()
 
 # Create your views here.
+
+
 def problem(request):
     user = validate_user(request.user)
     can_add_problem = user.has_subjudge_auth()
@@ -67,7 +69,8 @@ def problem(request):
         problems = get_current_page(request, problem_list, 15)
         for p in problems:
             if p.total_submission != 0:
-                p.pass_rate = float(p.ac_count) / float(p.total_submission) * 100.0
+                p.pass_rate = float(
+                    p.ac_count) / float(p.total_submission) * 100.0
                 p.not_pass_rate = 100.0 - p.pass_rate
                 p.pass_rate = "%.2f" % (p.pass_rate)
                 p.not_pass_rate = "%.2f" % (p.not_pass_rate)
@@ -77,8 +80,9 @@ def problem(request):
         problems = []
         mine = False
     return render_index(request, 'problem/panel.html',
-                  {'all_problem': problems, 'mine': mine,
-                   'can_add_problem': can_add_problem, 'tag_filter': tag_filter})
+                        {'all_problem': problems, 'mine': mine,
+                         'can_add_problem': can_add_problem, 'tag_filter': tag_filter})
+
 
 def detail(request, pid):
     user = validate_user(request.user)
@@ -86,7 +90,8 @@ def detail(request, pid):
     try:
         problem = Problem.objects.get(pk=pid)
         if not has_problem_auth(user, problem):
-            logger.warning("%s has no permission to see problem %d" % (user, problem.pk))
+            logger.warning(
+                "%s has no permission to see problem %d" % (user, problem.pk))
             raise PermissionDenied()
     except Problem.DoesNotExist:
         logger.warning('problem %s not found' % (pid))
@@ -95,6 +100,7 @@ def detail(request, pid):
     problem = verify_problem_code(problem)
     problem.in_contest = check_in_contest(problem)
     return render_index(request, 'problem/detail.html', {'problem': problem, 'tag_form': tag_form})
+
 
 @login_required
 def new(request):
@@ -106,13 +112,15 @@ def new(request):
             return redirect("/problem/%d/edit/" % p.pk)
     return redirect("/problem/")
 
+
 @login_required
 def edit(request, pid=None):
     tag_form = TagForm()
     try:
         problem = Problem.objects.get(pk=pid)
         if not request.user.has_admin_auth() and request.user != problem.owner:
-            logger.warning("user %s has no permission to edit problem %s" % (request.user, pid))
+            logger.warning(
+                "user %s has no permission to edit problem %s" % (request.user, pid))
             raise PermissionDenied()
     except Problem.DoesNotExist:
         logger.warning("problem %s does not exist" % (pid))
@@ -143,14 +151,15 @@ def edit(request, pid=None):
                         t_in.write(chunk)
             problem = verify_problem_code(problem)
             if problem.has_special_judge_code and \
-                problem.judge_type != problem.SPECIAL:
+                    problem.judge_type != problem.SPECIAL:
                 os.remove('%s%s%s' % (SPECIAL_PATH, problem.pk, file_ex))
             if problem.judge_type != problem.PARTIAL:
                 if problem.has_partial_judge_code:
                     os.remove('%s%s%s' % (PARTIAL_PATH, problem.pk, file_ex))
                 if problem.has_partial_judge_header:
                     os.remove('%s%s.h' % (PARTIAL_PATH, problem.pk))
-            logger.info('edit problem, pid = %d by %s' % (problem.pk, request.user))
+            logger.info('edit problem, pid = %d by %s' %
+                        (problem.pk, request.user))
             messages.success(request, 'problem %d edited' % problem.pk)
             return redirect('/problem/%d' % (problem.pk))
     file_ex = get_problem_file_extension(problem)
@@ -165,6 +174,7 @@ def edit(request, pid=None):
                              'PARTIAL_PATH': PARTIAL_PATH, }
                          })
 
+
 @login_required
 def tag(request, pid):
     if request.method == "POST":
@@ -178,11 +188,13 @@ def tag(request, pid):
             new_tag, created = Tag.objects.get_or_create(tag_name=tag)
             problem.tags.add(new_tag)
             problem.save()
-            logger.info("add new tag '%s' to problem %s by %s" % (tag, pid, request.user))
+            logger.info("add new tag '%s' to problem %s by %s" %
+                        (tag, pid, request.user))
             return HttpResponse(json.dumps({'tag_id': new_tag.pk}),
                                 content_type="application/json")
         return HttpRequestBadRequest()
     return HttpResponse()
+
 
 @login_required
 def delete_tag(request, pid, tag_id):
@@ -201,6 +213,7 @@ def delete_tag(request, pid, tag_id):
     problem.tags.remove(tag)
     return HttpResponse()
 
+
 @login_required
 def testcase(request, pid, tid=None):
     if request.method == 'POST':
@@ -209,7 +222,7 @@ def testcase(request, pid, tid=None):
         except Problem.DoesNotExist:
             logger.warning("problem %s does not exist" % (pid))
             raise Http404("problem %s does not exist" % (pid))
-        if tid == None:
+        if tid is None:
             testcase = Testcase()
             testcase.problem = problem
         else:
@@ -219,14 +232,17 @@ def testcase(request, pid, tid=None):
                 logger.warning("testcase %s does not exist" % (tid))
                 raise Http404("testcase %s does not exist" % (tid))
             if testcase.problem != problem:
-                logger.warning("testcase %s does not belong to problem %s" % (tid, pid))
-                raise Http404("testcase %s does not belong to problem %s" % (tid, pid))
+                logger.warning(
+                    "testcase %s does not belong to problem %s" % (tid, pid))
+                raise Http404(
+                    "testcase %s does not belong to problem %s" % (tid, pid))
         has_message = False
         if 'time_limit' in request.POST:
             testcase.time_limit = request.POST['time_limit']
             testcase.memory_limit = request.POST['memory_limit']
             testcase.save()
-            logger.info("testcase saved, tid = %s by %s" % (testcase.pk, request.user))
+            logger.info("testcase saved, tid = %s by %s" %
+                        (testcase.pk, request.user))
             messages.success(request, "testcase %s saved" % testcase.pk)
             has_message = True
         if 't_in' in request.FILES:
@@ -238,19 +254,23 @@ def testcase(request, pid, tid=None):
                     for chunk in request.FILES['t_in'].chunks():
                         t_in.write(chunk)
                 check_call(['dos2unix', input_filename])
-                logger.info("testcase %s.in saved by %s" % (testcase.pk, request.user))
+                logger.info("testcase %s.in saved by %s" %
+                            (testcase.pk, request.user))
                 with open(output_filename, 'w') as t_out:
                     for chunk in request.FILES['t_out'].chunks():
                         t_out.write(chunk)
                 check_call(['dos2unix', output_filename])
-                logger.info("testcase %s.out saved by %s" % (testcase.pk, request.user))
+                logger.info("testcase %s.out saved by %s" %
+                            (testcase.pk, request.user))
                 if not has_message:
-                    messages.success(request, "testcase %s saved" % testcase.pk)
+                    messages.success(
+                        request, "testcase %s saved" % testcase.pk)
             except IOError, OSError:
                 logger.error("saving testcase error")
             return HttpResponse(json.dumps({'tid': testcase.pk}),
                                 content_type="application/json")
     return HttpResponse()
+
 
 @login_required
 def delete_testcase(request, pid, tid):
@@ -276,6 +296,7 @@ def delete_testcase(request, pid, tid):
     testcase.delete()
     return HttpResponse()
 
+
 @login_required
 def delete_problem(request, pid):
     try:
@@ -290,16 +311,18 @@ def delete_problem(request, pid):
     problem.delete()
     return redirect('/problem/')
 
+
 def preview(request):
     problem = Problem()
     problem.pname = request.POST['pname']
     problem.description = request.POST['description']
-    problem.input= request.POST['input']
+    problem.input = request.POST['input']
     problem.output = request.POST['output']
     problem.sample_in = request.POST['sample_in']
     problem.sample_out = request.POST['sample_out']
     problem.tag = request.POST['tags'].split(',')
     return render_index(request, 'problem/preview.html', {'problem': problem, 'preview': True})
+
 
 @login_required
 def download_testcase(request, filename):
@@ -311,16 +334,18 @@ def download_testcase(request, filename):
         raise Http404()
     if not has_problem_ownership(request.user, problem) and \
             not request.user.has_admin_auth():
-        logger.warning("%s has no permission to see testcase of problem %d" % (request.user, problem.pk))
+        logger.warning("%s has no permission to see testcase of problem %d" % (
+            request.user, problem.pk))
         raise Http404()
     try:
-        f = open(TESTCASE_PATH+filename, "r")
+        f = open(TESTCASE_PATH + filename, "r")
     except IOError:
         logger.warning("open testcase %s error" % filename)
         raise Http404()
     response = HttpResponse(FileWrapper(f), content_type="text/plain")
     response['Content-Disposition'] = 'attachment; filename=' + filename
     return response
+
 
 @login_required
 def download_partial(request, filename):
@@ -331,15 +356,16 @@ def download_partial(request, filename):
         raise Http404()
     if not has_problem_auth(request.user, problem):
         logger.warning("%s has no permission to download problem %d partial judge code"
-                % (request.user, problem.pk))
+                       % (request.user, problem.pk))
         raise Http404()
     try:
-        f = open(PARTIAL_PATH+filename, "r")
+        f = open(PARTIAL_PATH + filename, "r")
     except IOError:
         raise Http404()
     response = HttpResponse(FileWrapper(f), content_type="text/plain")
     response['Content-Disposition'] = 'attachment; filename=' + filename
     return response
+
 
 @login_required
 def download_special(request, filename):
@@ -351,15 +377,16 @@ def download_special(request, filename):
     if not has_problem_ownership(request.user, problem) and \
             not request.user.has_admin_auth():
         logger.warning("%s has no permission to download problem %d special judge code"
-                % (request.user, problem.pk))
+                       % (request.user, problem.pk))
         raise Http404()
     try:
-        f = open(SPECIAL_PATH+filename, "r")
+        f = open(SPECIAL_PATH + filename, "r")
     except IOError:
         raise Http404()
     response = HttpResponse(FileWrapper(f), content_type="text/plain")
     response['Content-Disposition'] = 'attachment; filename=' + filename
     return response
+
 
 @login_required
 def rejudge(request):
@@ -370,7 +397,7 @@ def rejudge(request):
             if not has_problem_ownership(request.user, problem) and \
                     not request.user.has_admin_auth():
                 logger.warning("%s has no permission to rejudge problem %d"
-                        % (request.user, problem.pk))
+                               % (request.user, problem.pk))
                 raise PermissionDenied()
             rejudge_problem(problem)
             logger.info("problem %s rejudged" % problem.pk)
@@ -378,4 +405,3 @@ def rejudge(request):
         except Problem.DoesNotExist:
             raise Http404()
     return redirect('/problem/')
-

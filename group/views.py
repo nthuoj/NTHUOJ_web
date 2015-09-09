@@ -47,13 +47,16 @@ from group.getter import get_group
 
 logger = get_logger()
 
+
 def get_running_contest(request, group_id):
 
     group = get_group(group_id)
     now = timezone.now()
 
-    all_running_contest_list_unpaged = group.trace_contest.filter(start_time__lte=now, end_time__gte=now)
-    all_running_contest_list = get_current_page(request, all_running_contest_list_unpaged)
+    all_running_contest_list_unpaged = group.trace_contest.filter(
+        start_time__lte=now, end_time__gte=now)
+    all_running_contest_list = get_current_page(
+        request, all_running_contest_list_unpaged)
 
     return render_index(
         request, 'group/viewall.html', {
@@ -62,13 +65,16 @@ def get_running_contest(request, group_id):
             'list_type': 'runContest',
         })
 
+
 def get_ended_contest(request, group_id):
 
     group = get_group(group_id)
     now = timezone.now()
 
-    all_ended_contest_list_unpaged = group.trace_contest.filter(end_time__lte=now)
-    all_ended_contest_list = get_current_page(request, all_ended_contest_list_unpaged)
+    all_ended_contest_list_unpaged = group.trace_contest.filter(
+        end_time__lte=now)
+    all_ended_contest_list = get_current_page(
+        request, all_ended_contest_list_unpaged)
 
     return render_index(
         request, 'group/viewall.html', {
@@ -76,6 +82,7 @@ def get_ended_contest(request, group_id):
             'title': 'ended contest',
             'list_type': 'endContest',
         })
+
 
 def get_all_announce(request, group_id):
 
@@ -102,7 +109,7 @@ def get_all_announce(request, group_id):
 def detail(request, group_id):
 
     group = get_group(group_id)
-    show_number = 5; #number for brief list to show in group detail page.
+    show_number = 5  # number for brief list to show in group detail page.
     announce_list = group.announce.order_by('-id')[0:show_number]
     student_list = group.member.order_by('username')
     form = AnnounceForm()
@@ -115,8 +122,10 @@ def detail(request, group_id):
     running_contest_list = []
     ended_contest_list = []
     now = timezone.now()
-    running_contest_list = group.trace_contest.filter(start_time__lte=now, end_time__gte=now)[0:show_number]
-    ended_contest_list = group.trace_contest.filter(end_time__lte=now)[0:show_number]
+    running_contest_list = group.trace_contest.filter(
+        start_time__lte=now, end_time__gte=now)[0:show_number]
+    ended_contest_list = group.trace_contest.filter(
+        end_time__lte=now)[0:show_number]
 
     student_list = get_current_page(request, student_list)
 
@@ -129,42 +138,47 @@ def detail(request, group_id):
             'group': group,
             'user_has_auth': user_has_auth,
             'form': form,
-            'redirect_page' : 'detail',
+            'redirect_page': 'detail',
         })
+
 
 def list(request):
     all_group = Group.objects.order_by('id')
     all_group = get_current_page(request, all_group)
 
     return render_index(
-        request,'group/groupList.html', {
+        request, 'group/groupList.html', {
             'all_group_list': all_group,
             'include_flag': 'all_group',
         })
 
+
 @login_required
 def my_list(request):
-    my_group = Group.objects.filter(Q(member__username__contains=request.user.username) \
-                                    |Q(owner__username=request.user.username) \
-                                    |Q(coowner__username=request.user.username) \
+    my_group = Group.objects.filter(Q(member__username__contains=request.user.username)
+                                    | Q(owner__username=request.user.username)
+                                    | Q(coowner__username=request.user.username)
                                     ).distinct().order_by('id')
     my_group = get_current_page(request, my_group)
 
     return render_index(
-        request,'group/groupList.html', {
+        request, 'group/groupList.html', {
             'my_group_list': my_group,
             'include_flag': 'my_group',
         })
 
-#Group new/delete/edit
+# Group new/delete/edit
+
+
 @login_required
 def new(request):
     if request.user.has_judge_auth():
         if request.method == 'GET':
-            form = GroupForm(user=request.user, initial={'owner':request.user})
-            return render_index(request,'group/editGroup.html',{'form':form})
+            form = GroupForm(
+                user=request.user, initial={'owner': request.user})
+            return render_index(request, 'group/editGroup.html', {'form': form})
         if request.method == 'POST':
-            form = GroupForm(request.POST, initial={'owner':request.user})
+            form = GroupForm(request.POST, initial={'owner': request.user})
             if form.is_valid():
                 new_group = form.save()
                 logger.info('Group: Create a new group %s!' % new_group.id)
@@ -175,6 +189,7 @@ def new(request):
                     'group/editGroup.html', {'form': form})
     else:
         raise PermissionDenied
+
 
 @login_required
 def delete(request, group_id):
@@ -190,6 +205,7 @@ def delete(request, group_id):
     else:
         raise PermissionDenied
 
+
 @login_required
 def edit(request, group_id):
     group = get_group(group_id)
@@ -200,8 +216,8 @@ def edit(request, group_id):
             group_dic = model_to_dict(group)
             form = GroupFormEdit(initial=group_dic)
             return render_index(
-                request,'group/editGroup.html', {
-                    'form':form,
+                request, 'group/editGroup.html', {
+                    'form': form,
                     'group': group,
                     'user_is_coowner': user_is_coowner,
                 })
@@ -215,9 +231,9 @@ def edit(request, group_id):
                 return HttpResponseRedirect(reverse('group:detail', kwargs={'group_id': modified_group.id}))
             else:
                 return render_index(
-                    request,'group/editGroup.html', {
-                    'form':form,
-                    'user_is_coowner': user_is_coowner,
-                })
+                    request, 'group/editGroup.html', {
+                        'form': form,
+                        'user_is_coowner': user_is_coowner,
+                    })
     else:
         raise PermissionDenied

@@ -29,4 +29,3 @@ from group.models import *
 
 admin.site.register(Group)
 admin.site.register(Announce)
-
