@@ -26,6 +26,7 @@ from utils.config_info import get_config_items
 
 FILE_EXTENSIONS = dict(get_config_items('file_extension'))
 
+
 def get_extension(option):
     """Convert language option to file extension"""
     return FILE_EXTENSIONS.get(option, '')

@@ -26,10 +26,12 @@ from users.models import User
 
 register = template.Library()
 
+
 @register.filter
 def can_edit_group(user, group):
     return group_info.can_edit_group(user, group)
 register.filter("can_edit_group", can_edit_group)
+
 
 @register.filter
 def can_delete_group(user, group):

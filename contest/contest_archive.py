@@ -19,14 +19,15 @@
     '''
 from datetime import datetime
 from django.db.models import Q
-from contest.models import Contest 
+from contest.models import Contest
 from contest.models import Contestant
 from utils.user_info import validate_user
+
 
 def get_contests(user):
     user = validate_user(user)
     if user.has_admin_auth():
-        #admin show all
+        # admin show all
         contests_info = Contest.objects.order_by('-start_time')
     elif user.has_subjudge_auth():
         contests_info = get_owned_or_started_contests(user)
@@ -35,32 +36,39 @@ def get_contests(user):
 
     return contests_info.distinct()
 
+
 def get_owned_or_started_contests(user):
     owned_contests = get_owned_contests(user)
     started_contests = get_started_contests()
     return (owned_contests | started_contests).distinct()
 
-def get_owned_or_attended_contests(user):
-    return (get_owned_contests(user)|get_attended_contests(user)).distinct()
 
-#both owned and coowned
+def get_owned_or_attended_contests(user):
+    return (get_owned_contests(user) | get_attended_contests(user)).distinct()
+
+# both owned and coowned
+
+
 def get_owned_contests(user):
-    request = Q(owner = user)|Q(coowner = user)
+    request = Q(owner=user) | Q(coowner=user)
     owned_contests = Contest.objects.order_by('-start_time').filter(request)
     return owned_contests.distinct()
 
+
 def get_started_contests():
     now = datetime.now()
-    return Contest.objects.order_by('-start_time').filter(start_time__lte = now).distinct()
+    return Contest.objects.order_by('-start_time').filter(start_time__lte=now).distinct()
+
 
 def get_attended_contests(user):
     now = datetime.now()
-    contest_list = Contestant.objects.filter(user = user).\
-                  values_list('contest', flat=True)
-    return Contest.objects.filter(pk__in=contest_list, start_time__lte = now).distinct()
+    contest_list = Contestant.objects.filter(user=user).\
+        values_list('contest', flat=True)
+    return Contest.objects.filter(pk__in=contest_list, start_time__lte=now).distinct()
+
 
 def add_contestants(contest):
-    contestants = Contestant.objects.filter(contest = contest)
+    contestants = Contestant.objects.filter(contest=contest)
     contest.contestants = []
     for contestant in contestants:
         contest.contestants.append(contestant.user.username)

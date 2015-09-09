@@ -26,7 +26,7 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.forms import ReadOnlyPasswordHashField, AuthenticationForm
 from django.contrib.auth.models import Group
-from django.core.validators  import RegexValidator
+from django.core.validators import RegexValidator
 
 from contest.public_user import is_public_user, attends_not_ended_contest
 from utils.config_info import get_config
@@ -41,14 +41,17 @@ admin.site.register(UserProfile)
 
 
 class UserCreationForm(forms.ModelForm):
+
     """A form for creating new users. Includes all the required
     fields, plus a repeated password."""
-    USERNAME_BLACK_LIST = get_config('username', 'black_list', filename='user_auth.cfg').splitlines()
+    USERNAME_BLACK_LIST = get_config(
+        'username', 'black_list', filename='user_auth.cfg').splitlines()
     username = forms.CharField(label='Username',
-        validators=[RegexValidator(regex='^\w+$', message='Username must be Alphanumeric')])
+                               validators=[RegexValidator(regex='^\w+$', message='Username must be Alphanumeric')])
     email = forms.EmailField(label='Email')
     password1 = forms.CharField(label='Password', widget=forms.PasswordInput())
-    password2 = forms.CharField(label='Password Confirmation', widget=forms.PasswordInput())
+    password2 = forms.CharField(
+        label='Password Confirmation', widget=forms.PasswordInput())
 
     class Meta:
         model = User
@@ -67,7 +70,8 @@ class UserCreationForm(forms.ModelForm):
         username_lower = username.lower()
         for token in self.USERNAME_BLACK_LIST:
             if token.lower() in username_lower:
-                raise forms.ValidationError("Username shouldn't contain %s." % token)
+                raise forms.ValidationError(
+                    "Username shouldn't contain %s." % token)
 
         return username
 
@@ -81,13 +85,15 @@ class UserCreationForm(forms.ModelForm):
 
 
 class AuthenticationForm(AuthenticationForm):
+
     """Extend default AuthenticationForm with prettified bootstrap attribute"""
     username = forms.CharField(label='Username')
     password = forms.CharField(label='Password', widget=forms.PasswordInput())
 
     def __init__(self, *args, **kwargs):
         super(AuthenticationForm, self).__init__(*args, **kwargs)
-        self.error_messages['inactive'] = 'This account is inactive. Check your email to activate the account!'
+        self.error_messages[
+            'inactive'] = 'This account is inactive. Check your email to activate the account!'
 
     def confirm_login_allowed(self, user):
         if is_public_user(user) and not attends_not_ended_contest(user):
@@ -98,6 +104,7 @@ class AuthenticationForm(AuthenticationForm):
 
 
 class UserChangeForm(forms.ModelForm):
+
     """A form for updating users. Includes all the fields on
     the user, but replaces the password field with admin's
     password hash display field.
@@ -126,7 +133,8 @@ class UserAdmin(UserAdmin):
     list_display = ('username', 'is_admin')
     list_filter = ('is_admin',)
     fieldsets = (
-        (None, {'fields': ('username', 'password', 'email', 'user_level', 'theme', 'is_active')}),
+        (None, {'fields': (
+            'username', 'password', 'email', 'user_level', 'theme', 'is_active')}),
         ('Permissions', {'fields': ('is_admin',)}),
     )
     # add_fieldsets is not a standard ModelAdmin attribute. UserAdmin
@@ -135,7 +143,7 @@ class UserAdmin(UserAdmin):
         (None, {
             'classes': ('wide',),
             'fields': ('username', 'email', 'password1', 'password2')}
-        ),
+         ),
     )
     search_fields = ('username',)
     ordering = ('username',)

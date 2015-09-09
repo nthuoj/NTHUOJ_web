@@ -41,7 +41,8 @@ class Group(models.Model):
 
     gname = models.CharField(max_length=50, default='')
     owner = models.ForeignKey(User, related_name='group_owner')
-    coowner = models.ManyToManyField(User, related_name='group_coowner', blank=True)
+    coowner = models.ManyToManyField(
+        User, related_name='group_coowner', blank=True)
     member = models.ManyToManyField(User, related_name='member', blank=True)
     description = models.TextField(blank=True)
     announce = models.ManyToManyField(Announce, blank=True)

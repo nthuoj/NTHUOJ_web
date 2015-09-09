@@ -52,7 +52,8 @@ class CodeSubmitForm(forms.Form):
         try:
             problem = Problem.objects.get(id=pid)
             if not user_info.has_problem_auth(self.user, problem):
-                raise forms.ValidationError("You don't have permission to submit that problem")
+                raise forms.ValidationError(
+                    "You don't have permission to submit that problem")
         except Problem.DoesNotExist:
             logger.warning('Pid %s doe not exist' % pid)
             raise forms.ValidationError('Problem of this pid does not exist')
@@ -72,7 +73,8 @@ class CodeSubmitForm(forms.Form):
             problem=problem,
             language=language)
         try:
-            filename = '%s.%s' % (submission.id, file_info.get_extension(submission.language))
+            filename = '%s.%s' % (
+                submission.id, file_info.get_extension(submission.language))
             f = open('%s%s' % (self.SUBMIT_PATH, filename), 'w')
             f.write(code.encode('utf-8'))
             f.close()
@@ -89,6 +91,7 @@ class CodeSubmitForm(forms.Form):
 
 
 class UserProfileForm(forms.ModelForm):
+
     """A form for updating user's profile. Includes all the required
     fields, plus a repeated password."""
 
@@ -131,7 +134,9 @@ class UserProfileForm(forms.ModelForm):
 
 
 class UserLevelForm(forms.ModelForm):
+
     """A form for updating user's userlevel."""
+
     def __init__(self, *args, **kwargs):
         request_user = kwargs.pop('request_user', User())
         super(UserLevelForm, self).__init__(*args, **kwargs)
@@ -141,7 +146,8 @@ class UserLevelForm(forms.ModelForm):
             return
         # Judge can only promote a user to these levels
         if request_user.has_judge_auth():
-            self.fields['user_level'].choices = ((User.SUB_JUDGE, 'Sub-judge'), (User.USER, 'User'))
+            self.fields['user_level'].choices = (
+                (User.SUB_JUDGE, 'Sub-judge'), (User.USER, 'User'))
 
     class Meta:
         model = User

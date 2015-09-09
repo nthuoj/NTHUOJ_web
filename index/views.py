@@ -52,21 +52,20 @@ logger = get_logger()
 def index(request, alert_info='none'):
 
     present = timezone.now()
-    time_threshold = datetime.now() + timedelta(days=1);
-    c_runnings = Contest.objects.filter \
-        (start_time__lt=present, end_time__gt=present, is_homework=False)
-    c_upcomings = Contest.objects.filter \
-        (start_time__gt=present, start_time__lt=time_threshold, is_homework=False).order_by('start_time')
-    announcements = Announcement.objects.filter \
-        (start_time__lt=present, end_time__gt=present)
+    time_threshold = datetime.now() + timedelta(days=1)
+    c_runnings = Contest.objects.filter(start_time__lt=present, end_time__gt=present, is_homework=False)
+    c_upcomings = Contest.objects.filter(start_time__gt=present, start_time__lt=time_threshold, is_homework=False).order_by('start_time')
+    announcements = Announcement.objects.filter(start_time__lt=present, end_time__gt=present)
     return render_index(request, 'index/index.html',
-                {'c_runnings':c_runnings, 'c_upcomings':c_upcomings,
-                'announcements':announcements, 'alert_info':alert_info})
+                        {'c_runnings': c_runnings, 'c_upcomings': c_upcomings,
+                         'announcements': announcements, 'alert_info': alert_info})
+
 
 @login_required()
 def announcement_create(request):
-    if User.has_admin_auth(request.user) == False:
-        raise PermissionDenied('User %s does not have the permission!' % str(request.user))
+    if not User.has_admin_auth(request.user):
+        raise PermissionDenied(
+            'User %s does not have the permission!' % str(request.user))
     if request.method == 'POST':
         form = AnnouncementCreationForm(request.POST)
         if form.is_valid():
@@ -76,12 +75,14 @@ def announcement_create(request):
     else:
         form = AnnouncementCreationForm()
     return render_index(request, 'index/announcement.html',
-                {'form': form, 'title': 'Create Announcement'})
+                        {'form': form, 'title': 'Create Announcement'})
+
 
 @login_required()
 def announcement_update(request, aid):
-    if User.has_admin_auth(request.user) == False:
-        raise PermissionDenied('User %s does not have the permission' % str(request.user))
+    if not User.has_admin_auth(request.user):
+        raise PermissionDenied(
+            'User %s does not have the permission' % str(request.user))
 
     try:
         announcement = Announcement.objects.get(id=long(aid))
@@ -97,12 +98,14 @@ def announcement_update(request, aid):
     else:
         form = AnnouncementCreationForm(instance=announcement)
     return render_index(request, 'index/announcement.html',
-                {'form': form, 'announcement':announcement, 'title': 'Update Announcement'})
+                        {'form': form, 'announcement': announcement, 'title': 'Update Announcement'})
+
 
 @login_required()
 def announcement_delete(request, aid):
-    if User.has_admin_auth(request.user) == False:
-        raise PermissionDenied('User %s does not have the permission' % str(request.user))
+    if not User.has_admin_auth(request.user):
+        raise PermissionDenied(
+            'User %s does not have the permission' % str(request.user))
 
     try:
         announcement = Announcement.objects.get(id=long(aid))
@@ -110,6 +113,7 @@ def announcement_delete(request, aid):
     except Announcement.DoesNotExist:
         raise Exception('Announcement %ld does not exist' % long(aid))
     return redirect(reverse('index:index'))
+
 
 def navigation_autocomplete(request):
     now = datetime.now()
@@ -135,17 +139,22 @@ def navigation_autocomplete(request):
 
     return render(request, 'index/navigation_autocomplete.html', queries)
 
+
 def custom_400(request):
     return render(request, 'index/400.html', status=400)
+
 
 def custom_403(request):
     return render(request, 'index/403.html', status=403)
 
+
 def custom_404(request):
     return render(request, 'index/404.html', status=404)
 
+
 def custom_500(request):
-    return render(request, 'index/500.html',{'error_message':'error'}, status=500)
+    return render(request, 'index/500.html', {'error_message': 'error'}, status=500)
+
 
 def base(request):
-    return render_index(request, 'index/base.html',{})
+    return render_index(request, 'index/base.html', {})

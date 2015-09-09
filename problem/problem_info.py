@@ -8,8 +8,10 @@ SPECIAL_PATH = config_info.get_config('path', 'special_judge_path')
 PARTIAL_PATH = config_info.get_config('path', 'partial_judge_path')
 TESTCASE_PATH = config_info.get_config('path', 'testcase_path')
 
+
 def get_testcase(problem):
     return Testcase.objects.filter(problem=problem).order_by('id')
+
 
 def get_problem_list(user):
     if user.is_anonymous():
@@ -20,8 +22,10 @@ def get_problem_list(user):
         else:
             return Problem.objects.filter(Q(visible=True) | Q(owner=user)).order_by('id')
 
+
 def get_owner_problem_list(user):
     return Problem.objects.filter(owner=user).order_by('id')
+
 
 def get_problem_file_extension(problem):
     if problem.judge_language == problem.C:
@@ -31,16 +35,20 @@ def get_problem_file_extension(problem):
     if problem.judge_language == problem.CPP11:
         return ".cpp"
 
+
 def has_special_judge_code(problem):
     file_ex = get_problem_file_extension(problem)
     return os.path.isfile("%s%d%s" % (SPECIAL_PATH, problem.pk, file_ex))
+
 
 def has_partial_judge_code(problem):
     file_ex = get_problem_file_extension(problem)
     return os.path.isfile("%s%d%s" % (PARTIAL_PATH, problem.pk, file_ex))
 
+
 def has_partial_judge_header(problem):
     return os.path.isfile("%s%d.h" % (PARTIAL_PATH, problem.pk))
+
 
 def verify_problem_code(problem):
     problem.has_special_judge_code = has_special_judge_code(problem)
@@ -51,7 +59,8 @@ def verify_problem_code(problem):
     problem.headername = "%s.h" % (problem.pk)
     return problem
 
-def check_in_contest(problem):
-    contest = problem.contest_set.filter(Q(start_time__lt=datetime.now()) & Q(end_time__gt=datetime.now()))
-    return len(contest) > 0
 
+def check_in_contest(problem):
+    contest = problem.contest_set.filter(
+        Q(start_time__lt=datetime.now()) & Q(end_time__gt=datetime.now()))
+    return len(contest) > 0
