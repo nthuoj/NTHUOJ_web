@@ -80,7 +80,6 @@ DATABASES = {
         'OPTIONS': {
             'read_default_file': CONFIG_PATH,
         },
-        'CONN_MAX_AGE': 120,
     }
 }
 
