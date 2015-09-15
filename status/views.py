@@ -23,6 +23,7 @@ SOFTWARE.
 """
 import re
 import json
+import time
 import urllib
 
 from django.contrib import messages
@@ -54,6 +55,7 @@ logger = get_logger()
 
 
 def status(request):
+    start_time = time.time()
     status_filter = StatusFilter(request.GET)
     submissions = get_visible_submission(request.user).order_by('-id')
     render_data = {}
@@ -103,7 +105,7 @@ def status(request):
         messages.warning(request, 'No submissions found for the given query!')
 
     render_data['submissions'] = submissions
-
+    render_data['searching_time'] = time.time() - start_time
     return render_index(request, 'status/status.html', render_data)
 
 

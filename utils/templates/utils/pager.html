@@ -15,6 +15,9 @@
         <input type="text" class="form-control input-sm" style="width: 50px;"
         name="page" value="{{ objects.number }}">
         of {{ objects.paginator.num_pages }}.
+        {% if searching_time %}
+          ({{ searching_time|floatformat:'-2' }} seconds)
+        {% endif %}
       </span>
       {% if objects.has_next %}
         <li>
