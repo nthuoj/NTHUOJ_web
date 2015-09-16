@@ -33,6 +33,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.core.exceptions import PermissionDenied
 from django.core.serializers import serialize
 from django.core.urlresolvers import reverse
+from django.core.cache import cache
 
 from contest.models import Contest
 from contest.contest_info import get_running_contests
@@ -83,7 +84,17 @@ def status(request):
         if status:
             submissions = submissions.filter(status=status)
 
-        submissions = get_current_page(request, submissions)
+        huge_table_count = None
+        # No constriant provided, the search result would be huge
+        # Cache the count for faster paging
+        if not (username or pid or cid or status):
+            if cache.get('huge_table_count'):
+                huge_table_count = cache.get('huge_table_count')
+            else:
+                huge_table_count = submissions.count()
+                cache.set('huge_table_count', huge_table_count, 60)
+
+        submissions = get_current_page(request, submissions, count=huge_table_count)
 
         # Regroup submission details
         submissions.object_list = regroup_submission(submissions.object_list)

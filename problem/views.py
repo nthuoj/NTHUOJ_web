@@ -69,8 +69,7 @@ def problem(request):
         problems = get_current_page(request, problem_list, 15)
         for p in problems:
             if p.total_submission != 0:
-                p.pass_rate = float(
-                    p.ac_count) / float(p.total_submission) * 100.0
+                p.pass_rate = float(p.ac_count) / float(p.total_submission) * 100.0
                 p.not_pass_rate = 100.0 - p.pass_rate
                 p.pass_rate = "%.2f" % (p.pass_rate)
                 p.not_pass_rate = "%.2f" % (p.not_pass_rate)

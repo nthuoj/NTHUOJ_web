@@ -71,15 +71,16 @@ def custom_proc(request):
     }
 
 
-def get_current_page(request, objects, slice=25):
+def get_current_page(request, objects, **kwargs):
     """Template for paging
         `objects` is the universe of the set.
 
         Returns a subset of `objects` according to the given page.
     """
-    paginator = Paginator(objects, slice)  # Show 25 items per page by default
+    # Show 25 items per page by default
+    paginator = Paginator(objects, kwargs.get('slice', 25))
     page = request.GET.get('page')
-
+    paginator._count = kwargs.get('count')
     try:
         objects = paginator.page(page)
     except PageNotAnInteger:
