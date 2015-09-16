@@ -16,7 +16,7 @@
         name="page" value="{{ objects.number }}">
         of {{ objects.paginator.num_pages }}.
         {% if searching_time %}
-          ({{ searching_time|floatformat:'-2' }} seconds)
+          ({{ searching_time|floatformat:'-3' }} seconds)
         {% endif %}
       </span>
       {% if objects.has_next %}
