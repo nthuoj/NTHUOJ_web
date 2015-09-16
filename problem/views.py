@@ -66,7 +66,7 @@ def problem(request):
             problem_list = problem_list.filter(tags__tag_name=tag_name)
             for p in problem_list:
                 p.in_contest = check_in_contest(p)
-        problems = get_current_page(request, problem_list, 15)
+        problems = get_current_page(request, problem_list, slice=15)
         for p in problems:
             if p.total_submission != 0:
                 p.pass_rate = float(p.ac_count) / float(p.total_submission) * 100.0
