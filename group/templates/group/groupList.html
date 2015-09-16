@@ -4,7 +4,7 @@
 <title>Group List</title>
 {% endblock title_name %}
 {% block import_source %}
-<script src="{% static 'group/js/groupList.js' %}"></script>
+<script src="{%static 'group/js/editAnnounce.js'%}"></script>
 {% endblock import_source %}
 {% load group_extras %}
 {% block body_block %}
@@ -13,22 +13,33 @@
   <div class="well">
     <h2>Group List</h2>
   </div>
-  <div class="btn-group" data-toggle="buttons-radio" style="float:right">
-    <button id="myGroupButton" type="button" class="btn btn-primary">
-      My Group
-    </button>
-    <button id="allGroupButton" type="button" class="btn btn-primary">
-      All Group
-    </button>
+  {% if user.is_authenticated %}
+  <div class="btn-group" style="float:right">
+    <a href="{% url 'group:my_list' %}"> 
+      <button id="myGroupButton" type="button" 
+              class="btn btn-primary {% if include_flag = 'my_group' %} active {% endif %}">
+        My Group
+      </button>
+    </a>
+    <a href="{% url 'group:list' %}">
+      <button id="allGroupButton" type="button" 
+              class="btn btn-primary {% if include_flag = 'all_group' %} active {% endif %}">
+        All Group
+      </button>
+    </a>
   </div>
+  {% endif %}
   <br>
   <br>
-  <hr>
-  <div id="myGroupTable">
-    {% include "group/groupTable.html" with group_list=my_group_list %}
-  </div>
+  {% if include_flag = 'my_group' %}
+    <div id="myGroupTable">
+      {% include "group/groupTable.html" with group_list=my_group_list %}
+    </div>
+  {% endif %}
+  {% if include_flag = 'all_group' %}
   <div id="allGroupTable">
     {% include "group/groupTable.html" with group_list=all_group_list %}
   </div>
+  {% endif %}
 </div>
 {% endblock body_block %}

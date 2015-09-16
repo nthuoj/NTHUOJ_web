@@ -37,7 +37,9 @@ from utils.config_info import get_config
 
 DEFAULT_THEME = get_config('theme_settings', 'default')
 
+
 class CustomHttpExceptionMiddleware(object):
+
     def process_exception(self, request, exception):
         message = unicode(exception)
         if isinstance(exception, Http404):
@@ -53,19 +55,16 @@ class CustomHttpExceptionMiddleware(object):
 def render_index(request, *args, **kwargs):
     """Helper to render index page with custom_proc"""
     # add context_instance keyword
-    kwargs.update({'context_instance': RequestContext(request, processors=[custom_proc])})
+    kwargs.update(
+        {'context_instance': RequestContext(request, processors=[custom_proc])})
 
     return render(request, *args, **kwargs)
 
 
 def custom_proc(request):
-    amount = Notification.objects.filter \
-        (receiver=request.user, read=False).count()
+    amount = Notification.objects.filter(receiver=request.user, read=False).count()
 
-    t = time.time()
-    tstr = datetime.fromtimestamp(t).strftime('%Y/%m/%d %H:%M:%S')
     return {
-        'tstr': tstr,
         'amount': amount,
         'default_theme': DEFAULT_THEME,
         'request': request

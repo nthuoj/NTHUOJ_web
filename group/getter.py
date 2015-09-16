@@ -19,18 +19,30 @@ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
 AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
-'''
-from django.db import models
-from datetime import datetime
-# Create your models here.
+SOFTWARE.'''
+
+from django.http import Http404
+from group.models import Group, Announce
+from utils.log_info import get_logger
 
 
-class Announcement(models.Model):
+def get_announce(announce_id):
+    try:
+        announce = Announce.objects.get(id=announce_id)
+    except Announce.DoesNotExist:
+        logger.warning(
+            'Announce: Can not edit announce %s! Announce does not exist!' % announce_id)
+        raise Http404(
+            'Announce: Can not edit announce %s! Announce does not exist!' % announce_id)
+    return announce
 
-    content = models.TextField(default=None)
-    start_time = models.DateTimeField(default=datetime.now)
-    end_time = models.DateTimeField(default=datetime.now)
 
-    def __unicode__(self):
-        return str(self.id)
+def get_group(group_id):
+    try:
+        group = Group.objects.get(id=group_id)
+    except Group.DoesNotExist:
+        logger.warning(
+            'Group: Can not edit group %s! Group does not exist!' % group_id)
+        raise Http404(
+            'Group: Can not edit group %s! Group does not exist!' % group_id)
+    return group

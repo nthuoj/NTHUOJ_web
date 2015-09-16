@@ -28,6 +28,7 @@ from users.models import User
 
 # Create your models here.
 
+
 class Team(models.Model):
 
     team_name = models.CharField(max_length=15, default='', unique=True)
@@ -38,6 +39,7 @@ class Team(models.Model):
 
     def __unicode__(self):
         return self.team_name
+
 
 class TeamMember(models.Model):
 
@@ -50,11 +52,11 @@ class TeamMember(models.Model):
     MEMBER_STATUS_CHOICE = (
         (VALID, 'Valid'), (INVITED, 'Invited'), (APPLY, 'Apply'),
     )
-    status = models.CharField(max_length=7, choices=MEMBER_STATUS_CHOICE, default='')
-    
+    status = models.CharField(
+        max_length=7, choices=MEMBER_STATUS_CHOICE, default='')
+
     class Meta:
         unique_together = (('team', 'member'),)
-    
+
     def __unicode__(self):
         return self.member.username + ' in ' + self.team.team_name
-

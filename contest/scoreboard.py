@@ -19,33 +19,41 @@
     '''
 import sys
 from operator import methodcaller
+
+
 class Scoreboard:
-    def __init__(self,start_time):
+
+    def __init__(self, start_time):
         self.users = []
         self.problems = []
         self.start_time = start_time
 
-    def add_user(self,user):
+    def add_user(self, user):
         self.users.append(user)
 
-    def add_problem(self,scoreboard_problem):
+    def add_problem(self, scoreboard_problem):
         self.problems.append(scoreboard_problem)
 
-    def get_problem(self,problem_id):
+    def get_problem(self, problem_id):
         for scoreboard_problem in self.problems:
             if (scoreboard_problem.id == problem_id):
                 return scoreboard_problem
 
-    #sort by solved descending. if same sort by penalty
+    # sort by solved descending. if same sort by penalty
     def sort_users_by_penalty(self):
-        self.users = sorted(self.users, key=methodcaller('get_penalty',self.start_time))
-        self.users = sorted(self.users, key=methodcaller('get_solved'), reverse=True)
+        self.users = sorted(
+            self.users, key=methodcaller('get_penalty', self.start_time))
+        self.users = sorted(
+            self.users, key=methodcaller('get_solved'), reverse=True)
 
     def sort_users_by_solved_testcases(self):
-        self.users = sorted(self.users, key=methodcaller('get_testcases_solved'), reverse=True)
+        self.users = sorted(
+            self.users, key=methodcaller('get_testcases_solved'), reverse=True)
+
 
 class ScoreboardProblem:
-    def __init__(self,id,pname,total_testcase):
+
+    def __init__(self, id, pname, total_testcase):
         self.id = id
         self.pname = pname
         self.total_testcase = total_testcase
@@ -55,12 +63,14 @@ class ScoreboardProblem:
     def add_pass_user(self):
         self.pass_user += 1
 
+
 class User:
-    def __init__(self,username):
+
+    def __init__(self, username):
         self.username = username
         self.problems = []
 
-    def add_problem(self,problem):
+    def add_problem(self, problem):
         self.problems.append(problem)
 
     def get_solved(self):
@@ -76,14 +86,16 @@ class User:
             count += problem.get_testcases_solved()
         return count
 
-    def get_penalty(self,start_time):
+    def get_penalty(self, start_time):
         penalty = 0
         for problem in self.problems:
-            penalty += problem.get_penalty(start_time);
+            penalty += problem.get_penalty(start_time)
         return penalty
 
+
 class UserProblem:
-    def __init__(self,id,total_testcases):
+
+    def __init__(self, id, total_testcases):
         self.submissions = []
         self.id = id
         self.total_testcases = total_testcases
@@ -97,17 +109,17 @@ class UserProblem:
     def get_testcases_solved(self):
         testcases_solved = 0
         for submission in self.submissions:
-            testcases_solved = max(testcases_solved,submission.pass_testcases)
+            testcases_solved = max(testcases_solved, submission.pass_testcases)
         return testcases_solved
 
-    def add_submission(self,submission):
+    def add_submission(self, submission):
         self.submissions.append(submission)
 
     def submit_times(self):
         return len(self.submissions)
 
-    def get_penalty(self,start_time):
-        #every not passed submission should add addtional penalty
+    def get_penalty(self, start_time):
+        # every not passed submission should add addtional penalty
         NOT_PASS_PENALTY_UNIT = 20
         wrong_try = 0
         for submission in self.submissions:
@@ -117,14 +129,16 @@ class UserProblem:
                 wrong_try += 1
         return 0
 
+
 class Submission:
-    def __init__(self,submit_time,pass_testcases):
+
+    def __init__(self, submit_time, pass_testcases):
         self.submit_time = submit_time
         self.pass_testcases = pass_testcases
 
-    def is_solved(self,total_testcases):
+    def is_solved(self, total_testcases):
         return (self.pass_testcases == total_testcases)
 
-    def get_penalty(self,start_time):
+    def get_penalty(self, start_time):
         MINUTE = 60
-        return ((self.submit_time - start_time).total_seconds()/MINUTE)
+        return ((self.submit_time - start_time).total_seconds() / MINUTE)

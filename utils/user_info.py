@@ -29,6 +29,8 @@ import random
 from django.core.urlresolvers import reverse
 from django.core.mail import EmailMultiAlternatives
 from django.template.loader import render_to_string
+from django.http import HttpResponseRedirect
+
 
 from contest.models import Contest
 from contest.models import Contestant
@@ -42,6 +44,7 @@ EMAIL_HOST_USER = get_config('email', 'user')
 
 logger = get_logger()
 
+
 def has_contest_ownership(curr_user, curr_contest):
     curr_user = validate_user(curr_user)
 
@@ -52,14 +55,13 @@ def has_contest_ownership(curr_user, curr_contest):
     return curr_user in contest_coowners
 
 
-
-
 def has_group_ownership(curr_user, curr_group):
     curr_user = validate_user(curr_user)
 
     if curr_user == curr_group.owner or curr_user.has_admin_auth():
         return True
     return False
+
 
 def has_group_coownership(curr_user, curr_group):
     curr_user = validate_user(curr_user)
@@ -70,6 +72,7 @@ def has_group_coownership(curr_user, curr_group):
             if curr_user == coowner:
                 return True
     return False
+
 
 def has_problem_ownership(curr_user, curr_problem):
     curr_user = validate_user(curr_user)
@@ -137,16 +140,17 @@ def get_user_statistics(user):
         statistics += [{
             'label': label,
             'value': submissions.filter(status=label).count()
-       }]
+        }]
 
     # fetch Submission of the given user
     submissions_id = map(lambda submission: submission.id, submissions)
-    submission_details = SubmissionDetail.objects.filter(sid__in=submissions_id)
+    submission_details = SubmissionDetail.objects.filter(
+        sid__in=submissions_id)
     for label in verdict_labels:
         statistics += [{
-           'label': label,
-           'value': submission_details.filter(verdict=label).count()
-       }]
+            'label': label,
+            'value': submission_details.filter(verdict=label).count()
+        }]
 
     return statistics
 
@@ -166,22 +170,25 @@ def send_activation_email(request, user):
         reverse('users:confirm', kwargs={'activation_key': activation_key})
     email_subject = 'Account confirmation'
     email_body = render_to_string('index/activation_email.html',
-                    {'username': username, 'activation_link': activation_link,
-                    'active_time': new_profile.active_time})
+                                  {'username': username, 'activation_link': activation_link,
+                                   'active_time': new_profile.active_time})
 
-    msg = EmailMultiAlternatives(email_subject, email_body, EMAIL_HOST_USER, [email])
+    msg = EmailMultiAlternatives(
+        email_subject, email_body, EMAIL_HOST_USER, [email])
     msg.attach_alternative(email_body, "text/html")
 
     try:
         Thread(target=msg.send, args=()).start()
     except:
-        logger.warning("There is an error when sending email to %s's mailbox" % username)
+        logger.warning(
+            "There is an error when sending email to %s's mailbox" % username)
+
 
 def send_forget_password_email(request, user):
     username = user.username
     email = user.email
     salt = hashlib.sha1(str(random.random())).hexdigest()[:5]
-    activation_key = hashlib.sha1(salt+email).hexdigest()
+    activation_key = hashlib.sha1(salt + email).hexdigest()
     # Create and save user profile
     UserProfile.objects.filter(user=user).delete()
     new_profile = UserProfile(user=user, activation_key=activation_key)
@@ -189,22 +196,27 @@ def send_forget_password_email(request, user):
 
     # Send email with activation key
     profile_link = request.META['HTTP_HOST'] + \
-        reverse('users:forget_password_confirm', kwargs={'activation_key': activation_key})
+        reverse('users:forget_password_confirm',
+                kwargs={'activation_key': activation_key})
     email_subject = 'Password Reset'
     email_body = render_to_string('index/forget_password_email.html',
-                    {'username': username, 'profile_link': profile_link,
-                    'active_time': new_profile.active_time})
-    msg = EmailMultiAlternatives(email_subject, email_body, EMAIL_HOST_USER, [email])
+                                  {'username': username, 'profile_link': profile_link,
+                                   'active_time': new_profile.active_time})
+    msg = EmailMultiAlternatives(
+        email_subject, email_body, EMAIL_HOST_USER, [email])
     msg.attach_alternative(email_body, "text/html")
 
     try:
         Thread(target=msg.send, args=()).start()
     except:
-        logger.warning("There is an error when sending email to %s's mailbox" % username)
+        logger.warning(
+            "There is an error when sending email to %s's mailbox" % username)
+
 
 def send_notification(user, content):
     try:
         Notification.objects.create(receiver=user, message=content)
         logger.info("send notification to %s successfully" % user.username)
     except:
-        logger.warning("There is an error when sending notification to %s" % user.username)
+        logger.warning(
+            "There is an error when sending notification to %s" % user.username)

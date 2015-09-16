@@ -41,35 +41,27 @@ config.read(CONFIG_PATH)
 if not config.has_section('client'):
     # Setting mysql info
     write_config(config, 'client',
-        {'default-character-set': 'utf8'},
-        host=raw_input('Mysql host: '),
-        database=raw_input('Mysql database: '),
-        user=raw_input('Mysql user: '),
-        password=getpass.getpass('Mysql user password: ')
-    )
+                 {'default-character-set': 'utf8'},
+                 host=raw_input('Mysql host: '),
+                 database=raw_input('Mysql database: '),
+                 user=raw_input('Mysql user: '),
+                 password=getpass.getpass('Mysql user password: ')
+                 )
 
 if not config.has_section('system_version'):
     # Getting system version info
     write_config(config, 'system_version',
-        backend=raw_input('Host os version: '),
-        gcc=raw_input('gcc version: '),
-        gpp=raw_input('g++ version: ')
-    )
+                 backend=raw_input('Host os version: '),
+                 gcc=raw_input('gcc version: '),
+                 gpp=raw_input('g++ version: ')
+                 )
 
 if not config.has_section('email'):
     # Setting email info
     write_config(config, 'email',
-        user=raw_input('Email host(gmail): '),
-        password=getpass.getpass("Email host's password: ")
-    )
-
-if not config.has_section('vjudge'):
-    # Setting virtual judge info
-    print 'We use virtual judge(http://vjudge.net) for other judge source(UVA, ICPC, etc.)'
-    write_config(config, 'vjudge',
-        username=raw_input('Virtual judge username: '),
-        password=getpass.getpass("Virtual judge password: ")
-    )
+                 user=raw_input('Email host(gmail): '),
+                 password=getpass.getpass("Email host's password: ")
+                 )
 
 # Change defaut path
 paths = dict(config.items('path'))

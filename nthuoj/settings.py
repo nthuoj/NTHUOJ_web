@@ -1,4 +1,3 @@
-#-*- encoding=UTF-8 -*-
 """
 Django settings for nthuoj project.
 
@@ -8,6 +7,7 @@ https://docs.djangoproject.com/en/1.7/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/1.7/ref/settings/
 """
+# -*- encoding=UTF-8 -*-
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
@@ -22,9 +22,9 @@ PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."),)
 SECRET_KEY = 'kivl1x)by8$98z6y3b^7texw&+d1arad2qlq-(sn=8g^lw_(+&'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-TEMPLATE_DEBUG = True
+TEMPLATE_DEBUG = False
 
 ALLOWED_HOSTS = ['*']
 
@@ -51,7 +51,6 @@ INSTALLED_APPS = (
     'bootstrapform',
     'djangobower',
     'datetimewidget',
-    'vjudge',
     'ckeditor',
 )
 
@@ -143,13 +142,15 @@ BOWER_INSTALLED_APPS = (
     'Chart.js',
     'jquery',
     'jquery-ui#1.9.2',
-    'https://github.com/thomaspark/bootswatch.git', # bootswatch
-    'https://github.com/dimsemenov/Magnific-Popup.git', # Magnific-Popup
-    'https://github.com/codemirror/CodeMirror.git', # CodeMirror
-    'http://gregpike.net/demos/bootstrap-file-input/bootstrap.file-input.js', # bootstrap fileinput
-    'https://github.com/lou/multi-select.git', # multiselect
-    'https://github.com/riklomas/quicksearch.git', # quicksearch
-    'https://gantry.googlecode.com/svn/trunk/root/js/jquery.url.min.js', # jquery url plugin
+    'https://github.com/thomaspark/bootswatch.git',  # bootswatch
+    'https://github.com/dimsemenov/Magnific-Popup.git',  # Magnific-Popup
+    'https://github.com/codemirror/CodeMirror.git',  # CodeMirror
+    # bootstrap fileinput
+    'http://gregpike.net/demos/bootstrap-file-input/bootstrap.file-input.js',
+    'https://github.com/lou/multi-select.git',  # multiselect
+    'https://github.com/riklomas/quicksearch.git',  # quicksearch
+    # jquery url plugin
+    'https://gantry.googlecode.com/svn/trunk/root/js/jquery.url.min.js',
 )
 
 STATICFILES_FINDERS = (
@@ -158,10 +159,9 @@ STATICFILES_FINDERS = (
     'djangobower.finders.BowerFinder',
 )
 
-#maximum of public users for a single contest
+# maximum of public users for a single contest
 MAX_PUBLIC_USER = 200
-#public user username prefix
+# public user username prefix
 PUBLIC_USER_PREFIX = "TEAM"
 
 PUBLIC_USER_DEFAULT_PASSWORD = "000"
-

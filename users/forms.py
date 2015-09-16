@@ -26,7 +26,6 @@ from threading import Thread
 
 from users.models import User
 from problem.models import Problem, Submission, SubmissionDetail, Testcase
-from vjudge.submit import submit_to_vjudge
 from utils import log_info, user_info, config_info, file_info
 
 logger = log_info.get_logger()
@@ -43,7 +42,7 @@ class CodeSubmitForm(forms.Form):
     language = forms.ChoiceField(choices=LANGUAGE_CHOICE, initial=Submission.CPP,
                                  help_text="Backend: %s<br>gcc: %s<br>g++: %s"
                                  % (BACKEND_VERSION, GCC_VERSION, GPP_VERSION))
-    code = forms.CharField(max_length=10000,
+    code = forms.CharField(max_length=40 * 1024,
                            widget=forms.Textarea(attrs={'id': 'code_editor'}))
 
     def clean_pid(self):
@@ -53,7 +52,8 @@ class CodeSubmitForm(forms.Form):
         try:
             problem = Problem.objects.get(id=pid)
             if not user_info.has_problem_auth(self.user, problem):
-                raise forms.ValidationError("You don't have permission to submit that problem")
+                raise forms.ValidationError(
+                    "You don't have permission to submit that problem")
         except Problem.DoesNotExist:
             logger.warning('Pid %s doe not exist' % pid)
             raise forms.ValidationError('Problem of this pid does not exist')
@@ -73,7 +73,8 @@ class CodeSubmitForm(forms.Form):
             problem=problem,
             language=language)
         try:
-            filename = '%s.%s' % (submission.id, file_info.get_extension(submission.language))
+            filename = '%s.%s' % (
+                submission.id, file_info.get_extension(submission.language))
             f = open('%s%s' % (self.SUBMIT_PATH, filename), 'w')
             f.write(code.encode('utf-8'))
             f.close()
@@ -81,8 +82,8 @@ class CodeSubmitForm(forms.Form):
             logger.warning('Sid %s fail to save code' % submission.id)
 
         if problem.judge_source == Problem.OTHER:
-            submit_thread = Thread(target=submit_to_vjudge, args=(code, submission))
-            submit_thread.start()
+            #  Send to other judge
+            pass
 
     def __init__(self, *args, **kwargs):
         self.user = kwargs.pop('user', User())
@@ -90,6 +91,7 @@ class CodeSubmitForm(forms.Form):
 
 
 class UserProfileForm(forms.ModelForm):
+
     """A form for updating user's profile. Includes all the required
     fields, plus a repeated password."""
 
@@ -132,7 +134,9 @@ class UserProfileForm(forms.ModelForm):
 
 
 class UserLevelForm(forms.ModelForm):
+
     """A form for updating user's userlevel."""
+
     def __init__(self, *args, **kwargs):
         request_user = kwargs.pop('request_user', User())
         super(UserLevelForm, self).__init__(*args, **kwargs)
@@ -142,7 +146,8 @@ class UserLevelForm(forms.ModelForm):
             return
         # Judge can only promote a user to these levels
         if request_user.has_judge_auth():
-            self.fields['user_level'].choices = ((User.SUB_JUDGE, 'Sub-judge'), (User.USER, 'User'))
+            self.fields['user_level'].choices = (
+                (User.SUB_JUDGE, 'Sub-judge'), (User.USER, 'User'))
 
     class Meta:
         model = User
@@ -176,6 +181,3 @@ class UserForgetPasswordForm(forms.Form):
         if username and email and User.objects.filter(username=username, email=email):
             return email
         raise forms.ValidationError("Username and Email don't match")
-
-
-

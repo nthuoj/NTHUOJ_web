@@ -1,6 +1,9 @@
 # User upload files
 media/
 
+# Collected static
+/static
+
 # Configs
 config/
 

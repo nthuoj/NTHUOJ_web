@@ -1,5 +1,5 @@
 {% load group_extras %}
-<table class="table table-hover">
+<table class="table table-hover table-striped">
   <thead>
     <tr>
       {% if user.has_judge_auth %}
@@ -22,19 +22,72 @@
     {% for group in group_list %}
     <tr>
       <td>
+        <!--Group Info-->
+        <a data-toggle="modal" data-target="#groupInfoModal{{group.id}}">
+          <button type="button" class="btn btn-info btn-xs"
+           data-toggle="tooltip" data-placement="top" title="Contest Info">
+            <span class="glyphicon glyphicon-info-sign"></span>
+          </button>
+        </a>
+        <!--Group Info Modal Section-->
+        <div class="modal fade" id="groupInfoModal{{group.id}}" tabindex="-1" role="dialog">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <button type="btn-default" class="close" 
+                        data-dismiss="modal"
+                        aria-hidden="true">&times;</button>
+                <h3 class="modal-title" id="modal-title">
+                  {{ group.gname }}
+                </h3>
+              </div>
+              <div class="modal-body">
+                <h4>Group Administrators</h4>
+                <table class="table table-hover">
+                  <thead>
+                    <tr>
+                      <div>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Level</th>
+                      </div>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>{{ group.owner.username }}</td>
+                      <td>{{ group.owner.email }}</td>
+                      <td>Owner</td>
+                    </tr>
+                    {% for coowner in group.coowner.all %}
+                    <tr>
+                      <div>
+                        <td>{{ coowner.username }}</td>
+                        <td>{{ coowner.email }}</td>
+                        <td>Coowner</td>
+                      </div>
+                    </tr>
+                    {% endfor %}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!--Modal Section End-->
         {% if user|can_delete_group:group %}
         <!--User can delete group-->
-        <a href=".">
+        <a href="{% url 'group:delete' group.id %}">
           <button type="button" class="btn btn-danger btn-xs"
                   data-toggle="tooltip" data-placement="top" 
-                  title="Delete Contest">
+                  title="Delete Contest" onclick="return confirm_delete()">
             <span class="glyphicon glyphicon-remove"></span>
           </button>
         </a>
         {% endif %}
         {% if user|can_edit_group:group %}
         <!--User can edit group-->
-        <a href=".">
+        <a href="{% url 'group:edit' group.id %}">
           <button type="button" class="btn btn-warning btn-xs" 
                   data-toggle="tooltip" data-placement="top" 
                   title="Edit Contest">

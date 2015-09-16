@@ -1,0 +1,27 @@
+{% extends "index/base.html" %}
+{% load static %}
+{% block title_name %}
+<title>Edit for Announce...</title>
+{% endblock title_name %}
+{% load bootstrap %}
+{% block body_block %}
+<br>
+<br>
+<div class="col-lg-offset-1 col-lg-10">
+  <form action="." method="POST">
+    {% csrf_token %}
+    <div class="alert alert-dismissable alert-info">
+      <button type="button" class="close" data-dismiss="alert">×</button>
+      <h4>Hint: <span style="color:red">Title</span> is required!</h4>
+    </div>
+    {% for field in form %} 
+      <div class="form-group" style="width:100%">
+        {{ field|bootstrap }}
+      </div>
+    {% endfor %}
+    <div class="modal-footer">
+      <a><input type="submit" class="btn btn-primary" value="Update"></a>
+    </div>
+  </form>
+</div>
+{% endblock body_block %}

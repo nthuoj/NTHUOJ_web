@@ -30,16 +30,19 @@ from ckeditor.widgets import CKEditorWidget
 import autocomplete_light
 
 # create autocomplete interface and register
+
+
 class UserAutocomplete(autocomplete_light.AutocompleteModelBase):
     search_fields = ['^username']
-    choices = User.objects.filter(Q(user_level=User.ADMIN) | \
-                                  Q(user_level=User.JUDGE) | \
+    choices = User.objects.filter(Q(user_level=User.ADMIN) |
+                                  Q(user_level=User.JUDGE) |
                                   Q(user_level=User.SUB_JUDGE))
     model = User
     attrs = {
         'placeholder': '',
         'data-autocomplete-minimum-characters': 1
     }
+
 
 class TagAutocomplete(autocomplete_light.AutocompleteModelBase):
     search_fields = ['^tag_name']
@@ -52,11 +55,13 @@ class TagAutocomplete(autocomplete_light.AutocompleteModelBase):
 autocomplete_light.register(UserAutocomplete)
 autocomplete_light.register(TagAutocomplete)
 
+
 class ProblemForm(forms.ModelForm):
     other_judge_id = forms.IntegerField(required=False, min_value=0)
     partial_judge_code = forms.FileField(required=False)
     partial_judge_header = forms.FileField(required=False)
     special_judge_code = forms.FileField(required=False)
+
     class Meta:
         model = Problem
         fields = [
@@ -105,32 +110,44 @@ class ProblemForm(forms.ModelForm):
     def clean_partial_judge_code(self):
         judge_type = self.cleaned_data['judge_type']
         code = self.cleaned_data['partial_judge_code']
-        if judge_type == 'LOCAL_PARTIAL' and code == None:
+        if judge_type == 'LOCAL_PARTIAL' and code is None:
             raise forms.ValidationError("Partial judge code empty")
         return code
 
     def clean_partial_judge_header(self):
         judge_type = self.cleaned_data['judge_type']
         header = self.cleaned_data['partial_judge_header']
-        if judge_type == 'LOCAL_PARTIAL' and header == None:
+        if judge_type == 'LOCAL_PARTIAL' and header is None:
             raise forms.ValidationError("Partial judge header empty")
         return header
 
     def clean_special_judge_code(self):
         judge_type = self.cleaned_data['judge_type']
         code = self.cleaned_data['special_judge_code']
-        if judge_type == 'LOCAL_SPECIAL' and code == None:
+        if judge_type == 'LOCAL_SPECIAL' and code is None:
             raise forms.ValidationError("Special judge code empty")
         return code
 
 
 class TagForm(forms.ModelForm):
+
     class Meta:
         model = Tag
         fields = ['tag_name']
         labels = {'tag_name': 'Add Tag'}
         widgets = {
             'tag_name': autocomplete_light.TextWidget('TagAutocomplete',
-                                        attrs={'class': 'form-control'})
+                                                      attrs={'class': 'form-control'})
         }
 
+
+class TagFilter(forms.Form):
+    tag_name = forms.CharField(max_length=20, label='Tag', required=False,
+                               widget=autocomplete_light.TextWidget('TagAutocomplete',
+                                                                    attrs={'class': 'form-control'}))
+
+    def clean_tag_name(self):
+        tag_name = self.cleaned_data['tag_name'].strip()
+        if len(tag_name) != 0 and not Tag.objects.filter(tag_name=tag_name).exists():
+            raise forms.ValidationError("Tag does not exists")
+        return tag_name

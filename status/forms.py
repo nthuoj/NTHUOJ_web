@@ -49,7 +49,6 @@ class StatusFilter(forms.Form):
 
         return username
 
-
     def clean_pid(self):
         pid = self.cleaned_data['pid']
 
@@ -64,7 +63,6 @@ class StatusFilter(forms.Form):
 
         return pid
 
-
     def clean_cid(self):
         cid = self.cleaned_data['cid']
         if cid:
@@ -77,4 +75,3 @@ class StatusFilter(forms.Form):
                 raise forms.ValidationError('Contest of this ID does not exist')
 
         return cid
-

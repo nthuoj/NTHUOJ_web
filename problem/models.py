@@ -29,6 +29,7 @@ from users.models import User
 
 # Create your models here.
 
+
 class Tag(models.Model):
 
     tag_name = models.CharField(max_length=20, default='')
@@ -81,12 +82,16 @@ class Problem(models.Model):
     sample_in = models.TextField(blank=True)
     sample_out = models.TextField(blank=True)
     visible = models.BooleanField(default=False)
-    error_tolerance = models.DecimalField(decimal_places=15, max_digits=17, default=0)
+    error_tolerance = models.DecimalField(
+        decimal_places=15, max_digits=17, default=0)
     other_judge_id = models.IntegerField(blank=True, null=True)
     tags = models.ManyToManyField(Tag, blank=True, null=True)
-    judge_source = models.CharField(max_length=11, choices=JUDGE_SOURCE_CHOICE, default=LOCAL)
-    judge_type = models.CharField(max_length=20, choices=JUDGE_TYPE_CHOICE, default=NORMAL)
-    judge_language = models.CharField(max_length=11, choices=LANGUAGE_CHOICE, default=CPP)
+    judge_source = models.CharField(
+        max_length=11, choices=JUDGE_SOURCE_CHOICE, default=LOCAL)
+    judge_type = models.CharField(
+        max_length=20, choices=JUDGE_TYPE_CHOICE, default=NORMAL)
+    judge_language = models.CharField(
+        max_length=11, choices=LANGUAGE_CHOICE, default=CPP)
     ac_count = models.IntegerField(default=0)
     total_submission = models.IntegerField(default=0)
 
@@ -136,9 +141,12 @@ class Submission(models.Model):
     team = models.ForeignKey(Team, blank=True, null=True)
     submit_time = models.DateTimeField(default=datetime.now)
     error_msg = models.TextField(blank=True)
-    status = models.CharField(max_length=25, choices=STATUS_CHOICE, default=WAIT)
-    language = models.CharField(max_length=5, choices=LANGUAGE_CHOICE, default=C)
+    status = models.CharField(
+        max_length=25, choices=STATUS_CHOICE, default=WAIT)
+    language = models.CharField(
+        max_length=5, choices=LANGUAGE_CHOICE, default=C)
     other_judge_sid = models.IntegerField(blank=True, null=True)
+
     def __unicode__(self):
         return str(self.id)
 
@@ -163,11 +171,11 @@ class SubmissionDetail(models.Model):
     sid = models.ForeignKey(Submission)
     cpu = models.FloatField(default=0)
     memory = models.IntegerField(default=0)
-    verdict = models.CharField(max_length=3, choices=VERDICT_CHOICE, default='')
+    verdict = models.CharField(
+        max_length=3, choices=VERDICT_CHOICE, default='')
 
     class Meta:
         unique_together = (('tid', 'sid'),)
 
     def __unicode__(self):
         return 'sid %d, tid %d' % (self.sid.id, self.tid.id)
-
