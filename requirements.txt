@@ -5,8 +5,9 @@ django-autocomplete-light
 django-datetime-widget
 django-bootstrap
 django-bootstrap-form
-django-ckeditor
+django-ckeditor==4.5.1
 requests
 pillow
 MySQL-python
 gunicorn
+django-debug-toolbar
