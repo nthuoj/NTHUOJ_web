@@ -90,12 +90,15 @@ def show_detail(submission, user):
         creation_time__lte=submission.submit_time)
     if show_contest_submission(submission, user, contests):
         return True
+    '''
+    # team function is under construction
     # a user can view his team member's detail
     if submission.team:
         team_member = TeamMember.objects.filter(
             team=submission.team, member=user)
         if team_member or submission.team.leader == user:
             return True
+    '''
     # no condition is satisfied
     return False
 
