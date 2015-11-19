@@ -38,6 +38,7 @@ from problem.forms import ProblemForm, TagForm, TagFilter
 from utils import log_info, config_info
 from problem.problem_info import *
 from utils import log_info
+from utils.decorators import subjudge_auth_required
 from utils.render_helper import render_index, get_current_page
 from utils.rejudge import rejudge_problem
 from subprocess import check_call
@@ -101,7 +102,7 @@ def detail(request, pid):
     return render_index(request, 'problem/detail.html', {'problem': problem, 'tag_form': tag_form})
 
 
-@login_required
+@subjudge_auth_required
 def new(request):
     if request.method == "POST":
         if 'pname' in request.POST and request.POST['pname'].strip() != "":
@@ -215,6 +216,8 @@ def delete_tag(request, pid, tag_id):
 
 @login_required
 def testcase(request, pid, tid=None):
+    if not request.user.has_admin_auth() and request.user != problem.owner:
+        raise PermissionDenied()
     if request.method == 'POST':
         try:
             problem = Problem.objects.get(pk=pid)
