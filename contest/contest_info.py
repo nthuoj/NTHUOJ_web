@@ -212,9 +212,9 @@ def get_scoreboard(user, contest):
     return scoreboard
 
 
-def get_scoreboard_csv(contest_id, scoreboard_type):
+def get_scoreboard_csv(contest_id, scoreboard_type, user):
     contest = get_contest_or_404(contest_id)
-    scoreboard = get_scoreboard(contest)
+    scoreboard = get_scoreboard(user, contest)
 
     response = HttpResponse(content_type='text/csv')
     filename = contest.cname.encode(
