@@ -400,7 +400,7 @@ def download(request):
         if what == 'scoreboard':
             scoreboard_type = request.POST.get('scoreboard_type')
             cid = request.POST.get('contest')
-            scoreboard_file = get_scoreboard_csv(cid, scoreboard_type)
+            scoreboard_file = get_scoreboard_csv(cid, scoreboard_type, user)
             return scoreboard_file
         elif what == 'public_user_password':
             cid = request.POST.get('contest')
