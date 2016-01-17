@@ -52,6 +52,7 @@ INSTALLED_APPS = (
     'djangobower',
     'datetimewidget',
     'ckeditor',
+    'debug_toolbar',
 )
 
 MIDDLEWARE_CLASSES = (

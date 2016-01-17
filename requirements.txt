@@ -10,3 +10,4 @@ requests
 pillow
 MySQL-python
 gunicorn
+django-debug-toolbar

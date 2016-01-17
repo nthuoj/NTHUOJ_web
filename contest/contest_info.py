@@ -47,6 +47,7 @@ from utils import user_info
 from django.http import Http404
 from django.contrib.auth.hashers import make_password
 from django.db.models import Q
+from django.core.cache import cache
 
 import csv
 from django.http import HttpResponse
@@ -56,10 +57,15 @@ logger = get_logger()
 
 def get_running_contests():
     now = datetime.datetime.now()
-    contests = Contest.objects.filter(
-        is_homework=False,
-        start_time__lte=now,
-        end_time__gte=now)
+    contests = None
+    if cache.get('running_contests'):
+        contests = cache.get('running_contests')
+    else:
+        contests = Contest.objects.filter(
+            is_homework=False,
+            start_time__lte=now,
+            end_time__gte=now).prefetch_related()
+        cache.set('running_contests', contests, 60)
     return contests
 
 
