@@ -45,6 +45,14 @@
     $(document).tooltip({
       track: true
     });
+    $.ajax({
+        url: '/status/pages' + window.location.search,
+        type: 'GET',
+        success: function(response) {
+            var pages = JSON.parse(response);
+            $('#page_count').html(pages.pages);
+        }
+    });
   })
 </script>
 

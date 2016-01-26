@@ -14,7 +14,7 @@
         Page
         <input type="text" class="form-control input-sm" style="width: 50px;"
         name="page" value="{{ objects.number }}">
-        of {{ objects.paginator.num_pages }}.
+        of <span id="page_count">{{ objects.paginator.num_pages }}</span>.
         {% if searching_time %}
           ({{ searching_time|floatformat:'-3' }} seconds)
         {% endif %}
