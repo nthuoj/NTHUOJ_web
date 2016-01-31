@@ -47,7 +47,7 @@ from users.forms import CodeSubmitForm
 from users.models import User
 from utils.log_info import get_logger
 from utils.file_info import get_extension
-from utils.render_helper import render_index, get_current_page
+from utils.render_helper import render_index, get_current_page, get_page_count
 from utils.rejudge import rejudge_submission
 
 # Create your views here.
@@ -84,15 +84,17 @@ def status(request):
         if status:
             submissions = submissions.filter(status=status)
 
-        huge_table_count = None
+        # huge_table_count = None
+	# get page number later with ajax
+	huge_table_count = Submission.objects.all().count()
         # No constriant provided, the search result would be huge
         # Cache the count for faster paging
-        if not (username or pid or cid or status):
-            if cache.get('huge_table_count'):
-                huge_table_count = cache.get('huge_table_count')
-            else:
-                huge_table_count = submissions.count()
-                cache.set('huge_table_count', huge_table_count, 60)
+        # if not (username or pid or cid or status):
+        #     if cache.get('huge_table_count'):
+        #         huge_table_count = cache.get('huge_table_count')
+        #     else:
+        #         huge_table_count = submissions.count()
+        #         cache.set('huge_table_count', huge_table_count, 60)
 
         submissions = get_current_page(request, submissions, count=huge_table_count)
 
@@ -119,6 +121,46 @@ def status(request):
     render_data['searching_time'] = time.time() - start_time
     return render_index(request, 'status/status.html', render_data)
 
+def status_page_count(request):
+    status_filter = StatusFilter(request.GET)
+    submissions = get_visible_submission(request.user).order_by('-id')
+    render_data = {}
+    render_data['status_filter'] = status_filter
+    render_data['running_contests'] = get_running_contests().order_by('id')
+
+    if status_filter.is_valid():
+        username = status_filter.cleaned_data['username']
+        cid = status_filter.cleaned_data['cid']
+        pid = status_filter.cleaned_data['pid']
+        status = status_filter.cleaned_data['status']
+
+        if username:
+            user = User.objects.get(username=username)
+            submissions = submissions.filter(user=user)
+
+        if pid:
+            problem = Problem.objects.get(id=pid)
+            submissions = submissions.filter(problem=problem)
+
+        if cid:
+            contest = Contest.objects.get(id=cid)
+            submissions = get_contest_submissions(contest, submissions)
+
+        if status:
+            submissions = submissions.filter(status=status)
+
+        huge_table_count = None
+        # No constriant provided, the search result would be huge
+        # Cache the count for faster paging
+        if not (username or pid or cid or status):
+            if cache.get('huge_table_count'):
+                huge_table_count = cache.get('huge_table_count')
+            else:
+                huge_table_count = submissions.count()
+                cache.set('huge_table_count', huge_table_count, 60)
+	    print huge_table_count
+	    return HttpResponse(json.dumps({'pages': get_page_count(huge_table_count)}))
+    return HttpResponse(json.dumps({'pages': get_page_count(submissions.count())}))
 
 def contest_status(request, contest):
     """Return a status table of given contest"""

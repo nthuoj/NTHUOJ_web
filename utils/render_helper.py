@@ -21,6 +21,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
+import math
 import time
 from datetime import datetime
 
@@ -92,6 +93,8 @@ def get_current_page(request, objects, **kwargs):
 
     return objects
 
+def get_page_count(objects):
+    return int(math.ceil(objects / 25.0))
 
 def get_next_page(next_page):
     try:
