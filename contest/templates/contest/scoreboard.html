@@ -1,129 +1,66 @@
-{% load staticfiles %} {% load contest_extras %}
-<h3>{{ contest.cname }}</h3>
-{% if contest|is_frozen %}
-<span class="label label-danger">Frozen</span>
-*Frozen contest will not update scoreboard until the contest ends.
-{% endif %}
-<h5>Freeze time: {{ contest.freeze_time }} minutes</h5>
-<script src="{% static 'contest/js/scoreboard.js' %}"></script>
-<link href="{% static 'contest/css/scoreboard.css' %}" rel="stylesheet">
-{% load contest_extras %}
-<div role="tabpanel">
-  <!-- Nav tabs -->
-  <ul class="nav nav-tabs" role="tablist" id="scoreboardTab">
-    <li role="presentation" class="active"><a href="#testcase" aria-controls="testcase"
-        role="tab" data-toggle="tab">Testcase</a>
-    </li>
-    <li role="presentation"><a href="#penalty" aria-controls="penalty"
-        role="tab" data-toggle="tab">Penalty</a>
-    </li>
-  </ul>
-  <!-- Tab panes -->
-  <div class="tab-content">
-    <!-- testcase -->
-    <div role="tabpanel" class="tab-pane active" id="testcase">
-      <div style="float:right">
-        <form method="POST" action="{% url 'contest:download' %}">
-          {% csrf_token %}
-          <input type="hidden" name="type" value="scoreboard">
-          <input type="hidden" name="scoreboard_type" value="testcases">
-          <input type="hidden" name="contest" value="{{ contest.id }}">
-          <button type="sybmit" class="btn btn-default" data-toggle="tooltip" data-placement="top"
-                  title="Download Testcase Scoreboard">
-            <span class="glyphicon glyphicon-download"></span>
+{% extends "index/base.html" %} {% load staticfiles %} {% load contest_extras %}
+
+{% block title_name %}
+<title>{{ contest }}</title>
+{% endblock title_name %}
+
+{% block import_source %}
+<link href="{% static 'contest/css/contest.css' %}" rel="stylesheet">
+<script src="{% static 'contest/js/contest.js'%}"></script>
+{% endblock import_source %}
+
+{% block body_block %}
+
+<body onload="getRestTime()">
+  <div class="container">
+
+    <!--Title-->
+    <div class="well">
+      <h2>{{ contest.id }} - {{ contest.cname }} - Scoreboard
+        <a class="btn btn-info" href="{% url 'contest:contest' contest.id %}">View Problems</a>
+        {% if user|can_edit_contest:contest %}
+        <a href="{% url 'contest:edit' contest.id %}">
+          <button type="button" class="btn btn-warning btn-sm" data-toggle="tooltip"
+                  data-placement="top" title="Edit Contest">
+            <span class="glyphicon glyphicon-pencil"></span>
           </button>
-        </form>
-      </div>
-      <table class="table" style="table-layout:fixed">
-        <thead>
-          <tr>
-            <th>Rank</th>
-            <th>User</th>
-            {% for problem in scoreboard.problems %}
-            <th><b data-toggle="tooltip" title="{{ problem.pname }}">{{ problem.id }}</b>
-            </th>
-            {% endfor %}
-            <th>Total</th>
-          </tr>
-        </thead>
-        <tbody>
-          {% for user in scoreboard|users_sorted_by_solved_testcases %}
-          <tr>
-            <td>{{ forloop.counter }}</td>
-            <td>{{ user.username }}</td>
-            {% for problem in user.problems %}
-            <td>
-              {{ problem.testcases_solved }}/{{ problem.total_testcases }}
-            </td>
-            {% endfor %}
-            <td>{{ user.testcases_solved }}</td>
-          </tr>
-          {% endfor %}
-          <tr>
-            <td>Total</td>
-            <td></td>
-            {% for problem in scoreboard.problems %}
-              <td>
-                {{ problem.total_solved }}
-              </td>
-            {% endfor %}
-            <td></td>
-          </tr>
-        </tbody>
-      </table>
+        </a>
+        {% endif %}
+        {% if contest|is_frozen %}
+        <h4>
+          <span class="label label-danger">Frozen</span>
+          *Frozen contest will not update scoreboard until the contest ends.
+        </h4>
+        {% endif %}
+      </h2>
     </div>
-    <!-- penalty  -->
-    <div role="tabpanel" class="tab-pane" id="penalty">
-      <div style="float:right">
-        <form method="POST" action="{% url 'contest:download' %}">
-          {% csrf_token %}
-          <input type="hidden" name="type" value="scoreboard">
-          <input type="hidden" name="scoreboard_type" value="penalty">
-          <input type="hidden" name="contest" value="{{ contest.id }}">
-          <button type="sybmit" class="btn btn-default" data-toggle="tooltip" data-placement="top"
-                  title="Download Penalty Scoreboard">
-            <span class="glyphicon glyphicon-download"></span>
-          </button>
-        </form>
+    <div class="panel panel-info">
+      <div class="panel-heading">
+        <h1 class="panel-title" style="text-align:center;">Time</h1>
       </div>
-      <table class="table" style="table-layout:fixed">
-        <thead>
+      <div class="panel-body inline">
+        <table style="width:100%;text-align:center;">
           <tr>
-            <th>Rank</th>
-            <th>User</th>
-            {% for problem in scoreboard.problems %}
-            <th><b data-toggle="tooltip" title="{{ problem.pname }}">{{ problem.id }}</b>
-            </th>
-            {% endfor %}
-            <th>Solved</th>
-            <th>Penalty</th>
+            <td id="start" style="text-align:left;">{{ contest.start_time|date:"Y/m/d H:i:s" }}</td>
+            <td id="clock"></td>
+            <td id="end" style="text-align:right;">{{ contest.end_time|date:"Y/m/d H:i:s" }}</td>
           </tr>
-        </thead>
-        <tbody>
-          {% for user in scoreboard|users_sorted_by_penalty %}
-          <tr>
-            <td>{{ forloop.counter }}</td>
-            <td>{{ user.username }}</td>
-            {% for problem in user.problems %}
-            <td>{{ problem.submit_times }}/{{ problem.AC_time }}</td>
-            {% endfor %}
-            <td>{{ user.solved }}</td>
-            <td>{{ user.penalty }}</td>
-          </tr>
-          {% endfor %}
-          <tr>
-            <td>Total</td>
-            <td></td>
-            {% for problem in scoreboard.problems %}
-              <td>
-                {{ problem.pass_user }}
-              </td>
-            {% endfor %}
-            <td></td>
-            <td></td>
-          </tr>
-        </tbody>
-      </table>
+        </table>
+      </div>
+      <div class="progress" style="margin-left:5%;width:90%;">
+        <div id="timeline" class="progress-bar progress-bar-info" role="progressbar"
+        aria-valuenow="20" aria-valuemin="0" aria-valuemax="100" style="width:20%">
+          <span class="sr-only"></span>
+        </div>
+      </div>
+    </div>
+    <hr>
+    <!--Contest detail-->
+    <div id="detail">
+      <div class="tab-pane active" id="scoreboard">
+        {% include "contest/scoreboardTable.html" %}
+      </div>
     </div>
   </div>
-</div>
+</body>
+{% endblock body_block %}

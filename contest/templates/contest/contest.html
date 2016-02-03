@@ -17,6 +17,7 @@
     <!--Title-->
     <div class="well">
       <h2>{{ contest.id }} - {{ contest.cname }}
+        <a class="btn btn-info" href="{% url 'contest:scoreboard' contest.id %}">Scoreboard</a>
         {% if user|can_edit_contest:contest %}
         <a href="{% url 'contest:edit' contest.id %}">
           <button type="button" class="btn btn-warning btn-sm" data-toggle="tooltip"
@@ -130,10 +131,6 @@
             {% endfor %}
           </ul>
         </li>
-        <li role="presentation"><a href="#scoreboard" role="tab" data-toggle="tab">Scoreboard</a>
-        </li>
-        <li role="presentation"><a href="#status" role="tab" data-toggle="tab">Status</a>
-        </li>
       </ul>
       <div class="tab-content" id="content">
         <div class="tab-pane active" id="overview">
@@ -145,15 +142,7 @@
         </div>
         {% endfor %}
         <div class="tab-pane" id="scoreboard">
-          {% include "contest/scoreboard.html" %}
-        </div>
-        <div class="tab-pane" id="status">
-          {{ status|safe }}
-          <a href="{% url 'status:status' %}?cid={{ contest.id }}">
-            <button type="button" class="btn btn-info btn-block">
-              See More Status
-            </button>
-          </a>
+          {% include "contest/scoreboardTable.html" %}
         </div>
       </div>
     </div>
