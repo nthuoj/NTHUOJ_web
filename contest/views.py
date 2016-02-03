@@ -137,7 +137,6 @@ def contest(request, cid):
             problem.testcase = get_testcase(problem)
             problem = verify_problem_code(problem)
             problem.in_contest = check_in_contest(problem)
-        status = contest_status(request, contest)
         clarifications = get_clarifications(user, contest)
 
         initial_form = {'contest': contest, 'asker': user}
@@ -147,7 +146,7 @@ def contest(request, cid):
         reply_form = ReplyForm(initial=initial_reply_form)
         return render_index(request, 'contest/contest.html',
                             {'contest': contest, 'clarifications': clarifications,
-                             'form': form, 'reply_form': reply_form, 'status': status})
+                             'form': form, 'reply_form': reply_form})
     else:
         raise PermissionDenied
 
