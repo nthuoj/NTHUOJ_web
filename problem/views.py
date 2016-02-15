@@ -213,17 +213,16 @@ def delete_tag(request, pid, tag_id):
     problem.tags.remove(tag)
     return HttpResponse()
 
-
 @login_required
 def testcase(request, pid, tid=None):
-    if not request.user.has_admin_auth() and request.user != problem.owner:
-        raise PermissionDenied()
     if request.method == 'POST':
         try:
             problem = Problem.objects.get(pk=pid)
         except Problem.DoesNotExist:
             logger.warning("problem %s does not exist" % (pid))
             raise Http404("problem %s does not exist" % (pid))
+        if not request.user.has_admin_auth() and request.user != problem.owner:
+            raise PermissionDenied()
         if tid is None:
             testcase = Testcase()
             testcase.problem = problem
