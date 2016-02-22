@@ -26,6 +26,7 @@ from problem.models import Problem, Tag
 from users.models import User
 from django.db.models import Q
 from ckeditor.widgets import CKEditorWidget
+from problem.problem_info import *
 
 import autocomplete_light
 
@@ -108,24 +109,30 @@ class ProblemForm(forms.ModelForm):
         return judge_id
 
     def clean_partial_judge_code(self):
+        problem = self.save(commit=False)
         judge_type = self.cleaned_data['judge_type']
         code = self.cleaned_data['partial_judge_code']
         if judge_type == 'LOCAL_PARTIAL' and code is None:
-            raise forms.ValidationError("Partial judge code empty")
+	    if not has_partial_judge_code(problem) and code is None:
+                raise forms.ValidationError("Partial judge code empty")
         return code
 
     def clean_partial_judge_header(self):
+        problem = self.save(commit=False)
         judge_type = self.cleaned_data['judge_type']
         header = self.cleaned_data['partial_judge_header']
         if judge_type == 'LOCAL_PARTIAL' and header is None:
-            raise forms.ValidationError("Partial judge header empty")
+	    if not has_partial_judge_header(problem) and header is None:
+                raise forms.ValidationError("Partial judge header empty")
         return header
 
     def clean_special_judge_code(self):
+        problem = self.save(commit=False)
         judge_type = self.cleaned_data['judge_type']
         code = self.cleaned_data['special_judge_code']
-        if judge_type == 'LOCAL_SPECIAL' and code is None:
-            raise forms.ValidationError("Special judge code empty")
+        if judge_type == 'LOCAL_SPECIAL':
+	    if not has_special_judge_code(problem) and code is None:
+	        raise forms.ValidationError("Special judge code empty")
         return code
 
 
