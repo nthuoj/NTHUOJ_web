@@ -16,18 +16,37 @@
   <!-- logo -->
   <div id="logo" class="center">
   <div class="jumbotron" id="logo-content">
-    <h1>NTHUOJ</h1>
-    <hr>
-      <p>
-      This is National Tsing Hua University Online Judge, an ACM-like
-      online judge designed for training purposes and a platform of
-      contest. You may utilize this site by the links on the side bar and
-      top-right corner. Each of them will redirect you to a page with
-      the following functions.
-    </p>
+    <div id="OJ"  style="display: none;">
+        <h1>NTHUOJ</h1>
+        <hr>
+          <p>
+          This is National Tsing Hua University Online Judge, an ACM-like
+          online judge designed for training purposes and a platform of
+          contest. You may utilize this site by the links on the side bar and
+          top-right corner. Each of them will redirect you to a page with
+          the following functions.
+        </p>
+    </div>
+    <div id="Jinkela"  style="display: none;">
+        <h1><a target="_blank" href="http://www.bilibili.com/tag/%E9%87%91%E5%9D%B7%E5%9E%83/">金坷垃</a></h1>
+        <hr>
+          <p>
+          肥料掺了金坷垃，一袋能顶两袋撒。来自美国的金坷垃是美国肥料研究中心CNT的最新科技成果。
+          金坷垃像胶水，能使肥料转化为活肥，活力增加，肥力增大；金坷垃像酵母，能使板结的土壤疏松得像刚出锅的馒头；
+          金坷垃像排毒素，排除土壤中多年沉积的各种肥害、药害。
+          金坷垃能使一袋普通的肥料转化为能被作物完全吸收利用的高效神奇肥料！
+          金坷垃能使土地由贫瘠变得肥沃！本茬庄稼不浪费，下茬庄稼长得肥。肥料掺了金坷垃，
+          一袋肥料，两袋肥的肥效！金坷垃被誉为“21世纪推动农业发展最伟大的发现”。
+          金坷垃2006年在全球129个国家进行定点试验，实验证明；金坷垃助全球农民以最少的投入，得到最大的收益。<br>
+          美国哥：阿哈布.赛曼，美国纽约人，29岁，圣地亚哥公司员工<br>
+          非洲哥：艾伯特.比尔，美国纽约人，25岁，圣地亚哥公司员工<br>
+          日本哥：黄勤忠，中国江苏人，32岁，中国北京长城农业科技发展有限公司部门经理<br>
+          <a target="_blank" href="https://drive.google.com/file/d/0B6NYSy8f6mQLR3JaVkZOVll0U1U/view?usp=sharing">點我看原版廣告</a><br>
+        </p>
+        <iframe width="420" height="315" src="https://www.youtube.com/embed/AXWypFP1bJE" frameborder="0" allowfullscreen></iframe>
+    </div>
   </div>
   </div>
-
   <!-- announcement -->
   <div id="announcement" class="center">
     <h3 style="display: inline;"><b>Announcements</b></h3>
@@ -66,6 +85,18 @@
       </tbody>
     </table>
   </div>
+  <!-- js -->
+  <script>
+        var data=new Date();
+        var month=4-1,date=1;
+        //month=2,date=25;
+        //這是今天日期，測試用
+        if(data.getMonth()==month&&data.getDate()==date){
+            $('#Jinkela').show();
+        }else{
+            $('#OJ').show();
+        }
+    </script>
   <!-- contest -->
   <div id="contest" class="center">
     <h3><b>Running / Upcoming Contest</b></h3>
