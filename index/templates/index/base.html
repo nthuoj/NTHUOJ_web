@@ -29,12 +29,7 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <div id="NTHUOJ_nonjinkela" style="display: none;">
-            <a class="navbar-brand" href="{% url 'index:index' %}">NTHU Online Judge</a>
-          </div>
-          <div id="NTHUOJ_jinkela" style="display: none;">
-            <a class="navbar-brand" href="{% url 'index:index' %}">JINKELA Online Judge</a>
-          </div>
+          <a class="navbar-brand" href="{% url 'index:index' %}">NTHU Online Judge</a>
         </div>
         <div class="collapse navbar-collapse">
           <ul class="nav navbar-nav">
@@ -101,9 +96,7 @@
         </div>
       </div>
     </nav>
-    <audio controls HIDDEN="true" LOOP="true" id="Jinkela_Music">
-        <source src="http://140.114.77.128/static/jinkela/Av3578667P1.mp3">
-    </audio>
+
     <!-- wrap all page elements to div -->
     <div class="wrap-body container-fluid">
       {% include "index/message.html" %}
@@ -130,19 +123,6 @@
     <script src={% static "js/popup-setting.js" %}></script>
     <script src={% static "js/base.js" %}></script>
     <script src={% static "js/clock.js" %}></script>
-    <script>
-        var data=new Date();
-        var month=4-1,date=1;
-        //month=2,date=25;
-        //這是今天日期，測試用
-        if(data.getMonth()==month&&data.getDate()==date){
-            $('#NTHUOJ_jinkela').show();
-            var audio = document.getElementById("Jinkela_Music");
-            audio.play();
-        }else{
-            $('#NTHUOJ_nonjinkela').show();
-        }
-    </script>
     {% block import_source %}
     {% endblock import_source %}
   </body>
