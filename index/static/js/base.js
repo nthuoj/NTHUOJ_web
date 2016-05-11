@@ -33,4 +33,4 @@ $(function() {
         // When a choice is selected, open it.
         window.location.href = choice.attr('href');
     });
-})
+});

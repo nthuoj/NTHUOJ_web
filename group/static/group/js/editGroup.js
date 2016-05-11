@@ -17,20 +17,20 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
-$(document).ready(function() {
+$(function() {
     add_attribute('id_coowner', 'class', 'searchable');
-    add_attribute('id_trace_contest', 'class', 'searchable')
+    add_attribute('id_trace_contest', 'class', 'searchable');
     enable_search();
     widen_multiselect();
     $('input.search-input').quicksearch();
-    $('.help-block').hide()
+    $('.help-block').hide();
 });
 
 function enable_search() {
     $('.searchable').multiSelect({
-        selectableHeader: 
+        selectableHeader:
         "<input type='text' class='search-input form-control' autocomplete='off' placeholder='Search/Add...'>",
-        selectionHeader: 
+        selectionHeader:
         "<input type='text' class='search-input form-control' autocomplete='off' placeholder='Search/Delete...'>",
         selectableFooter: "<div class='all-header' style='text-align:center;'>All</div>",
         selectionFooter: "<div class='selected-header' style='text-align:center;'>Now Selected</div>",
@@ -68,7 +68,7 @@ function enable_search() {
     });
 }
 
-function widen_multiselect(){
-    add_attribute('ms-id_coowner','style','width:100%;');
-    add_attribute('ms-id_trace_contest','style','width:100%;');
+function widen_multiselect() {
+    add_attribute('ms-id_coowner', 'style', 'width:100%;');
+    add_attribute('ms-id_trace_contest', 'style', 'width:100%;');
 }

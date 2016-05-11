@@ -17,30 +17,31 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
-$(function(){
-    timer("time");
+$(function() {
+    timer('time');
 });
+
 function timer(id) {
     var server_time = new Date(document.getElementById(id).innerHTML);
     var now = new Date();
     var offset = server_time.getTime() - now.getTime();
-    showTime(id,offset);
+    showTime(id, offset);
 }
 
 function checkTime(i) {
     if (i < 10) {
-        i = "0" + i
-    }; // add zero in front of numbers < 10
+        i = '0' + i;
+    } // add zero in front of numbers < 10
     return i;
 }
 
-function showTime(id,offset) {
+function showTime(id, offset) {
     time = new Date();
     time = time.getTime() + offset;
     time = new Date(time);
 
     y = time.getFullYear();
-    m = time.getMonth()+1;
+    m = time.getMonth() + 1;
     d = time.getDate();
     h = time.getHours();
     h = checkTime(h);
@@ -51,9 +52,11 @@ function showTime(id,offset) {
     s = time.getSeconds();
     s = checkTime(s);
 
-    document.getElementById(id).innerHTML = y + "/" + m + "/" + d + " " + h + ":" + min + ":" + s;
+    document.getElementById(id).innerHTML =
+        y + '/' + m + '/' + d + ' ' +
+        h + ':' + min + ':' + s;
     var one_second = 1000;
     var t = setTimeout(function() {
-        showTime(id,offset);
+        showTime(id, offset);
     }, one_second);
 }

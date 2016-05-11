@@ -17,7 +17,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
-$(document).ready(function() {
+$(function() {
     add_attribute('id_coowner', 'class', 'searchable');
     add_attribute('id_problem', 'class', 'searchable');
     hide('id_owner');
@@ -28,9 +28,9 @@ $(document).ready(function() {
 
 function enable_search() {
     $('.searchable').multiSelect({
-        selectableHeader: 
+        selectableHeader:
         "<input type='text' class='search-input form-control' autocomplete='off' placeholder='Search and Add...'>",
-        selectionHeader: 
+        selectionHeader:
         "<input type='text' class='search-input form-control' autocomplete='off' placeholder='Search and Delete...'>",
         selectableFooter: "<div class='all-header' style='text-align:center;'>All</div>",
         selectionFooter: "<div class='selected-header' style='text-align:center;'>Selected</div>",
@@ -68,15 +68,15 @@ function enable_search() {
     });
 }
 
-function widen_multiselect(){
-    add_attribute('ms-id_coowner','style','width:100%;');
-    add_attribute('ms-id_problem','style','width:100%;');
+function widen_multiselect() {
+    add_attribute('ms-id_coowner', 'style', 'width:100%;');
+    add_attribute('ms-id_problem', 'style', 'width:100%;');
 }
 
-function modify_label(){
-    modify_html('[for=id_cname]','Contest name');
-    modify_html('[for=id_freeze_time]','Freeze Time(mins):');
-    modify_html('[for=id_start_time]','Start Time(YYYY-MM-DD hh:mm:ss):');
-    modify_html('[for=id_end_time]','End Time(YYYY-MM-DD hh:mm:ss):');
-    modify_html('.help-block','');
+function modify_label() {
+    modify_html('[for=id_cname]', 'Contest name');
+    modify_html('[for=id_freeze_time]', 'Freeze Time(mins):');
+    modify_html('[for=id_start_time]', 'Start Time(YYYY-MM-DD hh:mm:ss):');
+    modify_html('[for=id_end_time]', 'End Time(YYYY-MM-DD hh:mm:ss):');
+    modify_html('.help-block', '');
 }

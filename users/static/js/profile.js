@@ -29,9 +29,9 @@ $(function() {
     for (var i = 0; i < data.length; i++) {
       statisticsTotal += data[i].value;
       // Generate random color to each data
-      data[i].color = "#" + Math.random().toString(16).slice(2, 8);
+      data[i].color = '#' + Math.random().toString(16).slice(2, 8);
     }
-    var ctx = $("#piechart").get(0).getContext("2d");
+    var ctx = $('#piechart').get(0).getContext('2d');
     // This will get the first returned node in the jQuery collection.
     var pieChart = new Chart(ctx).Pie(data, {
       legendTemplate: '<ul class="pie-legend">' +
@@ -41,16 +41,16 @@ $(function() {
         '</li><%}%></ul>'
     });
     var legend = pieChart.generateLegend();
-    $("#piechart-legend").html(legend);
+    $('#piechart-legend').html(legend);
     if (statisticsTotal == 0) {
       // If no statistics available, appear this notification.
       $('#statistics').html('No statistics yet.');
     }
-  }
+  };
 
   confirm_change_userlevel = function() {
     return confirm('Are you sure you want to change ' +
       $('#id_username').val() + ' to ' +
-      $("#id_user_level option:selected" ).text() + '?')
-  }
-})
+      $('#id_user_level option:selected').text() + '?');
+  };
+});

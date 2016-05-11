@@ -21,23 +21,22 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
-$(document).ready(function() {
+$(function() {
     $('[data-toggle="tooltip"]').tooltip();
     $('.progress').css('overflow', 'inherit');
     $('.del-btn').click(function() {
-        return confirm("Are you sure you want to delete?");
+        return confirm('Are you sure you want to delete?');
     });
     $('.rejudge-btn').click(function() {
         var submission = $(this).attr('data-submission');
-        var check = prompt("\
-		The problem has " + submission + " submissions\n\
-		Rejudge might take a long time\n\
-		Enter the submission number of this problem to continue");
-	if (check == submission)
-	    return true;
-    	else {
-		alert("Submission number doesn't match");
-		return false;
-	}
+        var check = prompt('The problem has ' + submission +
+                ' submissions\n' +
+                'Rejudge might take a long time\n' +
+                'Enter the submission number of this problem to continue');
+        if (check == submission) return true;
+        else {
+                alert("Submission number doesn't match");
+                return false;
+        }
     });
 });
