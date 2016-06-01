@@ -17,7 +17,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
-$(document).ready(function() {
+$(function() {
     bootstraptify();
     init();
     $('[data-toggle="tooltip"]').tooltip();
@@ -25,48 +25,48 @@ $(document).ready(function() {
 });
 
 
-function init(){
+function init() {
     tabInit();
 }
 
-function select(target){
-    document.getElementById("id_clarification").value = target;
-    var content = $('#content'+target).html();
-    var reply = $('#reply'+target).html();
+function select(target) {
+    document.getElementById('id_clarification').value = target;
+    var content = $('#content' + target).html();
+    var reply = $('#reply' + target).html();
     $('#description').html(content);
     $('#id_reply').val(reply);
 }
 
-function noResponse(){
-    $('#id_reply').val("No Response. Please read the problem statement");
+function noResponse() {
+    $('#id_reply').val('No Response. Please read the problem statement');
 }
 
-function tabInit(){
+function tabInit() {
     //initialize
     $('#contest_tab a').click(function(e) {
-        e.preventDefault()
-        $(this).tab('show')
+        e.preventDefault();
+        $(this).tab('show');
     });
     //trigger contest_tab from overview
-    $(".overview_problem").click(function(e) {
-        $("#contest_tab li:eq(1) a").tab('show')
+    $('.overview_problem').click(function(e) {
+        $('#contest_tab li:eq(1) a').tab('show');
     });
 }
 
 function checkTime(i) {
     if (i < 10) {
-        i = "0" + i
-    }; // add zero in front of numbers < 10
+        i = '0' + i;
+    } // add zero in front of numbers < 10
     return i;
 }
 
 function getRestTime() {
-    var end = new Date(document.getElementById('end').innerHTML)
-    var start = new Date(document.getElementById('start').innerHTML)
+    var end = new Date(document.getElementById('end').innerHTML);
+    var start = new Date(document.getElementById('start').innerHTML);
     var serverTime = new Date(document.getElementById('time').innerHTML);
     if (serverTime.getTime() < start.getTime()) {
-        document.getElementById('timeline').style.width = "0%";
-        document.getElementById('clock').innerHTML = "Contest Not Started Yet";
+        document.getElementById('timeline').style.width = '0%';
+        document.getElementById('clock').innerHTML = 'Contest Not Started Yet';
     } else {
         if (serverTime.getTime() < end.getTime()) {
             var result = (end.getTime() - Date.now()) / 1000;
@@ -77,29 +77,23 @@ function getRestTime() {
             var h = parseInt(result % 24);
             result /= 24;
             var d = parseInt(result);
-            if(d>1){
-                d = d + "days, ";
-            }
-            else if(d == 1){
-                d = d + "day, ";
-            }
-            else{
-                d = "";
-            }
+            if (d > 1) d = d + 'days, ';
+            else if (d == 1) d = d + 'day, ';
+            else d = '';
             m = checkTime(m);
             s = checkTime(s);
             h = checkTime(h);
 
             var percentage = (Date.now() - start.getTime()) / (end.getTime() - start.getTime());
             //document.getElementById('clock').innerHTML = h + ":" + m + ":" + s;
-            document.getElementById('clock').innerHTML = d + h + ":" + m + ":" + s;
-            document.getElementById('timeline').style.width = percentage * 100 + "%";
+            document.getElementById('clock').innerHTML = d + h + ':' + m + ':' + s;
+            document.getElementById('timeline').style.width = percentage * 100 + '%';
             var t = setTimeout(function() {
-                getRestTime(start, end)
+                getRestTime(start, end);
             }, 500);
         } else {
-            document.getElementById('timeline').style.width = "100%";
-            document.getElementById('clock').innerHTML = "Contest Ended";
+            document.getElementById('timeline').style.width = '100%';
+            document.getElementById('clock').innerHTML = 'Contest Ended';
         }
     }
 }

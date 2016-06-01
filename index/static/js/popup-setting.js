@@ -28,7 +28,7 @@ $(function() {
         removalDelay: 500,
         mainClass: 'mfp-fade',
         type: 'inline',
-        midClick: true         
+        midClick: true
     });
     $('.ajax-popup-link').magnificPopup({
         // Class that is added to popup wrapper and background
@@ -36,7 +36,7 @@ $(function() {
         removalDelay: 500,
         mainClass: 'mmfp-fade',
         type: 'ajax',
-        midClick: true         
+        midClick: true
     });
     $('.code-link').magnificPopup({
         // Class that is added to popup wrapper and background
@@ -48,9 +48,9 @@ $(function() {
         callbacks: {
             open: function() {
                 setTimeout(function() {
-                    editor.refresh()
+                    editor.refresh();
                 }, 10);
             }
         }
     });
-})
+});

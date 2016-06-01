@@ -18,5 +18,5 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 function confirm_delete() {
-    return confirm("Are you sure you want to delete?");
+    return confirm('Are you sure you want to delete?');
 }

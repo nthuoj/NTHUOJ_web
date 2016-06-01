@@ -23,7 +23,7 @@ SOFTWARE.
 */
 var editor;
 var adjustEditorSize;
-$(function () {
+$(function() {
     editor = CodeMirror.fromTextArea(document.getElementById('code_editor'), {
         mode: 'text/x-c++src',
         theme: 'solarized light',
@@ -41,31 +41,31 @@ $(function () {
         showCursorWhenSelecting: true
     });
 
-    var adjustEditorSize = function (editor) {
+    var adjustEditorSize = function(editor) {
         // Adjust editor size according to the line count
-        lineCount = editor.lineCount()
-        lineHeight = $('.CodeMirror-gutter-wrapper').height()
-        editorWidth = $('.CodeMirror').width()
-        editorHeight = Math.max(400, Math.min(lineCount*lineHeight + 50, 2000))
-        editor.setSize(editorWidth, editorHeight)
-    }
+        lineCount = editor.lineCount();
+        lineHeight = $('.CodeMirror-gutter-wrapper').height();
+        editorWidth = $('.CodeMirror').width();
+        editorHeight = Math.max(400, Math.min(lineCount * lineHeight + 50, 2000));
+        editor.setSize(editorWidth, editorHeight);
+    };
     var fire;
-    var sublimePatch = function (editor, key) {
+    var sublimePatch = function(editor, key) {
         // Fix sublime keybinding can't use Backspace
-        if(fire && editor.getCursor().ch == 0 && key == 'Backspace') {
+        if (fire && editor.getCursor().ch == 0 && key == 'Backspace') {
             editor.execCommand('delCharBefore');
             fire = false;
         }
         fire = editor.getCursor().ch == 0;
-    }
+    };
 
     // Adjust editor size on load
-    adjustEditorSize(editor)
+    adjustEditorSize(editor);
 
     // Adjust editor size on change
-    editor.on('change', adjustEditorSize)
+    editor.on('change', adjustEditorSize);
 
-    editor.on('keyHandled', sublimePatch)
+    editor.on('keyHandled', sublimePatch);
 
     $('#fileinput').bootstrapFileInput();
 
@@ -93,5 +93,5 @@ $(function () {
         } else {
             alert('Failed to load file');
         }
-    })
-})
+    });
+});

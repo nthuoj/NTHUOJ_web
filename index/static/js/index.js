@@ -23,13 +23,14 @@ SOFTWARE.
 */
 $(function() {
     index_alert();
-})
-function index_alert(){
+});
+
+function index_alert() {
     var alert_info = '';
-    try{
-        alert_info = document.getElementById("alert_info").value;
-    } catch(e){ }
-    if(alert_info == 'mailbox'){
+    try {
+        alert_info = document.getElementById('alert_info').value;
+    } catch (e) { }
+    if (alert_info == 'mailbox') {
         message = 'Please go to your mailbox and click the confirmation ' +
         'link;otherwise , your account would not be activated!';
         alert(message);
