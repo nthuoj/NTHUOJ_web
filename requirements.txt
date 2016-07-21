@@ -1,7 +1,7 @@
-django==1.7
+django==1.8.4
 django-bower
 django-axes
-django-autocomplete-light
+django-autocomplete-light>=2.0,<3.0
 django-datetime-widget
 django-bootstrap
 django-bootstrap-form
@@ -9,5 +9,5 @@ django-ckeditor<4.5
 requests
 pillow
 MySQL-python
-gunicorn
+uwsgi
 django-debug-toolbar

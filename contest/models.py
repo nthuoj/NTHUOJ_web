@@ -42,8 +42,7 @@ class Contest(models.Model):
     problem = models.ManyToManyField(Problem, blank=True)
     is_homework = models.BooleanField(default=False)
     open_register = models.BooleanField(default=True)
-    creation_time = models.DateTimeField(
-        default=datetime.now, auto_now_add=True)
+    creation_time = models.DateTimeField(auto_now_add=True)
 
     def time_diff(self):
         present = timezone.now()
@@ -83,7 +82,7 @@ class Clarification(models.Model):
     asker = models.ForeignKey(User, related_name='asker')
     replier = models.ForeignKey(
         User, related_name='replier', blank=True, null=True)
-    ask_time = models.DateTimeField(default=datetime.now, auto_now=True)
+    ask_time = models.DateTimeField(auto_now_add=True)
     reply_time = models.DateTimeField(blank=True, null=True)
     reply_all = models.BooleanField(default=False)
 
