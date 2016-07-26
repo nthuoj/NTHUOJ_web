@@ -44,8 +44,13 @@ class UserCreationForm(forms.ModelForm):
 
     """A form for creating new users. Includes all the required
     fields, plus a repeated password."""
-    USERNAME_BLACK_LIST = get_config(
-        'username', 'black_list', filename='user_auth.cfg').splitlines()
+    USERNAME_BLACK_LIST_FILE = get_config(
+        'username', 'black_list', filename='user_auth.cfg')
+    if USERNAME_BLACK_LIST_FILE is not None:
+        USERNAME_BLACK_LIST = USERNAME_BLACK_LIST_FILE.splitlines()
+    else:
+        USERNAME_BLACK_LIST = None
+
     username = forms.CharField(label='Username',
                                validators=[RegexValidator(regex='^\w+$', message='Username must be Alphanumeric')])
     email = forms.EmailField(label='Email')
