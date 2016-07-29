@@ -1,9 +1,7 @@
 """
 Django settings for nthuoj project.
-
 For more information on this file, see
 https://docs.djangoproject.com/en/1.7/topics/settings/
-
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/1.7/ref/settings/
 """
@@ -52,7 +50,6 @@ INSTALLED_APPS = (
     'djangobower',
     'datetimewidget',
     'ckeditor',
-    'debug_toolbar',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -63,7 +60,6 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'utils.render_helper.CustomHttpExceptionMiddleware',
-    'axes.middleware.FailedLoginMiddleware',
 )
 
 ROOT_URLCONF = 'nthuoj.urls'
@@ -71,10 +67,7 @@ ROOT_URLCONF = 'nthuoj.urls'
 WSGI_APPLICATION = 'nthuoj.wsgi.application'
 
 
-# Database
-# https://docs.djangoproject.com/en/1.7/ref/settings/#databases
 CONFIG_PATH = os.path.join(BASE_DIR, 'nthuoj/config/nthuoj.cfg')
-
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
@@ -141,9 +134,9 @@ BOWER_COMPONENTS_ROOT = os.path.join(PROJECT_ROOT, 'components')
 
 BOWER_INSTALLED_APPS = (
     'Chart.js',
-    'jquery',
+    'jquery#=2.2.4',
     'jquery-ui#1.9.2',
-    'https://github.com/thomaspark/bootswatch.git',  # bootswatch
+    'https://github.com/thomaspark/bootswatch.git#3.3.6+1',  # bootswatch
     'https://github.com/dimsemenov/Magnific-Popup.git',  # Magnific-Popup
     'https://github.com/codemirror/CodeMirror.git',  # CodeMirror
     # bootstrap fileinput
@@ -151,7 +144,7 @@ BOWER_INSTALLED_APPS = (
     'https://github.com/lou/multi-select.git',  # multiselect
     'https://github.com/riklomas/quicksearch.git',  # quicksearch
     # jquery url plugin
-    'https://gantry.googlecode.com/svn/trunk/root/js/jquery.url.min.js',
+    'https://github.com/websanova/js-url.git'
 )
 
 STATICFILES_FINDERS = (
@@ -166,3 +159,29 @@ MAX_PUBLIC_USER = 200
 PUBLIC_USER_PREFIX = "TEAM"
 
 PUBLIC_USER_DEFAULT_PASSWORD = "000"
+
+if DEBUG:
+    MIDDLEWARE_CLASSES += (
+        'debug_toolbar.middleware.DebugToolbarMiddleware',
+    )
+
+    INSTALLED_APPS += (
+        'debug_toolbar',
+    )
+    SHOW_TOOLBAR_CALLBACK = True
+#    INTERNAL_IPS = ('127.0.0.1')
+    DEBUG_TOOLBAR_PANELS = [
+        'debug_toolbar.panels.versions.VersionsPanel',
+        'debug_toolbar.panels.timer.TimerPanel',
+        'debug_toolbar.panels.settings.SettingsPanel',
+        'debug_toolbar.panels.headers.HeadersPanel',
+        'debug_toolbar.panels.request.RequestPanel',
+        'debug_toolbar.panels.sql.SQLPanel',
+        'debug_toolbar.panels.staticfiles.StaticFilesPanel',
+        'debug_toolbar.panels.templates.TemplatesPanel',
+        'debug_toolbar.panels.cache.CachePanel',
+        'debug_toolbar.panels.signals.SignalsPanel',
+        'debug_toolbar.panels.logging.LoggingPanel',
+        'debug_toolbar.panels.redirects.RedirectsPanel',
+    ]
+

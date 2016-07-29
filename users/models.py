@@ -75,7 +75,7 @@ class User(AbstractBaseUser):
     username = models.CharField(
         max_length=15, default='', unique=True, primary_key=True)
     email = models.CharField(max_length=100, default='')
-    register_date = models.DateField(default=date.today, auto_now_add=True)
+    register_date = models.DateField(auto_now_add=True)
     user_level = models.CharField(
         max_length=9, choices=USER_LEVEL_CHOICE, default=USER)
     theme = models.CharField(

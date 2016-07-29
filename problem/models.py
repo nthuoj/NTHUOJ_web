@@ -85,7 +85,7 @@ class Problem(models.Model):
     error_tolerance = models.DecimalField(
         decimal_places=15, max_digits=17, default=0)
     other_judge_id = models.IntegerField(blank=True, null=True)
-    tags = models.ManyToManyField(Tag, blank=True, null=True)
+    tags = models.ManyToManyField(Tag, blank=True)
     judge_source = models.CharField(
         max_length=11, choices=JUDGE_SOURCE_CHOICE, default=LOCAL)
     judge_type = models.CharField(

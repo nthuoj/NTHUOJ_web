@@ -47,7 +47,7 @@ class Group(models.Model):
     description = models.TextField(blank=True)
     announce = models.ManyToManyField(Announce, blank=True)
     trace_contest = models.ManyToManyField(Contest, blank=True)
-    creation_time = models.DateField(default=date.today, auto_now_add=True)
+    creation_time = models.DateField(auto_now_add=True)
 
     def __unicode__(self):
         return '%d - %s' % (self.id, self.gname)

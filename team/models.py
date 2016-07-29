@@ -35,7 +35,7 @@ class Team(models.Model):
     leader = models.ForeignKey(User)
     description = models.TextField(blank=True)
     note = models.TextField(blank=True)
-    creation_time = models.DateTimeField(default=date.today, auto_now_add=True)
+    creation_time = models.DateTimeField(auto_now_add=True)
 
     def __unicode__(self):
         return self.team_name

@@ -22,7 +22,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 $(function() {
-  var queries = $.url.paramAll();
+  var queries = $.url('?');
   for (q in queries) {
     if (q != 'page') {
       $('<input>').attr({
