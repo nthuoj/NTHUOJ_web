@@ -51,6 +51,10 @@ function tabInit() {
     $('.overview_problem').click(function(e) {
         $('#contest_tab li:eq(1) a').tab('show');
     });
+    // updates each textarea's height to fit their default content
+    $('[data-toggle="tab"]').on('shown.bs.tab', function(e){
+        resizeAllTextareas();
+    });
 }
 
 function checkTime(i) {
