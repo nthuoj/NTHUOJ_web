@@ -21,7 +21,21 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
+function resizeTextarea (textarea) {
+    if(textarea.clientHeight < textarea.scrollHeight)
+        textarea.style.height = textarea.scrollHeight +"px";
+}
+
+function resizeAllTextareas () {
+    var textareas = $("textarea");
+    for (var i=0; i<textareas.length; ++i)
+        resizeTextarea(textareas[i]);
+}
+
 $(function() {
+    // updates each textarea's height to fit their default content
+    resizeAllTextareas();
+
     $('#addTagButton').click(function() {
         var new_tag = $('#id_tag_name').val().trim();
         if (new_tag == '') return false;
