@@ -25,11 +25,11 @@ function unix2dos(text) {
     var ret = [];
     for (var i=0, ch; i<text.length; ++i) {
         ch = text[i];
-        if (ch == "\n")
-            ch = "\r\n";
+        if (ch == '\n')
+            ch = '\r\n';
         ret.push(ch);
     }
-    return ret.join("");
+    return ret.join('');
 }
 
 function isBrowser(name) {
@@ -37,7 +37,7 @@ function isBrowser(name) {
 }
 
 function isMSBrowser () {
-    var MSBrowsers = ["MSIE ", "Trident/", "Edge/"];
+    var MSBrowsers = ['MSIE ', 'Trident/', 'Edge/'];
     var ret = false;
     for (var i=0; i<MSBrowsers.length && !ret; ++i)
         ret = ret || isBrowser(MSBrowsers[i]);
@@ -51,14 +51,14 @@ function MSBrowserDownloadHandler (file, filename) {
 }
 
 function setDownloadSampleButton(button, suffix, isIE) {
-    var pid = button.getAttribute("pid");
+    var pid = button.getAttribute('pid');
     var filename = pid + suffix;
-    var text = $("#"+filename).val();
+    var text = $('#'+filename).val();
 
     // convert end-of-line symbol and filename if on windows system
-    if (navigator.appVersion.indexOf("Win") != -1) {
+    if (navigator.appVersion.indexOf('Win') != -1) {
         text = unix2dos(text);
-        filename += ".txt";
+        filename += '.txt';
     }
 
     // use specific API for download when dealing with IE, Edge browsers
@@ -67,17 +67,18 @@ function setDownloadSampleButton(button, suffix, isIE) {
         button.onclick = MSBrowserDownloadHandler(file, filename);
     }
     else {
-        button.setAttribute("href", "data:text/plain;charset=utf-8,"+encodeURIComponent(text));
-        button.setAttribute("download", filename);
+        button.setAttribute('href', 'data:text/plain;charset=utf-8,'+encodeURIComponent(text));
+        button.setAttribute('download', filename);
     }
 }
+
 function resizeTextarea (textarea) {
     if(textarea.clientHeight < textarea.scrollHeight)
-        textarea.style.height = textarea.scrollHeight +"px";
+        textarea.style.height = textarea.scrollHeight +'px';
 }
 
 function resizeAllTextareas () {
-    var textareas = $("textarea");
+    var textareas = $('textarea');
     for (var i=0; i<textareas.length; ++i)
         resizeTextarea(textareas[i]);
 }
@@ -88,14 +89,14 @@ $(function() {
 
     var browserFlag = isMSBrowser();
     // set download sample input button(s)
-    var downloadSampleInputButtons = $(".downloadSampleInputButton");
+    var downloadSampleInputButtons = $('.downloadSampleInputButton');
     for (var i=0; i<downloadSampleInputButtons.length; ++i)
-        setDownloadSampleButton(downloadSampleInputButtons[i], "_sampleIn", browserFlag);
+        setDownloadSampleButton(downloadSampleInputButtons[i], '_sampleIn', browserFlag);
 
     // set download sample output button(s)
-    var downloadSampleOutputButtons = $(".downloadSampleOutputButton");
+    var downloadSampleOutputButtons = $('.downloadSampleOutputButton');
     for (var i=0; i<downloadSampleOutputButtons.length; ++i)
-        setDownloadSampleButton(downloadSampleOutputButtons[i], "_sampleOut", browserFlag);
+        setDownloadSampleButton(downloadSampleOutputButtons[i], '_sampleOut', browserFlag);
 
     $('#addTagButton').click(function() {
         var new_tag = $('#id_tag_name').val().trim();
