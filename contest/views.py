@@ -81,7 +81,7 @@ logger = get_logger()
 
 def archive(request):
     user = validate_user(request.user)
-    # filter for contest.
+    # filter for contest. 
     # show owned and attended contests when filter==mine
     # else show all
     filter_type = request.GET.get('filter')
@@ -89,39 +89,34 @@ def archive(request):
         contests = get_owned_or_attended_contests(user)
     else:
         contests = get_contests(user)
-
+   
     contests = get_current_page(request, contests)
     return render_index(request,
-                        'contest/contestArchive.html',
-                        {'contests': contests})
+        'contest/contestArchive.html',
+        {'contests':contests})
 
-# dynamically load contest info and register page
-
-
+#dynamically load contest info and register page
 def contest_info(request, cid):
     contest = get_contest_or_404(cid)
     contest = add_contestants(contest)
     return render_index(request,
-                        'contest/contestInfo.html',
-                        {'contest': contest})
-
+        'contest/contestInfo.html',
+        {'contest':contest})
 
 def register_page(request, cid):
     contest = get_contest_or_404(cid)
     groups = get_owned_group(request.user)
     public_user = len(get_public_contestant(contest))
     return render_index(request,
-                        'contest/register.html',
-                        {'contest': contest, 'groups': groups, 'max_public_user': settings.MAX_PUBLIC_USER,
-                         'public_user': public_user})
+        'contest/register.html',
+        {'contest':contest, 'groups':groups, 'max_public_user':settings.MAX_PUBLIC_USER,
+         'public_user':public_user})
 
-# contest datail page
-
-
+#contest datail page
 def contest(request, cid):
     user = user_info.validate_user(request.user)
     try:
-        contest = Contest.objects.get(id=cid)
+        contest = Contest.objects.get(id = cid)
     except Contest.DoesNotExist:
         logger.warning('Contest: Can not find contest %s!' % cid)
         raise Http404('Contest does not exist')
@@ -129,47 +124,26 @@ def contest(request, cid):
     now = datetime.now()
     # if contest has not started and user is not the owner
 
-    if ((contest.start_time < now) or
-            user_info.has_contest_ownership(user, contest) or
-            user.has_admin_auth()):
+    if ((contest.start_time < now) or\
+        user_info.has_contest_ownership(user,contest) or\
+        user.has_admin_auth()):
         contest.problems = contest.problem.all()
         for problem in contest.problems:
             problem.testcase = get_testcase(problem)
             problem = verify_problem_code(problem)
             problem.in_contest = check_in_contest(problem)
+        scoreboard = get_scoreboard(user, contest)
         clarifications = get_clarifications(user, contest)
 
-        initial_form = {'contest': contest, 'asker': user}
+        initial_form = {'contest':contest, 'asker':user}
         form = ClarificationForm(initial=initial_form)
 
-        initial_reply_form = {'contest': contest, 'replier': user}
-        reply_form = ReplyForm(initial=initial_reply_form)
+        initial_reply_form = {'contest':contest, 'replier':user}
+        reply_form = ReplyForm(initial = initial_reply_form)
         return render_index(request, 'contest/contest.html',
-                            {'contest': contest, 'clarifications': clarifications,
-                             'form': form, 'reply_form': reply_form})
-    else:
-        raise PermissionDenied
-
-def scoreboard(request, cid):
-    user = user_info.validate_user(request.user)
-    try:
-        contest = Contest.objects.get(id=cid)
-    except Contest.DoesNotExist:
-        logger.warning('Contest: Can not find contest %s!' % cid)
-        raise Http404('Contest does not exist')
-
-    now = datetime.now()
-    # if contest has not started and user is not the owner
-
-    if ((contest.start_time < now) or
-            user_info.has_contest_ownership(user, contest) or
-            user.has_admin_auth()):
-        scoreboard = get_scoreboard(user, contest)
-
-        initial_form = {'contest': contest, 'asker': user}
-
-        return render_index(request, 'contest/scoreboard.html',
-                            {'contest': contest, 'scoreboard': scoreboard})
+            {'contest':contest, 'clarifications':clarifications,
+            'form':form, 'reply_form':reply_form,
+            'scoreboard':scoreboard})
     else:
         raise PermissionDenied
 
@@ -179,21 +153,19 @@ def new(request):
     title = "New Contest"
     if can_create_contest(request.user):
         if request.method == 'GET':
-            form = ContestForm(
-                initial={'owner': request.user, 'user': request.user, 'method': request.method})
+            form = ContestForm(initial=\
+                {'owner':request.user, 'user':request.user, 'method':request.method})
 
-            return render_index(request, 'contest/editContest.html',
-                                {'form': form, 'title': title})
+            return render_index(request,'contest/editContest.html',
+                {'form':form, 'title':title})
 
         if request.method == 'POST':
-            form = ContestForm(
-                request.POST, initial={'method': request.method})
+            form = ContestForm(request.POST, initial={'method':request.method})
             if form.is_valid():
                 new_contest = form.save()
                 logger.info('Contest: User %s Create a new contest %s!' %
-                            (request.user, new_contest.id))
-                message = 'Contest %s- "%s" created!' % (
-                    new_contest.id, new_contest.cname)
+                    (request.user, new_contest.id))
+                message = 'Contest %s- "%s" created!' % (new_contest.id, new_contest.cname)
                 messages.success(request, message)
                 return redirect('contest:contest', new_contest.id)
 
@@ -202,17 +174,15 @@ def new(request):
                 messages.error(request, message)
 
                 return render_index(request, 'contest/editContest.html',
-                                    {'form': form, 'title': title})
+                    {'form':form,'title':title})
     raise PermissionDenied
-
 
 @login_required
 def edit(request, cid):
     try:
-        contest = Contest.objects.get(id=cid)
+        contest = Contest.objects.get(id = cid)
     except Contest.DoesNotExist:
-        logger.warning(
-            'Contest: Can not edit contest %s! Contest not found!' % cid)
+        logger.warning('Contest: Can not edit contest %s! Contest not found!' % cid)
         raise Http404('Contest does not exist, can not edit.')
     title = "Edit Contest"
     if can_edit_contest(request.user, contest):
@@ -220,18 +190,18 @@ def edit(request, cid):
         contest_dic['user'] = request.user
         contest_dic['method'] = request.method
         if request.method == 'GET':
-            form = ContestForm(initial=contest_dic)
+            form = ContestForm(initial = contest_dic)
 
             return render_index(request, 'contest/editContest.html',
-                                {'form': form, 'title': title, 'contest': contest})
+                    {'form':form, 'title':title, 'contest':contest})
 
         if request.method == 'POST':
-            form = ContestForm(request.POST, instance=contest,
-                               initial={'method': request.method})
+            form = ContestForm(request.POST, instance = contest, 
+                initial={'method':request.method})
             if form.is_valid():
                 modified_contest = form.save()
                 logger.info('Contest: User %s edited contest %s!' %
-                            (request.user, modified_contest.id))
+                    (request.user, modified_contest.id))
 
                 message = 'Contest %s- "%s" edited!' % \
                     (modified_contest.id, modified_contest.cname)
@@ -242,18 +212,16 @@ def edit(request, cid):
                 message = 'Some fields are invalid!'
                 messages.error(request, message)
                 return render_index(request, 'contest/editContest.html',
-                                    {'form': form, 'title': title, 'contest': contest})
+                    {'form':form, 'title':title, 'contest':contest})
 
     raise PermissionDenied
-
 
 @login_required
 def delete(request, cid):
     try:
-        contest = Contest.objects.get(id=cid)
+        contest = Contest.objects.get(id = cid)
     except Contest.DoesNotExist:
-        logger.warning(
-            'Contest: Can not delete contest %s! Contest not found!' % cid)
+        logger.warning('Contest: Can not delete contest %s! Contest not found!' % cid)
         raise Http404('Contest does not exist, can not delete.')
 
     if can_delete_contest(request.user, contest):
@@ -262,10 +230,9 @@ def delete(request, cid):
         message = 'Contest %s deleted!' % (deleted_cid)
         messages.warning(request, message)
         logger.info('Contest: User %s delete contest %s!' %
-                    (request.user, deleted_cid))
+            (request.user, deleted_cid))
         return redirect('contest:archive')
     raise PermissionDenied
-
 
 @login_required
 def register(request, cid):
@@ -283,7 +250,7 @@ def register(request, cid):
     else:
         if user_register_contest(request.user, contest):
             message = 'User %s register Contest %s- "%s"!' % \
-                (request.user.username, contest.id, contest.cname)
+                    (request.user.username, contest.id, contest.cname)
             messages.success(request, message)
         else:
             message = 'Register Error!'
@@ -298,25 +265,24 @@ def register_group(request, group_id, contest):
     if user_info.has_group_ownership(request.user, group):
         if group_register_contest(group, contest):
             message = 'Group %s- "%s" registered Contest %s- "%s"!' % \
-                (group.id, group.gname, contest.id, contest.cname)
+                    (group.id, group.gname, contest.id, contest.cname)
             messages.success(request, message)
         else:
             message = 'Register Error!'
             messages.error(request, message)
     else:
         message = 'Register Error! %s does not have Group %s- "%s" ownership' % \
-            (request.user.username, group.id, group.gname)
+                (request.user.username, group.id, group.gname)
         messages.error(request, message)
         logger.warning('Contest: User %s can not register group %s. Does not have ownership!'
-                       % (request.user.username, group_id))
+            % (request.user.username, group_id))
     return redirect('contest:archive')
-
 
 @login_required
 def register_public_user(request, public_user, contest):
     user = user_info.validate_user(request.user)
     if (user_info.has_contest_ownership(user, contest) or
-            user.has_admin_auth()):
+        user.has_admin_auth()):
         if not is_integer(public_user):
             message = 'invalid input!'
             messages.warning(request, message)
@@ -324,14 +290,13 @@ def register_public_user(request, public_user, contest):
         user_registered = public_user_register_contest(public_user, contest)
         if user_registered:
             message = 'User %s registered %s public users to Contest %s- "%s"!' % \
-                (user.username, user_registered, contest.id, contest.cname)
+                    (user.username, user_registered, contest.id, contest.cname)
             messages.success(request, message)
             if int(public_user) > settings.MAX_PUBLIC_USER:
                 message = 'Requested more than max! Set public users to %s' % \
                     (settings.MAX_PUBLIC_USER)
                 messages.warning(request, message)
-            download_url = reverse(
-                'contest:download') + '?cid=' + str(contest.id)
+            download_url = reverse('contest:download') + '?cid=' + str(contest.id)
             return HttpResponseRedirect(download_url)
         else:
             if int(public_user) == 0:
@@ -340,20 +305,19 @@ def register_public_user(request, public_user, contest):
                 return redirect('contest:archive')
             else:
                 message = 'Cannot register public user to Contest %s- "%s"!' % \
-                    (contest.id, contest.cname)
+                        (contest.id, contest.cname)
                 messages.error(request, message)
                 return redirect('contest:archive')
     raise PermissionDenied
-
 
 @login_required
 def ask(request):
     try:
         contest = request.POST['contest']
-        contest_obj = Contest.objects.get(pk=contest)
+        contest_obj = Contest.objects.get(pk = contest)
     except:
-        logger.warning('Clarification: User %s can not create Clarification!' %
-                       request.user.username)
+        logger.warning('Clarification: User %s can not create Clarification!' % 
+            request.user.username)
         raise Http404('Contest does not exist, can not ask.')
 
     if can_ask(request.user, contest_obj):
@@ -364,54 +328,52 @@ def ask(request):
                 new_clarification.reply = ' '
                 new_clarification.save()
                 logger.info('Clarification: User %s create Clarification %s!'
-                            % (request.user.username, new_clarification.id))
+                    % (request.user.username, new_clarification.id))
                 message = 'User %s successfully asked!' % \
-                    (request.user.username)
+                        (request.user.username)
                 messages.success(request, message)
                 return redirect('contest:contest', contest)
 
     message = 'User %s cannot ask!' % \
-        (request.user.username)
+             (request.user.username)
     messages.error(request, message)
     return redirect('contest:contest', contest)
-
 
 @login_required
 def reply(request):
     try:
         clarification = request.POST['clarification']
-        instance = Clarification.objects.get(pk=clarification)
+        instance = Clarification.objects.get(pk = clarification)
         contest_obj = instance.contest
         contest = contest_obj.id
     except:
         logger.warning('Clarification: User %s can not reply Clarification!'
-                       % (request.user.username))
+            % (request.user.username))
         raise Http404('Contest does not exist, can not reply.')
 
     if can_reply(request.user, contest_obj):
         if request.method == 'POST':
-            form = ReplyForm(request.POST, instance=instance)
+            form = ReplyForm(request.POST, instance = instance)
             if form.is_valid():
                 replied_clarification = form.save()
                 replied_clarification.reply_time = datetime.now()
                 replied_clarification.save()
                 logger.info('Clarification: User %s reply Clarification %s!'
-                            % (request.user.username, replied_clarification.id))
+                    % (request.user.username, replied_clarification.id))
                 message = 'User %s successfully replied!' % \
                     (request.user.username)
-                messages.success(request, message)
+                messages.success(request, message) 
             else:
                 logger.warning('Clarification: User %s can not reply Clarification %s!'
-                               % (request.user.username, replied_clarification.id))
+                    % (request.user.username, replied_clarification.id))
                 message = 'Some fields are wrong!'
-                messages.error(request, message)
+                messages.error(request, message) 
 
             return redirect('contest:contest', contest)
     message = 'User %s cannot reply!' % \
-        (request.user.username)
-    messages.error(request, message)
+             (request.user.username)
+    messages.error(request, message)   
     return redirect('contest:archive')
-
 
 def download(request):
     user = user_info.validate_user(request.user)
@@ -426,9 +388,9 @@ def download(request):
             cid = request.POST.get('contest')
             contest = get_contest_or_404(cid)
             if user_info.has_contest_ownership(user, contest) or\
-                    user.has_admin_auth():
+                user.has_admin_auth():
                 logger.info('Contest:User %s download Contest %s - %s public user password!' %
-                            (request.user, contest.id, contest.cname))
+                    (request.user, contest.id, contest.cname))
                 return get_public_user_password_csv(contest)
             else:
                 raise PermissionDenied
@@ -438,39 +400,38 @@ def download(request):
             cid = request.GET.get('cid')
             contest = get_contest_or_404(cid)
         if user_info.has_contest_ownership(user, contest) or user.has_admin_auth():
-            return render_index(request, 'contest/download.html', {'contest': contest})
+            return render_index(request, 'contest/download.html', {'contest':contest})
         else:
             raise PermissionDenied
-
 
 @login_required
 def rejudge(request):
     if not request.user.has_subjudge_auth():
         logger.warning(
             'Contest:User %s try to rejudge. Does not have subjudge permission' %
-            (request.user))
+                    (request.user))
         raise PermissionDenied
     contest_id = request.POST.get('contest')
     problem_id = request.POST.get('problem')
     try:
-        contest = Contest.objects.get(pk=contest_id)
+        contest = Contest.objects.get(pk = contest_id)
     except:
         # contest not exist
         logger.warning('rejudge: Contest %s not found!' % contest_id)
         message = 'Contest does not exist! Can not rejudge'
         messages.error(request, message)
         return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
-
+        
     if not user_info.has_contest_ownership(request.user, contest) and\
-            not request.user.has_admin_auth():
+        not request.user.has_admin_auth():
         logger.warning(
             'Contest:User %s try to rejudge. Does not have contest ownership' %
-            (request.user))
+                    (request.user))
         raise PermissionDenied
 
     if problem_id is not None:
         try:
-            problem = Problem.objects.get(pk=problem_id)
+            problem = Problem.objects.get(pk = problem_id)
         except:
             # problem not exist
             logger.warning('rejudge: Problem %s not found!' % problem_id)
@@ -479,15 +440,15 @@ def rejudge(request):
             return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
         rejudge_contest_problem(contest, problem)
-        logger.info('User %s rejudge Problem %s in Contest %s!' %
-                    (request.user.username, problem.id, contest.id))
+        logger.info('User %s rejudge Problem %s in Contest %s!' %\
+            (request.user.username, problem.id, contest.id))
         message = 'Successfully rejudge Problem %s - %s in Contest %s - %s!' %\
             (problem.id, problem.pname, contest.id, contest.cname)
         messages.success(request, message)
     else:
         rejudge_obj(contest)
-        logger.info('User %s rejudge Contest %s!' %
-                    (request.user.username, contest_id))
+        logger.info('User %s rejudge Contest %s!' %\
+            (request.user.username, contest_id))
         message = 'Successfully rejudge Contest %s - %s!' %\
             (contest.id, contest.cname)
         messages.success(request, message)

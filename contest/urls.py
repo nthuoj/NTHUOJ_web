@@ -33,7 +33,6 @@ urlpatterns = patterns('contest.views',
     url(r'^edit/(?P<cid>\d+)/$',views.edit,name='edit'),
     #delete contest
     url(r'^delete/(?P<cid>\d+)/$',views.delete,name='delete'),
-    url(r'^scoreboard/(?P<cid>\d+)/$',views.scoreboard,name='scoreboard'),
     #detail of contest
     url(r'^(?P<cid>\d+)/$',views.contest,name='contest'),
     #user register contest
