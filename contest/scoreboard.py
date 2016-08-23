@@ -18,7 +18,7 @@
     SOFTWARE.
     '''
 import sys
-from operator import methodcaller, attrgetter
+from operator import methodcaller
 
 USER_ID, PROBLEM_ID, TOTAL_AC, TESTCASE, TIMES, PENALTY, FIRST_AC_TIME = tuple(range(7))
 

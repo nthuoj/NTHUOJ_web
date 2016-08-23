@@ -46,6 +46,7 @@ from utils import user_info
 
 from django.http import Http404
 from django.contrib.auth.hashers import make_password
+from django.db import connection
 from django.db.models import Q
 from django.core.cache import cache
 
