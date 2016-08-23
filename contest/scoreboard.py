@@ -23,6 +23,7 @@ from operator import methodcaller
 USER_ID, PROBLEM_ID, TOTAL_AC, TESTCASE, TIMES, PENALTY, FIRST_AC_TIME = tuple(range(7))
 
 class Scoreboard:
+
     def __init__(self, start_time):
         self.users = []
         self.problems = []
@@ -41,13 +42,17 @@ class Scoreboard:
 
     # sort by solved descending. if same sort by penalty
     def sort_users_by_penalty(self):
-        self.users = sorted(self.users, key=methodcaller('get_penalty', self.start_time))
-        self.users = sorted(self.users, key=methodcaller('get_solved'), reverse=True)
+        self.users = sorted(
+            self.users, key=methodcaller('get_penalty', self.start_time))
+        self.users = sorted(
+            self.users, key=methodcaller('get_solved'), reverse=True)
 
     def sort_users_by_solved_testcases(self):
-        self.users = sorted(self.users, key=methodcaller('get_testcases_solved'), reverse=True)
+        self.users = sorted(
+            self.users, key=methodcaller('get_testcases_solved'), reverse=True)
 
 class ScoreboardProblem:
+
     def __init__(self, id, pname, total_testcase):
         self.id = id
         self.pname = pname
@@ -72,6 +77,7 @@ class ScoreboardProblem:
         self.not_pass_rate = 100 - self.pass_rate
 
 class User:
+
     def __init__(self, username):
         self.username = username
         self.problems = []
@@ -107,6 +113,7 @@ class User:
         self.penalty += increment
 
 class UserProblem:
+
     def __init__(self, id, total_testcases):
         self.submissions = []
         self.id = id
@@ -154,6 +161,7 @@ class UserProblem:
         self.solved = (row[FIRST_AC_TIME]!='--')
 
 class Submission:
+
     def __init__(self, submit_time, pass_testcases):
         self.submit_time = submit_time
         self.pass_testcases = pass_testcases

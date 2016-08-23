@@ -200,6 +200,7 @@ def get_scoreboard(user, contest):
 
     return scoreboard
 
+
 def get_scoreboard_csv(contest_id, scoreboard_type, user):
     contest = get_contest_or_404(contest_id)
     scoreboard = get_scoreboard(user, contest)
@@ -217,6 +218,7 @@ def get_scoreboard_csv(contest_id, scoreboard_type, user):
         write_scoreboard_csv_testcases(writer, contest, scoreboard)
 
     return response
+
 
 def write_scoreboard_csv_penalty(writer, contest, scoreboard):
     # penalty scoreboard csv
@@ -241,6 +243,7 @@ def write_scoreboard_csv_penalty(writer, contest, scoreboard):
     for problem in scoreboard.problems:
         footer.append(problem.pass_user)
     writer.writerow(footer)
+
 
 def write_scoreboard_csv_testcases(writer, contest, scoreboard):
     # testcases scoreboard csv
