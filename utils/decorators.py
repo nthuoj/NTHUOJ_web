@@ -23,6 +23,7 @@ SOFTWARE.
 """
 from django.conf import settings
 from utils.user_info import validate_user
+from django.http import HttpResponseRedirect
 
 
 def subjudge_auth_required(view):
