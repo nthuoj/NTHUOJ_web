@@ -275,26 +275,27 @@ def testcase(request, pid, tid=None):
 
 @login_required
 def delete_testcase(request, pid, tid):
-    try:
-        problem = Problem.objects.get(pk=pid)
-        testcase = Testcase.objects.get(pk=tid)
-    except Problem.DoesNotExist:
-        logger.warning("problem %s does not exist" % (pid))
-        raise Http404("problem %s does not exist" % (pid))
-    except Testcase.DoesNotExist:
-        logger.warning("testcase %s does not exist" % (tid))
-        raise Http404("testcase %s does not exist" % (tid))
-    if not request.user.has_admin_auth() and request.user != problem.owner:
-        raise PermissionDenied
-    logger.info("testcase %d deleted" % (testcase.pk))
-    try:
-        os.remove('%s%d.in' % (TESTCASE_PATH, testcase.pk))
-        os.remove('%s%d.out' % (TESTCASE_PATH, testcase.pk))
-    except IOError, OSError:
-        logger.error("remove testcase %s error" % (testcase.pk))
-    logger.info("testcase %d deleted by %s" % (testcase.pk, request.user))
-    messages.success(request, "testcase %s deleted" % testcase.pk)
-    testcase.delete()
+    if request.method == 'DELETE':
+        try:
+            problem = Problem.objects.get(pk=pid)
+            testcase = Testcase.objects.get(pk=tid)
+        except Problem.DoesNotExist:
+            logger.warning("problem %s does not exist" % (pid))
+            raise Http404("problem %s does not exist" % (pid))
+        except Testcase.DoesNotExist:
+            logger.warning("testcase %s does not exist" % (tid))
+            raise Http404("testcase %s does not exist" % (tid))
+        if not request.user.has_admin_auth() and (request.user != problem.owner or testcase.problem.pk != problem.pk):
+            raise PermissionDenied
+        logger.info("testcase %d deleted" % (testcase.pk))
+        try:
+            os.remove('%s%d.in' % (TESTCASE_PATH, testcase.pk))
+            os.remove('%s%d.out' % (TESTCASE_PATH, testcase.pk))
+        except IOError, OSError:
+            logger.error("remove testcase %s error" % (testcase.pk))
+        logger.info("testcase %d deleted by %s" % (testcase.pk, request.user))
+        messages.success(request, "testcase %s deleted" % testcase.pk)
+        testcase.delete()
     return HttpResponse()
 
 
