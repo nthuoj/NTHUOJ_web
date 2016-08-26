@@ -54,6 +54,7 @@ class UserManager(BaseUserManager):
         user = self.create_user(username=username, password=password)
         user.is_admin = True
         user.is_active = True
+        user.is_public = False
         user.save(using=self._db)
         return user
 
@@ -82,8 +83,9 @@ class User(AbstractBaseUser):
         max_length=10, choices=THEME_CHOICE, default=DEFAULT_THEME)
 
     USERNAME_FIELD = 'username'
-    is_active = models.BooleanField(default=False)
     is_admin = models.BooleanField(default=False)
+    is_active = models.BooleanField(default=False)
+    is_public = models.BooleanField(default=False)
     objects = UserManager()
 
     def has_admin_auth(self):
