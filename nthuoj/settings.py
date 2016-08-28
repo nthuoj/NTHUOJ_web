@@ -66,8 +66,8 @@ ROOT_URLCONF = 'nthuoj.urls'
 
 WSGI_APPLICATION = 'nthuoj.wsgi.application'
 
-
 CONFIG_PATH = os.path.join(BASE_DIR, 'nthuoj/config/nthuoj.cfg')
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
