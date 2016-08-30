@@ -59,8 +59,8 @@ if not config.has_section('system_version'):
 if not config.has_section('email'):
     # Setting email info
     write_config(config, 'email',
-                 user=raw_input('Email host(gmail): '),
-                 password=getpass.getpass("Email host's password: ")
+                 host=raw_input('Docker daemon host(IP or domain name): '),
+                 docker_tls_cert_path='./.tls_setup/'
                  )
 
 # Change defaut path
