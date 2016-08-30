@@ -49,7 +49,7 @@ class UserCreationForm(forms.ModelForm):
     if USERNAME_BLACK_LIST_FILE is not None:
         USERNAME_BLACK_LIST = USERNAME_BLACK_LIST_FILE.splitlines()
     else:
-        USERNAME_BLACK_LIST = None
+        USERNAME_BLACK_LIST = []
 
     username = forms.CharField(label='Username',
                                validators=[RegexValidator(regex='^\w+$', message='Username must be Alphanumeric')])

@@ -38,7 +38,7 @@ from problem.models import Problem
 from users.admin import UserCreationForm, AuthenticationForm
 from users.forms import CodeSubmitForm
 from users.forms import UserProfileForm, UserLevelForm, UserForgetPasswordForm
-from users.models import UserProfile, Notification
+from users.models import User, UserProfile, Notification
 from users.templatetags.profile_filters import can_change_userlevel
 from utils.log_info import get_logger
 from utils.user_info import get_user_statistics, send_activation_email, send_forget_password_email
