@@ -11,3 +11,4 @@ pillow
 MySQL-python
 uwsgi
 django-debug-toolbar
+docker-py
