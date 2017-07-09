@@ -104,7 +104,7 @@ $(function() {
         var row = $(this).parents('tr');
         var tid = $(this).parents('tr').attr('data-target');
         $.ajax({
-            type: 'GET',
+            type: 'DELETE',
             url: '/problem/' + pid + '/testcase/' + tid + '/delete/',
             success: function(data) {
                 window.location.href = '/problem/' + pid +
