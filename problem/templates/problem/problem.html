@@ -64,21 +64,13 @@
   {{ problem.input | safe }}
   <h3>Output</h3>
   {{ problem.output | safe }}
-  <h3>Sample Input</h3>
-  <div class='panel panel-default'>
-    <div class='panel-body'>
-      <samp id='sampinText'>{{ problem.sample_in|linebreaksbr }}</samp>
-      <br>
-      <span class='label label-danger'>EOF</span>
-    </div>
+  <h3>Sample Input&nbsp;&nbsp;<a class='btn btn-primary downloadSampleInputButton' pid='{{ problem.pk }}'>Download</a></h3>
+  <div class='panel-body'>
+    <textarea id='{{ problem.pk }}_sampleIn' class='panel-body sampleIO' readonly>{{ problem.sample_in }}</textarea>
   </div>
-  <h3>Sample Output</h3>
-  <div class='panel panel-default'>
-    <div class='panel-body'>
-      <samp id='sampoutText' name='sampoutText'>{{ problem.sample_out|linebreaksbr }}</samp>
-      <br>
-      <span class='label label-danger'>EOF</span>
-    </div>
+  <h3>Sample Output&nbsp;&nbsp;<a class='btn btn-primary downloadSampleOutputButton' pid='{{ problem.pk }}'>Download</a></h3>
+  <div class='panel-body'>
+    <textarea id='{{ problem.pk }}_sampleOut' class='panel-body sampleIO' readonly>{{ problem.sample_out }}</textarea>
   </div>
   {% if problem.judge_type == "LOCAL_PARTIAL" and problem.has_partial_judge_code %}
     <h3>Partial Judge Code</h3>
