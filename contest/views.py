@@ -112,7 +112,8 @@ def register_page(request, cid):
     public_user = len(get_public_contestant(contest))
     return render_index(request,
                         'contest/register.html',
-                        {'contest': contest, 'groups': groups, 'max_public_user': settings.MAX_PUBLIC_USER,
+                        {'contest': contest, 'groups': groups,
+                         'max_public_user': settings.MAX_PUBLIC_USER,
                          'public_user': public_user})
 
 # contest datail page
@@ -137,6 +138,7 @@ def contest(request, cid):
             problem.testcase = get_testcase(problem)
             problem = verify_problem_code(problem)
             problem.in_contest = check_in_contest(problem)
+        scoreboard = get_scoreboard(user, contest)
         clarifications = get_clarifications(user, contest)
 
         initial_form = {'contest': contest, 'asker': user}
@@ -146,30 +148,8 @@ def contest(request, cid):
         reply_form = ReplyForm(initial=initial_reply_form)
         return render_index(request, 'contest/contest.html',
                             {'contest': contest, 'clarifications': clarifications,
-                             'form': form, 'reply_form': reply_form})
-    else:
-        raise PermissionDenied
-
-def scoreboard(request, cid):
-    user = user_info.validate_user(request.user)
-    try:
-        contest = Contest.objects.get(id=cid)
-    except Contest.DoesNotExist:
-        logger.warning('Contest: Can not find contest %s!' % cid)
-        raise Http404('Contest does not exist')
-
-    now = datetime.now()
-    # if contest has not started and user is not the owner
-
-    if ((contest.start_time < now) or
-            user_info.has_contest_ownership(user, contest) or
-            user.has_admin_auth()):
-        scoreboard = get_scoreboard(user, contest)
-
-        initial_form = {'contest': contest, 'asker': user}
-
-        return render_index(request, 'contest/scoreboard.html',
-                            {'contest': contest, 'scoreboard': scoreboard})
+                             'form': form, 'reply_form': reply_form,
+                             'scoreboard': scoreboard})
     else:
         raise PermissionDenied
 
@@ -330,8 +310,7 @@ def register_public_user(request, public_user, contest):
                 message = 'Requested more than max! Set public users to %s' % \
                     (settings.MAX_PUBLIC_USER)
                 messages.warning(request, message)
-            download_url = reverse(
-                'contest:download') + '?cid=' + str(contest.id)
+            download_url = reverse('contest:download') + '?cid=' + str(contest.id)
             return HttpResponseRedirect(download_url)
         else:
             if int(public_user) == 0:

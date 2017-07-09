@@ -20,6 +20,7 @@
 import sys
 from operator import methodcaller
 
+USER_ID, PROBLEM_ID, TOTAL_AC, TESTCASE, TIMES, PENALTY, FIRST_AC_TIME = tuple(range(7))
 
 class Scoreboard:
 
@@ -50,7 +51,6 @@ class Scoreboard:
         self.users = sorted(
             self.users, key=methodcaller('get_testcases_solved'), reverse=True)
 
-
 class ScoreboardProblem:
 
     def __init__(self, id, pname, total_testcase):
@@ -59,39 +59,58 @@ class ScoreboardProblem:
         self.total_testcase = total_testcase
         self.pass_user = 0
         self.total_solved = 0
+        self.no_submission = True
+        self.pass_rate = 0
+        self.not_pass_rate = 100
 
     def add_pass_user(self):
         self.pass_user += 1
 
+    def update_total_solved(self, increment):
+        self.total_solved += increment
+
+    def set_no_submission(self):
+        self.no_submission = False
+
+    def generate_pass_rate(self, user_count):
+        self.pass_rate = float(self.pass_user) / user_count * 100
+        self.not_pass_rate = 100 - self.pass_rate
 
 class User:
 
     def __init__(self, username):
         self.username = username
         self.problems = []
+        self.solved = 0
+        self.testcases_solved = 0
+        self.penalty = '--'
 
     def add_problem(self, problem):
         self.problems.append(problem)
 
     def get_solved(self):
-        count = 0
-        for problem in self.problems:
-            if problem.is_solved():
-                count += 1
-        return count
+        return self.solved
 
     def get_testcases_solved(self):
-        count = 0
-        for problem in self.problems:
-            count += problem.get_testcases_solved()
-        return count
+        if self.testcases_solved == '--':
+            return 0
+        return self.testcases_solved
 
-    def get_penalty(self, start_time):
-        penalty = 0
-        for problem in self.problems:
-            penalty += problem.get_penalty(start_time)
-        return penalty
+    def get_penalty(self,start_time):
+        if self.penalty == '--':
+            return 0
+        return self.penalty
 
+    def increase_solved(self):
+        self.solved += 1
+
+    def update_testcase_solved(self, increment):
+        self.testcases_solved += increment
+
+    def update_penalty(self, increment):
+        if self.penalty == '--':
+            self.penalty = 0
+        self.penalty += increment
 
 class UserProblem:
 
@@ -99,6 +118,11 @@ class UserProblem:
         self.submissions = []
         self.id = id
         self.total_testcases = total_testcases
+        self.testcases_solved = 0
+        self.submit_times = '--'
+        self.penalty = '--'
+        self.AC_time = '--'
+        self.solved = False
 
     def is_solved(self):
         for submission in self.submissions:
@@ -129,6 +153,12 @@ class UserProblem:
                 wrong_try += 1
         return 0
 
+    def set_attributes(self, row):
+        self.testcases_solved = row[TOTAL_AC]
+        self.submit_times = row[TIMES]
+        self.penalty = row[PENALTY]
+        self.AC_time = row[FIRST_AC_TIME]
+        self.solved = (row[FIRST_AC_TIME]!='--')
 
 class Submission:
 

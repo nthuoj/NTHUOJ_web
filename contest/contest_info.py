@@ -46,6 +46,7 @@ from utils import user_info
 
 from django.http import Http404
 from django.contrib.auth.hashers import make_password
+from django.db import connection
 from django.db.models import Q
 from django.core.cache import cache
 
@@ -146,74 +147,56 @@ def get_submit_times(problem):
 
 
 def get_scoreboard(user, contest):
-    contestants = get_contestant_list(contest)
-
+    USER_ID, PROBLEM_ID, TOTAL_AC, TESTCASE, TIMES, PENALTY, FIRST_AC_TIME = tuple(range(7))
     scoreboard = Scoreboard(contest.start_time)
-    # Store contest's problem data
-    for problem in contest.problem.all():
+    
+    # Store all problems in this contest
+    index_of_problem = {}
+    problem_count = 0
+    for problem in contest.problem.all().order_by('pk'):
         total_testcases = get_total_testcases(problem)
-        new_problem = ScoreboardProblem(
-            problem.id, problem.pname, total_testcases)
-        new_problem.no_submission = True
+        new_problem = ScoreboardProblem(problem.id, problem.pname, total_testcases)
         scoreboard.add_problem(new_problem)
+        index_of_problem[problem.pk] = problem_count
+        problem_count += 1
 
-    # For Contestants' data
-    for contestant in contestants:
-        new_contestant = ScoreboardUser(contestant.user.username)
-        for problem in contest.problem.all():
-            if(is_ended(contest) or has_contest_ownership(user, contest)):
-                submissions = get_contestant_problem_submission_list(
-                    contest, contestant, problem)
-            else:
-                submissions = get_contestant_problem_submission_list_before_freeze_time(
-                    contest, contestant, problem)
-            total_testcases = get_total_testcases(problem)
-            new_problem = UserProblem(problem.id, total_testcases)
-            for submission in submissions:
-                passed_testcases = get_passed_testcases(submission)
-                new_submission = ScoreboardSubmission(
-                    submission.submit_time, passed_testcases)
-                new_problem.add_submission(new_submission)
-                if new_submission.is_solved(total_testcases):
-                    new_problem.AC_time = new_submission.submit_time - \
-                        contest.start_time
-                    new_problem.AC_time = int(
-                        new_problem.AC_time.total_seconds() / 60)
-                    break
-            if new_problem.is_solved():
-                scoreboard.get_problem(new_problem.id).add_pass_user()
-            else:
-                new_problem.AC_time = '--'
-            if len(submissions):
-                scoreboard.get_problem(new_problem.id).no_submission = False
+    # Get contestants' data from SQL store procedure
+    cursor = connection.cursor()
+    freeze = not(is_ended(contest) or has_contest_ownership(user, contest))
+    cursor.execute("call get_scoreboard_penalty(%s , %s)",[contest.pk, freeze])
+    table = cursor.fetchall()
 
-            # setup problem attribute
-            new_problem.penalty = get_penalty(
-                new_problem, scoreboard.start_time)
-            new_problem.submit_times = get_submit_times(new_problem)
-            new_problem.solved = new_problem.is_solved()
-            new_problem.testcases_solved = new_problem.get_testcases_solved()
-            # to get single problem's total passed submission
-            scoreboard_problem = scoreboard.get_problem(problem.id)
-            scoreboard_problem.total_solved += new_problem.testcases_solved
+    # sort the table by user_id(user name) if needed
+    # table = sorted(table, key=lambda record:record[USER_ID])
 
-            new_contestant.add_problem(new_problem)
-        # setup contestant attribute
-        new_contestant.solved = new_contestant.get_solved()
-        new_contestant.penalty = get_penalty(
-            new_contestant, scoreboard.start_time)
-        new_contestant.testcases_solved = new_contestant.get_testcases_solved()
-        scoreboard.add_user(new_contestant)
+    # iterate each row in the table
+    for i, row in enumerate(table):
+        # create a new ScoreboardUser in scoreboard when switching to a new user
+        if i==0 or table[i][USER_ID]!=table[i-1][USER_ID]:
+            scoreboard_user = ScoreboardUser(row[USER_ID])
+            scoreboard.add_user(scoreboard_user)
+            for problem in scoreboard.problems:
+                new_problem = UserProblem(problem.id, problem.total_testcase)
+                scoreboard_user.add_problem(new_problem)
+        # update scoreboard according to the row
+        pidx = index_of_problem[row[PROBLEM_ID]]
+        user_problem = scoreboard_user.problems[pidx]
+        scorboard_problem = scoreboard.problems[pidx]
+        user_problem.set_attributes(row)
+        if user_problem.solved:
+            scoreboard_user.increase_solved()
+            scoreboard_user.update_penalty(int(user_problem.penalty))
+            scorboard_problem.add_pass_user()
+        scoreboard_user.update_testcase_solved(int(row[TOTAL_AC]))
+        scorboard_problem.update_total_solved(int(row[TOTAL_AC]))
+        if(row[TIMES] != '--'):
+            scorboard_problem.set_no_submission()
 
-    for problem in scoreboard.problems:
-        if len(scoreboard.users):
-            problem.pass_rate = float(
-                problem.pass_user) / len(scoreboard.users) * 100
-            problem.not_pass_rate = 100 - problem.pass_rate
-        else:
-            problem.pass_rate = 0
-            problem.not_pass_rate = 100
-            problem.no_submission = True
+    # Generate pass rate of each problem
+    user_count = len(scoreboard.users)
+    if user_count:
+        for scoreboard_problem in scoreboard.problems:
+            scoreboard_problem.generate_pass_rate(user_count)
 
     return scoreboard
 
@@ -253,8 +236,7 @@ def write_scoreboard_csv_penalty(writer, contest, scoreboard):
             submit_times = problem.submit_times
             AC_time = problem.AC_time
             user_row.append(str(submit_times) + '/' + str(AC_time))
-        total_penalty = user.get_penalty(contest.start_time)
-        user_row.append(total_penalty)
+        user_row.append(user.penalty)
         writer.writerow(user_row)
 
     footer = ['Passed', '']
@@ -276,7 +258,7 @@ def write_scoreboard_csv_testcases(writer, contest, scoreboard):
     for counter, user in enumerate(scoreboard.users):
         user_row = [counter + 1, user.username]
         for problem in user.problems:
-            passed_testcases = problem.get_testcases_solved()
+            passed_testcases = problem.testcases_solved
             total_testcases = problem.total_testcases
             user_row.append(str(passed_testcases) + '/' + str(total_testcases))
         user_total_testcases = user.get_testcases_solved()
