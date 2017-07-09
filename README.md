@@ -1,42 +1,22 @@
+# NTHUOJ_web
+Version 1.0.4
 [![Build Status](https://travis-ci.org/henryyang42/NTHUOJ_web.svg)](https://travis-ci.org/henryyang42/NTHUOJ_web)
 
-#NTHUOJ_WEB
-#######Version 1.0.4
-=======
 
-##License
----
-Please refer to MIT license with [our license file](https://github.com/bruce3557/NTHUOJ_web/blob/master/LICENSE).
+## Getting Started
 
-##Install Guide
----
-
-###Get our project
+### Get our project
 ```
-git clone https://github.com/bruce3557/NTHUOJ_web.git
+git clone https://github.com/nthuoj/NTHUOJ_web.git
 ```
 
-###Configure Git For Installing Bower Dependencies
+### Config Git for installing Bower dependencies
 ```
 git config --global url."https://".insteadOf git://
 ```
 
-####Dependencies:
-* python2.7
-* python-dev
-* mysql-server
-* python-pip
-* python-mysqldb
-* nodejs
-* npm
-* libjpeg
-* bower
-* git
-* dos2unix
-* python dependencies in [requirements.txt](requirements.txt)
-
-###Installation:
-* Install dependencies (for ubuntu)
+### Installation
+* Install dependencies (for Ubuntu)
 ```
 sudo apt-get install git
 sudo apt-get install mysql-server python-mysqldb
@@ -50,14 +30,17 @@ sudo ln -s /usr/bin/nodejs /usr/bin/node
 sudo pip install -r requirements.txt
 ```
 
-* Execute install.py for initial setting.
+* Run install.py setup settings.
 ```
 python install.py
 ```
-* Please DON'T run this command with sudo to prevent error in permission setttings.
-* Information other than those concerning database can be left blank and be configured later by modifying `'project_root/config/nthuoj.cfg'`.
-* Our project will not automatically create a database for you. So if you want to use a local database, please create it yourself.
-* For more detailed deployment instructions, you can follow this [note](https://gist.github.com/henryyang42/e70c7f444788e674c4da)
+* Please DO **NOT** run this command with sudo to prevent further errors in permission setttings.
+* Settings without concerning to the database connection can be left blank and modified in `NTHUOJ_web/nthuoj/config/nthuoj.cfg` later.
+* Our project will not automatically generate a database. Therefore, you would like to create a local database on your own.
+
+### Email host
+* The email host should be Gmail.
+* The Google account setting ```Access for less secure apps``` should be turned on.
 
 ###Email:
 * In our project, we use **Postfix** as the mail server for sending emails of registration or resetting password.
@@ -67,3 +50,11 @@ python install.py
 * The mail server will be installed in a docker image, so if you want to enable email sending, you have to build the image first. Please check [here](https://github.com/nthuoj/NTHUOJ_web_docker) for details.
 
 * After building the docker image, make sure that you have set correct information about docker daemon host (IP or domain name) at section `email` in `nthuoj/config/nthuoj.cfg`
+
+## Reference
+* For more detailed deployment instructions, please follow the [NTHUOJ_deploy](https://gist.github.com/henryyang42/e70c7f444788e674c4da) note.
+* To install in a docker container, please refer to the [NTHUOJ_web_docker](https://github.com/nthuoj/NTHUOJ_web_docker) repository.
+
+## License
+NTHUOJ_web is licensed under the terms of the [MIT license](https://github.com/nthuoj/NTHUOJ_web/blob/master/LICENSE).
+

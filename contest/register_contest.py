@@ -47,13 +47,6 @@ def add_contestants(users, contest):
     for user in users:
         add_contestant(user, contest)
 
-# add many contestants and activate them
-
-
-def add_contestants_and_activate(users, contest):
-    add_contestants(users, contest)
-    public_user.activate_public_users(users)
-
 
 def user_register_contest(user, contest):
     if can_register(user, contest):
@@ -70,34 +63,18 @@ def group_register_contest(group, contest):
             add_contestant(user, contest)
     return True
 
-# tbd
-
 
 def public_user_register_contest(account_num, contest):
     # can not register started contest
     if has_started(contest):
         return False
-
+    # check whether account_num is valid
     account_num = public_user.check_account_num_valid(account_num)
-    # if invalid
     if account_num == -1:
         return False
-    public_contestants = public_user.get_public_contestant(contest)
-    need = account_num - len(public_contestants)
-    # public contestant attend more than needed, kick some out
-    if need < 0:
-        public_user.delete_public_contestants(
-            public_contestants[account_num:len(public_contestants)])
-        return account_num
-    # public contestant is not enough
-    available_users = public_user.get_available_public_users()
-    lack = need - len(available_users)
-    # available public user is enough
-    if lack <= 0:
-        add_contestants_and_activate(available_users[0:need], contest)
-    # available public user not enough, then create some
-    else:
-        new_users = public_user.create_public_users(lack)
-        add_contestants_and_activate(new_users, contest)
-        add_contestants_and_activate(available_users, contest)
+    # get public user
+    res = account_num - public_user.get_public_user(account_num, contest)
+    # create public user
+    if res > 0:
+        public_user.create_public_user(res, contest)
     return account_num

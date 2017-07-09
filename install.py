@@ -26,7 +26,6 @@ import ConfigParser
 
 from func import *
 
-
 CONFIG_PATH = 'nthuoj/config/nthuoj.cfg'
 
 if not os.path.isfile(CONFIG_PATH):
@@ -51,10 +50,10 @@ if not config.has_section('client'):
 if not config.has_section('system_version'):
     # Getting system version info
     write_config(config, 'system_version',
-                 backend=raw_input('Host os version: '),
-                 gcc=raw_input('gcc version: '),
-                 gpp=raw_input('g++ version: ')
-                 )
+        backend=raw_input('Host os version: '),
+        gcc=raw_input('gcc version: '),
+        gpp=raw_input('g++ version: ')
+    )
 
 if not config.has_section('email'):
     # Setting email info
@@ -82,11 +81,10 @@ with open(CONFIG_PATH, 'wb') as configfile:
     config.write(configfile)
 
 # Bower
-if prompt('Install static file by `bower install`?'):
-    django_manage('bower install')
+#if prompt('Install static file by `bower install`?'):
+django_manage('bower install')
 
 # Database Migratinos
 django_manage('syncdb')
-
 django_manage('makemigrations')
 django_manage('migrate')
