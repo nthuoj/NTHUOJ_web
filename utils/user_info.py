@@ -22,12 +22,10 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
 from datetime import datetime
-from threading import Thread
 import hashlib
 import random
 
 from django.core.urlresolvers import reverse
-from django.core.mail import EmailMultiAlternatives
 from django.template.loader import render_to_string
 from django.http import HttpResponseRedirect
 
@@ -38,9 +36,8 @@ from problem.models import Submission, SubmissionDetail
 from users.models import User, UserProfile, Notification
 from utils.log_info import get_logger
 from utils.config_info import get_config
+from utils.mail import MailSender
 from django.conf import settings
-
-EMAIL_HOST_USER = get_config('email', 'user')
 
 logger = get_logger()
 
@@ -172,16 +169,7 @@ def send_activation_email(request, user):
     email_body = render_to_string('index/activation_email.html',
                                   {'username': username, 'activation_link': activation_link,
                                    'active_time': new_profile.active_time})
-
-    msg = EmailMultiAlternatives(
-        email_subject, email_body, EMAIL_HOST_USER, [email])
-    msg.attach_alternative(email_body, "text/html")
-
-    try:
-        Thread(target=msg.send, args=()).start()
-    except:
-        logger.warning(
-            "There is an error when sending email to %s's mailbox" % username)
+    MailSender(email_body, email_subject, username, email).send()
 
 
 def send_forget_password_email(request, user):
@@ -202,15 +190,7 @@ def send_forget_password_email(request, user):
     email_body = render_to_string('index/forget_password_email.html',
                                   {'username': username, 'profile_link': profile_link,
                                    'active_time': new_profile.active_time})
-    msg = EmailMultiAlternatives(
-        email_subject, email_body, EMAIL_HOST_USER, [email])
-    msg.attach_alternative(email_body, "text/html")
-
-    try:
-        Thread(target=msg.send, args=()).start()
-    except:
-        logger.warning(
-            "There is an error when sending email to %s's mailbox" % username)
+    MailSender(email_body, email_subject, username, email).send()
 
 
 def send_notification(user, content):

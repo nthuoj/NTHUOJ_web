@@ -113,12 +113,6 @@ AXES_LOCKOUT_URL = '/users/block_wrong_tries'
 # freeze login access for that ip for 0.1*60 = 6 minites
 AXES_COOLOFF_TIME = 0.1
 
-EMAIL_USE_TLS = True
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_HOST_USER = get_config('email', 'user')
-EMAIL_HOST_PASSWORD = get_config('email', 'password')
-EMAIL_PORT = 587
-
 # django-ckeditor configurations
 CKEDITOR_UPLOAD_PATH = 'uploads/'
 CKEDITOR_IMAGE_BACKEND = 'pillow'

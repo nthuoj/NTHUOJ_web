@@ -59,7 +59,11 @@ python install.py
 * Our project will not automatically create a database for you. So if you want to use a local database, please create it yourself.
 * For more detailed deployment instructions, you can follow this [note](https://gist.github.com/henryyang42/e70c7f444788e674c4da)
 
-###Email host:
-* The email host should be gmail.
+###Email:
+* In our project, we use **Postfix** as the mail server for sending emails of registration or resetting password.
 
-* Your google account seeting 'Access for less secure apps' should turn on.
+* It's recommended that you install our project on a machine which has an IP address or a domain name belongs to NTHU, or outgoing emails would almost definitely be blocked by other mail service providers.
+
+* The mail server will be installed in a docker image, so if you want to enable email sending, you have to build the image first. Please check [here](https://github.com/nthuoj/NTHUOJ_web_docker) for details.
+
+* After building the docker image, make sure that you have set correct information about docker daemon host (IP or domain name) at section `email` in `nthuoj/config/nthuoj.cfg`
