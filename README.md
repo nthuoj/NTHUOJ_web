@@ -42,7 +42,7 @@ python install.py
 * The email host should be Gmail.
 * The Google account setting ```Access for less secure apps``` should be turned on.
 
-###Email:
+### Email:
 * In our project, we use **Postfix** as the mail server for sending emails of registration or resetting password.
 
 * It's recommended that you install our project on a machine which has an IP address or a domain name belongs to NTHU, or outgoing emails would almost definitely be blocked by other mail service providers.
