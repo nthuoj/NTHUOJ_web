@@ -137,12 +137,15 @@ class Notification(models.Model):
         return str(self.id)
 
 
+def get_default_active_time():
+    return datetime.now() + timedelta(minutes=15)
+
 class UserProfile(models.Model):
     user = models.OneToOneField(User)
     activation_key = models.CharField(max_length=40, blank=True)
     # default active time is 15 minutes
     active_time = models.DateTimeField(
-        default=lambda: datetime.now() + timedelta(minutes=15))
+        default=get_default_active_time)
 
     def __unicode__(self):
         return self.user.username

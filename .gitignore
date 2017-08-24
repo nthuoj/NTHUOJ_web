@@ -11,7 +11,7 @@ config/
 components/
 
 # Migrations
-migrations/
+#migrations/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
