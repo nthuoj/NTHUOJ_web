@@ -7,6 +7,7 @@ django-bootstrap
 django-bootstrap-form
 django-ckeditor<4.5
 requests
+wheel
 pillow
 MySQL-python
 uwsgi
