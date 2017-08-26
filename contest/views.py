@@ -99,11 +99,18 @@ def archive(request):
 
 
 def contest_info(request, cid):
+    user = user_info.validate_user(request.user)
     contest = get_contest_or_404(cid)
     contest = add_contestants(contest)
-    return render_index(request,
-                        'contest/contestInfo.html',
-                        {'contest': contest})
+    now = datetime.now()
+    if ((contest.start_time < now) or
+            user_info.has_contest_ownership(user, contest) or
+            user.has_admin_auth()):
+        return render_index(request,
+                            'contest/contestInfo.html',
+                            {'contest': contest})
+    else:
+        raise PermissionDenied
 
 
 def register_page(request, cid):
